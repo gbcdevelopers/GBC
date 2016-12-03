@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:background="@color/base"
+              android:weightSum="3"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <!--<Button
+                android:id="@+id/btn_order_take_done"
+                android:layout_width="50dp"
+                android:onClick="proceedToConfirmation"
+                android:layout_marginTop="0dp"
+                android:clickable="true"
+                android:background="@drawable/btn_select_icon"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                />-->
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/orderSummaryView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/base"
+        android:layout_weight="2.7"
+        android:orientation="vertical">
+
+
+        <ListView
+            android:id="@+id/orderSummaryList"
+            android:background="@color/white"
+            android:layout_marginLeft="@dimen/margin_top"
+            android:layout_marginRight="@dimen/margin_top"
+            android:layout_marginTop="@dimen/margin_top"
+            android:scrollbars="none"
+            android:divider="@color/base"
+            android:dividerHeight="@dimen/list_space"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/buttonView"
+        android:layout_weight="0.3"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/margin_top"
+        android:layout_marginRight="@dimen/margin_top"
+        android:layout_height="0dp">
+        <Button
+            android:layout_weight="1"
+            android:text="@string/printorder"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+        <Button
+            android:layout_weight="1"
+            android:text="@string/submit"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,108 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:background="@drawable/round_buttion"
+    >
+    <View
+
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@drawable/round_view"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        android:layout_marginTop="5dp"
+        >
+
+        <gbc.sa.vansales.views.TextViewWithLabel
+            android:id="@+id/customer_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            app:label="@string/customerid" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        >
+
+        <gbc.sa.vansales.views.TextViewWithLabel
+            android:id="@+id/customer_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            app:label="@string/customer_name" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        >
+
+        <gbc.sa.vansales.views.TextViewWithLabel
+            android:id="@+id/customer_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            app:label="@string/customer_address" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top"
+        android:orientation="horizontal"
+        android:weightSum="12"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        >
+
+        <ImageView
+            android:id="@+id/img_sale"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/sell_icon"
+            />
+        <ImageView
+            android:id="@+id/img_delivery"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/delivery_icon"
+            />
+        <ImageView
+            android:id="@+id/img_collection"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/collection_icon"
+            />
+        <ImageView
+            android:id="@+id/img_returns"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/return_icon"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

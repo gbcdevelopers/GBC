@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:weightSum="8.2"
+              android:layout_width="@dimen/load_variance_dialog_width"
+              android:layout_height="@dimen/good_return_dialog_height">
+
+    <RelativeLayout
+        android:background="@color/aqua"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_top">
+
+        <TextView
+            android:text="@string/return_item"
+            android:textSize="@dimen/activity_vertical_margin"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_weight="0.7"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <TextView
+            android:layout_weight="1"
+            android:text="@string/item_code"
+            android:layout_width="0dp"
+            android:gravity="center|left"
+            android:layout_gravity="center|left"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/lbl_item_code"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center|left"
+            android:layout_gravity="center|left"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="0.7"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <TextView
+            android:layout_weight="1"
+            android:text="@string/description"
+            android:layout_width="0dp"
+            android:gravity="center|left"
+            android:layout_gravity="center|left"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/lbl_item_description"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center|left"
+            android:layout_gravity="center|left"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1.6"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/cases"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+            <EditText
+                android:id="@+id/et_quantitycs_return"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/units"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+            <EditText
+                android:id="@+id/et_quantitybt_return"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1.6"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/returntype"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <RadioGroup
+                android:weightSum="2"
+                android:id="@+id/radioGroup"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/btn_radio_good_return"
+                    android:layout_weight="1"
+                    android:text="@string/good"
+                    android:layout_width="0dp"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|left"
+                    android:layout_height="match_parent"/>
+
+                <RadioButton
+                    android:id="@+id/btn_radio_bad_return"
+                    android:layout_weight="1"
+                    android:text="@string/bad"
+                    android:layout_width="0dp"
+                    android:gravity="center|left"
+                    android:layout_gravity="center|left"
+                    android:layout_height="match_parent"/>
+
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1.6"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/return_reason"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+            <EditText
+                android:id="@+id/et_return_reason"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:gravity="center|left"
+                android:layout_gravity="center|left"
+                android:layout_height="0dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <Button
+            android:id="@+id/btn_add_item_return"
+            android:layout_weight="1"
+            android:text="@string/add"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/btn_cancel_item_return"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="@string/cancel"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+</LinearLayout>

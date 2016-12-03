@@ -1,0 +1,27 @@
+<RelativeLayout
+    android:id="@+id/tileView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/tile_background"
+    android:padding="@dimen/default_padding">
+
+    <TextView
+        android:id="@+id/labelView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/monsoon"
+        android:layout_centerInParent="true"/>
+
+    <ImageView
+        android:id="@+id/iconView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/icon_cards_white"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/_icon" />
+
+</RelativeLayout>

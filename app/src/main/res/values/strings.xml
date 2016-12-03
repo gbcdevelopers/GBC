@@ -1,0 +1,99 @@
+<resources>
+
+    <string name="app_name">Vansales</string>
+    <string name="add">Add</string>
+    <string name="availableload">Available Load</string>
+    <string name="_icon">icon</string>
+    <string name="bad">Bad</string>
+    <string name="begintrip">Begin Trip</string>
+    <string name="cancel">Cancel</string>
+    <string name="cases">Cases</string>
+    <string name="changingstatus">Changing Status?</string>
+    <string name="changingstatustext">Your current location does not match with Customer Location.Do you want to continue?</string>
+    <string name="credit_available">Credit Available</string>
+    <string name="credit_days">Credit Days</string>
+    <string name="credit_limit">Credit Limit</string>
+    <string name="collection">Collection</string>
+    <string name="confirmload">Confirm Load</string>
+    <string name="confirmreturn">Confirm Returns</string>
+    <string name="customerid">Customer ID</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_address">Address</string>
+    <string name="customeroperation">Customer Operation</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="description">Description</string>
+    <string name="delete">Delete</string>
+    <string name="delivery">Delivery</string>
+    <string name="desiredload">Desired Load</string>
+    <string name="discount">Discount</string>
+    <string name="edit">Edit</string>
+    <string name="endtrip">End Trip</string>
+    <string name="enter_employee_id">Please enter employee ID</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="good">Good</string>
+    <string name="information">Informations</string>
+    <string name="item_code">Item Code</string>
+    <string name="no">No</string>
+    <string name="load">Load</string>
+    <string name="load_title">Select Load</string>
+    <string name="load_summary_title">Load Summary</string>
+    <string name="load_verify_title">Verify Load</string>
+    <string name="loadrequest">Load Request</string>
+    <string name="loaddate">Loading Date</string>
+    <string name="loading">Loading…</string>
+    <string name="map">Map</string>
+    <string name="manageinventory">Manage Inventory</string>
+
+    <string name="beginDay">Begin Day</string>
+    <string name="merchandizing">Merchandizing</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nextload">Next Load to Process</string>
+    <string name="orderbook">Berain-Order Book</string>
+    <string name="ordersummary">Order Summary</string>
+    <string name="presales">Pre Sales</string>
+    <string name="printorder">Print Order</string>
+    <string name="printload">Print Load</string>
+    <string name="quantitybt">Quantity Units</string>
+    <string name="quantitycs">Quantity Case</string>
+    <string name="returns">Good/Bad Return</string>
+    <string name="return_item">Return Item</string>
+    <string name="return_reason">Reason</string>
+    <string name="returntype">Type of Return</string>
+    <string name="select_item">Select Item</string>
+    <string name="select_operation">Select Operation</string>
+    <string name="stocktake">Berain-Take Stock</string>
+    <string name="shop_status">Select Shop Status</string>
+    <string name="spot_sales">Spot Sales</string>
+    <string name="submit">Submit Order</string>
+    <string name="total_sales">Total Sales</string>
+    <string name="total_receipt">Total Receipt</string>
+    <string name="trade_price">Trade Price</string>
+    <string name="targetachieved">Achieved/Target</string>
+    <string name="unload">Unload</string>
+    <string name="units">Units</string>
+    <string name="usedload">Used Load</string>
+    <string name="update">Update</string>
+    <string name="vanstock">Van Stock</string>
+
+    <string name="loadselection">Load Selection</string>
+
+
+    <string name="variance_load">Load Variance</string>
+    <string name="yes">Yes</string>
+    <string name="manage_inventory">Manage Inventory </string>
+
+    <style name="DefaultButtonText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#979797</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:shadowColor">#f9f9f9</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+</resources>

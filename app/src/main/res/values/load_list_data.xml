@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="list_data">
+    <item>Loading Date</item>
+    <item>Available Load</item>
+    <item>Used Load</item>
+    <item>Next Load to Process</item>
+    <item>DesiredLoad</item>
+</string-array>
+</resources>

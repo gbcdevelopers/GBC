@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:background="#fff">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+                <EditText android:id="@+id/route"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:singleLine="true"
+
+                    android:hint="ROUTE#"
+                    android:textColorHint="@color/colorPrimary"
+                    android:backgroundTint="@color/base"
+                    android:textColor="@color/black"
+
+                    android:layout_marginBottom="20dip"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+
+    <EditText android:id="@+id/salesManNo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:singleLine="true"
+        android:hint="SalesMan#"
+        android:layout_marginBottom="20dip"
+        android:textColorHint="@color/colorPrimary"
+        android:backgroundTint="@color/base"
+        android:textColor="@color/black"
+        />
+
+</android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+    <EditText android:id="@+id/salesManName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dip"
+        android:singleLine="true"
+        android:hint="SalesMan Name"
+        android:layout_marginBottom="20dip"
+        android:textColorHint="@color/colorPrimary"
+        android:backgroundTint="@color/base"
+        android:textColor="@color/black"
+        />
+</android.support.design.widget.TextInputLayout>
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+    <EditText android:id="@+id/salesDate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:password="true"
+        android:singleLine="true"
+        android:hint="Sales Date"
+        android:textColorHint="@color/colorPrimary"
+        android:backgroundTint="@color/base"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dip"/>
+
+</android.support.design.widget.TextInputLayout>
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+             <EditText android:id="@+id/time"
+                 android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:password="true"
+                 android:singleLine="true"
+                 android:hint="Time"
+                 android:textColorHint="@color/colorPrimary"
+                 android:backgroundTint="@color/base"
+                 android:textColor="@color/black"
+                 android:layout_marginTop="5dip"/>
+
+         </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+                <EditText android:id="@+id/delieveryDate"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:password="true"
+                    android:singleLine="true"
+                    android:hint="Delievery Date"
+                    android:textColorHint="@color/colorPrimary"
+                    android:backgroundTint="@color/base"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="5dip"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+              <EditText android:id="@+id/delieveryRoute"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:password="true"
+                  android:singleLine="true"
+                  android:hint="Delievery Route"
+                  android:textColorHint="@color/colorPrimary"
+                  android:backgroundTint="@color/base"
+                  android:textColor="@color/black"
+                  android:layout_marginTop="5dip"/>
+          </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+
+    <EditText android:id="@+id/vehicleNo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:password="true"
+        android:singleLine="true"
+        android:hint="Vehicle No"
+        android:textColorHint="@color/colorPrimary"
+        android:backgroundTint="@color/base"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dip"/>
+
+</android.support.design.widget.TextInputLayout>
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+                >
+
+    <EditText android:id="@+id/day"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:password="true"
+        android:singleLine="true"
+        android:hint="Day"
+        android:textColorHint="@color/colorPrimary"
+        android:backgroundTint="@color/base"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dip"/>
+
+</android.support.design.widget.TextInputLayout>
+
+
+
+
+
+
+
+            <Button android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="Continue"
+                android:textColor="@color/white"
+                android:background="@color/colorPrimary"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

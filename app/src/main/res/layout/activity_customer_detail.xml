@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <include layout="@layout/common_header"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="10"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:paddingTop="16dp"
+            android:paddingLeft="16dp"
+            android:background="@color/colorPrimary"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3106 EMARAT"
+                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:layout_marginBottom="5dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MOT tc"
+                android:textSize="18dp"
+                android:textColor="@color/white"
+                android:layout_marginBottom="5dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PO box"
+                android:textSize="16dp"
+                android:textColor="@color/white"
+                android:layout_marginBottom="5dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="contact no"
+                android:textSize="14dp"
+                android:textColor="@color/white"
+                />
+
+
+
+        </LinearLayout>
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:weightSum="3"
+        >
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="credit days"
+            android:textColor="@color/black"
+            android:id="@+id/tv_credit"
+            android:layout_marginBottom="5dp"
+            android:textSize="15dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10007665"
+            android:layout_below="@+id/tv_credit"
+            android:textSize="20dp"
+            android:id="@+id/tv_digits"
+            android:layout_marginRight="5dp"
+            android:ellipsize="end"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="days"
+            android:textColor="@color/btn_positive"
+            android:layout_toRightOf="@+id/tv_digits"
+            android:layout_below="@id/tv_credit"
+            android:layout_alignBaseline="@+id/tv_digits"
+            />
+
+    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="credit days"
+                android:textColor="@color/black"
+                android:id="@+id/tv_credit1"
+                android:layout_marginBottom="5dp"
+                android:textSize="15dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10007665"
+                android:layout_below="@+id/tv_credit1"
+                android:textSize="20dp"
+                android:id="@+id/tv_digits1"
+                android:layout_marginRight="5dp"
+                android:ellipsize="end"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="days"
+                android:textColor="@color/btn_positive"
+                android:layout_toRightOf="@+id/tv_digits1"
+                android:layout_below="@id/tv_credit1"
+                android:layout_alignBaseline="@+id/tv_digits1"
+                />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="credit days"
+                android:textColor="@color/black"
+                android:id="@+id/tv_credit2"
+                android:layout_marginBottom="5dp"
+                android:textSize="15dp"
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10007665"
+                android:layout_below="@+id/tv_credit2"
+                android:textSize="20dp"
+                android:id="@+id/tv_digits2"
+                android:layout_marginRight="5dp"
+                android:ellipsize="end"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="days"
+                android:textColor="@color/btn_positive"
+                android:layout_toRightOf="@+id/tv_digits2"
+                android:layout_below="@id/tv_credit2"
+                android:layout_alignBaseline="@+id/tv_digits2"
+                />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        >
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/grid"
+            >
+
+
+        </GridView>
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
