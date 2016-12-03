@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.AllCustomerFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DataAdapter;
@@ -53,6 +54,8 @@ public class SelectCustomerActivity  extends AppCompatActivity{
     ImageView toolbar_iv_back;
     ImageView iv_search;
     EditText et_search;
+
+    int tab_position;
 
 
     @Override
@@ -167,7 +170,15 @@ public class SelectCustomerActivity  extends AppCompatActivity{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 Log.v("addtext","change");
-                VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
+
+                if(tab_position==0)
+                {
+                    VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
+                }
+                else {
+                    AllCustomerFragment.dataAdapter1.getFilter().filter(s.toString());
+                }
+
 
                 //planBadgeAdapter.notifyDataSetChanged();
 
@@ -191,6 +202,7 @@ public class SelectCustomerActivity  extends AppCompatActivity{
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                tab_position=tab.getPosition();
             }
 
             @Override

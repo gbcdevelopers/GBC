@@ -1,6 +1,7 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             view = li.inflate(R.layout.badge_journey_plan, null);
 //            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_user_contact, null);
             holder = new ItemRowHolder();
+            holder.horizontal_view=(View)view.findViewById(R.id.view);
             holder.customer_id = (TextViewWithLabel) view.findViewById(R.id.customer_id);
             holder.customer_name = (TextViewWithLabel) view.findViewById(R.id.customer_name);
             holder.customer_address = (TextViewWithLabel) view.findViewById(R.id.customer_address);
@@ -88,6 +90,17 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         holder.customer_id.setText(dataList.get(i).getId());
         holder.customer_name.setText(dataList.get(i).getName());
         holder.customer_address.setText(dataList.get(i).getAddress());
+
+        if(i==2 || i==5)
+        {
+            holder.horizontal_view.setBackgroundColor(Color.RED);
+        }
+        else {
+            holder.horizontal_view.setBackgroundColor(Color.BLUE);
+        }
+
+
+
 
         return view;
     }
@@ -153,6 +166,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         TextViewWithLabel customer_id;
         TextViewWithLabel customer_name;
         TextViewWithLabel customer_address;
+        View horizontal_view;
     }
 
 }

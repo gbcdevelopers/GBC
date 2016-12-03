@@ -1,15 +1,19 @@
 package gbc.sa.vansales.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.CustomerDetailActivity;
 import gbc.sa.vansales.activities.CustomerOperationsActivity;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.data.Const;
@@ -35,22 +39,19 @@ public class VisitAllFragment extends Fragment {
         dataAdapter = new DataAdapter(getActivity().getBaseContext(),Const.dataArrayList);
         listView = (ListView)view.findViewById(R.id.journeyPlanList);
         listView.setAdapter(dataAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
         return view;
     }
-    /*public void loadData(){
 
-        for (int i = 0; i < 10; i++) {
-            CustomerData customerData=createCustomerData(i);
-            dataArrayList.add(customerData);
-        }
 
-    }*/
-    public static CustomerData createCustomerData(int index){
-        CustomerData customer=new CustomerData();
-        int i=100+index;
-        customer.setId(String.valueOf(i));
-        customer.setName("ankit");
-        customer.setAddress("rajkot");
-        return customer;
-    }
+
 }

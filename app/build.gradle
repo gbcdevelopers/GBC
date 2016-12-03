@@ -35,4 +35,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
 
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+    compile 'com.roomorama:caldroid:3.0.1'
 }

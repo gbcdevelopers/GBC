@@ -269,7 +269,7 @@ public class DashboardActivity extends AppCompatActivity
             startActivityForResult(intent, 0);
             finish();
             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
-            Intent intent = new Intent(DashboardActivity.this,SelectCustomerActivity.class);
+            Intent intent = new Intent(DashboardActivity.this,MyCalendarActivity.class);
             startActivity(intent);
             //Toast.makeText(getApplicationContext(),"Customer Operation",Toast.LENGTH_SHORT).show();
         }

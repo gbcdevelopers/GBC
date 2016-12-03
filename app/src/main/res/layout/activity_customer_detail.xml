@@ -20,7 +20,7 @@
             android:layout_weight="3"
             android:paddingTop="16dp"
             android:paddingLeft="16dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/back_radient"
             android:orientation="vertical"
             >
 
@@ -75,7 +75,10 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-
+        android:background="@drawable/round_buttion"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:padding="5dp"
         >
 
         <TextView
@@ -97,16 +100,18 @@
             android:id="@+id/tv_digits"
             android:layout_marginRight="5dp"
             android:ellipsize="end"
+            android:singleLine="true"
+            android:maxLines="1"
             />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="days"
             android:textColor="@color/btn_positive"
-            android:layout_toRightOf="@+id/tv_digits"
-            android:layout_below="@id/tv_credit"
-            android:layout_alignBaseline="@+id/tv_digits"
+            android:gravity="end"
+            android:layout_below="@id/tv_digits"
+
             />
 
     </RelativeLayout>
@@ -115,7 +120,10 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_buttion"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
             >
 
             <TextView
@@ -127,6 +135,7 @@
                 android:id="@+id/tv_credit1"
                 android:layout_marginBottom="5dp"
                 android:textSize="15dp"
+
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -137,16 +146,18 @@
                 android:id="@+id/tv_digits1"
                 android:layout_marginRight="5dp"
                 android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="days"
                 android:textColor="@color/btn_positive"
-                android:layout_toRightOf="@+id/tv_digits1"
-                android:layout_below="@id/tv_credit1"
-                android:layout_alignBaseline="@+id/tv_digits1"
+
+                android:layout_below="@id/tv_digits1"
+                android:gravity="end"
                 />
 
         </RelativeLayout>
@@ -154,7 +165,9 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-
+            android:background="@drawable/round_buttion"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
             >
 
             <TextView
@@ -177,16 +190,18 @@
                 android:id="@+id/tv_digits2"
                 android:layout_marginRight="5dp"
                 android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="days"
                 android:textColor="@color/btn_positive"
-                android:layout_toRightOf="@+id/tv_digits2"
-                android:layout_below="@id/tv_credit2"
-                android:layout_alignBaseline="@+id/tv_digits2"
+
+                android:layout_below="@+id/tv_digits2"
+               android:gravity="end"
                 />
 
         </RelativeLayout>
@@ -205,6 +220,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/grid"
+            android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
             >
 
 

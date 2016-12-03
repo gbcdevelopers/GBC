@@ -49,7 +49,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     VisitAllFragment tab1 = new VisitAllFragment();
                     return tab1;
                 case 1:
-                    VisitAllFragment tab2 = new VisitAllFragment();
+                    AllCustomerFragment tab2 = new AllCustomerFragment();
                     return tab2;
 
                 default:

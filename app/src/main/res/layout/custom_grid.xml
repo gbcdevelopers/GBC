@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/round_buttion"
+    android:id="@id/ll_items"
+    >
+<gbc.sa.vansales.utils.RoundedImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/driver"
+    android:scaleType="fitCenter"
+    android:layout_gravity="center"
+    android:id="@+id/iv_round"
+
+    />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="order request"
+        android:ellipsize="end"
+
+        android:singleLine="true"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:id="@+id/tv_iv_title"
+        />
+
+
+
+</LinearLayout>
