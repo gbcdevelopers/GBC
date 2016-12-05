@@ -1,9 +1,11 @@
 package gbc.sa.vansales.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -56,6 +58,7 @@ public class SelectCustomerActivity  extends AppCompatActivity{
     EditText et_search;
 
     int tab_position;
+    FloatingActionButton floatButton;
 
 
     @Override
@@ -65,7 +68,7 @@ public class SelectCustomerActivity  extends AppCompatActivity{
 
         viewPager=(ViewPager)findViewById(R.id.pager);
         tabLayout=(TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Visit List"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sequence"));
         tabLayout.addTab(tabLayout.newTab().setText("All"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -74,6 +77,7 @@ public class SelectCustomerActivity  extends AppCompatActivity{
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
 
+        floatButton=(FloatingActionButton)findViewById(R.id.float_map);
 
 
         iv_back.setVisibility(View.VISIBLE);
@@ -124,6 +128,24 @@ public class SelectCustomerActivity  extends AppCompatActivity{
 
             }
         });
+
+
+
+
+        floatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(SelectCustomerActivity.this,CustomerOperationsMapActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+
+
 
 
         et_search=(EditText)findViewById(R.id.et_search_customer);

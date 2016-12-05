@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import gbc.sa.vansales.Fragment.AllCustomerFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
+import gbc.sa.vansales.Fragment.SalesFragment;
+import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.activities.BeginDay;
 
@@ -52,6 +54,42 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     AllCustomerFragment tab2 = new AllCustomerFragment();
                     return tab2;
 
+                default:
+                    return null;
+            }
+        }
+
+        else if(activity.equals("sales"))
+        {
+            switch (position) {
+                case 0:
+                   SalesFragment tab1 = new SalesFragment();
+                    return tab1;
+                case 1:
+                    SalesFragment tab2 = new SalesFragment();
+                    return tab2;
+                case 2:
+                    SalesFragment tab3 = new SalesFragment();
+                    return tab3;
+                case 3:
+                    SalesFragment tab4 = new SalesFragment();
+                    return tab4;
+
+                default:
+                    return null;
+            }
+
+        }
+        else if(activity.equals("shelf"))
+        {
+
+            switch (position) {
+                case 0:
+                    ShelfFragment tab1 = new ShelfFragment();
+                    return tab1;
+                case 1:
+                    ShelfFragment tab2 = new ShelfFragment();
+                    return tab2;
                 default:
                     return null;
             }

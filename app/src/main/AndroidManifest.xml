@@ -4,17 +4,24 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/gbc_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:logo="@android:color/transparent"
         android:theme="@style/AppTheme"
         android:name="gbc.sa.vansales.activities.AppController"
         >
 
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB1kGfUFdnC-bFd7KDrfuX8qTCsAuPlbPE" />
 
         <activity
             android:name=".activities.LoginActivity"
@@ -50,6 +57,44 @@
 
         <activity
             android:name=".activities.CustomerDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activities.SalesInvoiceOptionActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activities.SalesInvoiceActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ShelfStockActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.InvoiceSummaryActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activities.MerchandizingActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
             android:windowSoftInputMode="stateHidden"
@@ -169,6 +214,8 @@
             android:label="@string/map"
             android:parentActivityName=".activities.CustomerOperationsActivity"
             android:screenOrientation="portrait" />
+
+
 
     </application>
 

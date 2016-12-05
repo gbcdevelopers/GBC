@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     android:id="@+id/main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,10 +9,12 @@
     android:orientation="vertical"
     tools:context=".activities.BeginTripActivity">
 
-<include layout="@layout/common_header"/>
+<include layout="@layout/common_header"
+    android:id="@+id/inc_common_header"
+    />
 
     <android.support.design.widget.TabLayout
-
+        android:layout_below="@+id/inc_common_header"
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,6 +27,30 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/tab_layout"
        />
 
-</LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:padding="16dp"
+            >
+
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/float_map"
+                android:src="@drawable/ic_directions_black_24dp"
+                />
+        </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

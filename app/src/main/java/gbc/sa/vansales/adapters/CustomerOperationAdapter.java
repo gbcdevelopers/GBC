@@ -24,12 +24,14 @@ public class CustomerOperationAdapter extends BaseAdapter {
     Context context;
 
     String strText[];
+    String from="";
 
-     public CustomerOperationAdapter(Context context,String[] strText)
+     public CustomerOperationAdapter(Context context,String[] strText,String from)
     {
         this.context=context;
 
         this.strText=strText;
+        this.from=from;
 
     }
 
@@ -68,14 +70,14 @@ public class CustomerOperationAdapter extends BaseAdapter {
         tv_title.setText(strText[position]);
 
 
-        if(position==1)
-        {
+        if(from.equals("CustomerDetailActivity")) {
+
+            if (position == 1) {
                 layout.setBackgroundResource(R.drawable.filled_gray_back);
 
-        }
-        else
-        {
-            layout.setBackgroundResource(R.drawable.round_buttion);
+            } else {
+                layout.setBackgroundResource(R.drawable.round_buttion);
+            }
         }
 
         return convertView;

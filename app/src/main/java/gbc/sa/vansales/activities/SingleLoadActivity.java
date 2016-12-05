@@ -32,7 +32,12 @@ public class SingleLoadActivity  extends BaseAdapter {
 
     private LayoutInflater mInflater;
 
-    public SingleLoadActivity(Context context, ArrayList<LoadConstants> results) {
+    SingleLoadActivity()
+    {
+
+    }
+
+    SingleLoadActivity(Context context, ArrayList<LoadConstants> results) {
         searchArrayList = results;
         mInflater = LayoutInflater.from(context);
     }

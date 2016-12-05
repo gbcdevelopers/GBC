@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +35,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
         gridView=(GridView)findViewById(R.id.grid);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
 
-        adapter=new CustomerOperationAdapter(CustomerDetailActivity.this,strText);
+        adapter=new CustomerOperationAdapter(CustomerDetailActivity.this,strText,"CustomerDetailActivity");
         gridView.setAdapter(adapter);
 
         iv_back.setVisibility(View.VISIBLE);
@@ -56,7 +57,20 @@ public class CustomerDetailActivity extends AppCompatActivity{
 
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),""+position,Toast.LENGTH_SHORT).show();
+                    switch (position)
+                    {
+                        case 2:
+                            Intent intent=new Intent(CustomerDetailActivity.this,SalesInvoiceOptionActivity.class);
+                            startActivity(intent);
+                            break;
+
+                        case 3:
+                            Intent intent2=new Intent(CustomerDetailActivity.this,MerchandizingActivity.class);
+                            startActivity(intent2);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
