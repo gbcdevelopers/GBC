@@ -1,6 +1,10 @@
 package gbc.sa.vansales.activities;
+
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,7 +30,7 @@ import java.util.ArrayList;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 
-public class CustomerOperationsMapActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener{
+public class CustomerOperationsMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
 
@@ -42,15 +46,13 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         mapFragment.getMapAsync(this);
 
 
-
-
-        iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
-        iv_refresh=(ImageView)findViewById(R.id.iv_refresh);
+        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+        iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
         iv_refresh.setVisibility(View.VISIBLE);
+        iv_refresh.setImageResource(R.drawable.ic_directions_black_24dp);
 
 
-        tv_top_header=(TextView)findViewById(R.id.tv_top_header);
-
+        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
 
 
         iv_back.setVisibility(View.VISIBLE);
@@ -64,20 +66,22 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         });
 
 
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
 
-
         this.map = googleMap;
 
 
-
-
-//        this.map.setMyLocationEnabled(true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        this.map.setMyLocationEnabled(true);
+        this.map.getUiSettings().setZoomControlsEnabled(true);
+        this.map.getUiSettings().setCompassEnabled(true);
+        this.map.getUiSettings().setAllGesturesEnabled(true);
 //        LatLng latLng=new LatLng(22.3039,70.8022);
 //
 //        this.map.moveCamera(CameraUpdateFactory.newLatLng(latLng));

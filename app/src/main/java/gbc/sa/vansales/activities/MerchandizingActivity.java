@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,16 @@ public class MerchandizingActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                switch (position)
+                {
+                    case 0:
+                            Intent intent0=new Intent(MerchandizingActivity.this,CaptureImageActivity.class);
+                            startActivity(intent0);
+                        break;
+                    default:
+                        break;
+                }
 
             }
         });

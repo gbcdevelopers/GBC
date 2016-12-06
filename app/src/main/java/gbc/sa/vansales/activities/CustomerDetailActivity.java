@@ -60,13 +60,17 @@ public class CustomerDetailActivity extends AppCompatActivity{
                     switch (position)
                     {
                         case 2:
-                            Intent intent=new Intent(CustomerDetailActivity.this,SalesInvoiceOptionActivity.class);
-                            startActivity(intent);
+                            Intent intent2=new Intent(CustomerDetailActivity.this,SalesInvoiceOptionActivity.class);
+                            startActivity(intent2);
                             break;
 
                         case 3:
-                            Intent intent2=new Intent(CustomerDetailActivity.this,MerchandizingActivity.class);
-                            startActivity(intent2);
+                            Intent intent3=new Intent(CustomerDetailActivity.this,MerchandizingActivity.class);
+                            startActivity(intent3);
+                            break;
+                        case 8:
+                            Intent intent8=new Intent(CustomerDetailActivity.this,PromotionActivity.class);
+                            startActivity(intent8);
                             break;
                         default:
                             break;

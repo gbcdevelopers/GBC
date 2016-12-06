@@ -37,14 +37,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.SingleLoadActivity"
-            android:label="Single Item"></activity>
 
-        <activity android:name=".activities.LoadConstants"
-            android:label="Load Items"></activity>
 
         <activity android:name=".activities.OdometerPopupActivity"
-            android:label="Single Item"></activity>
+            android:label="Single Item"/>
 
 
         <activity
@@ -99,6 +95,21 @@
             android:label="@string/dashboard"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.PromotionActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.CaptureImageActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name=".activities.ManageInventory"

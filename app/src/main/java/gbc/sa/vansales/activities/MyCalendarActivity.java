@@ -167,7 +167,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
 //					DatePicker datePicker = (DatePicker) datePickerDialogField.get(dpd);
 //					java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
 //					for (java.lang.reflect.Field datePickerField : datePickerFields) {
-//						Log.i("test", datePickerField.getName());
+//						Log.i("dialog_with_crossbutton", datePickerField.getName());
 //						if ("mDaySpinner".equals(datePickerField.getName())) {
 //							datePickerField.setAccessible(true);
 //							Object dayPicker = datePickerField.get(datePicker);

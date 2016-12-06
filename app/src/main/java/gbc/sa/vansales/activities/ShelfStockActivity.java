@@ -2,6 +2,7 @@ package gbc.sa.vansales.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class ShelfStockActivity extends AppCompatActivity {
     EditText et_search;
 
     int tab_position;
+    FloatingActionButton button;
 
 
 
@@ -41,6 +43,8 @@ public class ShelfStockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
 
+        button=(FloatingActionButton)findViewById(R.id.float_map);
+        button.setVisibility(View.GONE);
 
 
 

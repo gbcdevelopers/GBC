@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import gbc.sa.vansales.Fragment.AllCustomerFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
+import gbc.sa.vansales.Fragment.CaptureImageFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
@@ -94,6 +95,23 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     return null;
             }
         }
+        else if(activity.equals("capture"))
+        {
+
+            switch (position) {
+                case 0:
+                    CaptureImageFragment tab1 = new CaptureImageFragment();
+                    return tab1;
+                case 1:
+                    CaptureImageFragment tab2 = new CaptureImageFragment();
+                    return tab2;
+                default:
+                    return null;
+            }
+
+        }
+
+
         return null;
     }
 
