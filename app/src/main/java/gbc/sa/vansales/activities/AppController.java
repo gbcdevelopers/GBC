@@ -22,6 +22,7 @@ public class AppController extends Application
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        System.out.println("On Create");
     }
 
     public static synchronized AppController getInstance() {
