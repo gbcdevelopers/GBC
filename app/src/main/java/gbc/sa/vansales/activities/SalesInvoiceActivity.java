@@ -37,7 +37,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     ImageView iv_search;
     EditText et_search;
 
-    int tab_position;
+   public static int tab_position;
     FloatingActionButton button;
 
 
@@ -55,8 +55,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         tabLayout=(TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Sales"));
         tabLayout.addTab(tabLayout.newTab().setText("Foc"));
+        tabLayout.addTab(tabLayout.newTab().setText("G.return"));
         tabLayout.addTab(tabLayout.newTab().setText("B.return"));
-        tabLayout.addTab(tabLayout.newTab().setText("Foc"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 

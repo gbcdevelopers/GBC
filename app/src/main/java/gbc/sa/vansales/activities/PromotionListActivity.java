@@ -62,18 +62,23 @@ public class PromotionListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(PromotionListActivity.this);
-                builder.setTitle("Promotion list");
-                builder.setMessage("Applied Successfully");
-                builder.setCancelable(true);
-                builder.setIcon(R.mipmap.ic_launcher);
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(PromotionListActivity.this);
+//                builder.setTitle("Promotion list");
+//                builder.setMessage("Applied Successfully");
+//                builder.setCancelable(true);
+//                builder.setIcon(R.mipmap.ic_launcher);
+//                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                builder.show();
+
+
+                Intent intent=new Intent(PromotionListActivity.this,PromotionActivity.class);
+                intent.putExtra("msg","Final Invoice");
+                startActivity(intent);
 
             }
         });

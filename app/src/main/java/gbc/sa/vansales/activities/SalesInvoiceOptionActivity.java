@@ -76,10 +76,11 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         startActivity(intent2);
                         break;
                     case 3:
-                        Const.isPromotionEnable=true;
-                        LinearLayout layout= (LinearLayout) view.findViewById(R.id.ll_items);
-                        layout.setBackgroundResource(R.drawable.round_buttion);
+
+                        Intent intent3=new Intent(SalesInvoiceOptionActivity.this,PromotionListActivity.class);
+                        startActivity(intent3);
                         break;
+
                     default:
                         break;
                 }

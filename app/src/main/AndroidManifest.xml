@@ -189,6 +189,27 @@
 
             android:screenOrientation="portrait" />
 
+
+        <activity
+            android:name=".activities.CollectionsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".activities.GNBReturnActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PaymentDetails"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MyCalendarActivity"
             android:theme="@style/AppTheme.NoActionBar"

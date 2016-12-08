@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="gbc.sa.vansales.activities.CollectionsActivity">
+
+    <include
+        android:id="@+id/inc_common_header_colletion"
+        layout="@layout/common_header" />
+
+    <LinearLayout
+        android:id="@+id/ll_collation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/inc_common_header_colletion"
+        android:background="@color/primary"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:text="3106,EMARAT (EGPC)(DE455)"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="6dp"
+            android:layout_height="wrap_content"
+            android:text="MOP:TC(CASH or CHEQUE)"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_colletions_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom_colletion"
+        android:layout_below="@+id/ll_collation_title" />
+
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_colletion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp"
+        android:background="#EEEEEE"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Amt.Paid" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="0.00"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/primary_darker"
+        android:src="@drawable/ic_cash_in_hand"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

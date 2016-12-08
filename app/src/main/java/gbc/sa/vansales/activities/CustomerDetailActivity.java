@@ -56,13 +56,18 @@ public class CustomerDetailActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view1=view;
-                if(position==1)
+                if(position==0)
                 {
 
                 }
                 else {
                     switch (position)
                     {
+
+                        case 1:
+                            Intent intent1=new Intent(CustomerDetailActivity.this,CollectionsActivity.class);
+                            startActivity(intent1);
+                            break;
                         case 2:
                             Intent intent2=new Intent(CustomerDetailActivity.this,SalesInvoiceOptionActivity.class);
                             startActivity(intent2);
@@ -72,13 +77,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
                             Intent intent3=new Intent(CustomerDetailActivity.this,MerchandizingActivity.class);
                             startActivity(intent3);
                             break;
-                        case 8:
 
-                            if(Const.isPromotionEnable) {
-                                Intent intent8 = new Intent(CustomerDetailActivity.this, PromotionListActivity.class);
-                                startActivity(intent8);
-                            }
-                            break;
                         default:
                             break;
                     }

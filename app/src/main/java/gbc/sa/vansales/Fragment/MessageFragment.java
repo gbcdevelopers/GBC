@@ -22,7 +22,7 @@ public class MessageFragment extends Fragment {
 
     ListView lv_message;
     RoundedImageView iv_round;
-    MessageListAdapter adapter;
+  public static   MessageListAdapter adapter;
     View view;
 
     String arr[]={"silent meeting","silent meeting"};

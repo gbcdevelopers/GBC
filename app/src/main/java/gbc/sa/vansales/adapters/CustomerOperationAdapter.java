@@ -74,32 +74,13 @@ public class CustomerOperationAdapter extends BaseAdapter {
 
         if (from.equals("CustomerDetailActivity")) {
 
-            if (position == 1 || position == 8) {
-
-                if (position == 8) {
-                    if (Const.isPromotionEnable) {
-                        layout.setBackgroundResource(R.drawable.round_buttion);
-                    } else {
-
-                        layout.setBackgroundResource(R.drawable.filled_gray_back);
-                    }
-                } else {
-                    layout.setBackgroundResource(R.drawable.filled_gray_back);
-                }
-
+            if (position == 0 ) {
+                layout.setBackgroundResource(R.drawable.filled_gray_back);
             } else {
                 layout.setBackgroundResource(R.drawable.round_buttion);
             }
         } else if (from.equals("SalesInvoiceOptionActivity")) {
-            if (position == 3) {
-                if (Const.isPromotionEnable) {
-                    layout.setBackgroundResource(R.drawable.round_buttion);
-                } else {
-                    layout.setBackgroundResource(R.drawable.filled_gray_back);
-                }
-            } else {
-                layout.setBackgroundResource(R.drawable.round_buttion);
-            }
+
         }
 
         return convertView;

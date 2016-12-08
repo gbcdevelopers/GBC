@@ -1,6 +1,7 @@
 package gbc.sa.vansales.Fragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,14 +16,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.activities.SalesInvoiceActivity;
+import gbc.sa.vansales.activities.GNBReturnActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
 
 /**
  * Created by eheuristic on 12/5/2016.
  */
 
-public class SalesFragment extends Fragment {
+public class BReturnFragment extends Fragment {
 
 
     View view;
@@ -53,19 +54,9 @@ public class SalesFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
 
-
-                    final Dialog dialog=new Dialog(getActivity());
-                    dialog.setContentView(R.layout.dialog_with_crossbutton);
-                    dialog.setCancelable(false);
-                    dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    ImageView iv_cancle=(ImageView)dialog.findViewById(R.id.imageView_close);
-                    iv_cancle.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                        }
-                    });
-                    dialog.show();
+                Intent intent=new Intent(getActivity(), GNBReturnActivity.class);
+                intent.putExtra("from","b");
+                startActivity(intent);
 
 
 

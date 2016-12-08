@@ -13,7 +13,9 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 
+import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.MessageListAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
 
 /**
@@ -31,6 +33,7 @@ public class BeginTripActivity extends AppCompatActivity  {
     ImageView iv_refresh;
 
     FloatingActionButton floatingActionButton;
+    int tabPosition;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +69,20 @@ public class BeginTripActivity extends AppCompatActivity  {
         });
 
 
+
+        iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tabPosition==1)
+                {
+                    MessageFragment.adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+
+
+
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(),"b");
         viewPager.setAdapter(adapter);
@@ -74,6 +91,7 @@ public class BeginTripActivity extends AppCompatActivity  {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                tabPosition=tab.getPosition();
             }
 
             @Override

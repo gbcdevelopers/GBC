@@ -5,8 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import gbc.sa.vansales.Fragment.AllCustomerFragment;
+import gbc.sa.vansales.Fragment.BReturnFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.CaptureImageFragment;
+import gbc.sa.vansales.Fragment.GReturnFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
@@ -70,10 +72,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     SalesFragment tab2 = new SalesFragment();
                     return tab2;
                 case 2:
-                    SalesFragment tab3 = new SalesFragment();
+                    GReturnFragment tab3 = new GReturnFragment();
                     return tab3;
                 case 3:
-                    SalesFragment tab4 = new SalesFragment();
+                    BReturnFragment tab4 = new BReturnFragment();
                     return tab4;
 
                 default:
