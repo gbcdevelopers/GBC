@@ -1,6 +1,5 @@
 package gbc.sa.vansales.activities;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +9,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.SalesAdapter;
@@ -28,6 +27,7 @@ public class InvoiceSummaryActivity extends AppCompatActivity {
     ImageView iv_back;
 
     SalesAdapter adapter;
+    ArrayList<String> arrayList;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +41,16 @@ public class InvoiceSummaryActivity extends AppCompatActivity {
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Invoice Summary");
 
-        adapter=new SalesAdapter(InvoiceSummaryActivity.this,6,R.layout.custom_invoice_summary);
+
+
+        arrayList = new ArrayList<>();
+        arrayList.add("A");
+        arrayList.add("B");
+        arrayList.add("C");
+        arrayList.add("d");
+        arrayList.add("e");
+        arrayList.add("f");
+        adapter=new SalesAdapter(InvoiceSummaryActivity.this,arrayList, R.layout.custom_invoice_summary);
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

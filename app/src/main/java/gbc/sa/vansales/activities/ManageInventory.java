@@ -58,21 +58,33 @@ public class ManageInventory extends AppCompatActivity
         loadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Load Request Popup", Toast.LENGTH_LONG).show();
+
+
+                Intent i =new Intent(ManageInventory.this,LoadRequestActivity.class);
+                startActivity(i);
+
+
             }
         });
 
         vanStock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "VanStock Popup", Toast.LENGTH_LONG).show();
+                //  Toast.makeText(getApplicationContext(), "VanStock Popup", Toast.LENGTH_LONG).show();
+
+                Intent i=new Intent(ManageInventory.this,VanStockActivity.class);
+                startActivity(i);
+
+
             }
         });
 
         unload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Unload Popup", Toast.LENGTH_LONG).show();
+                // Toast.makeText(getApplicationContext(), "Unload Popup", Toast.LENGTH_LONG).show();
+                Intent i=new Intent(ManageInventory.this,UnloadActivity.class);
+                startActivity(i);
             }
         });
     }

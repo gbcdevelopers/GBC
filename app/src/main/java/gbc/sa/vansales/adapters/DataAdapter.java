@@ -54,6 +54,10 @@ public class DataAdapter extends BaseAdapter implements Filterable {
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
+
+
+        Log.v("size",dataList.size()+"==");
+
         ItemRowHolder holder = null;
         if (view == null) {
             LayoutInflater li = LayoutInflater.from(viewGroup.getContext());
@@ -149,8 +153,8 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             dataList = (ArrayList<CustomerData>) results.values;
             notifyDataSetChanged();
 
-            for (int i = 0, l = dataList.size(); i < l; i++)
-                dataList.get(i);
+//            for (int i = 0, l = dataList.size(); i < l; i++)
+//                dataList.get(i);
             //add(productList.get(i));
 
             notifyDataSetInvalidated();

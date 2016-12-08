@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.SalesAdapter;
 
@@ -25,6 +27,7 @@ public class SalesFragment extends Fragment {
     View view;
     ListView listSales;
     SalesAdapter adapter;
+    ArrayList<String> arrayList;
 
     @Nullable
     @Override
@@ -33,7 +36,15 @@ public class SalesFragment extends Fragment {
         view=inflater.inflate(R.layout.fragment_salesinvoice,container,false);
         listSales=(ListView)view.findViewById(R.id.list_sales);
 
-        adapter=new SalesAdapter(getActivity(),3,R.layout.sales_list);
+
+        arrayList = new ArrayList<>();
+        arrayList.add("A");
+        arrayList.add("B");
+        arrayList.add("C");
+
+
+
+        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.sales_list);
         listSales.setAdapter(adapter);
 
         listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {

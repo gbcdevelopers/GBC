@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="single"
+
+        >
         <item android:id="@+id/begintrip"
-              android:icon="@android:drawable/ic_input_get"
-              android:title="@string/begintrip" />
+              android:icon="@drawable/ic_begintrip"
+              android:title="@string/begintrip"
+
+            />
         <item android:id="@+id/manageinventory"
-              android:icon="@android:drawable/ic_menu_info_details"
+              android:icon="@drawable/ic_manageinventory"
               android:title="@string/manageinventory" />
+
         <item android:id="@+id/load"
-              android:title="@string/load"/>
+              android:title="@string/load"
+            />
+
+
         <item android:id="@+id/loadrequest"
-              android:title="@string/loadrequest"/>
+              android:title="@string/loadrequest"
+
+            />
+
         <item android:id="@+id/vanstock"
-              android:title="@string/vanstock"/>
+              android:title="@string/vanstock"
+
+            />
         <item android:id="@+id/unload"
-              android:title="@string/unload"/>
+              android:title="@string/unload"
+
+            />
+
         <item android:id="@+id/customeroperation"
-              android:icon="@android:drawable/ic_menu_info_details"
+              android:icon="@drawable/ic_customeropt"
               android:title="@string/customeroperation" />
         <item android:id="@+id/information"
-              android:icon="@android:drawable/ic_menu_info_details"
+              android:icon="@drawable/ic_information"
               android:title="@string/information" />
         <item android:id="@+id/endtrip"
               android:icon="@android:drawable/ic_menu_info_details"
-              android:title="@string/endtrip" />
+              android:title="@string/endtrip"
+            android:visible="false"
+            />
     </group>
 </menu>

@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
+import gbc.sa.vansales.data.Const;
 
 /**
  * Created by eheuristic on 12/3/2016.
@@ -24,9 +26,11 @@ public class CustomerDetailActivity extends AppCompatActivity{
 
     CustomerOperationAdapter adapter;
    String strText[]={"Order request","Collections","Sales","Merchandizing","Print","Orders","Messages","PriceList","Promotions","Balances"};
+    int resarr[]={R.drawable.ic_orderrequest,R.drawable.ic_collection,R.drawable.ic_sales,R.drawable.ic_merchandizing,R.drawable.ic_print,R.drawable.ic_order,R.drawable.iv_message,R.drawable.ic_pricelist,R.drawable.ic_promotion,R.drawable.ic_balance};
 
     ImageView iv_back;
     TextView tv_top_header;
+    View view1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +39,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
         gridView=(GridView)findViewById(R.id.grid);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
 
-        adapter=new CustomerOperationAdapter(CustomerDetailActivity.this,strText,"CustomerDetailActivity");
+        adapter=new CustomerOperationAdapter(CustomerDetailActivity.this,strText,resarr,"CustomerDetailActivity");
         gridView.setAdapter(adapter);
 
         iv_back.setVisibility(View.VISIBLE);
@@ -51,7 +55,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                view1=view;
                 if(position==1)
                 {
 
@@ -69,8 +73,11 @@ public class CustomerDetailActivity extends AppCompatActivity{
                             startActivity(intent3);
                             break;
                         case 8:
-                            Intent intent8=new Intent(CustomerDetailActivity.this,PromotionActivity.class);
-                            startActivity(intent8);
+
+                            if(Const.isPromotionEnable) {
+                                Intent intent8 = new Intent(CustomerDetailActivity.this, PromotionListActivity.class);
+                                startActivity(intent8);
+                            }
                             break;
                         default:
                             break;
@@ -78,8 +85,12 @@ public class CustomerDetailActivity extends AppCompatActivity{
                 }
             }
         });
+    }
 
-
-
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 }

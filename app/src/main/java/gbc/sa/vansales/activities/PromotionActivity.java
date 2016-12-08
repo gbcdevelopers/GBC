@@ -20,6 +20,7 @@ public class PromotionActivity extends AppCompatActivity {
 
     ImageView iv_back;
     TextView tv_top_header;
+    TextView tv_promotion;
 
 
 
@@ -34,6 +35,14 @@ public class PromotionActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Promotions");
+
+
+        tv_promotion=(TextView)findViewById(R.id.tv_promotion);
+        if(getIntent().getExtras()!=null)
+        {
+            String str_promotion_message=getIntent().getExtras().getString("msg","extra Promotion");
+            tv_promotion.setText(str_promotion_message);
+        }
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override

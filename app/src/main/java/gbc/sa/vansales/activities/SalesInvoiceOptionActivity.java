@@ -8,10 +8,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
+import gbc.sa.vansales.data.Const;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -24,6 +26,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
 
     CustomerOperationAdapter adapter;
     String strText[] = {"Shelf Stock", "Sales Invoice", "Invoice", "End Invoice"};
+    int resarr[]={R.drawable.ic_shelfstock,R.drawable.ic_salesinvoice,R.drawable.ic_invoice,R.drawable.ic_endinvoice};
 
     ImageView iv_back;
     TextView tv_top_header;
@@ -39,7 +42,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
 
-        adapter = new CustomerOperationAdapter(SalesInvoiceOptionActivity.this, strText, "SalesInvoiceOptionActivity");
+        adapter = new CustomerOperationAdapter(SalesInvoiceOptionActivity.this, strText,resarr, "SalesInvoiceOptionActivity");
         gridView.setAdapter(adapter);
 
         iv_back.setVisibility(View.VISIBLE);
@@ -71,6 +74,11 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                     case 2:
                         Intent intent2=new Intent(SalesInvoiceOptionActivity.this,InvoiceSummaryActivity.class);
                         startActivity(intent2);
+                        break;
+                    case 3:
+                        Const.isPromotionEnable=true;
+                        LinearLayout layout= (LinearLayout) view.findViewById(R.id.ll_items);
+                        layout.setBackgroundResource(R.drawable.round_buttion);
                         break;
                     default:
                         break;

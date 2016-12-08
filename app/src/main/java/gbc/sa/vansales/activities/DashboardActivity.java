@@ -52,6 +52,7 @@ public class DashboardActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         btnBDay=(Button)findViewById(R.id.btnBeginDay);
@@ -115,6 +116,7 @@ public class DashboardActivity extends AppCompatActivity
 //        toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 
         createPieChart();
@@ -242,13 +244,16 @@ public class DashboardActivity extends AppCompatActivity
         int id = menuItem.getItemId();
         if(id==R.id.begintrip){
 
-
             Intent intent=new Intent(DashboardActivity.this,BeginTripActivity.class);
             startActivity(intent);
 
         }
         else if(id==R.id.manageinventory){
-            Toast.makeText(getApplicationContext(),"Manage Inventory",Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(DashboardActivity.this,ManageInventory.class);
+            startActivity(intent);
+
+
+//            Toast.makeText(getApplicationContext(),"Manage Inventory",Toast.LENGTH_SHORT).show();
         }
         else if(id==R.id.load){
             Intent intent = new Intent(DashboardActivity.this,LoadActivity.class);
@@ -256,14 +261,20 @@ public class DashboardActivity extends AppCompatActivity
            // Toast.makeText(getApplicationContext(),"Load",Toast.LENGTH_SHORT).show();
         }
         else if(id==R.id.loadrequest){
-            Toast.makeText(getApplicationContext(),"Load Request",Toast.LENGTH_SHORT).show();
+            Intent i =new Intent(DashboardActivity.this,LoadRequestActivity.class);
+            startActivity(i);
         }
         else if(id==R.id.vanstock){
-            Toast.makeText(getApplicationContext(),"Van Stock",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),"Van Stock",Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
+            startActivity(i);
         }
         else if(id==R.id.unload){
-            Toast.makeText(getApplicationContext(),"Unload",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),"Unload",Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
+            startActivity(i);
         }
+
         else if(id==R.id.customeroperation){
            /* Intent intent = new Intent(getApplicationContext(), CustomerOperationsActivity.class);
             startActivityForResult(intent, 0);

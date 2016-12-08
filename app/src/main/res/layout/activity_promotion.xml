@@ -29,6 +29,7 @@
             android:text="50% AMC invoice discount"
             android:textSize="20dp"
             android:textColor="@color/white"
+            android:id="@+id/tv_promotion"
 
             />
 
@@ -56,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Current Invoice Amount"
                 android:textSize="15dp"
-
+                android:text="300"
+                android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
                 android:textColor="@color/black"
@@ -78,6 +80,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Return Qualified Amount"
                 android:textSize="15dp"
+                android:text="10"
+                android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
                 android:textColor="@color/black"
@@ -109,6 +113,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Return Applied Promotion"
                     android:textSize="15dp"
+                    android:text="0"
+                    android:enabled="false"
                     android:textColorHint="@color/colorPrimary"
                     app:backgroundTint="@color/base"
                     android:textColor="@color/black"
@@ -129,6 +135,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Return Applied Promotion"
                     android:textSize="15dp"
+                    android:text="50%"
+                    android:enabled="false"
                     android:textColorHint="@color/colorPrimary"
                     app:backgroundTint="@color/base"
                     android:textColor="@color/black"
@@ -151,6 +159,8 @@
                 android:layout_height="wrap_content"
                 android:hint="TOTAL PROMO AMOUNT"
                 android:textSize="15dp"
+                android:text="150"
+                android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
                 android:textColor="@color/black"
@@ -171,6 +181,8 @@
             android:layout_height="wrap_content"
             android:hint="New Invoice Amount"
             android:textSize="15dp"
+            android:text="150"
+            android:enabled="false"
             android:textColorHint="@color/colorPrimary"
             app:backgroundTint="@color/base"
             android:textColor="@color/black"
@@ -187,12 +199,13 @@
 
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="3"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-
+        android:visibility="gone"
         android:id="@+id/ll_bottom"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"

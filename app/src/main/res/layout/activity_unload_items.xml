@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:id="@+id/badReturnLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bad Return"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="5px"
+            android:textSize="25px" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/badReturnCases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cases : 100"
+            android:layout_marginTop="5px"
+            android:textSize="15px"
+            android:layout_below="@+id/badReturnLabel"
+            >
+        </TextView>
+        <TextView
+            android:id="@+id/badReturnPcs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PCS : 100"
+            android:layout_marginTop="5px"
+            android:textSize="15px"
+            android:layout_below="@+id/badReturnCases"
+            >
+        </TextView>
+
+        <TextView
+            android:id="@+id/badReturnTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total : 500AED"
+            android:layout_marginTop="5px"
+            android:textSize="15px"
+            android:layout_below="@+id/badReturnPcs"
+            >
+        </TextView>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:id="@+id/badReturnEdit"
+            android:text="Edit"
+            android:layout_below="@+id/badReturnTotal"
+            >
+            </Button>
+    </RelativeLayout>
+
+
+</LinearLayout>

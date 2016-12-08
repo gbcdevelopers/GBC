@@ -6,15 +6,16 @@
     android:background="@drawable/round_buttion"
     android:id="@id/ll_items"
     >
-<gbc.sa.vansales.utils.RoundedImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<ImageView
+    android:layout_width="50dp"
+    android:layout_height="50dp"
     android:src="@drawable/driver"
     android:scaleType="fitCenter"
     android:layout_gravity="center"
     android:id="@+id/iv_round"
-
     />
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

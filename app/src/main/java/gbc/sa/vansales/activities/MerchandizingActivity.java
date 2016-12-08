@@ -30,6 +30,7 @@ public class MerchandizingActivity extends AppCompatActivity {
 
    CustomerOperationAdapter adapter;
     String strText[]={"Capture Image","Distribution","Pos/Assets","Survey","Planogram","Price Survey","Advertizing","Item Complaints"};
+    int resarr[]={R.drawable.ic_capture,R.drawable.ic_distribution,R.drawable.ic_posasset,R.drawable.ic_survey,R.drawable.ic_planogram,R.drawable.ic_pricesurvey,R.drawable.ic_advertising,R.drawable.ic_itemcomplaint};
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +51,7 @@ public class MerchandizingActivity extends AppCompatActivity {
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Merchandizing");
 
-        adapter=new CustomerOperationAdapter(MerchandizingActivity.this,strText,"MerchandizingActivity");
+        adapter=new CustomerOperationAdapter(MerchandizingActivity.this,strText,resarr,"MerchandizingActivity");
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

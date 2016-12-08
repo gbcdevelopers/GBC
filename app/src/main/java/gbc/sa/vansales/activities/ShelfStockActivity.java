@@ -6,11 +6,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import gbc.sa.vansales.Fragment.AllCustomerFragment;
+import gbc.sa.vansales.Fragment.ShelfFragment;
+import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.PagerAdapter;
 
@@ -38,6 +45,9 @@ public class ShelfStockActivity extends AppCompatActivity {
 
 
 
+
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +56,7 @@ public class ShelfStockActivity extends AppCompatActivity {
         button=(FloatingActionButton)findViewById(R.id.float_map);
         button.setVisibility(View.GONE);
 
+        et_search=(EditText)findViewById(R.id.et_search_customer);
 
 
 
@@ -93,9 +104,10 @@ public class ShelfStockActivity extends AppCompatActivity {
             iv_search.setVisibility(View.VISIBLE);
         }
 
-      /*  iv_search.setOnClickListener(new View.OnClickListener() {
+        iv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 iv_search.setVisibility(View.GONE);
                 et_search.setVisibility(View.VISIBLE);
                 toolbar_iv_back.setVisibility(View.GONE);
@@ -103,7 +115,65 @@ public class ShelfStockActivity extends AppCompatActivity {
                 iv_add.setVisibility(View.GONE);
 
             }
-        });*/
+        });
+
+        et_search.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // your action here
+
+                        et_search.setVisibility(View.GONE);
+                        iv_search.setVisibility(View.VISIBLE);
+                        toolbar_iv_back.setVisibility(View.VISIBLE);
+                        tv_top_header.setVisibility(View.VISIBLE);
+                        iv_add.setVisibility(View.VISIBLE);
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+
+
+
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                Log.v("addtext","change");
+
+
+                    ShelfFragment.adapter.getFilter().filter(s.toString());
+
+
+
+                //planBadgeAdapter.notifyDataSetChanged();
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+
+            }
+        });
+
 
 
 

@@ -99,4 +99,20 @@
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">1</item>
     </style>
+
+
+    <string name="itemNameLabel">"Item Name : "</string>
+    <string name="categoryLabel">"Category : "</string>
+    <string name="caseLabel">"Cases : "</string>
+    <string name="unitLabel">"Units : "</string>
+
+
+
+    <string-array name="unloadReasons">
+        <item>Expiry</item>
+        <item>Damage</item>
+        <item>Past Expiry</item>
+    </string-array>
+
+
 </resources>

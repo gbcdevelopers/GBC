@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.SalesAdapter;
 
@@ -19,7 +21,13 @@ public class ShelfFragment extends Fragment {
 
     View view;
     ListView listShelf;
-    SalesAdapter adapter;
+  public static SalesAdapter adapter;
+
+
+//    ArrayList<CustomerData> dataArrayList;
+
+
+    ArrayList<String> arrayList;
 
     @Nullable
     @Override
@@ -28,7 +36,16 @@ public class ShelfFragment extends Fragment {
         view=inflater.inflate(R.layout.fragment_shelf,container,false);
         listShelf=(ListView)view.findViewById(R.id.list_shelf);
 
-        adapter=new SalesAdapter(getActivity(),5,R.layout.sales_list);
+        arrayList = new ArrayList<>();
+        arrayList.add("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
+        arrayList.add("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
+        arrayList.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
+        arrayList.add("DM5508 SWISS ROLL VANILL (24x110G)");
+        arrayList.add("EM5508 ROLL VANILL (24x110G)");
+
+
+
+        adapter=new SalesAdapter(getActivity().getBaseContext(),arrayList, R.layout.sales_list);
         listShelf.setAdapter(adapter);
 
 

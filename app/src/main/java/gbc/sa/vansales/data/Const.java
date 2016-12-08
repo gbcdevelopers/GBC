@@ -10,4 +10,5 @@ import gbc.sa.vansales.models.CustomerData;
 
 public class Const {
     public static ArrayList<CustomerData> dataArrayList;
+    public static boolean isPromotionEnable=false;
 }

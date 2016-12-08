@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <RelativeLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rel1"
+        android:layout_above="@+id/btnUnloadInventory"
+        >
+        <GridView
+                android:id="@+id/gridView1"
+                android:numColumns="auto_fit"
+                android:gravity="center"
+                android:columnWidth="150dp"
+                android:stretchMode="columnWidth"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+        </GridView>
+    </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnUnloadInventory"
+            android:text="Unload Inventory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:layout_alignParentBottom="true"
+
+
+            >
+
+        </Button>
+</RelativeLayout>
