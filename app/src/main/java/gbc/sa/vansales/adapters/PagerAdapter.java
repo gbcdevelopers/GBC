@@ -5,15 +5,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import gbc.sa.vansales.Fragment.AllCustomerFragment;
-import gbc.sa.vansales.Fragment.BReturnFragment;
+import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.CaptureImageFragment;
-import gbc.sa.vansales.Fragment.GReturnFragment;
+import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
-import gbc.sa.vansales.activities.BeginDay;
 
 /**
  * Created by eheuristic on 12/2/2016.
@@ -72,10 +71,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     SalesFragment tab2 = new SalesFragment();
                     return tab2;
                 case 2:
-                    GReturnFragment tab3 = new GReturnFragment();
+                    GListFragment tab3 = new GListFragment();
                     return tab3;
                 case 3:
-                    BReturnFragment tab4 = new BReturnFragment();
+                    BListFragment tab4 = new BListFragment();
                     return tab4;
 
                 default:

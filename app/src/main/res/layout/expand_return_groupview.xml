@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightgray"
+    >
+
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Fayha"-->
+        <!--android:gravity="start|center"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:background="@color/lightgray"-->
+        <!--android:drawableRight="@drawable/ic_black_add"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:padding="10dp"-->
+        <!--android:id="@+id/tv_add"-->
+        <!--/>-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fayha"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:id="@+id/tv_product_name"
+
+        />
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_black_add"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:padding="10dp"
+    android:id="@+id/iv_expand"
+    />
+
+</RelativeLayout>

@@ -23,7 +23,7 @@ import gbc.sa.vansales.adapters.SalesAdapter;
  * Created by eheuristic on 12/5/2016.
  */
 
-public class BReturnFragment extends Fragment {
+public class BListFragment extends Fragment {
 
 
     View view;

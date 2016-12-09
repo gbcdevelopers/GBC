@@ -72,7 +72,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         break;
 
                     case 2:
-                        Intent intent2=new Intent(SalesInvoiceOptionActivity.this,InvoiceSummaryActivity.class);
+                        Intent intent2=new Intent(SalesInvoiceOptionActivity.this,InvoiceSummeryActivity.class);
                         startActivity(intent2);
                         break;
                     case 3:

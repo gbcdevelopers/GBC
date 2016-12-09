@@ -182,6 +182,12 @@
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
+
+        <activity android:name=".activities.InvoiceSummeryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
+
         <activity
             android:name=".activities.SelectCustomerActivity"
             android:theme="@style/AppTheme.NoActionBar"

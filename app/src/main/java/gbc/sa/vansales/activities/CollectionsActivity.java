@@ -53,8 +53,10 @@ public class CollectionsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent=new Intent(CollectionsActivity.this, PaymentDetails.class);
+                startActivity(intent);
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
         setData();
@@ -63,10 +65,10 @@ public class CollectionsActivity extends AppCompatActivity {
         lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(CollectionsActivity.this, PaymentDetails.class);
-                startActivity(intent);
+
             }
         });
+
     }
 
     public void setData(){
@@ -76,7 +78,7 @@ public class CollectionsActivity extends AppCompatActivity {
             colletionData.setId("16-12-2016/132456458792"+i);
             colletionData.setSelsemanId("10000241"+i);
             colletionData.setAmoutDue("0.2"+i+" AED");
-            colletionData.setAmoutDue("0.00");
+            colletionData.setAmoutAde("0.00");
             colletionDatas.add(colletionData);
         }
         colletionAdapter = new ColletionAdapter(this,colletionDatas);

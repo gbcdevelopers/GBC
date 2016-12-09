@@ -114,5 +114,11 @@
         <item>Past Expiry</item>
     </string-array>
 
+    <string-array name="returnReasons">
+        <item>Select one</item>
+        <item>Select two</item>
+        <item>select three</item>
+    </string-array>
+
 
 </resources>
