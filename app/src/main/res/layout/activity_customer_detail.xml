@@ -20,7 +20,7 @@
 
             android:paddingTop="16dp"
             android:paddingLeft="16dp"
-            android:paddingBottom="16dp"
+            android:paddingBottom="20dp"
             android:background="@drawable/back_radient"
             android:orientation="vertical"
             >
@@ -55,20 +55,231 @@
                 android:text="contact no"
                 android:textSize="14dp"
                 android:textColor="@color/white"
+                android:layout_marginBottom="5dp"
                 />
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:visibility="gone"
+                android:id="@+id/ll_updown"
+
+                >
+
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ll_order"
+
+                    >
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_order"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="order"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"
+
+
+
+                        />
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ll_message"
+                    >
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/iv_message"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="messages"
+                        android:ellipsize="end"
+
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"
+
+                        />
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ll_pricelist"
+                    >
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_pricelist"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Price List"
+                        android:ellipsize="end"
+
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"
+
+                        />
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ll_promotion"
+                    >
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_promotion"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Promotion"
+                        android:ellipsize="end"
+
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"
+
+                        />
+
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ll_balance"
+                    >
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_balance"
+                        android:scaleType="fitCenter"
+                        android:layout_gravity="center"
+                        android:id="@+id/iv_round"
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Balance"
+                        android:ellipsize="end"
+
+                        android:singleLine="true"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="14dp"
+                        android:id="@+id/tv_iv_title"
+                        />
+
+
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-20dp"
+
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/down_arrow_filled"
+                android:layout_gravity="end"
+                android:id="@+id/iv_updown"
+                />
 
 
 
-    <LinearLayout
+        </FrameLayout>
+
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:weightSum="3"
         >
 

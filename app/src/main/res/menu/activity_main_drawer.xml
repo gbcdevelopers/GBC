@@ -41,7 +41,7 @@
         <item android:id="@+id/endtrip"
               android:icon="@android:drawable/ic_menu_info_details"
               android:title="@string/endtrip"
-            android:visible="false"
+
             />
     </group>
 </menu>

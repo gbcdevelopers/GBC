@@ -4,7 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
@@ -15,9 +19,10 @@ import gbc.sa.vansales.utils.AnimatedExpandableListView;
 
 public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 
-    String strproduct[];
+    ArrayList<String> strproduct;
     Context context;
-    public ExpandReturnAdapter(Context context,String []productname)
+    int groupPosition;
+    public ExpandReturnAdapter(Context context,ArrayList<String> productname)
     {
         this.strproduct=productname;
         this.context=context;
@@ -28,6 +33,7 @@ public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpa
     public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
 
+        this.groupPosition=groupPosition;
 
         final Context context = parent.getContext();
 
@@ -44,7 +50,7 @@ public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpa
 
     @Override
     public int getGroupCount() {
-        return strproduct.length;
+        return strproduct.size();
     }
 
     @Override
@@ -80,8 +86,26 @@ public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpa
 
         LayoutInflater inflater = LayoutInflater.from(context);
         convertView = inflater.inflate(R.layout.expand_return_groupview, null);
+        RelativeLayout rl_expand=(RelativeLayout)convertView.findViewById(R.id.rl_expand);
+        ImageView iv_expand=(ImageView)convertView.findViewById(R.id.iv_expand);
         TextView tv_productname=(TextView)convertView.findViewById(R.id.tv_product_name);
-        tv_productname.setText(strproduct[groupPosition]);
+        tv_productname.setText(strproduct.get(groupPosition));
+
+
+
+
+
+        if(isExpanded)
+        {
+            rl_expand.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+            tv_productname.setTextColor(context.getResources().getColor(R.color.white));
+            iv_expand.setImageResource(R.drawable.ic_remove_black_24dp);
+        }
+        else {
+            rl_expand.setBackgroundColor(context.getResources().getColor(R.color.lightgray));
+            tv_productname.setTextColor(context.getResources().getColor(R.color.black));
+            iv_expand.setImageResource(R.drawable.ic_black_add);
+        }
 
 
         return convertView;

@@ -288,7 +288,9 @@ public class DashboardActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(),"Information",Toast.LENGTH_SHORT).show();
         }
         else if(id==R.id.endtrip){
-            Toast.makeText(getApplicationContext(),"End Trip",Toast.LENGTH_SHORT).show();
+
+            Intent intent=new Intent(DashboardActivity.this,EndTripActivity.class);
+            startActivity(intent);
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

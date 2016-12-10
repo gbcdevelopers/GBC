@@ -195,6 +195,40 @@
 
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activities.ProductListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.PreSaleOrderActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.EndTripActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PrinterReportsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.PreSaleOrderProceedActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name=".activities.CollectionsActivity"

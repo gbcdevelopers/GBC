@@ -99,13 +99,13 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:text="INVOICE"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="50dp"
                             android:layout_marginTop="20dp"
                             android:text="OUTLET INVENTORY" />
 
@@ -169,13 +169,13 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:text="CASES"
                             android:textStyle="bold" />
 
                         <EditText
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="50dp"
                             android:layout_marginTop="20dp"
                             android:inputType="number"
                             android:text="12" />
@@ -234,13 +234,13 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:text="UNITS"
                             android:textStyle="bold" />
 
                         <EditText
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="50dp"
                             android:layout_marginTop="20dp"
                             android:inputType="number"
                             android:text="12" />
@@ -299,13 +299,13 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:text="AMMOUNT"
                             android:textStyle="bold" />
 
                         <EditText
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="50dp"
                             android:layout_marginTop="20dp"
                             android:gravity="right|center"
                             android:inputType="number"

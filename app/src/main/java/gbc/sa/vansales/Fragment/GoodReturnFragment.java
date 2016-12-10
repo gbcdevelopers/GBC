@@ -10,6 +10,8 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ExpandReturnAdapter;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
@@ -38,7 +40,9 @@ public class GoodReturnFragment extends Fragment {
 
 
     AnimatedExpandableListView exp_list;
-    ExpandReturnAdapter adapter;
+    public static ExpandReturnAdapter adapter;
+
+    ArrayList<String> arrProduct;
 
     @Nullable
     @Override
@@ -48,9 +52,18 @@ public class GoodReturnFragment extends Fragment {
 
 
         exp_list=(AnimatedExpandableListView)view.findViewById(R.id.exp_product);
-        String  strProductname[]={"Farya","Brian","Eluga"};
-        adapter=new ExpandReturnAdapter(getActivity(),strProductname);
-        exp_list.setAdapter(adapter);
+
+
+        if(getArguments().getStringArrayList("good")!=null)
+        {
+            arrProduct = getArguments().getStringArrayList("good");
+            adapter=new ExpandReturnAdapter(getActivity(),arrProduct);
+            exp_list.setAdapter(adapter);
+        }
+
+
+
+
 
         exp_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
