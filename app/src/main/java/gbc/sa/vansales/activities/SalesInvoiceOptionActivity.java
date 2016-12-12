@@ -30,6 +30,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
 
     ImageView iv_back;
     TextView tv_top_header;
+    ImageView iv_updown;
 
 
     @Override
@@ -41,12 +42,14 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+        iv_updown=(ImageView)findViewById(R.id.iv_updown);
 
         adapter = new CustomerOperationAdapter(SalesInvoiceOptionActivity.this, strText,resarr, "SalesInvoiceOptionActivity");
         gridView.setAdapter(adapter);
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
+        iv_updown.setVisibility(View.INVISIBLE);
         tv_top_header.setText("Sales Invoice Opt.");
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +57,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

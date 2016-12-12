@@ -8,6 +8,17 @@ public class PreSaleProceed {
     String SKU = "";
     String CTN = "";
     String BTL = "";
+    String PRICE="";
+
+    public String getPRICE() {
+        return PRICE;
+    }
+
+    public void setPRICE(String PRICE) {
+        this.PRICE = PRICE;
+    }
+
+
 
     public String getSKU() {
         return SKU;

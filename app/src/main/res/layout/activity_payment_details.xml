@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/inc_common_header_payment_details"
-            android:background="@color/primary"
+            android:background="@drawable/back_radient"
             android:orientation="vertical"
-            android:paddingLeft="6dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_payment_main_aue_top"
             android:layout_marginTop="30dp"
-
+            android:background="@drawable/textline_gray"
             android:paddingLeft="6dp">
 
 
@@ -106,7 +106,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:background="@drawable/textline_gray"
+            >
 
             <LinearLayout
                 android:id="@+id/ll_cash_payment_dummy"

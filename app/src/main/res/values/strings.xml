@@ -120,5 +120,11 @@
         <item>select three</item>
     </string-array>
 
+    <string-array name="deliveryorder">
+        <item>partial delivery</item>
+        <item>full delivery</item>
+
+    </string-array>
+
 
 </resources>

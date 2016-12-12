@@ -2,29 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/tv_sku_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="SKU" />
+        android:layout_weight="3"
+        android:text="SKU"
+        android:background="@drawable/light_border"
+        android:padding="5dp"
+        />
 
     <TextView
         android:id="@+id/tv_ctn_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="CTN" />
+        android:text="CTN"
+        android:background="@drawable/light_border"
+        android:padding="5dp"
+        />
 
     <TextView
         android:id="@+id/tv_btl_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="BTL" />
+        android:text="BTL"
+        android:background="@drawable/light_border"
+        android:padding="5dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="PRICE"
+        android:visibility="gone"
+        android:background="@drawable/light_border"
+        android:padding="5dp"
+        />
 </LinearLayout>

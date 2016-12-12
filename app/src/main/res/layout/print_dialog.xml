@@ -6,16 +6,16 @@
     android:orientation="vertical">
 
 
-        <include layout="@layout/dialog_salesinvoice"/>
+    <include layout="@layout/custom_print_dialog"/>
 
 
     <ImageView
-            android:id="@+id/imageView_close"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="top|right"
-            android:background="@drawable/iv_cancel"
-            />
+        android:id="@+id/imageView_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="top|right"
+        android:background="@drawable/iv_cancel"
+        />
 
 
 </FrameLayout>

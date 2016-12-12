@@ -9,15 +9,68 @@
     tools:context="gbc.sa.vansales.activities.PreSaleOrderProceedActivity">
 
     <include
-        android:id="@+id/inc_common_header_presale_order_proceed"
+        android:id="@+id/inc_common_header"
         layout="@layout/common_header" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_confirm_delivery_presale_proceed"
-        android:layout_below="@+id/inc_common_header_presale_order_proceed"
-        android:orientation="vertical">
+        android:layout_below="@+id/inc_common_header"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="20dp"
+        android:background="@drawable/back_radient"
+        android:orientation="vertical"
+        android:id="@+id/ll_common"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3106 EMARAT"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MOT tc"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PO box"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="contact no"
+            android:textSize="14dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+    </LinearLayout>
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/float_presale_proceed"
+        android:layout_below="@+id/ll_common"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        >
 
 
         <android.support.v7.widget.CardView
@@ -26,7 +79,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
+
             card_view:cardCornerRadius="3dp"
             card_view:cardElevation="4dp"
             card_view:cardUseCompatPadding="true">
@@ -64,40 +117,6 @@
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            card_view:cardCornerRadius="3dp"
-            card_view:cardElevation="4dp"
-            card_view:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="Ginsoy Restaurant"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="shop no. 1.7C|SA" />
-
-
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -127,6 +146,19 @@
     </LinearLayout>
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/float_presale_proceed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_confirm_delivery_presale_proceed"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/colorPrimary" />
+
+
+
 
 
     <Button
@@ -136,5 +168,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
         android:text="Proceed"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        />
 </RelativeLayout>

@@ -37,7 +37,9 @@
               android:title="@string/customeroperation" />
         <item android:id="@+id/information"
               android:icon="@drawable/ic_information"
-              android:title="@string/information" />
+              android:title="@string/information"
+                android:visible="false"
+            />
         <item android:id="@+id/endtrip"
               android:icon="@android:drawable/ic_menu_info_details"
               android:title="@string/endtrip"

@@ -32,11 +32,11 @@ public class GNBReturnActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     String fromActivity="";
-    TextView tv_good,tv_bad;
+    TextView tv_goodbad;
 
     Fragment fragment;
 
-    ImageView iv_good,iv_bad;
+    ImageView iv_good;
 
     FloatingActionButton btn_float;
     ArrayList<String> arrBad;
@@ -54,11 +54,11 @@ public class GNBReturnActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
 
-        tv_good=(TextView)findViewById(R.id.tv_good);
-        tv_bad=(TextView)findViewById(R.id.tv_bad);
+        tv_goodbad=(TextView)findViewById(R.id.tv_goodbad);
 
-        iv_good=(ImageView)findViewById(R.id.iv_good);
-        iv_bad=(ImageView)findViewById(R.id.iv_bad);
+
+        iv_good=(ImageView)findViewById(R.id.iv_goodbad);
+
 
         btn_float=(FloatingActionButton)findViewById(R.id.btn_float);
 
@@ -84,12 +84,7 @@ public class GNBReturnActivity extends AppCompatActivity {
             if(fromActivity.equals("g"))
             {
                 tv_top_header.setText("Good Return");
-                tv_good.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                tv_bad.setBackground(getResources().getDrawable(R.drawable.gray_border));
-                iv_bad.setVisibility(View.GONE);
-                iv_good.setVisibility(View.VISIBLE);
-                tv_good.setTextColor(Color.WHITE);
-                tv_bad.setTextColor(getResources().getColor(R.color.gray));
+                tv_goodbad.setText("Good Return");
 
 
                 bundle.putString("from","g");
@@ -99,13 +94,7 @@ public class GNBReturnActivity extends AppCompatActivity {
             else if(fromActivity.equals("b"))
             {
                 tv_top_header.setText("Bad Return");
-                tv_good.setBackground(getResources().getDrawable(R.drawable.gray_border));
-                tv_bad.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                iv_bad.setVisibility(View.VISIBLE);
-                iv_good.setVisibility(View.GONE);
-                tv_bad.setTextColor(Color.WHITE);
-                tv_good.setTextColor(getResources().getColor(R.color.gray));
+                tv_goodbad.setText("Bad Return");
 
 
                 bundle.putString("from","b");
@@ -153,59 +142,8 @@ public class GNBReturnActivity extends AppCompatActivity {
 
 
 
-        tv_good.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
 
-                fromActivity="g";
-                bundle.putString("from","g");
-                tv_good.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                tv_bad.setBackground(getResources().getDrawable(R.drawable.gray_border));
-                tv_top_header.setText("Good Return");
-
-                iv_bad.setVisibility(View.GONE);
-                iv_good.setVisibility(View.VISIBLE);
-                tv_good.setTextColor(Color.WHITE);
-                tv_bad.setTextColor(getResources().getColor(R.color.gray));
-
-
-                fragment=new GoodReturnFragment();
-                fragment.setArguments(bundle);
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.container,fragment);
-                transaction.commit();
-
-            }
-        });
-
-        tv_bad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                fromActivity="b";
-                bundle.putString("from","b");
-                tv_good.setBackground(getResources().getDrawable(R.drawable.gray_border));
-                tv_bad.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                tv_top_header.setText("Bad Return");
-
-                iv_bad.setVisibility(View.VISIBLE);
-                iv_good.setVisibility(View.GONE);
-                tv_bad.setTextColor(Color.WHITE);
-                tv_good.setTextColor(getResources().getColor(R.color.gray));
-
-                fragment=new BadReturnFragment();
-                fragment.setArguments(bundle);
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-
-                transaction.replace(R.id.container,fragment);
-
-                transaction.commit();
-
-            }
-        });
 
 
 

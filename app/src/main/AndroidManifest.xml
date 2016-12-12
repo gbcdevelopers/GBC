@@ -222,6 +222,22 @@
 
             android:screenOrientation="portrait" />
 
+
+        <activity
+            android:name=".activities.DeliveryActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.DeliveryOrderActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+
         <activity
             android:name=".activities.PreSaleOrderProceedActivity"
             android:theme="@style/AppTheme.NoActionBar"

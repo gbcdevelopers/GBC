@@ -39,6 +39,7 @@
     <color name="tile_highlight">@android:color/holo_blue_light</color>
     <color name="tile_label">#ECF0F1</color>
     <color name="blue">#125688</color>
+    <color name="grey_border">#FFF4F4F4</color>
 
 
 

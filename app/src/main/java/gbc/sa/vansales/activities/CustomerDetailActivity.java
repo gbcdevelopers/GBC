@@ -125,7 +125,10 @@ public class CustomerDetailActivity extends AppCompatActivity{
                             Intent intent3=new Intent(CustomerDetailActivity.this,MerchandizingActivity.class);
                             startActivity(intent3);
                             break;
-
+                        case 4:
+                            Intent intent4=new Intent(CustomerDetailActivity.this,DeliveryActivity.class);
+                            startActivity(intent4);
+                            break;
 
                         default:
                             break;

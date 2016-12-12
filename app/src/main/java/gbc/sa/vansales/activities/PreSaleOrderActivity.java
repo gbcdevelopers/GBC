@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.BadReturnFragment;
+import gbc.sa.vansales.Fragment.GoodReturnFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ExpandReturnAdapter;
 import gbc.sa.vansales.models.PreSaleProceed;
@@ -31,6 +33,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     public static ExpandReturnAdapter adapter;
     ArrayList<String> arrProduct;
     Button btn_proceed;
+    FloatingActionButton btn_float;
+    Bundle  bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,23 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         arrProduct.add("frahn");
         arrProduct.add("bruno");
         arrProduct.add("dwayn");
+        bundle = new Bundle();
+
+        btn_float=(FloatingActionButton)findViewById(R.id.float_presale_proceed);
+        btn_float.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                Intent intent=new Intent(PreSaleOrderActivity.this,ProductListActivity.class);
+                startActivityForResult(intent,2,bundle);
+
+            }
+        });
+
+
+
 
         adapter=new ExpandReturnAdapter(PreSaleOrderActivity.this,arrProduct);
         exp_list.setAdapter(adapter);
@@ -71,6 +92,30 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data!=null)
+        {
+            if(requestCode==2)
+            {
+                if(resultCode==RESULT_OK)
+                {
+
+                    ArrayList<String> arrproduct=data.getStringArrayListExtra("product");
+                    Log.v("arraylistbefore",arrproduct.size()+"--");
+
+
+                    arrProduct.addAll(arrproduct);
+                    adapter.notifyDataSetChanged();
+
+
+                }
+            }
+        }
+
+
+    }
 
 
 

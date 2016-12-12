@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightgray"
+    >
+
+    <include
+        layout="@layout/common_header"
+        android:id="@id/inc_common_header"
+        />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/inc_common_header"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingBottom="20dp"
+        android:background="@drawable/back_radient"
+        android:orientation="vertical"
+        android:id="@+id/ll_common"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3106 EMARAT"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MOT tc"
+            android:textSize="18dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PO box"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="contact no"
+            android:textSize="14dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="5dp"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inc_common_header"
+        android:layout_marginTop="-20dp"
+
+        >
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_refresh"
+            android:layout_gravity="end"
+            android:layout_marginRight="10dp"
+            />
+
+    </FrameLayout>
+
+
+
+    <ListView
+
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        android:background="@color/white"
+        android:id="@+id/list_delivery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@color/lightgray"
+        android:dividerHeight="10dp"
+        android:layout_below="@id/ll_common"
+        android:layout_above="@+id/btn_apply"
+        android:drawSelectorOnTop="true"
+
+        />
+
+
+
+</RelativeLayout>
