@@ -1,5 +1,6 @@
 package gbc.sa.vansales.Fragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -21,6 +22,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
 /**
  * Created by eheuristic on 12/2/2016.
@@ -53,8 +55,13 @@ public class BeginDayFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.e("Here","Here");
-                Intent intent = new Intent(getActivity(), OdometerPopupActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), OdometerPopupActivity.class);
+//                startActivity(intent);
+
+                showDialog();
+
+
+
             }
         });
 
@@ -143,6 +150,51 @@ public class BeginDayFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+    public void showDialog()
+    {
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        View promptsView = li.inflate(R.layout.activity_odometer_popup, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getActivity());
+
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // get user input and set it to result
+                                // edit text
+
+                                /// result.setText(userInput.getText());
+
+                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+                                startActivity(i);
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+//                                startActivity(i);
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     DatePickerDialog.OnDateSetListener dateSales = new DatePickerDialog.OnDateSetListener() {

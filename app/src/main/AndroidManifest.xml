@@ -68,6 +68,13 @@
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activities.RecyclerViewExample"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name=".activities.SalesInvoiceActivity"

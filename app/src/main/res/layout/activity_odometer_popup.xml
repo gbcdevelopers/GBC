@@ -34,13 +34,21 @@
             android:layout_width="0dp"
             android:id="@+id/btn_ok"
             android:text="Continue"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            />
         <Button
             android:layout_weight="1"
             android:layout_width="0dp"
             android:id="@+id/btn_cancel"
             android:text="Cancel"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            />
     </LinearLayout>
 
 </LinearLayout>

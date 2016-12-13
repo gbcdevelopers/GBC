@@ -19,12 +19,12 @@ import gbc.sa.vansales.R;
 
 public class LoadActivity extends Activity
 {
-    TextView status;
+//    TextView status;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
 
-        status=(TextView)findViewById(R.id.status);
+//        status=(TextView)findViewById(R.id.status);
 
         ArrayList<LoadConstants> searchResults = GetSearchResults();
 
@@ -40,10 +40,10 @@ public class LoadActivity extends Activity
 
                 //Toast.makeText(LoadActivity.this, "You have chosen: " + " " + fullObject.getName(), Toast.LENGTH_LONG).show();
 
-                status.setText("Checked");
+//                status.setText("Checked");
 
-               // Intent i =new Intent(LoadActivity.this, LoadSummaryActivity.class);
-                //startActivity(i);
+                Intent i =new Intent(LoadActivity.this, LoadSummaryActivity.class);
+                startActivity(i);
             }
         });
     }
