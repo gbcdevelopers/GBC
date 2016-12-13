@@ -51,7 +51,7 @@ public class OdometerPopupActivity extends Activity {
 
                                 /// result.setText(userInput.getText());
 
-                                Intent i=new Intent(OdometerPopupActivity.this,BeginDay.class);
+                                Intent i=new Intent(OdometerPopupActivity.this,DashboardActivity.class);
                                 startActivity(i);
                             }
                         })

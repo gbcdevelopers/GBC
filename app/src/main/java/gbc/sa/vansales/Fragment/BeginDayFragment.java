@@ -1,7 +1,11 @@
 package gbc.sa.vansales.Fragment;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -9,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -16,7 +21,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import gbc.sa.vansales.R;
-
+import gbc.sa.vansales.activities.OdometerPopupActivity;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -42,6 +47,16 @@ public class BeginDayFragment extends Fragment {
         salesDate = (EditText) view.findViewById(R.id.salesDate);
         time = (EditText) view.findViewById(R.id.time);
         delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);
+
+        Button btn_continue = (Button)view.findViewById(R.id.btnBack);
+        btn_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("Here","Here");
+                Intent intent = new Intent(getActivity(), OdometerPopupActivity.class);
+                startActivity(intent);
+            }
+        });
 
         salesDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

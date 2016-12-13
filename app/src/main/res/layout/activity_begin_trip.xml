@@ -45,7 +45,6 @@
                 android:layout_alignParentRight="true"
                 android:id="@+id/float_map"
                 android:src="@drawable/map"
-
                 app:backgroundTint="@color/colorPrimary"
                 />
         </RelativeLayout>

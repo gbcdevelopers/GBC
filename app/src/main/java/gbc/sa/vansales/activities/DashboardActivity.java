@@ -78,7 +78,7 @@ public class DashboardActivity extends AppCompatActivity
         btnBDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(DashboardActivity.this,OdometerPopupActivity.class);
+                Intent i=new Intent(DashboardActivity.this,BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
