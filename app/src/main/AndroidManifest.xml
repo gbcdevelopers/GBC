@@ -77,6 +77,13 @@
 
 
         <activity
+            android:name=".activities.CustomerMessageListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activities.SalesInvoiceActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"

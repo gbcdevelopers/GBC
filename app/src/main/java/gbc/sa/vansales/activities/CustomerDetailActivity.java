@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 
 import android.content.Intent;
+import android.hardware.usb.UsbInterface;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,10 +34,11 @@ public class CustomerDetailActivity extends AppCompatActivity{
     TextView tv_top_header;
     View view1;
 
-    LinearLayout ll_updown;
+    LinearLayout ll_updown,ll_message,ll_promotion;
     ImageView iv_updown;
 
-    LinearLayout tv_order;
+
+//    LinearLayout tv_order;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         gridView=(GridView)findViewById(R.id.grid);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
-        tv_order=(LinearLayout) findViewById(R.id.ll_order);
+//        tv_order=(LinearLayout) findViewById(R.id.ll_order);
 
         adapter=new CustomerOperationAdapter(CustomerDetailActivity.this,strText,resarr,"CustomerDetailActivity");
         gridView.setAdapter(adapter);
@@ -52,6 +54,11 @@ public class CustomerDetailActivity extends AppCompatActivity{
 
         iv_updown=(ImageView)findViewById(R.id.iv_updown);
         ll_updown=(LinearLayout) findViewById(R.id.ll_updown);
+        ll_message=(LinearLayout)findViewById(R.id.ll_message);
+        ll_promotion=(LinearLayout) findViewById(R.id.ll_promotion);
+
+
+
 
 
         iv_back.setVisibility(View.VISIBLE);
@@ -65,15 +72,15 @@ public class CustomerDetailActivity extends AppCompatActivity{
         });
 
 
-        tv_order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent4=new Intent(CustomerDetailActivity.this,PreSaleOrderActivity.class);
-                startActivity(intent4);
-
-            }
-        });
+//        tv_order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent4=new Intent(CustomerDetailActivity.this,PreSaleOrderActivity.class);
+//                startActivity(intent4);
+//
+//            }
+//        });
 
         iv_updown.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +101,26 @@ public class CustomerDetailActivity extends AppCompatActivity{
         });
 
 
+        ll_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+
+                Intent intent=new Intent(CustomerDetailActivity.this,CustomerMessageListActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+        ll_promotion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CustomerDetailActivity.this,PromotionListActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -104,13 +130,18 @@ public class CustomerDetailActivity extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view1=view;
-                if(position==0)
-                {
+//                if(position==0)
+//                {
+//
+//                }
 
-                }
-                else {
                     switch (position)
                     {
+
+                        case 0:
+                            Intent intent=new Intent(CustomerDetailActivity.this,PreSaleOrderActivity.class);
+                            startActivity(intent);
+                            break;
 
                         case 1:
                             Intent intent1=new Intent(CustomerDetailActivity.this,CollectionsActivity.class);
@@ -133,7 +164,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
                         default:
                             break;
                     }
-                }
+
             }
         });
     }
@@ -143,5 +174,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
         super.onPostResume();
         if (adapter != null)
             adapter.notifyDataSetChanged();
+        ll_updown.setVisibility(View.GONE);
     }
+
 }
