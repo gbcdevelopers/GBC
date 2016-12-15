@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:backgroundTint="@color/primary_darker"
+        app:backgroundTint="@color/colorPrimary"
         android:src="@drawable/ic_cash_in_hand"
         android:layout_alignParentRight="true" />
 

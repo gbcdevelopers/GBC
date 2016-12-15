@@ -28,7 +28,7 @@ public class CustomerDetailActivity extends AppCompatActivity{
 
     CustomerOperationAdapter adapter;
    String strText[]={"Order request","Collections","Sales","Merchandizing","Delivery","Print"};
-    int resarr[]={R.drawable.ic_orderrequest,R.drawable.ic_collection,R.drawable.ic_sales,R.drawable.ic_merchandizing,R.drawable.ic_delivery,R.drawable.ic_print};
+    int resarr[]={R.drawable.ic_order_request,R.drawable.ic_collection,R.drawable.ic_sales,R.drawable.ic_merchandising,R.drawable.ic_distribution,R.drawable.ic_print};
 
     ImageView iv_back;
     TextView tv_top_header;
@@ -89,13 +89,13 @@ public class CustomerDetailActivity extends AppCompatActivity{
                 if(ll_updown.getVisibility()==View.VISIBLE)
                 {
                     ll_updown.setVisibility(View.GONE);
-                    iv_updown.setImageResource(R.drawable.down_arrow_filled);
+                    iv_updown.setImageResource(R.drawable.ic_down_arrow);
 
                 }
                 else
                 {
                     ll_updown.setVisibility(View.VISIBLE);
-                    iv_updown.setImageResource(R.drawable.up_arrow);
+                    iv_updown.setImageResource(R.drawable.ic_uparrow);
                 }
             }
         });

@@ -80,28 +80,28 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/sell_icon"
+            android:src="@drawable/ic_c1"
             />
         <ImageView
             android:id="@+id/img_delivery"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/delivery_icon"
+            android:src="@drawable/ic_c2"
             />
         <ImageView
             android:id="@+id/img_collection"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/collection_icon"
+            android:src="@drawable/ic_c3"
             />
         <ImageView
             android:id="@+id/img_returns"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/return_icon"
+            android:src="@drawable/ic_c4"
             />
     </LinearLayout>
 
