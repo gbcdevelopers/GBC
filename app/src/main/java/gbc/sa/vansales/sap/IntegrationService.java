@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -133,5 +134,40 @@ public class IntegrationService extends IntentService {
             e.printStackTrace();
         }
         return mylist;
+    }
+
+    public static JSONObject getService(Context context, String url){
+        try{
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
+            HttpGet get = new HttpGet(getUrl(url));
+            String authString = App.SERVICE_USER + ":" + App.SERVICE_PASSWORD;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            get.addHeader(App.SAP_CLIENT, App.SAP_CLIENT_ID);
+            get.addHeader(ACCEPT,APPLICATION_JSON);
+            HttpResponse response = client.execute(get);
+
+            if (response.getStatusLine().getStatusCode() == 201||response.getStatusLine().getStatusCode() == 200) {
+                Header[] headers = response.getAllHeaders();
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                JSONObject jsonObj = new JSONObject(jsonString);
+                jsonObj = jsonObj.getJSONObject("d");
+                Log.e("JSON", "" + jsonObj);
+                JSONArray jsonArray = jsonObj.getJSONArray("results");
+                jsonObj = jsonArray.getJSONObject(0);
+
+                return jsonObj;
+            }
+            else{
+                Log.e("Fail Again","Fail Again");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

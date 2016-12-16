@@ -31,4 +31,10 @@ public class Settings {
     public static SharedPreferences.Editor getEditor() {
         return sharedPreferences.edit();
     }
+
+    public static void setString(String key, String value){
+        SharedPreferences.Editor editor = getEditor();
+        editor.putString(key,value);
+        editor.apply();
+    }
 }
