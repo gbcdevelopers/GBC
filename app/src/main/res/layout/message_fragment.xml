@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:layout_height="match_parent">
 
 
 
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
+       android:background="@color/cream"
        android:padding="16dp"
        >
 
@@ -19,7 +18,7 @@
            android:id="@+id/lv_messages"
 
            android:scrollbars="none"
-           android:divider="@color/grey"
+           android:divider="@color/cream"
            android:dividerHeight="@dimen/list_space"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"

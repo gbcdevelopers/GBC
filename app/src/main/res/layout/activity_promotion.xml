@@ -3,9 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:layout_height="match_parent">
 
 
     <include layout="@layout/common_header"
@@ -208,7 +206,7 @@
         android:id="@+id/ll_bottom"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:background="@color/green"
+        android:background="@color/colorPrimary"
         android:gravity="center"
         >
 

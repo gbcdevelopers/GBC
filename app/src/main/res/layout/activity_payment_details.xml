@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/grey"
     tools:context="gbc.sa.vansales.activities.PaymentDetails">
 
     <LinearLayout
@@ -51,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="AMOUNT DUE"
-                android:textColor="@color/green" />
+                android:textColor="#3B7DA0" />
 
             <TextView
                 android:id="@+id/tv_payment__amout_due_number"
@@ -81,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="ENTER CASH AMOUNT:"
-                    android:textColor="@color/green" />
+                    android:textColor="@color/btn_positive" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -96,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:background="@color/green"
+                android:background="@color/sky"
                 android:text="EDIT"
                 android:textColor="@color/white" />
 
@@ -124,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="CHWQUE NO:"
-                    android:textColor="@color/green" />
+                    android:textColor="#3B7DA0" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -146,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="CHWQUE AMOUNT:"
-                    android:textColor="@color/green" />
+                    android:textColor="#3B7DA0" />
 
                 <EditText
                     android:layout_width="wrap_content"
@@ -175,7 +174,7 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_calendar" />
+                android:src="@drawable/calender" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -195,7 +194,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/green"
+            android:background="@color/sky"
             android:text="EDIT"
             android:textColor="@color/white" />
 
@@ -208,7 +207,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
-        android:background="@color/white"
+        android:background="#EEEEEE"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -216,9 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Total Amount"
-            android:textColor="@color/green"
-            />
+            android:text="Total Amount" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -233,7 +230,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/primary_darker"
         android:src="@drawable/double_tick"
         android:layout_alignParentRight="true" />
 </RelativeLayout>

@@ -70,7 +70,6 @@
         android:layout_below="@+id/ll_common"
         android:orientation="vertical"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
         >
 
 
@@ -112,7 +111,7 @@
                     android:layout_height="30dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="20sp"
-                    android:src="@drawable/ic_calendar" />
+                    android:src="@drawable/calender" />
 
             </RelativeLayout>
 
@@ -126,7 +125,6 @@
             android:background="@color/white"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-
             >
 
             <gbc.sa.vansales.utils.AnimatedExpandableListView
@@ -157,9 +155,7 @@
         android:layout_marginRight="16dp"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_add_black_24dp"
-        app:backgroundTint="@color/colorPrimary"
-        android:visibility="gone"
-        />
+        app:backgroundTint="@color/colorPrimary" />
 
 
 

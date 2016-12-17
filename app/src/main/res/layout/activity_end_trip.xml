@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include layout="@layout/common_header"
         android:id="@+id/inc_common_header"
@@ -63,7 +59,7 @@
                     android:layout_marginLeft="10dp"
                     android:paddingRight="10dp"
                     android:textSize="20dp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/colorPrimaryDark"
                     android:id="@+id/tv_cheque"
                     android:background="@drawable/text_line"
                     />
@@ -101,7 +97,7 @@
                     android:layout_marginLeft="10dp"
                     android:paddingRight="10dp"
                     android:textSize="20dp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/colorPrimaryDark"
                     android:background="@drawable/text_line"
 
                     />
@@ -129,7 +125,7 @@
                 android:text="EXPENSES"
                 android:padding="10dp"
                 android:textSize="20dp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimaryDark"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -200,7 +196,6 @@
         android:layout_margin="16dp"
         android:src="@drawable/double_tick"
         android:id="@+id/btn_float"
-        app:backgroundTint="@color/colorPrimary"
         />
 
 </RelativeLayout>

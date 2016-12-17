@@ -48,7 +48,7 @@ public class DeliveryActivity extends AppCompatActivity {
 
         list_delivery=(ListView)findViewById(R.id.list_delivery);
 
-        adapter=new DeliveryAdapter(DeliveryActivity.this,2,R.layout.custom_delivery,"delivery");
+        adapter=new DeliveryAdapter(DeliveryActivity.this,2,R.layout.custom_delivery);
         list_delivery.setAdapter(adapter);
 
 

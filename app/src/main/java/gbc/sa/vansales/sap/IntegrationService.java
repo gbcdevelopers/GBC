@@ -171,4 +171,30 @@ public class IntegrationService extends IntentService {
         }
         return jsonObj;
     }
+
+    public static void loadData(String url){
+        try{
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
+            HttpGet get = new HttpGet(getUrl(url));
+            String authString = App.SERVICE_USER + ":" + App.SERVICE_PASSWORD;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            get.addHeader(App.SAP_CLIENT, App.SAP_CLIENT_ID);
+            get.addHeader(ACCEPT,APPLICATION_JSON);
+            HttpResponse response = client.execute(get);
+
+            if (response.getStatusLine().getStatusCode() == 201||response.getStatusLine().getStatusCode() == 200) {
+                Header[] headers = response.getAllHeaders();
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                Log.e("Data Int","" + jsonString);
+            }
+            else{
+                Log.e("Fail Again","Fail Again");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

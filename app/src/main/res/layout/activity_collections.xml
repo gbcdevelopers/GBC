@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-
     tools:context="gbc.sa.vansales.activities.CollectionsActivity">
 
     <include
@@ -54,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="5dp"
-        android:background="@color/white"
+        android:background="#EEEEEE"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -62,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:textColor="@color/green"
+            android:textColor="#3B7DA0"
             android:text="Amt.Paid" />
 
         <TextView
@@ -79,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/primary_darker"
         android:src="@drawable/ic_cash_in_hand"
         android:layout_alignParentRight="true" />
 

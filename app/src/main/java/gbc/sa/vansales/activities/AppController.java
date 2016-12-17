@@ -2,7 +2,8 @@ package gbc.sa.vansales.activities;
 
 /**
  * Created by Muhammad Umair on 29/11/2016.
- */import android.app.Application;
+ */
+       import android.app.Application;
         import android.text.TextUtils;
 
         import com.android.volley.Request;

@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
-    android:background="@color/white"
+    android:background="@drawable/round_buttion"
     >
 
 
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="image"
         android:layout_below="@+id/tv_titletext"
-        android:textColor="@color/green"
+        android:textColor="@color/colorPrimary"
         />
     <ImageView
         android:layout_width="50dp"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="Remark"
         android:layout_below="@+id/iv_end"
-        android:textColor="@color/green"
+        android:textColor="@color/colorPrimary"
         />
 
 

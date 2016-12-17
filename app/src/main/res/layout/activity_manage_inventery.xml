@@ -5,49 +5,68 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1" >
+        >
 
         <Button
             android:id="@+id/btnLoad"
             android:text="Load"
-            android:layout_width="0dip"
-            android:layout_height="297dp"
-            android:layout_weight="1"
 
-            android:textStyle="bold"
+            android:layout_height="150dp"
+            android:layout_width="150dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="30dp"
+            android:background="@color/manageinventorybuttons"
+            android:drawableTop="@drawable/load"
+            android:drawablePadding="1dp"
+            android:padding="20dp"
+
+
+
             />
 
         <Button
 
 
             android:id="@+id/btnLoadRequest"
-            android:text="Load Request"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textStyle="bold"
+            android:text="Request"
+            android:layout_height="150dp"
+            android:layout_width="150dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/manageinventorybuttons"
+            android:drawableTop="@drawable/loaqrequest"
+            android:drawablePadding="1dp"
+            android:padding="20dp"
+
+
             />
     </LinearLayout>
 
     <LinearLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1">
-
+        android:layout_marginTop="10dp"
+        >
         <Button
 
 
             android:id="@+id/btnVanStock"
             android:text="VanStock"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textStyle="bold"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="30dp"
+
+            android:background="@color/manageinventorybuttons"
+            android:drawableTop="@drawable/vanstock"
+            android:drawablePadding="1dp"
+            android:padding="20dp"
+
+
             />
 
         <Button
@@ -55,10 +74,15 @@
 
             android:id="@+id/btnUnLoad"
             android:text="UnLoad"
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textStyle="bold"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="10dp"
+
+            android:background="@color/manageinventorybuttons"
+            android:drawableTop="@drawable/unload"
+            android:drawablePadding="1dp"
+            android:padding="20dp"
+
             />
     </LinearLayout>
 

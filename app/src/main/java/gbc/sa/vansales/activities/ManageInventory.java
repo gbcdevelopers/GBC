@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,13 +24,15 @@ public class ManageInventory extends AppCompatActivity
 
         setTitle(R.string.manage_inventory);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         load=(Button)findViewById(R.id.btnLoad);
         loadRequest=(Button)findViewById(R.id.btnLoadRequest);
         vanStock=(Button)findViewById(R.id.btnVanStock);
         unload=(Button)findViewById(R.id.btnUnLoad);
 
 
-        load.setBackgroundColor(Color.RED);
+        /*load.setBackgroundColor(Color.RED);
         load.setTextColor(Color.WHITE);
 
         loadRequest.setBackgroundColor(Color.GREEN);
@@ -43,7 +46,7 @@ public class ManageInventory extends AppCompatActivity
 
         loadRequest.setEnabled(false);
         vanStock.setEnabled(false);
-        unload.setEnabled(false);
+        unload.setEnabled(false);*/
 
         load.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,4 +91,15 @@ public class ManageInventory extends AppCompatActivity
             }
         });
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

@@ -3,12 +3,15 @@ package gbc.sa.vansales.activities;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,19 +95,6 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
             }
         });
 
-        /*viewHolder.swipeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if ((((SwipeLayout) v).getOpenStatus() == SwipeLayout.Status.Close)) {
-                    //Start your activity
-
-                    Toast.makeText(mContext, " onClick : " + item.getName() + " \n" + item.getCases(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
 
         viewHolder.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,34 +116,20 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
         viewHolder.tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
                 Dialog dialog = new Dialog(view.getContext());
-                            dialog.setTitle("Bad Return!");
-                            dialog.setContentView(R.layout.activity_unload_popup);
-                            Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
-                            Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
+                dialog.setContentView(R.layout.activity_unload_popup);
+                dialog.setCancelable(true);
+                Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
+                Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
 
-                            btnOK.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-                                }
-                            });
-                            btnCancel.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+                dialog.show();
 
 
-                                }
-                            });
-                            dialog.setCancelable(false);
-                            dialog.show();
-
-
-                //  Toast.makeText(view.getContext(), "Clicked on Edit  " + viewHolder.tvName.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 

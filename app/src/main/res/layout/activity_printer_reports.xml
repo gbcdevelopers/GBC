@@ -4,7 +4,6 @@
     android:id="@+id/activity_printer_reports"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
     tools:context="gbc.sa.vansales.activities.PrinterReportsActivity">
 
     <include
@@ -216,7 +215,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/green"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@color/primary"
         android:text="Print"
         android:textColor="@color/white" />
 

@@ -6,7 +6,6 @@
     android:id="@+id/activity_pre_sale_order_proceed"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
     tools:context="gbc.sa.vansales.activities.PreSaleOrderProceedActivity">
 
     <include
@@ -80,22 +79,20 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/red_border"
-
-            >
+            card_view:cardCornerRadius="3dp"
+            card_view:cardElevation="4dp"
+            card_view:cardUseCompatPadding="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:background="@drawable/red_border"
-                >
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Order Date"
+                    android:text="Delivery Date"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
@@ -113,7 +110,7 @@
                     android:layout_height="30dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="20sp"
-                    android:src="@drawable/ic_calendar" />
+                    android:src="@drawable/calender" />
 
             </RelativeLayout>
 
@@ -210,8 +207,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/green"
-        android:text="Confirm Order"
+        android:background="@color/colorPrimary"
+        android:text="Confirm Delivery"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"
         />

@@ -6,7 +6,6 @@ import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -21,7 +20,7 @@ import gbc.sa.vansales.utils.RoundedImageView;
  * Created by eheuristic on 12/3/2016.
  */
 
-public class CustomerOperationAdapter extends BaseAdapter{
+public class CustomerOperationAdapter extends BaseAdapter {
 
 
     Context context;
@@ -31,8 +30,8 @@ public class CustomerOperationAdapter extends BaseAdapter{
     int resarr[];
 
     public CustomerOperationAdapter(Context context, String[] strText, int resarr[], String from) {
-
         this.context = context;
+
         this.strText = strText;
         this.resarr = resarr;
         this.from = from;
@@ -78,7 +77,7 @@ public class CustomerOperationAdapter extends BaseAdapter{
             if (position == 0 ) {
                 layout.setBackgroundResource(R.drawable.filled_gray_back);
             } else {
-                layout.setBackgroundColor(Color.WHITE);
+                layout.setBackgroundResource(R.drawable.round_buttion);
             }
         } else if (from.equals("SalesInvoiceOptionActivity")) {
 
