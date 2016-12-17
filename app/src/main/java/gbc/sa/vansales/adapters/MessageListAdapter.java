@@ -64,7 +64,7 @@ public class MessageListAdapter extends BaseAdapter {
             holder = (ItemRowHolder) convertView.getTag();
         }
 
-        holder.iv_round.setImageResource(R.drawable.user);
+
         holder.tv_message.setText(strArr[position]);
 
         return convertView;

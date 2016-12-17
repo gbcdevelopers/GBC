@@ -11,7 +11,7 @@
     <gbc.sa.vansales.utils.RoundedImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_msg"
+        android:background="@drawable/ic_silent_meeting"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

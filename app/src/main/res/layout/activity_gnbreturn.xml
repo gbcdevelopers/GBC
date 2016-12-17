@@ -192,7 +192,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="confirm"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/green"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
         android:id="@+id/btn_confirm"

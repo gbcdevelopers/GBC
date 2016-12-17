@@ -206,7 +206,7 @@
         android:id="@+id/ll_bottom"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/green"
         android:gravity="center"
         >
 

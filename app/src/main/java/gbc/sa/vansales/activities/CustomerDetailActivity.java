@@ -89,13 +89,13 @@ public class CustomerDetailActivity extends AppCompatActivity{
                 if(ll_updown.getVisibility()==View.VISIBLE)
                 {
                     ll_updown.setVisibility(View.GONE);
-                    iv_updown.setImageResource(R.drawable.ic_down_arrow);
+                    iv_updown.setImageResource(R.drawable.ic_up);
 
                 }
                 else
                 {
                     ll_updown.setVisibility(View.VISIBLE);
-                    iv_updown.setImageResource(R.drawable.ic_uparrow);
+                    iv_updown.setImageResource(R.drawable.ic_down_arrow);
                 }
             }
         });
