@@ -137,6 +137,7 @@ public class IntegrationService extends IntentService {
     }
 
     public static JSONObject getService(Context context, String url){
+        JSONObject jsonObj = new JSONObject();
         try{
             DefaultHttpClient client = new DefaultHttpClient();
             client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
@@ -151,7 +152,7 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
-                JSONObject jsonObj = new JSONObject(jsonString);
+                jsonObj = new JSONObject(jsonString);
                 jsonObj = jsonObj.getJSONObject("d");
                 Log.e("JSON", "" + jsonObj);
                 JSONArray jsonArray = jsonObj.getJSONArray("results");
@@ -168,6 +169,6 @@ public class IntegrationService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return jsonObj;
     }
 }

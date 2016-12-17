@@ -1,5 +1,6 @@
 package gbc.sa.vansales.adapters;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -21,6 +22,8 @@ import gbc.sa.vansales.Fragment.VisitAllFragment;
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
     String activity;
+    Bundle bundle;
+
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs,String activtyname) {
         super(fm);
@@ -28,15 +31,24 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         activity=activtyname;
     }
 
+    public PagerAdapter(FragmentManager fm, int NumOfTabs,String activtyname,Bundle bundle) {
+        super(fm);
+        this.mNumOfTabs = NumOfTabs;
+        this.bundle = bundle;
+        activity=activtyname;
+    }
+
     @Override
     public Fragment getItem(int position) {
-
-
 
         if(activity.equals("b")) {
             switch (position) {
                 case 0:
                     BeginDayFragment tab1 = new BeginDayFragment();
+                    if(bundle!=null){
+                    tab1.setArguments(this.bundle);
+                    }
+
                     return tab1;
                 case 1:
                     MessageFragment tab2 = new MessageFragment();
