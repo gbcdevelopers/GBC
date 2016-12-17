@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@drawable/round_buttion"
+    android:background="@color/white"
     >
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:textSize="20dp"
             android:text="AM5500*LARGE SWISS ROLL VANILA (24X110G)"
-            android:textColor="@color/blue"
+            android:textColor="@color/green"
             android:layout_marginBottom="5dp"
             android:id="@+id/tv_title"
             />

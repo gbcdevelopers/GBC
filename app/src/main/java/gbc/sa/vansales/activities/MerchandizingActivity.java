@@ -49,7 +49,7 @@ public class MerchandizingActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
 
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Merchandizing");
+        tv_top_header.setText("Merchandising");
 
         adapter=new CustomerOperationAdapter(MerchandizingActivity.this,strText,resarr,"MerchandizingActivity");
         gridView.setAdapter(adapter);
@@ -76,7 +76,7 @@ public class MerchandizingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 finish();
             }
-        });
+        });return;
 
 
 

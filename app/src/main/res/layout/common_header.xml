@@ -4,6 +4,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/purple"
     android:orientation="horizontal"
+    android:elevation="6dp"
 
     >
 

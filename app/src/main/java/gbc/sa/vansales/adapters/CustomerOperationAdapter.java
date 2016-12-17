@@ -78,7 +78,7 @@ public class CustomerOperationAdapter extends BaseAdapter{
             if (position == 0 ) {
                 layout.setBackgroundResource(R.drawable.filled_gray_back);
             } else {
-                layout.setBackgroundResource(R.drawable.round_buttion);
+                layout.setBackgroundColor(Color.WHITE);
             }
         } else if (from.equals("SalesInvoiceOptionActivity")) {
 

@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgray">
+    android:background="@color/grey">
 
     <include layout="@layout/common_header"
         android:id="@+id/inc_common_header"
@@ -140,7 +140,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@color/lightgray"
+        android:background="@color/grey"
         android:id="@+id/view"
         android:layout_above="@+id/rl_bottom"
 
