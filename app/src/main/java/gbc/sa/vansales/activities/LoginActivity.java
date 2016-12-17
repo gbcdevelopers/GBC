@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -46,11 +47,16 @@ public class LoginActivity extends Activity {
     private static final String PASSWORD = "Password";
     private static final String TRIP_ID = "ITripId";
 
+    DatabaseHandler db = new DatabaseHandler(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        db = new DatabaseHandler(this);
+        db.getWritableDatabase();
+
         loadingSpinner = new LoadingSpinner(this);
     }
     public void login(View view){
@@ -159,6 +165,8 @@ public class LoginActivity extends Activity {
                    }
                    else{
                        Settings.setString(TRIP_ID,this.returnList.get(2));
+                       db.addLoginCredentials("E2000","PASSWORD");
+
                    }
 
                }

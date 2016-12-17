@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -63,6 +64,8 @@ public class BeginTripActivity extends AppCompatActivity  {
         tabLayout.addTab(tabLayout.newTab().setText("MESSAGE"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        loadingSpinner = new LoadingSpinner(this);
+        new LoadTripActivityData();
         floatingActionButton=(FloatingActionButton)findViewById(R.id.float_map);
         floatingActionButton.setVisibility(View.GONE);
 
@@ -90,19 +93,13 @@ public class BeginTripActivity extends AppCompatActivity  {
             }
         });
 
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(),"b");
-        viewPager.setAdapter(adapter);
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
                 tabPosition=tab.getPosition();
-                if(tabPosition==0){
-                    new LoadTripActivityData().execute();
-                }
+
             }
 
             @Override
@@ -119,20 +116,30 @@ public class BeginTripActivity extends AppCompatActivity  {
 
     }
 
+    private void setUpTabs(Bundle bundle){
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount(),"b",bundle);
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
     private class LoadTripActivityData extends AsyncTask<Void,Void,Void> {
         private String url;
-        private JSONObject data;
+        private JSONObject data = new JSONObject();
 
         private LoadTripActivityData() {
             this.data = new JSONObject();
             HashMap<String, String> map = new HashMap<>();
-            map.put(TRIP_ID, Settings.getString(TRIP_ID));
+            map.put(TRIP_ID,"Y000012000000000");
+          //  map.put(TRIP_ID, Settings.getString(TRIP_ID));
             this.url = UrlBuilder.build(COLLECTION_NAME, null, map);
             execute();
         }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingSpinner.show();
         }
 
         @Override
@@ -150,8 +157,12 @@ public class BeginTripActivity extends AppCompatActivity  {
         protected void onPostExecute(Void aVoid) {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
-
+                Bundle bundle = new Bundle();
+                bundle.putString("data", this.data.toString());
+                BeginDayFragment fragobj = new BeginDayFragment();
+                fragobj.setArguments(bundle);
                 Log.e("Data is", "" + this.data);
+                setUpTabs(bundle);
             }
         }
     }

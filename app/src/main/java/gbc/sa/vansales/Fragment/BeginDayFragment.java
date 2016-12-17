@@ -19,11 +19,17 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
+import gbc.sa.vansales.utils.Helpers;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -35,20 +41,60 @@ public class BeginDayFragment extends Fragment {
     EditText salesDate;
     EditText time;
     EditText delieveryDate;
+    EditText route;
+    EditText salesManNo;
+    EditText salesManName;
+    EditText deliveryRoute;
+    EditText vehicleNo;
     View view;
     Calendar myCalendar = Calendar.getInstance();
     String stringSalesDate = "";
     String stringDeliveryDate = "";
     String stringTime = "";
+    private static final String DATE_FORMAT = "dd.MM.yy";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
-
         salesDate = (EditText) view.findViewById(R.id.salesDate);
         time = (EditText) view.findViewById(R.id.time);
         delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);
+        route = (EditText)view.findViewById(R.id.route);
+        salesManNo = (EditText)view.findViewById(R.id.salesManNo);
+        salesManName = (EditText)view.findViewById(R.id.salesManName);
+        deliveryRoute = (EditText)view.findViewById(R.id.delieveryRoute);
+        vehicleNo = (EditText)view.findViewById(R.id.vehicleNo);
+
+        try{
+            JSONObject data = new JSONObject(getArguments().getString("data"));
+            Log.e("Data in Fragment", "" + data);
+            route.setText(data.getString("ItemNo"));
+            salesManNo.setText(data.getString("Driver1"));
+            salesManName.setText(data.getString("Driver1"));
+
+            String dateStr = data.getString("Execdate");
+            dateStr = dateStr.replace("/","").trim();
+            dateStr = dateStr.replace("Date(","").trim();
+            dateStr = dateStr.replace(")","");
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(Long.parseLong(dateStr));
+
+            int mYear = calendar.get(Calendar.YEAR);
+            int mMonth = calendar.get(Calendar.MONTH);
+            int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+            salesDate.setText(mYear + "-" + (mMonth+1) + "-" + mDay);
+            delieveryDate.setText(mYear + "-" + (mMonth+1) + "-" + mDay);
+            deliveryRoute.setText(data.getString("Vlid"));
+            vehicleNo.setText(data.getString("Truck"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
 
         Button btn_continue = (Button)view.findViewById(R.id.btnBack);
         btn_continue.setOnClickListener(new View.OnClickListener() {
