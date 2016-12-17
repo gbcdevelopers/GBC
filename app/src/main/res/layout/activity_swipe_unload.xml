@@ -11,40 +11,29 @@
 
     <LinearLayout
         android:id="@+id/bottom_wrapper"
-        android:layout_width="360dp"
+        android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <TextView
             android:id="@+id/tvEdit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFA500"
             android:gravity="center"
-            android:text="EDIT"
-            android:textColor="#000000"
-            android:drawableTop="@drawable/icons12"
-            />
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="2dp"
-            android:layout_centerHorizontal="true"
-            android:layout_height="match_parent"
-            android:background="@android:color/black"
-
-            />
+            android:text="Edit"
+            android:textColor="#fff" />
 
         <TextView
             android:id="@+id/tvDelete"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFD700"
             android:gravity="center"
-            android:text="DELETE"
-            android:textColor="#000000"
-            android:drawableTop="@drawable/icons13"
-            />
+            android:text="Delete"
+            android:textColor="#fff" />
     </LinearLayout>
 
 

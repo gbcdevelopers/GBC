@@ -26,7 +26,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
 
     CustomerOperationAdapter adapter;
     String strText[] = {"Shelf Stock", "Sales Invoice", "Invoice", "End Invoice"};
-    int resarr[]={R.drawable.ic_shelfstock,R.drawable.ic_salesinvoice,R.drawable.ic_invoice,R.drawable.ic_endinvoice};
+    int resarr[]={R.drawable.ic_self_stock,R.drawable.ic_sales_invoice,R.drawable.ic_invoice,R.drawable.ic_endinvoice};
 
     ImageView iv_back;
     TextView tv_top_header;

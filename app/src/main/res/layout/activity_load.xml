@@ -4,14 +4,18 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Load Selection"
+        android:textColor="#C20000"
+        android:textStyle="bold"
+        />
+
     <ListView
         android:id="@+id/srListView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-
-        />
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

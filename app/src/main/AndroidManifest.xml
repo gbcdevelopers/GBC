@@ -70,15 +70,18 @@
 
         <activity
             android:name=".activities.RecyclerViewExample"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
 
-
-
-
+        <activity
+            android:name=".activities.CustomerMessageListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".activities.SalesInvoiceActivity"
@@ -128,39 +131,39 @@
 
         <activity
             android:name=".activities.LoadRequestActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
 
+
+
+
         <activity
             android:name=".activities.LoadActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
+            android:theme="@style/AppTheme.ActionBar"
+            android:launchMode="singleTop"
+            android:label="@string/load_title"
             android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
-
-
+            android:screenOrientation="portrait" />
 
 
         <activity
             android:name=".activities.UnloadActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
+            android:theme="@style/AppTheme.ActionBar"
+            android:launchMode="singleTop"
+            android:label="@string/load_title"
             android:windowSoftInputMode="stateHidden"
-
             android:screenOrientation="portrait" />
-
 
         <activity
             android:name=".activities.VanStockActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
+            android:theme="@style/AppTheme.ActionBar"
+            android:launchMode="singleTop"
+            android:label="@string/load_title"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
-
-
 
 
 
@@ -342,11 +345,6 @@
             android:label="@string/load_verify_title"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
-
-
-
-
-
         <activity
             android:name=".activities.LoadVerifyActivity"
             android:theme="@style/AppTheme.ActionBar"

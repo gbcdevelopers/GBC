@@ -25,6 +25,7 @@ public class MessageListAdapter extends BaseAdapter {
     public MessageListAdapter(Context context,String strArr[])
     {
         this.context=context;
+
         this.strArr=strArr;
     }
 
@@ -63,7 +64,7 @@ public class MessageListAdapter extends BaseAdapter {
             holder = (ItemRowHolder) convertView.getTag();
         }
 
-        holder.iv_round.setImageResource(R.drawable.driver);
+
         holder.tv_message.setText(strArr[position]);
 
         return convertView;

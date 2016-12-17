@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,19 +82,6 @@ public class UnloadAdapter extends BaseAdapter {
                 tv.setText("Truck Damage");
                 Button btn = (Button) gridView.findViewById(R.id.badReturnEdit);
                 btn.setText("Edit");
-
-
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                        Intent i=new Intent(v.getContext(),RecyclerViewExample.class);
-                        v.getContext().startActivity(i);
-
-                    }
-
-                });
             }
             else if (mobile.equals("Fresh Unload"))
             {
@@ -105,19 +90,6 @@ public class UnloadAdapter extends BaseAdapter {
                 tv.setText("Fresh Unload");
                 Button btn = (Button) gridView.findViewById(R.id.badReturnEdit);
                 btn.setText("Edit");
-
-
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                        Intent i=new Intent(v.getContext(),RecyclerViewExample.class);
-                        v.getContext().startActivity(i);
-
-                    }
-
-                });
             }
             else if (mobile.equals("Ending Inventory"))
             {
@@ -126,19 +98,6 @@ public class UnloadAdapter extends BaseAdapter {
                 tv.setText("Ending Inventory");
                 Button btn = (Button) gridView.findViewById(R.id.badReturnEdit);
                 btn.setText("Edit");
-
-
-                btn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                        Intent i=new Intent(v.getContext(),RecyclerViewExample.class);
-                        v.getContext().startActivity(i);
-
-                    }
-
-                });
             }
             else if (mobile.equals("INV. Variance"))
             {
@@ -175,6 +134,7 @@ public class UnloadAdapter extends BaseAdapter {
                                 dialog.setCancelable(true);
                                 RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                                 RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                                RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
                                 dialog.show();
 
 
@@ -221,11 +181,13 @@ public class UnloadAdapter extends BaseAdapter {
 
                                 Dialog dialog = new Dialog(v.getContext());
                                 dialog.setContentView(R.layout.activity_print);
+                                dialog.setTitle("Print Dialog");
                                 dialog.setCancelable(true);
                                 RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                                 RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
-                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
                                 dialog.show();
+
 
 
                             }

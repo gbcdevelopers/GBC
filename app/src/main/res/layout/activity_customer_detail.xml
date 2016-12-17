@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey"
     >
 
 
@@ -63,9 +64,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="5"
-                android:visibility="gone"
+                android:weightSum="4"
                 android:id="@+id/ll_updown"
+                android:visibility="gone"
+
 
                 >
 
@@ -77,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:id="@+id/ll_order"
+                    android:visibility="gone"
 
                     >
                     <ImageView
@@ -114,11 +117,12 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:id="@+id/ll_message"
+
                     >
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/iv_message"
+                        android:src="@drawable/ic_message"
                         android:scaleType="fitCenter"
                         android:layout_gravity="center"
 
@@ -153,7 +157,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_pricelist"
+                        android:src="@drawable/ic_price_list"
                         android:scaleType="fitCenter"
                         android:layout_gravity="center"
 
@@ -265,7 +269,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:src="@drawable/down_arrow_filled"
+                android:src="@drawable/ic_up"
                 android:layout_gravity="end"
                 android:id="@+id/iv_updown"
                 />
@@ -281,13 +285,15 @@
         android:orientation="horizontal"
         android:layout_marginTop="16dp"
         android:weightSum="3"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
         >
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
-        android:background="@drawable/round_buttion"
+        android:background="@drawable/red_border"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="10dp"
         android:padding="5dp"
@@ -333,7 +339,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/round_buttion"
+            android:background="@drawable/red_border"
             android:layout_marginRight="5dp"
             android:padding="5dp"
             >
@@ -377,7 +383,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:background="@drawable/round_buttion"
+            android:background="@drawable/red_border"
             android:layout_marginBottom="10dp"
             android:padding="5dp"
             >
@@ -393,18 +399,6 @@
                 android:textSize="15dp"
 
                 />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10007665"
-                android:layout_below="@+id/tv_credit2"
-                android:textSize="20dp"
-                android:id="@+id/tv_digits2"
-                android:layout_marginRight="5dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:maxLines="1"
-                />
 
             <TextView
                 android:layout_width="match_parent"
@@ -416,6 +410,19 @@
                android:gravity="end"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10007665"
+                android:textSize="20dp"
+                android:id="@+id/tv_digits2"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tv_credit2" />
+
         </RelativeLayout>
 
 
@@ -425,6 +432,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
 
         >
 
@@ -435,7 +444,6 @@
             android:numColumns="3"
             android:verticalSpacing="10dp"
             android:horizontalSpacing="10dp"
-            android:stretchMode="columnWidth"
             android:gravity="center"
             >
 

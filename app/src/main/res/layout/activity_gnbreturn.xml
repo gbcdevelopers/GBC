@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightgray"
-    >
+    android:background="@color/grey">
 
     <include layout="@layout/common_header"
         android:id="@+id/inc_common_header"
@@ -139,7 +140,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@color/lightgray"
+        android:background="@color/grey"
         android:id="@+id/view"
         android:layout_above="@+id/rl_bottom"
 
@@ -191,7 +192,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="confirm"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/green"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
         android:id="@+id/btn_confirm"
@@ -207,6 +208,7 @@
         android:id="@+id/btn_float"
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="@color/colorPrimary"
 
 
         />

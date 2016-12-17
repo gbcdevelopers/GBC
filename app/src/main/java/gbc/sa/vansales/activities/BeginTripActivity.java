@@ -1,6 +1,10 @@
 package gbc.sa.vansales.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,18 +19,29 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.MessageListAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
-
+import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
  */
 
 public class BeginTripActivity extends AppCompatActivity  {
-
+    private LoadingSpinner loadingSpinner;
+    private static final String COLLECTION_NAME = "VisitListSet";
+    private static final String TRIP_ID = "ITripId";
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -49,6 +64,8 @@ public class BeginTripActivity extends AppCompatActivity  {
         tabLayout.addTab(tabLayout.newTab().setText("MESSAGE"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        loadingSpinner = new LoadingSpinner(this);
+        new LoadTripActivityData();
         floatingActionButton=(FloatingActionButton)findViewById(R.id.float_map);
         floatingActionButton.setVisibility(View.GONE);
 
@@ -77,18 +94,12 @@ public class BeginTripActivity extends AppCompatActivity  {
         });
 
 
-
-
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(),"b");
-        viewPager.setAdapter(adapter);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
                 tabPosition=tab.getPosition();
+
             }
 
             @Override
@@ -103,6 +114,57 @@ public class BeginTripActivity extends AppCompatActivity  {
         });
 
 
+    }
+
+    private void setUpTabs(Bundle bundle){
+        final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount(),"b",bundle);
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+    }
+
+    private class LoadTripActivityData extends AsyncTask<Void,Void,Void> {
+        private String url;
+        private JSONObject data = new JSONObject();
+
+        private LoadTripActivityData() {
+            this.data = new JSONObject();
+            HashMap<String, String> map = new HashMap<>();
+            map.put(TRIP_ID,"Y000012000000000");
+          //  map.put(TRIP_ID, Settings.getString(TRIP_ID));
+            this.url = UrlBuilder.build(COLLECTION_NAME, null, map);
+            execute();
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingSpinner.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try{
+                //Login the user
+                this.data =  IntegrationService.getService(BeginTripActivity.this, this.url);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+                Bundle bundle = new Bundle();
+                bundle.putString("data", this.data.toString());
+                BeginDayFragment fragobj = new BeginDayFragment();
+                fragobj.setArguments(bundle);
+                Log.e("Data is", "" + this.data);
+                setUpTabs(bundle);
+            }
+        }
     }
 
 

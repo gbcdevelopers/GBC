@@ -7,8 +7,6 @@ import gbc.sa.vansales.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -19,7 +17,7 @@ import android.widget.Toast;
 import gbc.sa.vansales.R;
 
 
-public class LoadActivity extends AppCompatActivity
+public class LoadActivity extends Activity
 {
 //    TextView status;
     public void onCreate(Bundle savedInstanceState) {
@@ -27,10 +25,6 @@ public class LoadActivity extends AppCompatActivity
         setContentView(R.layout.activity_load);
 
 //        status=(TextView)findViewById(R.id.status);
-
-        setTitle("Load");
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayList<LoadConstants> searchResults = GetSearchResults();
 
@@ -54,30 +48,10 @@ public class LoadActivity extends AppCompatActivity
         });
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
     private ArrayList<LoadConstants> GetSearchResults(){
         ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
 
         LoadConstants sr = new LoadConstants();
-
-        sr.setName("Load #");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
-        sr.setStatus("UnChecked");
-        results.add(sr);
-
-
-        sr = new LoadConstants();
         sr.setName("Load #");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
@@ -117,6 +91,16 @@ public class LoadActivity extends AppCompatActivity
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
+        results.add(sr);
+
+        sr = new LoadConstants();
+        sr.setName("Load #");
+        sr.setCityState("Loading Date");
+        sr.setPhone("Available Load");
+        sr.setStatus("UnChecked");
+        results.add(sr);
+
+
         results.add(sr);
 
         return results;

@@ -1,23 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:elevation="5dp"
+   app:cardBackgroundColor="@color/white"
+    android:layout_gravity="center"
+
+
+    >
+
+
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@drawable/round_buttion"
-    android:id="@id/ll_items"
+    android:background="@color/white"
+    android:id="@+id/ll_items"
+    android:gravity="center"
+
     >
 <ImageView
-    android:layout_width="50dp"
+    android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:src="@drawable/driver"
+    android:src="@drawable/user"
     android:scaleType="fitCenter"
     android:layout_gravity="center"
     android:id="@+id/iv_round"
+
     />
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="order request"
         android:ellipsize="end"
@@ -25,10 +44,11 @@
         android:singleLine="true"
         android:maxLines="1"
         android:textColor="@color/black"
-        android:layout_gravity="center"
+       android:gravity="center"
         android:id="@+id/tv_iv_title"
         />
 
 
 
 </LinearLayout>
+</android.support.v7.widget.CardView>
