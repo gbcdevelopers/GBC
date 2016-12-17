@@ -45,6 +45,8 @@ dependencies {
     compile 'com.android.support:support-v4:23.0.0'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
 
+    compile group: 'xerces', name: 'xercesImpl', version: '2.6.2-jaxb-1.0.6'
+
     compile 'com.google.android.gms:play-services-location:9.2.0'
     compile 'com.google.android.gms:play-services-maps:9.2.0'
     compile 'com.google.android.gms:play-services-gcm:9.2.0'

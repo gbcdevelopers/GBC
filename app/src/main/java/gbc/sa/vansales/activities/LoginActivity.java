@@ -15,6 +15,7 @@ import android.widget.Toast;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 
 import org.apache.commons.codec.binary.Base64;
@@ -43,6 +44,7 @@ public class LoginActivity extends Activity {
     private static final String COLLECTION_NAME = "UserAuthenticationSet";
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
+    private static final String TRIP_ID = "ITripId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,29 +110,57 @@ public class LoginActivity extends Activity {
                loadingSpinner.hide();
                Log.e("Return List", "" + this.returnList.size());
                if(this.returnList.size()>0){
-                   AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-                   alertDialogBuilder.setTitle("Message")
-                           .setMessage(this.returnList.get(2))
-                           .setCancelable(false)
-                           .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-                               @Override
-                               public void onClick(DialogInterface dialog, int which) {
-                                   Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                                   startActivityForResult(intent, 0);
-                                   finish();
-                                   overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                               }
-                           })
-                           .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                               @Override
-                               public void onClick(DialogInterface dialog, int which) {
-                                   dialog.cancel();
-                               }
-                           });
-                   // create alert dialog
-                   AlertDialog alertDialog = alertDialogBuilder.create();
-                   // show it
-                   alertDialog.show();
+                   if(this.returnList.get(2).contains("Trip")){
+                       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                       alertDialogBuilder.setTitle("Message")
+                               .setMessage(this.returnList.get(2))
+                               .setCancelable(false)
+                               .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                                       startActivityForResult(intent, 0);
+                                       finish();
+                                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                   }
+                               })
+                               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                   }
+                               });
+                       // create alert dialog
+                       AlertDialog alertDialog = alertDialogBuilder.create();
+                       // show it
+                       alertDialog.show();
+                   }
+                   else if(this.returnList.get(2).contains("Incorrect")){
+                       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                       alertDialogBuilder.setTitle("Message")
+                               .setMessage(this.returnList.get(2))
+                               .setCancelable(false)
+                               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                      dialog.cancel();
+                                   }
+                               })
+                               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                   @Override
+                                   public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                   }
+                               });
+                       // create alert dialog
+                       AlertDialog alertDialog = alertDialogBuilder.create();
+                       // show it
+                       alertDialog.show();
+                   }
+                   else{
+                       Settings.setString(TRIP_ID,this.returnList.get(2));
+                   }
+
                }
 
            }
