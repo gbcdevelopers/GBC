@@ -15,28 +15,28 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/buttoncolor">
+            android:background="@color/colorPrimary">
 
             <ImageView
                 android:id="@+id/accept"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@mipmap/accepts2" />
+                android:src="@mipmap/accept" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/cancelcolor">
+            android:background="@color/monsoon">
 
             <ImageView
                 android:id="@+id/reject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@mipmap/reject2" />
+                android:src="@mipmap/reject" />
         </RelativeLayout>
 
 

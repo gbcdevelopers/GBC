@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delivery# 1234"
-        android:id="@+id/tv_1"
+        android:id="@+id/tv_delivery"
         android:layout_marginBottom="5dp"
         android:textColor="@color/black"
 
@@ -18,8 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Delivery date:23-oct-2016"
-        android:layout_below="@+id/tv_1"
+        android:layout_below="@+id/tv_delivery"
         android:textColor="@color/black"
+        android:id="@+id/tv_del_date"
         />
 
 

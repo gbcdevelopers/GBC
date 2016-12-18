@@ -17,23 +17,17 @@
             android:text="M1:"
             android:id="@+id/tvM1"
             android:editable="false"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
             >
         </EditText>
 
         <EditText
             android:id="@+id/etPcs"
-            android:layout_width="220dp"
+            android:layout_width="80dp"
             android:inputType="number"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/tvM1"
             android:hint="15"
-
             android:editable="false"
-
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
             >
 
             <requestFocus />
@@ -44,38 +38,58 @@
     </RelativeLayout>
 
 
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/m1"
+        android:id="@+id/m2"
+        >
+        <EditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="M2:"
+            android:id="@+id/tvM2"
+            android:editable="false"
+            >
+        </EditText>
+        <EditText
+            android:id="@+id/etCase2"
+            android:layout_width="80dp"
+            android:inputType="number"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvM2"
+            android:hint="15"
+            android:editable="false"
+
+            >
+
+            <requestFocus />
+
+        </EditText>
+
+
+    </RelativeLayout>
 
 
     <Button
         android:id="@+id/btnCancel"
         android:text="Cancel"
-        android:layout_height="45dp"
-        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:background="@color/cancelcolor"
 
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-
-
-        android:layout_below="@+id/m1"
+        android:layout_below="@+id/m2"
         />
 
     <Button
         android:id="@+id/btnOk"
         android:text="OK"
-        android:layout_height="45dp"
-        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_toRightOf="@+id/btnCancel"
-        android:textColor="@color/white"
-        android:background="@color/buttoncolor"
 
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-
-        android:layout_below="@id/m1"
+        android:layout_below="@id/m2"
         />
 
     <Button
@@ -83,13 +97,8 @@
         android:text="Print"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:textColor="@color/white"
-        android:background="@color/buttoncolor"
 
         android:layout_below="@id/btnOk"
-
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         />
 
 

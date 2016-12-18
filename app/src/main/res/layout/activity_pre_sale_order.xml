@@ -126,6 +126,7 @@
             android:background="@color/white"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
+
             >
 
             <gbc.sa.vansales.utils.AnimatedExpandableListView

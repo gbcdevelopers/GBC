@@ -109,7 +109,6 @@
 
 
     <string-array name="unloadReasons">
-        <item>---Please Select---</item>
         <item>Expiry</item>
         <item>Damage</item>
         <item>Past Expiry</item>
