@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +27,7 @@
                 android:text="Avail. Limit"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/green"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
                 />
             <TextView
@@ -64,7 +62,7 @@
                 android:text="Sales Qty."
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/green"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
                 />
             <TextView
@@ -94,12 +92,12 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/ll_top"
             android:layout_above="@+id/ll_bottom"
-
+            android:background="@color/white"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:scrollbars="none"
-            android:divider="@color/grey"
-            android:dividerHeight="5dp"
+            android:divider="@color/white"
+            android:dividerHeight="@dimen/list_space"
             />
 
 
@@ -132,7 +130,7 @@
                 android:text="Total Amt."
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:textColor="@color/green"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15dp"
                 />
             <TextView

@@ -172,7 +172,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"
-        android:background="@color/green"
+        android:background="@color/colorPrimary"
         android:text="save"
         android:textColor="@color/white" />
 

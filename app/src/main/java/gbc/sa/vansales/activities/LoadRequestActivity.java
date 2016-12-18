@@ -131,7 +131,6 @@ public class LoadRequestActivity extends AppCompatActivity
                 RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                 RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
                 dialog.show();
-
             }
         });
 

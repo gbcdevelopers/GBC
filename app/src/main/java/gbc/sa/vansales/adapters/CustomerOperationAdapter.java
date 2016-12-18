@@ -21,7 +21,7 @@ import gbc.sa.vansales.utils.RoundedImageView;
  * Created by eheuristic on 12/3/2016.
  */
 
-public class CustomerOperationAdapter extends BaseAdapter{
+public class CustomerOperationAdapter extends BaseAdapter {
 
 
     Context context;

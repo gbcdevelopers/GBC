@@ -1,19 +1,19 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
-    <RadioButton
-        android:id="@+id/rd_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <RadioButton
+            android:id="@+id/rd_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
         android:text="Print Final Copy" />
 
-    <RadioButton
-        android:id="@+id/rd_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rd_1"
+        <RadioButton
+            android:id="@+id/rd_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rd_1"
         android:text="Print Draft Copy" />
 
 
@@ -24,12 +24,12 @@
         android:layout_below="@+id/rd_2"
         android:text="Do not Print" />
 
-    <Button
-        android:id="@+id/btnPrint"
+        <Button
+            android:id="@+id/btnPrint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rd_3"
-        android:layout_centerInParent="true"
+            android:layout_centerInParent="true"
         android:text="Print" />
 
 </RelativeLayout>

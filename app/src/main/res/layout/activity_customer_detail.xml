@@ -117,7 +117,6 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:id="@+id/ll_message"
-
                     >
                     <ImageView
                         android:layout_width="50dp"

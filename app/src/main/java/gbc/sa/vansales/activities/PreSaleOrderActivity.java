@@ -88,7 +88,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
      btn_proceed=(Button)findViewById(R.id.btn_confirm_delivery_presale_proceed);
         exp_list=(AnimatedExpandableListView)findViewById(R.id.exp_presale);
 
-    arrProduct=new ArrayList<>();
+        arrProduct=new ArrayList<>();
 
 
         arrProduct.add("frahn");

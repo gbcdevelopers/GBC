@@ -25,7 +25,6 @@ public class MessageListAdapter extends BaseAdapter {
     public MessageListAdapter(Context context,String strArr[])
     {
         this.context=context;
-
         this.strArr=strArr;
     }
 

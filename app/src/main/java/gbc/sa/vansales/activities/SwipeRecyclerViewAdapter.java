@@ -126,11 +126,14 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
         viewHolder.tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
                 Dialog dialog = new Dialog(view.getContext());
                             dialog.setTitle("Bad Return!");
-                            dialog.setContentView(R.layout.activity_unload_popup);
-                            Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
-                            Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
+                dialog.setContentView(R.layout.activity_unload_popup);
+                Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
+                Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
 
                             btnOK.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -150,7 +153,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                                 }
                             });
                             dialog.setCancelable(false);
-                            dialog.show();
+                dialog.show();
 
 
                 //  Toast.makeText(view.getContext(), "Clicked on Edit  " + viewHolder.tvName.getText().toString(), Toast.LENGTH_SHORT).show();

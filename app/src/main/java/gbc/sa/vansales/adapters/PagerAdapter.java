@@ -41,6 +41,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
+
+
         if(activity.equals("b")) {
             switch (position) {
                 case 0:

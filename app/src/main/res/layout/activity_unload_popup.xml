@@ -11,40 +11,40 @@
         android:layout_width="wrap_content"
         android:id="@+id/m1"
         >
-            <EditText
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="M1:"
-                android:id="@+id/tvM1"
-                android:editable="false"
-                >
-                </EditText>
-            <EditText
-                android:id="@+id/etCase"
-                android:layout_width="80dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/tvM1"
-                android:hint="0"
+        <EditText
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="M1:"
+            android:id="@+id/tvM1"
+            android:editable="false"
+            >
+        </EditText>
+        <EditText
+            android:id="@+id/etCase"
+            android:layout_width="80dp"
+            android:inputType="number"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvM1"
+            android:hint="0"
 
-                >
+            >
 
-                <requestFocus />
+            <requestFocus />
 
-            </EditText>
+        </EditText>
 
-            <EditText
-                android:id="@+id/etPcs"
-                android:layout_width="80dp"
-                android:inputType="number"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/etCase"
-                android:hint="0"
-                >
+        <EditText
+            android:id="@+id/etPcs"
+            android:layout_width="80dp"
+            android:inputType="number"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/etCase"
+            android:hint="0"
+            >
 
-                <requestFocus />
+            <requestFocus />
 
-            </EditText>
+        </EditText>
 
         <Spinner
             android:id="@+id/spinner"
@@ -149,26 +149,26 @@
     </RelativeLayout>
 
 
-    <Button
-        android:id="@+id/btnCancel"
-        android:text="Cancel"
+        <Button
+            android:id="@+id/btnCancel"
+            android:text="Cancel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_gravity="center"
 
         android:layout_below="@+id/m3"
-        />
+            />
 
-    <Button
-        android:id="@+id/btnOk"
-        android:text="OK"
+        <Button
+            android:id="@+id/btnOk"
+            android:text="OK"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_toRightOf="@+id/btnCancel"
 
         android:layout_below="@id/m3"
-        />
+            />
 
 
 </RelativeLayout>

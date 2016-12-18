@@ -59,6 +59,7 @@ public class BeginDayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
+
         salesDate = (EditText) view.findViewById(R.id.salesDate);
         time = (EditText) view.findViewById(R.id.time);
         delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);

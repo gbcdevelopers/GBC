@@ -58,6 +58,7 @@ public class LoadActivity extends Activity
         sr.setStatus("UnChecked");
         results.add(sr);
 
+
         sr = new LoadConstants();
         sr.setName("Load #");
         sr.setCityState("Loading Date");

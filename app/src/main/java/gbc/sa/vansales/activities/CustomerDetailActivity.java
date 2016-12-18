@@ -176,5 +176,4 @@ public class CustomerDetailActivity extends AppCompatActivity{
             adapter.notifyDataSetChanged();
         ll_updown.setVisibility(View.GONE);
     }
-
 }

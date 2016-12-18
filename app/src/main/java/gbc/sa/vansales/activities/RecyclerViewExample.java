@@ -85,7 +85,5 @@ public class RecyclerViewExample extends AppCompatActivity {
             mDataSet.add(new UnloadSwipe("M" + i, "Cases : 100 ","Pcs : 100"));
 
         }
-
-
     }
 }
