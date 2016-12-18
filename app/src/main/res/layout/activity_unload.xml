@@ -14,27 +14,33 @@
         >
         <GridView
             android:id="@+id/gridView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e5e5e5"
+            android:horizontalSpacing="2dp"
             android:numColumns="auto_fit"
-                android:gravity="center"
-                android:columnWidth="150dp"
+            android:layout_marginTop="5dp"
             android:stretchMode="columnWidth"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
+            android:verticalSpacing="3dp" >
 
         </GridView>
 
     </RelativeLayout>
 
-        <Button
-            android:id="@+id/btnUnloadInventory"
-            android:text="Unload Inventory"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
-            android:layout_alignParentBottom="true"
+    <Button
+        android:id="@+id/btnUnloadInventory"
+        android:text="Unload Inventory"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_alignParentBottom="true"
+
+        android:background="@color/buttoncolor"
+        android:textColor="@color/white"
 
 
-            >
 
-        </Button>
+        >
+
+    </Button>
 </RelativeLayout>

@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="10dp" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/m1"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:background="#F4F4F4">
+
+        <!--Main Body of your custom dialog-->
+
         <EditText
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="M1:"
             android:id="@+id/tvM1"
             android:editable="false"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+
             >
         </EditText>
         <EditText
@@ -25,6 +31,9 @@
             android:inputType="number"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/tvM1"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+
             android:hint="0"
 
             >
@@ -40,135 +49,101 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/etCase"
             android:hint="0"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+
             >
 
             <requestFocus />
 
         </EditText>
+
+
+        <TextView
+            android:id="@+id/tvReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true"
+            android:text="Reason : "
+            android:textStyle="bold"
+            android:textSize="18dp"
+
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:entries="@array/unloadReasons"
+            android:layout_below="@+id/etPcs"
+
+            />
+
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:drawSelectorOnTop="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
             android:entries="@array/unloadReasons"
-            android:layout_toRightOf="@+id/etPcs"
+            android:layout_below="@+id/etPcs"
+            android:layout_toRightOf="@+id/tvReason"
 
             />
-
-
-
-        </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/m1"
-        android:id="@+id/m2"
-        >
-        <EditText
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="M2:"
-            android:id="@+id/tvM2"
-            android:editable="false"
-            >
-        </EditText>
-        <EditText
-            android:id="@+id/etCase2"
-            android:layout_width="80dp"
-            android:inputType="number"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/tvM2"
-            android:hint="0"
-
-            >
-
-            <requestFocus />
-
-        </EditText>
-
-        <EditText
-            android:id="@+id/etPcs2"
-            android:layout_width="80dp"
-            android:inputType="number"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/etCase2"
-            android:hint="0"
-            >
-
-            <requestFocus />
-
-        </EditText>
-
-    </RelativeLayout>
-
-
-    <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@+id/m2"
-        android:id="@+id/m3"
-        >
-        <EditText
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="M3:"
-            android:id="@+id/tvM3"
-            android:editable="false"
-            >
-        </EditText>
-        <EditText
-            android:id="@+id/etCase3"
-            android:layout_width="80dp"
-            android:inputType="number"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/tvM3"
-            android:hint="0"
-
-            >
-
-            <requestFocus />
-
-        </EditText>
-
-        <EditText
-            android:id="@+id/etPcs3"
-            android:layout_width="80dp"
-            android:inputType="number"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/etCase3"
-            android:hint="0"
-            >
-
-            <requestFocus />
-
-        </EditText>
-
-    </RelativeLayout>
-
 
         <Button
             android:id="@+id/btnCancel"
             android:text="Cancel"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_width="200dp"
             android:gravity="center"
             android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:background="@color/cancelcolor"
 
-        android:layout_below="@+id/m3"
+            android:layout_below="@+id/btnOk"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+
+            android:layout_centerHorizontal="true"
+
             />
 
         <Button
             android:id="@+id/btnOk"
             android:text="OK"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_toRightOf="@+id/btnCancel"
+            android:layout_height="30dp"
+            android:layout_width="200dp"
+            android:layout_below="@+id/spinner"
+            android:layout_centerHorizontal="true"
 
-        android:layout_below="@id/m3"
+            android:layout_marginTop="10dp"
+
+            android:textColor="@color/white"
+            android:background="@color/buttoncolor"
+            android:layout_marginLeft="5dp"
+
             />
 
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/btnCancel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnBookK"
+            android:background="@null"
+            android:src="@drawable/iv_cancel" />
+
+    </LinearLayout>
 
 </RelativeLayout>

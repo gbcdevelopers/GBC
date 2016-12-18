@@ -62,10 +62,10 @@ public class DeliveryAdapter extends BaseAdapter {
         {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(resource, null);
-            TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
+       /*     TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
             TextView tv1=(TextView)convertView.findViewById(R.id.tv_del_date);
             tv.setText("Order# 1234");
-            tv1.setText("Order date:23-oct-2016");
+            tv1.setText("Order date:23-oct-2016");*/
 
         }else if(from.equals("delivery"))
         {

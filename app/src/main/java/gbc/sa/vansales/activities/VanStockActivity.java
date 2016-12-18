@@ -8,12 +8,16 @@ import java.util.Locale;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -40,6 +44,7 @@ public class VanStockActivity extends AppCompatActivity {
 
         setTitle("VanStock Activity");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         printVanStock=(Button)findViewById(R.id.btnPrintVanStock);
 
 
@@ -50,11 +55,10 @@ public class VanStockActivity extends AppCompatActivity {
 
                 Dialog dialog = new Dialog(VanStockActivity.this);
                 dialog.setContentView(R.layout.activity_print);
-                dialog.setTitle("Print Dialog");
                 dialog.setCancelable(true);
                 RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                 RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
-                RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 dialog.show();
 
@@ -69,25 +73,25 @@ public class VanStockActivity extends AppCompatActivity {
 
         vanStcokUnits = new String[]{"10", "20"};
 
-        // Locate the ListView in listview_main.xml
         list = (ListView) findViewById(R.id.listview);
 
         for (int i = 0; i < vanStcokItem.length; i++) {
             VanStockConstants vsc = new VanStockConstants(vanStcokItem[i], vanStcokCase[i],
                     vanStcokDescription[i],vanStcokUnits[i]);
-            // Binds all strings into an array
             arraylist.add(vsc);
         }
-
-        // Pass results to ListViewAdapter Class
         adapter = new VanStockAdapter(this, arraylist);
-
-        // Binds the Adapter to the ListView
         list.setAdapter(adapter);
 
-        // Locate the EditText in listview_main.xml
 
-        // Capture Text in EditText
-
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

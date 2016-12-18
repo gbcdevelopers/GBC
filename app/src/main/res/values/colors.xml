@@ -42,7 +42,10 @@
     <color name="grey_border">#FFF4F4F4</color>
 
 
+    <color name="grey">#808080</color>
 
+
+    <color name="light_purple">#800080</color>
 
 
 
@@ -73,6 +76,10 @@
     <color name="toolbarcolor">#511656</color>
 
     <color name="cancelcolor">#E84C3D</color>
+
+
+
+    <color name="green">#008000</color>
 
 
 

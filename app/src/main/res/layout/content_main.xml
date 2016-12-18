@@ -147,7 +147,9 @@
             android:layout_gravity="center"
             android:id="@+id/btnBeginDay"
             android:text="Begin Day"
-            android:background="#008000"
+            android:background="@color/buttoncolor"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
             />
         <Button
             android:layout_width="match_parent"
@@ -156,7 +158,9 @@
             android:layout_gravity="center"
             android:id="@+id/btnExit"
             android:text="Exit"
-            android:background="#835C3B"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:background="@color/cancelcolor"
             />
     </LinearLayout>
 
