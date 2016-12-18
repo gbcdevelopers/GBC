@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:text="Cases : 100"
                 android:layout_marginTop="5px"
-                android:textSize="20px"
+                android:textSize="25px"
                 android:layout_below="@+id/badReturnLabel"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="PCS : 100"
                 android:layout_marginTop="5px"
-                android:textSize="20px"
+                android:textSize="25px"
                 android:layout_below="@+id/badReturnCases"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:text="Total : 500AED"
                 android:layout_marginTop="5px"
-                android:textSize="20px"
+                android:textSize="25px"
                 android:layout_below="@+id/badReturnPcs"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
@@ -79,6 +79,7 @@
                 android:background="@color/colorPrimary"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/white"
+                android:layout_marginTop="5dp"
                 >
             </Button>
         </LinearLayout>

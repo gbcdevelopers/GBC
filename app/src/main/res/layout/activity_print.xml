@@ -13,7 +13,11 @@
         android:background="#F4F4F4">
 
         <!--Main Body of your custom dialog-->
-
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radgrp"
+            >
         <RadioButton
             android:id="@+id/rd_1"
             android:shadowColor="@color/buttoncolor"
@@ -38,6 +42,7 @@
 
 
             />
+        </RadioGroup>
 
 
 
@@ -46,7 +51,7 @@
             android:id="@+id/btnPrint"
             android:layout_width="300dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/rd_2"
+            android:layout_below="@+id/radgrp"
             android:layout_centerInParent="true"
             android:text="Print"
             android:textColor="@color/white"
