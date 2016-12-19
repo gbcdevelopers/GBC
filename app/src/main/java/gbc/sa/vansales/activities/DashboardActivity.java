@@ -37,7 +37,7 @@ import gbc.sa.vansales.R;
  */
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    Button btnBDay,bExit;
+    Button btnBDay;
     TextView tv_dashboard;
     ImageView iv_drawer;
     DrawerLayout drawer;
@@ -47,7 +47,6 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay=(Button)findViewById(R.id.btnBeginDay);
-        bExit=(Button)findViewById(R.id.btnExit);
         tv_dashboard=(TextView)findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
         iv_drawer=(ImageView)findViewById(R.id.iv_drawer);
@@ -64,12 +63,6 @@ public class DashboardActivity extends AppCompatActivity
                 Intent i=new Intent(DashboardActivity.this,BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            }
-        });
-        bExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.exit(0);
             }
         });
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -27,6 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.BeginDay;
 import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.LoadActivity;
 import gbc.sa.vansales.activities.LoadSummaryActivity;
@@ -70,6 +72,12 @@ public class BeginDayFragment extends Fragment {
         salesManName = (EditText)view.findViewById(R.id.salesManName);
         deliveryRoute = (EditText)view.findViewById(R.id.delieveryRoute);
         vehicleNo = (EditText)view.findViewById(R.id.vehicleNo);
+
+        route.setEnabled(false);
+        salesManNo.setEnabled(false);
+        salesManName.setEnabled(false);
+        deliveryRoute.setEnabled(false);
+        vehicleNo.setEnabled(false);
 
         try{
             JSONObject data = new JSONObject(getArguments().getString("data"));
@@ -116,6 +124,7 @@ public class BeginDayFragment extends Fragment {
             }
         });
 
+        salesDate.setEnabled(false);
         salesDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -127,6 +136,7 @@ public class BeginDayFragment extends Fragment {
             }
         });
 
+        delieveryDate.setEnabled(false);
         delieveryDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -217,6 +227,8 @@ public class BeginDayFragment extends Fragment {
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
 
+        final String input = userInput.getText().toString();
+
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
@@ -228,9 +240,18 @@ public class BeginDayFragment extends Fragment {
 
                                 /// result.setText(userInput.getText());
                                 TripHeader.load("GBC012000000001",null);
+                                if(input.equals("")) {
+                                   // Toast.makeText(getActivity(),input.toString(),Toast.LENGTH_SHORT).show();
 
-                                Intent i=new Intent(getActivity(),LoadActivity.class);
-                                startActivity(i);
+                                    Toast.makeText(getActivity(),"Please eneter some valid value!",Toast.LENGTH_SHORT).show();
+                                    dialog.cancel();
+
+                                }
+                                else
+                                {
+                                    Intent i = new Intent(getActivity(), LoadActivity.class);
+                                    startActivity(i);
+                                }
                             }
                         })
                 .setNegativeButton("Cancel",
