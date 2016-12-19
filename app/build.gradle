@@ -39,12 +39,8 @@ dependencies {
     compile 'com.android.support:design:23.0.0'
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
     compile 'org.apache.httpcomponents:httpclient:4.5'
-<<<<<<< HEAD
     compile "org.apache.httpcomponents:httpmime:4.2.3"
-
-=======
     compile 'org.apache.httpcomponents:httpmime:4.2.3'
->>>>>>> ce2444cf1d6a0d0f16ad4cb38650d473f5507522
     compile 'com.android.support:recyclerview-v7:23.0.0'
     compile 'com.android.support:support-v4:23.0.0'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
