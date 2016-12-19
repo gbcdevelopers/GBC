@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.models.LoadSummary;
 
 public class OdometerPopupActivity extends Activity {
 
@@ -51,7 +52,7 @@ public class OdometerPopupActivity extends Activity {
 
                                 /// result.setText(userInput.getText());
 
-                                Intent i=new Intent(OdometerPopupActivity.this,DashboardActivity.class);
+                                Intent i=new Intent(OdometerPopupActivity.this,LoadSummaryActivity.class);
                                 startActivity(i);
                             }
                         })
@@ -59,7 +60,7 @@ public class OdometerPopupActivity extends Activity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 dialog.cancel();
-                                Intent i=new Intent(OdometerPopupActivity.this,DashboardActivity.class);
+                                Intent i=new Intent(OdometerPopupActivity.this,LoadSummaryActivity.class);
                                 startActivity(i);
                             }
                         });

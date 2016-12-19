@@ -37,64 +37,64 @@
         android:textStyle="italic"
         />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll1"
-            android:layout_below="@id/tvCategory"
-            >
-
-            <TextView
-                android:id="@+id/caseLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/caseLabel"
-                android:textStyle="bold"
-                />
-
-
-            <EditText
-                android:id="@+id/tvCases"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/caseLabel"
-                android:inputType="number"
-
-                />
-         </LinearLayout>
-
-
-   <LinearLayout
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:id="@+id/ll2"
-       android:layout_toRightOf="@+id/ll1"
-
-       android:layout_below="@id/tvCategory"
-       >
-
-    <TextView
-        android:id="@+id/unitLabel"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/unitLabel"
-        android:textStyle="bold"
-        />
-
-
-
-    <EditText
-        android:id="@+id/tvUnit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/unitLabel"
-        android:inputType="number"
+        android:id="@+id/ll1"
+        android:layout_below="@id/tvCategory"
         >
 
+        <TextView
+            android:id="@+id/caseLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/caseLabel"
+            android:textStyle="bold"
+            />
 
-    </EditText>
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/tvCases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/caseLabel"
+            android:inputType="number"
+
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll2"
+        android:layout_toRightOf="@+id/ll1"
+
+        android:layout_below="@id/tvCategory"
+        >
+
+        <TextView
+            android:id="@+id/unitLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/unitLabel"
+            android:textStyle="bold"
+            />
+
+
+
+        <EditText
+            android:id="@+id/tvUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/unitLabel"
+            android:inputType="number"
+            >
+
+
+        </EditText>
+
+    </LinearLayout>
 
 
     <ImageView

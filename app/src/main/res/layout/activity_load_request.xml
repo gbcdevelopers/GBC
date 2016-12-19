@@ -23,6 +23,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter category here"
 
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+
 
                 >
 
@@ -32,7 +36,11 @@
                 android:id="@+id/listview"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/search" />
+                android:layout_below="@+id/search"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
 
         </RelativeLayout>
 
@@ -42,7 +50,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Process Load Request"
+            android:layout_marginTop="15dp"
             android:layout_alignParentBottom="true"
+            android:background="@color/buttoncolor"
+            android:textColor="@color/white"
 
             />
 
@@ -67,6 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="16dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_centerVertical="true"
                     android:text="05/12/2016"
                     />
@@ -77,7 +89,7 @@
                     android:layout_height="36dp"
                     android:layout_toRightOf="@+id/tv1"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/ic_calendar"
+                    android:background="@drawable/calend"
 
 
                     />
@@ -110,18 +122,6 @@
                     android:text="Put On Hold"
                     />
 
-                <Button
-
-                    android:id="@+id/btnCategory"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/cb1"
-                    android:text="+"
-                    android:textStyle="bold"
-
-                    />
             </RelativeLayout>
 
         </RelativeLayout>

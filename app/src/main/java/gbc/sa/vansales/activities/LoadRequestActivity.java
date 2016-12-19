@@ -6,10 +6,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,7 +41,7 @@ import gbc.sa.vansales.R;
 public class LoadRequestActivity extends AppCompatActivity
 {
 
-    Button processLoadRequest, addCategory;
+    Button processLoadRequest;
     ListView list;
     LoadRequestAdapter adapter;
     EditText editsearch;
@@ -60,61 +63,41 @@ public class LoadRequestActivity extends AppCompatActivity
         setContentView(R.layout.activity_load_request);
 
         setTitle("Load Request");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         datepickerdialogbutton = (ImageButton)findViewById(R.id.btnDate);
         selecteddate = (TextView)findViewById(R.id.tv1);
 
 
         processLoadRequest=(Button)findViewById(R.id.btnProcess);
-        addCategory=(Button)findViewById(R.id.btnCategory);
-
 
 
         // Generate sample data
-        itemName = new String[] { "Tuck", "Oreo", "Potatoes", "Peanuts", "Ginger", "KitKat", "Almonds", "Butter Scoatch", "Onion", "Prince" };
+        itemName = new String[] { "Berain_Regular", "Berain_Half_Liter", "Berain_1.5_Liter" };
 
-        category = new String[] { "Cookeis", "Cookies", "Vegetables",
-                "Dry Fruits", "Vegetables", "Cookies", "Dry Fruits", "Candies",
-                "Vegetables", "Cookies" };
+        category = new String[] { "Regular", "Half Liter", "1.5 Liter"};
 
-        cases = new String[] { "10", "20",
-                "5", "9", "22", "14",
-                "25", "26", "100", "10" };
+        cases = new String[] { "10", "20","30"};
 
-        units = new String[] { "10", "20",
-                "5", "9", "22", "14",
-                "25", "26", "100", "10" };
+        units = new String[] { "100", "200", "300"};
 
-        categoryImage = new int[] { R.drawable.cookies, R.drawable.cookies,
-                R.drawable.vagetables, R.drawable.dryfruits,
-                R.drawable.vagetables, R.drawable.cookies, R.drawable.dryfruits,
-                R.drawable.candies, R.drawable.vagetables, R.drawable.cookies};
+        categoryImage = new int[] { R.drawable.beraincategory, R.drawable.beraincategory,
+                R.drawable.beraincategory};
 
 
 
         datepickerdialogbutton.setOnClickListener(new View.OnClickListener() {
 
-          public void onClick(View v) {
-             // setContentView(R.layout.activity_load_request);
-              DialogFragment dialogfragment = new DatePickerDialogClass();
-              dialogfragment.show(getFragmentManager(), "Please Select Your Date");
-          }
-        });
-
-
-
-
-        addCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                String items = "---Items---";
-                    for(int i=0;i<category.length;i++)
-                    {
-                        items= items + "\n"+ itemName[i]+ "\n";
-                    }
-                Toast.makeText(getApplicationContext(), items, Toast.LENGTH_LONG).show();
+                // setContentView(R.layout.activity_load_request);
+                DialogFragment dialogfragment = new DatePickerDialogClass();
+                dialogfragment.show(getFragmentManager(), "Please Select Your Date");
             }
         });
+
+
+
+
 
         processLoadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,10 +109,10 @@ public class LoadRequestActivity extends AppCompatActivity
 
                 Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
-                dialog.setTitle("Print Dialog");
                 dialog.setCancelable(true);
                 RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                 RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
@@ -202,6 +185,16 @@ public class LoadRequestActivity extends AppCompatActivity
 
             textview.setText(day + "/" + (month+1) + "/" + year);
 
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

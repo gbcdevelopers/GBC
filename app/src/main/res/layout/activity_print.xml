@@ -1,35 +1,99 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <RadioButton
-        android:id="@+id/rd_1"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:background="#F4F4F4">
+
+        <!--Main Body of your custom dialog-->
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radgrp"
+            >
+        <RadioButton
+            android:id="@+id/rd_1"
+            android:shadowColor="@color/buttoncolor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Print Final Copy"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+
+
+            />
+
+        <RadioButton
+            android:id="@+id/rd_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rd_1"
+            android:text="Print Draft Copy"
+            android:layout_marginTop="10dp"
+
+            android:layout_marginLeft="10dp"
+
+
+            />
+        </RadioGroup>
+
+
+
+
+        <Button
+            android:id="@+id/btnPrint"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/radgrp"
+            android:layout_centerInParent="true"
+            android:text="Print"
+            android:textColor="@color/white"
+            android:background="@color/buttoncolor"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+
+            />
+
+        <Button
+            android:id="@+id/btnCancel2"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/btnPrint"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:background="@color/cancelcolor"
+            android:layout_centerHorizontal="true"
+
+
+            android:textColor="@color/white"
+            android:text="Cancel" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Print Final Copy" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
-    <RadioButton
-        android:id="@+id/rd_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rd_1"
-        android:text="Print Draft Copy" />
+        <ImageButton
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnBookK"
+            android:background="@null"
+            android:src="@drawable/iv_cancel" />
 
-
-    <RadioButton
-        android:id="@+id/rd_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rd_2"
-        android:text="Do not Print" />
-
-    <Button
-        android:id="@+id/btnPrint"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/rd_3"
-        android:layout_centerInParent="true"
-        android:text="Print" />
+    </LinearLayout>
 
 </RelativeLayout>

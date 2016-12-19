@@ -1,64 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="5dp" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
         >
-        <TextView
-            android:id="@+id/badReturnLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bad Return"
-            android:textStyle="bold"
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="5px"
-            android:textSize="25px" >
-        </TextView>
+            android:background="#fff"
+            android:padding="5dp"
 
-        <TextView
-            android:id="@+id/badReturnCases"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cases : 100"
-            android:layout_marginTop="5px"
-            android:textSize="15px"
-            android:layout_below="@+id/badReturnLabel"
-            >
-        </TextView>
-        <TextView
-            android:id="@+id/badReturnPcs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PCS : 100"
-            android:layout_marginTop="5px"
-            android:textSize="15px"
-            android:layout_below="@+id/badReturnCases"
-            >
-        </TextView>
 
-        <TextView
-            android:id="@+id/badReturnTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total : 500AED"
-            android:layout_marginTop="5px"
-            android:textSize="15px"
-            android:layout_below="@+id/badReturnPcs"
             >
-        </TextView>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:id="@+id/badReturnEdit"
-            android:text="Edit"
-            android:layout_below="@+id/badReturnTotal"
-            >
+            <TextView
+                android:id="@+id/badReturnLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bad Return"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="5dp"
+                android:textSize="30px"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/badReturnCases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cases : 100"
+                android:layout_marginTop="5px"
+                android:textSize="25px"
+                android:layout_below="@+id/badReturnLabel"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                >
+            </TextView>
+            <TextView
+                android:id="@+id/badReturnPcs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PCS : 100"
+                android:layout_marginTop="5px"
+                android:textSize="25px"
+                android:layout_below="@+id/badReturnCases"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                >
+            </TextView>
+
+            <TextView
+                android:id="@+id/badReturnTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total : 500AED"
+                android:layout_marginTop="5px"
+                android:textSize="25px"
+                android:layout_below="@+id/badReturnPcs"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                >
+            </TextView>
+            <Button
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:id="@+id/badReturnEdit"
+                android:text="Edit"
+                android:layout_below="@+id/badReturnTotal"
+                android:background="@color/colorPrimary"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                >
             </Button>
-    </RelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
 
 
 </LinearLayout>

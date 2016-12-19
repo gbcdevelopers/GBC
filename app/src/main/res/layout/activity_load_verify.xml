@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:weightSum="3"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:weightSum="3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -42,7 +42,11 @@
             android:text="@string/confirmload"
             android:id="@+id/btn_print_load"
             android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:textColor="@color/white"
+            android:background="@color/buttoncolor"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            />
 
         <Button
             android:layout_weight="1"
@@ -50,7 +54,12 @@
             android:onClick="cancel"
             android:text="@string/cancel"
             android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:background="@color/cancelcolor"
+            android:layout_marginLeft="10dp"
+
+            />
 
     </LinearLayout>
 </LinearLayout>

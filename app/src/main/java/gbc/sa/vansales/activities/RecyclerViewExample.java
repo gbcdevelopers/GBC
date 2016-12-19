@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,7 +34,6 @@ public class RecyclerViewExample extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.swipe_row_item);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         tvEmptyView = (TextView) findViewById(R.id.empty_view);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -41,11 +41,11 @@ public class RecyclerViewExample extends AppCompatActivity {
 
         mDataSet = new ArrayList<UnloadSwipe>();
 
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle("Unload");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        }
+
+        setTitle("Unload");
+
 
         loadData();
 
@@ -75,6 +75,17 @@ public class RecyclerViewExample extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 

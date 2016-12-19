@@ -28,6 +28,8 @@ import java.util.Date;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.DashboardActivity;
+import gbc.sa.vansales.activities.LoadActivity;
+import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
@@ -227,7 +229,7 @@ public class BeginDayFragment extends Fragment {
                                 /// result.setText(userInput.getText());
                                 TripHeader.load("GBC012000000001",null);
 
-                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+                                Intent i=new Intent(getActivity(),LoadActivity.class);
                                 startActivity(i);
                             }
                         })
