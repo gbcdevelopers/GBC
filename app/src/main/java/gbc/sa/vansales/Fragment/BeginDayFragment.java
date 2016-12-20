@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -36,6 +38,9 @@ import gbc.sa.vansales.activities.OdometerPopupActivity;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Helpers;
+
+import static gbc.sa.vansales.R.id.day;
+
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -44,14 +49,15 @@ public class BeginDayFragment extends Fragment {
 
     String TAG = BeginDayFragment.class.getSimpleName();
 
-    EditText salesDate;
-    EditText time;
-    EditText delieveryDate;
-    EditText route;
-    EditText salesManNo;
-    EditText salesManName;
-    EditText deliveryRoute;
-    EditText vehicleNo;
+    TextView salesDate;
+    TextView time;
+    TextView delieveryDate;
+    TextView route;
+    TextView salesManNo;
+    TextView salesManName;
+    TextView deliveryRoute;
+    TextView vehicleNo;
+    TextView day;
     View view;
     Calendar myCalendar = Calendar.getInstance();
     String stringSalesDate = "";
@@ -64,20 +70,25 @@ public class BeginDayFragment extends Fragment {
 
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
 
-        salesDate = (EditText) view.findViewById(R.id.salesDate);
-        time = (EditText) view.findViewById(R.id.time);
-        delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);
-        route = (EditText)view.findViewById(R.id.route);
-        salesManNo = (EditText)view.findViewById(R.id.salesManNo);
-        salesManName = (EditText)view.findViewById(R.id.salesManName);
-        deliveryRoute = (EditText)view.findViewById(R.id.delieveryRoute);
-        vehicleNo = (EditText)view.findViewById(R.id.vehicleNo);
+        salesDate = (TextView) view.findViewById(R.id.salesDate);
+        time = (TextView) view.findViewById(R.id.time);
+        delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
+        route = (TextView)view.findViewById(R.id.route);
+        salesManNo = (TextView)view.findViewById(R.id.salesManNo);
+        salesManName = (TextView)view.findViewById(R.id.salesManName);
+        deliveryRoute = (TextView)view.findViewById(R.id.delieveryRoute);
+        vehicleNo = (TextView)view.findViewById(R.id.vehicleNo);
+        day = (TextView)view.findViewById(R.id.day);
 
         route.setEnabled(false);
         salesManNo.setEnabled(false);
         salesManName.setEnabled(false);
         deliveryRoute.setEnabled(false);
         vehicleNo.setEnabled(false);
+        time.setEnabled(false);
+        day.setEnabled(false);
+        delieveryDate.setEnabled(false);
+        salesDate.setEnabled(false);
 
         try{
             JSONObject data = new JSONObject(getArguments().getString("data"));

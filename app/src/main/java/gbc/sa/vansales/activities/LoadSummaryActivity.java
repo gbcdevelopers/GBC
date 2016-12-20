@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,11 +36,13 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private ArrayList<LoadSummary> loadSummaryUnmodList;
     private ArrayAdapter<LoadSummary> adapter;
     private SwipeLayout swipeLayout;
-    private ListView listView;
+    private ListView listView,loadListView;
+    private Button verifyAll;
     private int loadSummaryCount=0;
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -55,10 +59,30 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView)findViewById(R.id.list_item);
+        verifyAll=(Button)findViewById(R.id.btn_verify_all);
+        loadListView=(ListView)findViewById(R.id.srListView);
         setListView();
         new loadSummary().execute();
-    }
 
+        verifyAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               listView.setAdapter(null);
+                Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
+
+                //LoadActivity obj=new LoadActivity();
+                //obj.removeItems();
+
+
+                /*final int position = loadListView.getPositionForView(v);
+
+                loadListView.removeViewAt(position);
+
+                notifyDataSetChanged();*/
+            }
+        });
+
+    }
 
     @Override
     public void onResume(){
