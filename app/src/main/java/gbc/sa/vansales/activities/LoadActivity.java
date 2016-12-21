@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,10 @@ import gbc.sa.vansales.R;
 
 public class LoadActivity extends AppCompatActivity
 {
+   public static ArrayList<LoadConstants> searchResults;
+    public static ListAdapter adapter;
+    public static ListView lv;
+
     //    TextView status;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +37,14 @@ public class LoadActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ArrayList<LoadConstants> searchResults = GetSearchResults();
+        searchResults= GetSearchResults();
+        adapter=new SingleLoadActivity(this,searchResults);
 
-        final ListView lv = (ListView) findViewById(R.id.srListView);
-        lv.setAdapter(new SingleLoadActivity(this,searchResults));
+        lv = (ListView) findViewById(R.id.srListView);
+
+
+        lv.setAdapter(adapter);
+
 
 
         lv.setOnItemClickListener(new OnItemClickListener() {
@@ -43,6 +52,7 @@ public class LoadActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = lv.getItemAtPosition(position);
                 LoadConstants fullObject = (LoadConstants) o;
+
 
                // lv.invalidateViews();
 
@@ -53,9 +63,16 @@ public class LoadActivity extends AppCompatActivity
 //                status.setText("Checked");
 
                 Intent i =new Intent(LoadActivity.this, LoadSummaryActivity.class);
-                startActivity(i);
+                i.putExtra("1",position);
+                startActivityForResult(i,10);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            Toast.makeText(getApplicationContext(),Integer.toString(searchResults.size()),Toast.LENGTH_SHORT).show();
+    lv.setAdapter(new SingleLoadActivity(LoadActivity.this,searchResults));
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,35 +105,35 @@ public class LoadActivity extends AppCompatActivity
 
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load # 1");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load # 2");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load #3");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load # 4" );
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load # 5");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
