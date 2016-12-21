@@ -161,7 +161,6 @@ public class BeginTripActivity extends AppCompatActivity  {
                 bundle.putString("data", this.data.toString());
                 BeginDayFragment fragobj = new BeginDayFragment();
                 fragobj.setArguments(bundle);
-                Log.e("Data is", "" + this.data);
                 setUpTabs(bundle);
             }
         }

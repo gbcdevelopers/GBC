@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -31,7 +35,7 @@ public class TripHeader {
     private static class downloadData extends AsyncTask<Void,Void,Void> {
 
         private String url;
-        private ArrayList<String> returnList;
+        private String jsonResponse;
 
         private downloadData(String tripid) {
 
@@ -48,12 +52,21 @@ public class TripHeader {
 
         @Override
         protected Void doInBackground(Void... params) {
-            IntegrationService.loadData(this.url);
+            this.jsonResponse = IntegrationService.loadData(this.url);
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
+            try {
+                JSONObject jsonObj = new JSONObject(this.jsonResponse);
+                jsonObj = jsonObj.getJSONObject("d");
+                JSONArray jsonArray = jsonObj.getJSONArray("results");
+                jsonObj = jsonArray.getJSONObject(0);
+                Log.e("JSON Trip", "" + jsonObj);
 
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

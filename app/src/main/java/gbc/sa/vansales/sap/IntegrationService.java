@@ -172,7 +172,7 @@ public class IntegrationService extends IntentService {
         return jsonObj;
     }
 
-    public static void loadData(String url){
+    public static String loadData(String url){
         try{
             DefaultHttpClient client = new DefaultHttpClient();
             client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
@@ -187,7 +187,8 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
-                Log.e("Data Int","" + jsonString);
+                return jsonString;
+
             }
             else{
                 Log.e("Fail Again","Fail Again");
@@ -196,5 +197,6 @@ public class IntegrationService extends IntentService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }

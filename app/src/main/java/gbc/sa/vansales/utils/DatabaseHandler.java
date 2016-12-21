@@ -234,15 +234,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         byte[] sym = SecureStore.validateKey(SecureStore.generateKey(32));
         byte[] iv = SecureStore.validateKey(SecureStore.generateKey(16));
         String encryptedPassword = SecureStore.encryptData(sym,iv,password);
-        Log.e("Encrypted","" + encryptedPassword);
+
 
         values.put(KEY_SYM,new String(sym));
         values.put(KEY_IV, new String(iv));
         values.put(KEY_USERNAME, username);
         values.put(KEY_PASSWORD, encryptedPassword);
-
-        String decryptedPassword = SecureStore.decryptData(sym,iv,encryptedPassword);
-        Log.e("Decrypted",""+decryptedPassword);
 
     }
 

@@ -33,7 +33,9 @@ import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -56,11 +58,13 @@ public class BeginDayFragment extends Fragment {
     String stringDeliveryDate = "";
     String stringTime = "";
     private static final String DATE_FORMAT = "dd.MM.yy";
+    LoadingSpinner loadingSpinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
+        loadingSpinner = new LoadingSpinner(getActivity());
 
         salesDate = (EditText) view.findViewById(R.id.salesDate);
         time = (EditText) view.findViewById(R.id.time);
@@ -73,7 +77,7 @@ public class BeginDayFragment extends Fragment {
 
         try{
             JSONObject data = new JSONObject(getArguments().getString("data"));
-            Log.e("Data in Fragment", "" + data);
+
             route.setText(data.getString("ItemNo"));
             salesManNo.setText(data.getString("Driver1"));
             salesManName.setText(data.getString("Driver1"));
@@ -101,13 +105,10 @@ public class BeginDayFragment extends Fragment {
 
 
 
-        Button btn_continue = (Button)view.findViewById(R.id.btnBack);
-        btn_continue.setOnClickListener(new View.OnClickListener() {
+        Button btn_start_day = (Button)view.findViewById(R.id.btn_start_day);
+        btn_start_day.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Here","Here");
-//                Intent intent = new Intent(getActivity(), OdometerPopupActivity.class);
-//                startActivity(intent);
 
                 showDialog();
 
@@ -227,7 +228,28 @@ public class BeginDayFragment extends Fragment {
                                 // edit text
 
                                 /// result.setText(userInput.getText());
-                                TripHeader.load("GBC012000000001",null);
+                                Chain chain = new Chain(new Chain.Link() {
+                                    @Override
+                                    public void run() {
+                                        go();
+                                    }
+                                });
+
+                                chain.setFail(new Chain.Link() {
+                                    @Override
+                                    public void run() throws Exception {
+                                        fail();
+                                    }
+                                });
+
+                                chain.add(new Chain.Link() {
+                                    @Override
+                                    public void run() {
+                                        TripHeader.load("GBC012000000001", null);
+                                    }
+                                });
+                                chain.start();
+
 
                                 Intent i=new Intent(getActivity(),LoadActivity.class);
                                 startActivity(i);
@@ -235,7 +257,7 @@ public class BeginDayFragment extends Fragment {
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                            public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
 //                                Intent i=new Intent(getActivity(),DashboardActivity.class);
 //                                startActivity(i);
@@ -277,5 +299,20 @@ public class BeginDayFragment extends Fragment {
         }
 
     };
+
+    private void go() {
+        loadingSpinner.hide();
+        Intent intent = new Intent(getActivity(), DashboardActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void fail() {
+        Log.e("Something Failed","Failed");
+        if(loadingSpinner.isShowing()){
+            loadingSpinner.hide();
+        }
+
+    }
 
 }

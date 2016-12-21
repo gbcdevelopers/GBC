@@ -16,6 +16,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.SecureStore;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 
@@ -74,6 +75,7 @@ public class LoginActivity extends Activity {
             //Logic to Login the user
             //For development purpose hardcoding credentials
             new LoginUser("E2000", "PASSWORD");
+
             //new LoginUser(id, password);
         }
     }
