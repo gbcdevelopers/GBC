@@ -14,15 +14,18 @@
         />
 
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Print VanStock"
-        android:textStyle="bold"
-        android:id="@+id/btnPrintVanStock"
-        android:layout_below="@+id/listview"
-        android:background="@color/buttoncolor"
-        android:textColor="@color/white"
+        android:id ="@+id/btnPrintVanStock"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
 
+        android:drawableTop="@drawable/print"
+        android:background="@drawable/rounded_buttons"
+        android:padding="15dp"
         />
 
+
 </RelativeLayout>
+
+

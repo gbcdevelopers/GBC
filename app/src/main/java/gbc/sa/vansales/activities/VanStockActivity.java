@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
@@ -56,11 +57,35 @@ public class VanStockActivity extends AppCompatActivity {
                 Dialog dialog = new Dialog(VanStockActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
-                RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
-                RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                Button print = (Button) dialog.findViewById(R.id.btnPrint);
+                Button cancel = (Button) dialog.findViewById(R.id.btnCancel2);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 dialog.show();
+
+
+
+                print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(VanStockActivity.this,MyCalendarActivity.class);
+                        startActivity(intent);
+
+
+                    }
+                });
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(VanStockActivity.this,MyCalendarActivity.class);
+                        startActivity(intent);
+
+
+                    }
+                });
+
 
             }
         });

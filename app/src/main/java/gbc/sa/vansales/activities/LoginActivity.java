@@ -177,4 +177,29 @@ public class LoginActivity extends Activity {
         }
     }
 
+    public boolean checkTripID(String trip_Id){
+
+        String tripID = Settings.getString(TRIP_ID);
+        if(tripID.equals(trip_Id)){
+            return true;
+        }
+        else if(tripID.isEmpty()){
+            return false;
+        }
+        return false;
+    }
+
+    public void downloadData(String tripId){
+
+    }
+
+    public class downloadMasterData extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
+    }
+
+
+
 }

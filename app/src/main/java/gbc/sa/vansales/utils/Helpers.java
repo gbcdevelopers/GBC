@@ -19,6 +19,9 @@ import android.text.Html;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import gbc.sa.vansales.App;
 /**
  * Created by Rakshit on 17-Dec-16.
  */
@@ -39,5 +44,46 @@ public class Helpers {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return dateFormat.format(date);
+    }
+
+    public void backupDatabase(){
+        File dbFile = new File(App.APP_DB_PATH);
+        FileInputStream inputStream = null;
+        FileOutputStream outputStream = null;
+
+        try{
+            inputStream = new FileInputStream(dbFile);
+            outputStream = new FileOutputStream(App.APP_DB_BACKUP_PATH);
+            while (true){
+                int i=inputStream.read();
+                if(i!=-1){
+                    outputStream.write(i);
+                }
+                else{
+                    break;
+                }
+            }
+            outputStream.flush();
+            Log.e("Backup ok","Backup ok");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            try{
+                inputStream.close();
+                outputStream.close();
+            }
+            catch (IOException  e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public void restoreDatabase(){
+        File file = new File(App.APP_DB_BACKUP_PATH);
+        Date lastModDate = new Date(file.lastModified());
+        Log.e("Last modified date","" + lastModDate);
     }
 }

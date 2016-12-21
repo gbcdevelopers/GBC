@@ -11,13 +11,15 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import gbc.sa.vansales.App;
 /**
  * Created by Rakshit on 16-Dec-16.
  */
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "gbc.db";
+    private static final String DATABASE_NAME = App.APP_DB_NAME;
 
     //Table Names
 

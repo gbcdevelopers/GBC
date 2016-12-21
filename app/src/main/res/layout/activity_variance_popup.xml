@@ -11,11 +11,14 @@
         android:layout_width="wrap_content"
         android:id="@+id/m1"
         >
-        <EditText
+
+
+    <EditText
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="M1:"
             android:id="@+id/tvM1"
+            android:layout_marginLeft="80dp"
             android:editable="false"
             >
         </EditText>
@@ -48,6 +51,8 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:text="M2:"
+            android:layout_marginLeft="80dp"
+
             android:id="@+id/tvM2"
             android:editable="false"
             >
@@ -78,6 +83,9 @@
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:background="@color/cancelcolor"
+        android:layout_marginLeft="50dp"
 
         android:layout_below="@+id/m2"
         />
@@ -88,6 +96,10 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_toRightOf="@+id/btnCancel"
+        android:textColor="@color/white"
+        android:layout_marginLeft="10dp"
+
+        android:background="@color/buttoncolor"
 
         android:layout_below="@id/m2"
         />
@@ -97,7 +109,9 @@
         android:text="Print"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:background="@color/buttoncolor"
         android:layout_below="@id/btnOk"
         />
 

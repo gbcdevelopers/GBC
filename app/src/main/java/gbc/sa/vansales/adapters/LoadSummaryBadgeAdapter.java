@@ -120,6 +120,8 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         et_quantity_case.setText(loadSummaryList.get(position).getQuantityCases());
         et_quantity_unit.setText(loadSummaryList.get(position).getQuantityUnits());
 
+        dialog.getWindow().setLayout(500,550);
+
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

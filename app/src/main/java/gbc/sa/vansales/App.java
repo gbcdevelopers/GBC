@@ -19,6 +19,10 @@ public class App extends Application {
     public static final String SERVICE_USER = "ecs";
     public static final String SERVICE_PASSWORD = "sap123";
 
+    public static final String APP_DB_NAME = "gbc.db";
+    public static final String APP_DB_PATH = "/data/data/gbc.sa.vansales/databases/" + APP_DB_NAME;
+    public static final String APP_DB_BACKUP_PATH = "/mnt/sdcard/GBC/Backup/";
+
     @Override
     public void onCreate() {
         super.onCreate();

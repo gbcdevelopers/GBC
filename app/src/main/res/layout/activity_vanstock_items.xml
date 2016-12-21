@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:text="Item Code : "
         android:textStyle="bold"
+        android:paddingBottom="5dp"
         />
 
     <TextView
@@ -16,7 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ranklabel"
-        android:textStyle="italic"
+
+        android:paddingBottom="5dp"
         />
 
     <TextView
@@ -25,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ranklabel"
         android:text="Cases : "
+
+        android:paddingBottom="5dp"
         android:textStyle="bold"
         />
 
@@ -33,8 +37,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/item"
+
+        android:paddingBottom="5dp"
         android:layout_toRightOf="@+id/countrylabel"
-        android:textStyle="italic"
         />
 
     <TextView
@@ -43,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/countrylabel"
         android:text="Description : "
+
+        android:paddingBottom="5dp"
         android:textStyle="bold"
         />
 
@@ -51,8 +58,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cases"
+
+        android:paddingBottom="5dp"
         android:layout_toRightOf="@+id/populationlabel"
-        android:textStyle="italic"
 
         />
 
@@ -63,6 +71,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/description"
         android:text="Units : "
+
+        android:paddingBottom="5dp"
         android:textStyle="bold"
         />
 
@@ -72,7 +82,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/description"
         android:layout_toRightOf="@+id/unitlabel"
-        android:textStyle="italic"
+
+        android:paddingBottom="5dp"
 
         />
 

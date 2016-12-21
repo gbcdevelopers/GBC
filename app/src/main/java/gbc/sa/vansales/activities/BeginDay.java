@@ -45,7 +45,7 @@ public class BeginDay extends Activity
 
 
 
-    EditText routeNo, saleMan, salesNo,salesDate, time, deliveryDate, delieveryRoute, vehicleNo, day;
+    TextView routeNo, saleMan, salesNo,salesDate, time, deliveryDate, delieveryRoute, vehicleNo, day;
 
 
     private String jsonResponse;
@@ -61,18 +61,18 @@ public class BeginDay extends Activity
         pDialog.setCancelable(false);
 
         btnBack=(Button)findViewById(R.id.btnBack);
-        routeNo=(EditText)findViewById(R.id.route);
-        salesNo=(EditText)findViewById(R.id.salesManNo);
-        saleMan=(EditText)findViewById(R.id.salesManName);
+        routeNo=(TextView)findViewById(R.id.route);
+        salesNo=(TextView)findViewById(R.id.salesManNo);
+        saleMan=(TextView)findViewById(R.id.salesManName);
 
-        salesDate=(EditText)findViewById(R.id.salesDate);
-        time=(EditText)findViewById(R.id.time);
+        salesDate=(TextView)findViewById(R.id.salesDate);
+        time=(TextView)findViewById(R.id.time);
 
-        deliveryDate=(EditText)findViewById(R.id.delieveryDate);
-        delieveryRoute=(EditText)findViewById(R.id.delieveryRoute);
+        deliveryDate=(TextView)findViewById(R.id.delieveryDate);
+        delieveryRoute=(TextView)findViewById(R.id.delieveryRoute);
 
-        vehicleNo=(EditText)findViewById(R.id.vehicleNo);
-        day=(EditText)findViewById(R.id.day);
+        vehicleNo=(TextView)findViewById(R.id.vehicleNo);
+        day=(TextView)findViewById(R.id.day);
 
         jsonObject();
         jsonArray();
