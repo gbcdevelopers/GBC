@@ -110,8 +110,6 @@ public class LoadRequestActivity extends AppCompatActivity
                 Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
-                RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
-                RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }

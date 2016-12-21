@@ -44,6 +44,10 @@ public class LoadActivity extends AppCompatActivity
                 Object o = lv.getItemAtPosition(position);
                 LoadConstants fullObject = (LoadConstants) o;
 
+               // lv.invalidateViews();
+
+
+
                 //Toast.makeText(LoadActivity.this, "You have chosen: " + " " + fullObject.getName(), Toast.LENGTH_LONG).show();
 
 //                status.setText("Checked");
@@ -71,12 +75,6 @@ public class LoadActivity extends AppCompatActivity
         startActivity(i);
     }
 
-    public void removeItems()
-    {
-        ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
-        results.remove(1);
-    }
-
     private ArrayList<LoadConstants> GetSearchResults(){
         ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
 
@@ -87,6 +85,7 @@ public class LoadActivity extends AppCompatActivity
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
+
 
         sr = new LoadConstants();
         sr.setName("Load #");

@@ -40,11 +40,11 @@ public class RecyclerViewExample extends AppCompatActivity {
         mRecyclerView.addItemDecoration(new UnloadSwipeDecoration(getResources().getDrawable(R.drawable.divider)));
 
         mDataSet = new ArrayList<UnloadSwipe>();
-
+        setTitle("Unload");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        setTitle("Unload");
+
 
 
         loadData();

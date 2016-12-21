@@ -3,17 +3,21 @@ package gbc.sa.vansales.Fragment;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -40,6 +44,7 @@ import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Helpers;
 
 import static gbc.sa.vansales.R.id.day;
+import static gbc.sa.vansales.R.id.editTextDialogUserInput;
 
 /**
  * Created by eheuristic on 12/2/2016.
@@ -246,29 +251,17 @@ public class BeginDayFragment extends Fragment {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
-                                // get user input and set it to result
-                                // edit text
-
-                                /// result.setText(userInput.getText());
                                 TripHeader.load("GBC012000000001",null);
-                                if(input.equals("")) {
-                                   // Toast.makeText(getActivity(),input.toString(),Toast.LENGTH_SHORT).show();
-
-                                    Toast.makeText(getActivity(),"Please eneter some valid value!",Toast.LENGTH_SHORT).show();
-                                    dialog.cancel();
-
-                                }
-                                else
-                                {
-                                    Intent i = new Intent(getActivity(), LoadActivity.class);
+                                Intent i = new Intent(getActivity(), LoadActivity.class);
                                     startActivity(i);
-                                }
+
                             }
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 dialog.cancel();
+
 //                                Intent i=new Intent(getActivity(),DashboardActivity.class);
 //                                startActivity(i);
                             }
@@ -277,8 +270,8 @@ public class BeginDayFragment extends Fragment {
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
-        // show it
         alertDialog.show();
+
     }
 
     DatePickerDialog.OnDateSetListener dateSales = new DatePickerDialog.OnDateSetListener() {

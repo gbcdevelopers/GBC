@@ -130,7 +130,6 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
 
                 Dialog dialog = new Dialog(view.getContext());
-                            dialog.setTitle("Bad Return!");
                 dialog.setContentView(R.layout.activity_unload_popup);
                 Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
                 Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);

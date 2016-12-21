@@ -153,16 +153,31 @@ public class UnloadAdapter extends BaseAdapter {
                     public void onClick(View v) {
 
 
-                        Dialog dialog = new Dialog(v.getContext());
+                        final Dialog dialog = new Dialog(v.getContext());
                         dialog.setContentView(R.layout.activity_variance_popup);
-                        dialog.setTitle("Variance PopUp");
                         dialog.setCancelable(true);
                         Button btnPrint = (Button) dialog.findViewById(R.id.btnPrint);
 
                         Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
 
                         Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+
                         dialog.show();
+
+                        btnOk.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                            });
+
+
+                        btnCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
 
                         btnPrint.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -172,10 +187,30 @@ public class UnloadAdapter extends BaseAdapter {
                                 Dialog dialog = new Dialog(v.getContext());
                                 dialog.setContentView(R.layout.activity_print);
                                 dialog.setTitle("Print Dialog");
+                                Button print = (Button) dialog.findViewById(R.id.btnPrint);
+                                Button cancel = (Button) dialog.findViewById(R.id.btnCancel2);
+
                                 dialog.setCancelable(true);
-                                RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
-                                RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
                                 dialog.show();
+
+                                print.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        Intent intent= new Intent(context, MyCalendarActivity.class);
+                                        context.startActivity(intent);
+                                    }
+                                });
+
+                                cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent= new Intent(context, MyCalendarActivity.class);
+                                        context.startActivity(intent);
+
+                                    }
+                                });
+
 
 
 
@@ -202,17 +237,31 @@ public class UnloadAdapter extends BaseAdapter {
                     @Override
                     public void onClick(View v) {
 
-
-                        Dialog dialog = new Dialog(v.getContext());
+                        final Dialog dialog = new Dialog(v.getContext());
                         dialog.setContentView(R.layout.activity_variance_popup);
-                        dialog.setTitle("Variance PopUp");
                         dialog.setCancelable(true);
                         Button btnPrint = (Button) dialog.findViewById(R.id.btnPrint);
 
                         Button btnOk = (Button) dialog.findViewById(R.id.btnOk);
 
                         Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+
                         dialog.show();
+
+                        btnOk.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                        btnCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
 
                         btnPrint.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -221,11 +270,32 @@ public class UnloadAdapter extends BaseAdapter {
 
                                 Dialog dialog = new Dialog(v.getContext());
                                 dialog.setContentView(R.layout.activity_print);
+                                dialog.setTitle("Print Dialog");
+                                Button print = (Button) dialog.findViewById(R.id.btnPrint);
+                                Button cancel = (Button) dialog.findViewById(R.id.btnCancel2);
+
                                 dialog.setCancelable(true);
-                                RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
-                                RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
-                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                                 dialog.show();
+
+                                print.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        Intent intent= new Intent(context, MyCalendarActivity.class);
+                                        context.startActivity(intent);
+                                    }
+                                });
+
+                                cancel.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent= new Intent(context, MyCalendarActivity.class);
+                                        context.startActivity(intent);
+
+                                    }
+                                });
+
+
 
 
                             }

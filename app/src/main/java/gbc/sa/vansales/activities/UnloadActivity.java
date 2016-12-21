@@ -68,11 +68,36 @@ public class UnloadActivity extends AppCompatActivity {
                 Dialog dialog = new Dialog(UnloadActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
-                RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
-                RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                Button print = (Button) dialog.findViewById(R.id.btnPrint);
+                Button cancel = (Button) dialog.findViewById(R.id.btnCancel2);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
                 dialog.show();
+
+
+
+                print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(UnloadActivity.this,MyCalendarActivity.class);
+                        startActivity(intent);
+
+
+                    }
+                });
+
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Intent intent = new Intent(UnloadActivity.this,MyCalendarActivity.class);
+                        startActivity(intent);
+
+
+                    }
+                });
+
+
             }
         });
 
