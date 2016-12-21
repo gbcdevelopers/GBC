@@ -57,13 +57,25 @@ public class LoadActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                backButtonAction();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+
+    private void backButtonAction()
+    {
+        Intent i=new Intent(LoadActivity.this,DashboardActivity.class);
+        startActivity(i);
+    }
+
+    public void removeItems()
+    {
+        ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
+        results.remove(1);
+    }
 
     private ArrayList<LoadConstants> GetSearchResults(){
         ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
@@ -75,7 +87,6 @@ public class LoadActivity extends AppCompatActivity
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
-
 
         sr = new LoadConstants();
         sr.setName("Load #");

@@ -152,17 +152,6 @@
             android:textColor="@color/white"
             android:layout_marginTop="10dp"
             />
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/idd"
-            android:layout_gravity="center"
-            android:id="@+id/btnExit"
-            android:text="Exit"
-            android:textColor="@color/white"
-            android:layout_marginTop="10dp"
-            android:background="@color/cancelcolor"
-            />
     </LinearLayout>
 
     </RelativeLayout>

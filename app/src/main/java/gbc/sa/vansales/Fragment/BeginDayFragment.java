@@ -17,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -27,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.BeginDay;
 import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.LoadActivity;
 import gbc.sa.vansales.activities.LoadSummaryActivity;
@@ -35,7 +39,13 @@ import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.Helpers;
+<<<<<<< HEAD
 import gbc.sa.vansales.utils.LoadingSpinner;
+=======
+
+import static gbc.sa.vansales.R.id.day;
+
+>>>>>>> c0c7833b255ad15ef0636bab26fe23f8c899f262
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -44,14 +54,15 @@ public class BeginDayFragment extends Fragment {
 
     String TAG = BeginDayFragment.class.getSimpleName();
 
-    EditText salesDate;
-    EditText time;
-    EditText delieveryDate;
-    EditText route;
-    EditText salesManNo;
-    EditText salesManName;
-    EditText deliveryRoute;
-    EditText vehicleNo;
+    TextView salesDate;
+    TextView time;
+    TextView delieveryDate;
+    TextView route;
+    TextView salesManNo;
+    TextView salesManName;
+    TextView deliveryRoute;
+    TextView vehicleNo;
+    TextView day;
     View view;
     Calendar myCalendar = Calendar.getInstance();
     String stringSalesDate = "";
@@ -66,14 +77,25 @@ public class BeginDayFragment extends Fragment {
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
         loadingSpinner = new LoadingSpinner(getActivity());
 
-        salesDate = (EditText) view.findViewById(R.id.salesDate);
-        time = (EditText) view.findViewById(R.id.time);
-        delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);
-        route = (EditText)view.findViewById(R.id.route);
-        salesManNo = (EditText)view.findViewById(R.id.salesManNo);
-        salesManName = (EditText)view.findViewById(R.id.salesManName);
-        deliveryRoute = (EditText)view.findViewById(R.id.delieveryRoute);
-        vehicleNo = (EditText)view.findViewById(R.id.vehicleNo);
+        salesDate = (TextView) view.findViewById(R.id.salesDate);
+        time = (TextView) view.findViewById(R.id.time);
+        delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
+        route = (TextView)view.findViewById(R.id.route);
+        salesManNo = (TextView)view.findViewById(R.id.salesManNo);
+        salesManName = (TextView)view.findViewById(R.id.salesManName);
+        deliveryRoute = (TextView)view.findViewById(R.id.delieveryRoute);
+        vehicleNo = (TextView)view.findViewById(R.id.vehicleNo);
+        day = (TextView)view.findViewById(R.id.day);
+
+        route.setEnabled(false);
+        salesManNo.setEnabled(false);
+        salesManName.setEnabled(false);
+        deliveryRoute.setEnabled(false);
+        vehicleNo.setEnabled(false);
+        time.setEnabled(false);
+        day.setEnabled(false);
+        delieveryDate.setEnabled(false);
+        salesDate.setEnabled(false);
 
         try{
             JSONObject data = new JSONObject(getArguments().getString("data"));
@@ -117,6 +139,7 @@ public class BeginDayFragment extends Fragment {
             }
         });
 
+        salesDate.setEnabled(false);
         salesDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -128,6 +151,7 @@ public class BeginDayFragment extends Fragment {
             }
         });
 
+        delieveryDate.setEnabled(false);
         delieveryDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -218,6 +242,8 @@ public class BeginDayFragment extends Fragment {
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
 
+        final String input = userInput.getText().toString();
+
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false)
@@ -228,6 +254,7 @@ public class BeginDayFragment extends Fragment {
                                 // edit text
 
                                 /// result.setText(userInput.getText());
+<<<<<<< HEAD
                                 Chain chain = new Chain(new Chain.Link() {
                                     @Override
                                     public void run() {
@@ -253,6 +280,21 @@ public class BeginDayFragment extends Fragment {
 
                                 Intent i=new Intent(getActivity(),LoadActivity.class);
                                 startActivity(i);
+=======
+                                TripHeader.load("GBC012000000001",null);
+                                if(input.equals("")) {
+                                   // Toast.makeText(getActivity(),input.toString(),Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(getActivity(),"Please eneter some valid value!",Toast.LENGTH_SHORT).show();
+                                    dialog.cancel();
+
+                                }
+                                else
+                                {
+                                    Intent i = new Intent(getActivity(), LoadActivity.class);
+                                    startActivity(i);
+                                }
+>>>>>>> c0c7833b255ad15ef0636bab26fe23f8c899f262
                             }
                         })
                 .setNegativeButton("Cancel",

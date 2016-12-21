@@ -1,219 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:background="#fff">
 
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dip">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-<RelativeLayout android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/grey"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+                    <TextView
+                        android:id="@+id/tvroute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Route # : "
+                        android:textColor="@color/colorPrimary"
+                        />
 
-
-
-            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+                    <TextView android:id="@+id/route"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:fillViewport="true"
-                android:layout_above="@+id/btnBack"
-                >
-
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dip">
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                android:layout_marginTop="20dp"
+                        android:layout_marginLeft="50dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                        android:layout_toRightOf="@+id/tvroute"
+                />
 
-                <EditText
-                    android:id="@+id/route"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dip"
-                    android:layout_marginTop="5dip"
+                    <TextView
+                        android:id="@+id/tvSalesManNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Sales Man No :  "
+                        android:layout_below="@id/tvroute"
 
-                    android:backgroundTint="@color/base"
-                    android:hint="ROUTE#"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-
-                    android:textColorHint="@color/colorPrimary" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                        android:textColor="@color/colorPrimary"
+                        />
+            <TextView android:id="@+id/salesManNo"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                android:layout_marginTop="20dp"
+                android:singleLine="true"
+                android:layout_below="@id/tvroute"
+                android:layout_toRightOf="@+id/tvSalesManNo"
 
+                android:layout_marginLeft="50dp"
 
-                <EditText
-                    android:id="@+id/salesManNo"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dip"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:hint="SalesMan#"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
+                android:textColor="@color/black"
+                />
+                    <TextView
+                        android:id="@+id/tvSalesManName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Sales Man Name : "
+                        android:layout_below="@+id/tvSalesManNo"
+                        android:textColor="@color/colorPrimary"
+                        />
 
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+            <TextView android:id="@+id/salesManName"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                android:layout_marginTop="20dp"
+                android:singleLine="true"
+                android:layout_below="@id/tvSalesManNo"
 
-                <EditText
-                    android:id="@+id/salesManName"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dip"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:hint="SalesMan Name"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@+id/tvSalesManName"
+
+                android:textColor="@color/black"
+                />
+
+                    <TextView
+                        android:id="@+id/tvsalesDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Sales Date : "
+                        android:layout_below="@+id/tvSalesManName"
+                        android:textColor="@color/colorPrimary"
+                        />
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textlayout_sales_date"
-                android:layout_width="match_parent"
+            <TextView android:id="@+id/salesDate"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
-
-                <EditText
-                    android:id="@+id/salesDate"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:editable="false"
-                    android:hint="Sales Date"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-
-            </android.support.design.widget.TextInputLayout>
+                android:singleLine="true"
+                android:layout_marginTop="20dp"
+                android:layout_below="@id/tvSalesManName"
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textlayout_time"
-                android:layout_width="match_parent"
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@+id/tvsalesDate"
+
+                android:textColor="@color/black"
+                />
+
+                    <TextView
+                        android:id="@+id/tvtime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_below="@+id/tvsalesDate"
+                        android:text="Time : "
+                        android:textColor="@color/colorPrimary"
+                        />
+
+            <TextView android:id="@+id/time"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                android:singleLine="true"
+                android:layout_below="@id/tvsalesDate"
 
-                <EditText
-                    android:id="@+id/time"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:editable="false"
-                    android:hint="Time"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-
-            </android.support.design.widget.TextInputLayout>
+                android:layout_marginLeft="50dp"
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/textlayout_delivery_date"
-                android:layout_width="match_parent"
+                android:layout_toRightOf="@+id/tvtime"
+
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"/>
+                    
+                    <TextView
+                        android:id="@+id/tvdelieveryDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_below="@+id/tvtime"
+                        android:text="Delievery Date : "
+                        android:textColor="@color/colorPrimary"
+                        />
+                    
+
+            <TextView android:id="@+id/delieveryDate"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                <EditText
-                    android:id="@+id/delieveryDate"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:editable="false"
-                    android:hint="Delievery Date"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
+                android:layout_toRightOf="@+id/tvdelieveryDate"
+                android:singleLine="true"
+                android:layout_below="@id/tvtime"
 
-            </android.support.design.widget.TextInputLayout>
+                android:layout_marginLeft="50dp"
 
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"/>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvdelieveryRoute"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Delievery Route : "
+
+                        android:layout_below="@id/tvdelieveryDate"
+                        android:textColor="@color/colorPrimary"
+                        />
+                    
+            <TextView android:id="@+id/delieveryRoute"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
-                <EditText
-                    android:id="@+id/delieveryRoute"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:hint="Delievery Route"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-            </android.support.design.widget.TextInputLayout>
+                android:textColor="@color/black"
+                android:layout_below="@id/tvdelieveryDate"
 
+                android:layout_toRightOf="@+id/tvdelieveryRoute"
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
+                android:layout_marginLeft="50dp"
+                android:singleLine="true"
 
+                android:layout_marginTop="20dp"/>
 
-                <EditText
-                    android:id="@+id/vehicleNo"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:hint="Vehicle No"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="@color/colorPrimary"
-                app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
-
-                <EditText
-                    android:id="@+id/day"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:backgroundTint="@color/base"
-                    android:hint="Day"
-                    android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/colorPrimary" />
-
-            </android.support.design.widget.TextInputLayout>
-
-
-        </LinearLayout>
-            </ScrollView>
-
+<<<<<<< HEAD
     <Button
         android:id="@+id/btn_start_day"
         android:layout_width="match_parent"
@@ -223,7 +189,62 @@
         android:text="START"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
+=======
+>>>>>>> c0c7833b255ad15ef0636bab26fe23f8c899f262
 
-        />
+                    <TextView
+                        android:id="@+id/tvvehicleNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_below="@id/tvdelieveryRoute"
+                        android:text="Vehicle No. : "
+                        android:textColor="@color/colorPrimary"
+                        />
+                    
+            <TextView android:id="@+id/vehicleNo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:layout_below="@id/tvdelieveryRoute"
 
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@+id/tvvehicleNo"
+
+                android:textColor="@color/black"
+                android:layout_marginTop="20dp"/>
+
+                    <TextView
+                        android:id="@+id/tvDay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_below="@+id/tvvehicleNo"
+                        android:text="Day :  "
+                        android:textColor="@color/colorPrimary"
+                        />
+
+            <TextView android:id="@+id/day"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+
+                android:textColor="@color/black"
+                android:layout_below="@id/tvvehicleNo"
+
+                android:layout_marginLeft="50dp"
+                android:layout_toRightOf="@+id/tvDay"
+                android:layout_marginTop="20dp"/>
+           </RelativeLayout>
+
+            <Button android:id="@+id/btnBack"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="START"
+                android:background="@color/buttoncolor"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
     </RelativeLayout>
+</RelativeLayout>
