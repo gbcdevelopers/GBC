@@ -3,13 +3,13 @@ package gbc.sa.vansales.activities;
 /**
  * Created by Muhammad Umair on 29/11/2016.
  */import android.app.Application;
-import android.provider.Settings;
-import android.text.TextUtils;
+        import android.text.TextUtils;
 
         import com.android.volley.Request;
         import com.android.volley.RequestQueue;
         import com.android.volley.toolbox.Volley;
 
+import gbc.sa.vansales.utils.Settings;
 public class AppController extends Application
 {
     public static final String TAG = AppController.class.getSimpleName();
@@ -23,8 +23,7 @@ public class AppController extends Application
         super.onCreate();
         mInstance = this;
         System.out.println("On Create");
-        gbc.sa.vansales.utils.Settings.initialize(mInstance);
-
+        Settings.initialize(getApplicationContext());
     }
 
     public static synchronized AppController getInstance() {

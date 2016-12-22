@@ -1,4 +1,6 @@
 package gbc.sa.vansales.data;
+import android.content.Context;
+
 import java.util.HashMap;
 
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -12,7 +14,7 @@ public class LoadDelivery {
     private static final String LOAD_DEL_ITEMS = "LoadDelItems";
     private static final String TRIP_ID = "ITripId";
 
-    public static void load(String tripId, DatabaseHandler db){
+    public static void load(Context context,String tripId, DatabaseHandler db){
 
         HashMap<String, String> params = new HashMap<>();
         params.put(TRIP_ID,tripId);
@@ -20,6 +22,6 @@ public class LoadDelivery {
         HashMap<String,String>expansion = new HashMap<>();
         expansion.put(LOAD_DEL_ITEMS,LOAD_DEL_ITEMS);
 
-        new DownloadData(COLLECTION_NAME,params,expansion,db);
+        new DownloadData(context,COLLECTION_NAME,params,expansion,db);
     }
 }

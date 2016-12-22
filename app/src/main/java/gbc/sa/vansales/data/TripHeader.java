@@ -1,5 +1,6 @@
 package gbc.sa.vansales.data;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -28,15 +29,15 @@ public class TripHeader {
     private static final String TRIP_SALES_AREA = "TripSalesArea";
     private static final String TRIP_ID = "ITripId";
 
-    public static void load(String tripId, DatabaseHandler db){
-
+    public static void load(Context context,String tripId, DatabaseHandler db){
+       // Log.e("Inside TH","TH");
         HashMap<String, String>params = new HashMap<>();
         params.put(TRIP_ID,tripId);
 
         HashMap<String,String>expansion = new HashMap<>();
         expansion.put(TRIP_SALES_AREA,TRIP_SALES_AREA);
 
-        new DownloadData(COLLECTION_NAME,params,expansion,db);
+        new DownloadData(context,COLLECTION_NAME,params,expansion,db);
         // new downloadData("GBC012000000001");
     }
 }

@@ -23,5 +23,10 @@ public class ConfigStore {
     public static final String EMPLOYEE_ID_LENGTH = "00000000";
 
     //Entity Types
+    public static final String TripHeaderEntity = "ZSFA_DOWNLOAD_SRV.TripHd";
+    public static final String LoadDeliveryEntity = "ZSFA_DOWNLOAD_SRV.LoadDeliveryHd";
+    public static final String ArticleHeaderEntity = "ZSFA_DOWNLOAD_SRV.ArticleHeader";
+    public static final String VisitListEntity = "ZSFA_DOWNLOAD_SRV.Visitlist";
+    public static final String CustomerHeaderEntity = "ZSFA_DOWNLOAD_SRV.CustomerHeader";
 
 }
