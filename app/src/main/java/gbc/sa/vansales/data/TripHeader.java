@@ -16,6 +16,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.DownloadData;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -29,7 +30,8 @@ public class TripHeader {
     LoadingSpinner loadingSpinner;
 
     public static void load(String tripId, DatabaseHandler db){
-        new downloadData("GBC012000000001");
+        new DownloadData(tripId,COLLECTION_NAME,EXPANSION_NAME,db);
+       // new downloadData("GBC012000000001");
     }
 
     private static class downloadData extends AsyncTask<Void,Void,Void> {

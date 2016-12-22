@@ -49,6 +49,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_load_summary);
 
+        Intent i=getIntent();
+        final int position=i.getIntExtra("1",0);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,7 +70,26 @@ public class LoadSummaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                listView.setAdapter(null);
+
+                LoadActivity.searchResults.remove(position);
+
+                String size=Integer.toString(LoadActivity.searchResults.size());
+               // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();
+
+                if(size=="0")
+                {
+                    Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(getApplicationContext(), "Going to VanStock",Toast.LENGTH_SHORT).show();
+                    Intent i=new Intent(LoadSummaryActivity.this,VanStockActivity.class);
+                    startActivity(i);
+                }
+
+                //LoadActivity.lv.setAdapter(new SingleLoadActivity(LoadSummaryActivity.this,LoadActivity.searchResults));
+               // LoadActivity.adapter.notifyAll();
+
                 Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
+
 
                 //LoadActivity obj=new LoadActivity();
                 //obj.removeItems();
@@ -153,6 +174,18 @@ public class LoadSummaryActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     public static LoadSummary createLoadSummaryData(int index){
         LoadSummary loadSummary = new LoadSummary();

@@ -13,7 +13,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.ArticleHeader;
+import gbc.sa.vansales.data.CustomerHeader;
+import gbc.sa.vansales.data.LoadDelivery;
+import gbc.sa.vansales.data.TripHeader;
+import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.SecureStore;
@@ -189,17 +195,46 @@ public class LoginActivity extends Activity {
         return false;
     }
 
-    public void downloadData(String tripId){
+    public void downloadData(final String tripId){
+       Chain chain = new Chain(new Chain.Link(){
+           @Override
+           public void run() {
+               go();
+           }
+       });
+
+        chain.setFail(new Chain.Link() {
+            @Override
+            public void run() throws Exception {
+                fail();
+            }
+        });
+
+        chain.add(new Chain.Link() {
+            @Override
+            public void run() {
+                TripHeader.load(tripId,db);
+                LoadDelivery.load(tripId,db);
+                ArticleHeader.load(tripId,db);
+                VisitList.load(tripId,db);
+                CustomerHeader.load(tripId,db);
+            }
+        });
 
     }
 
-    public class downloadMasterData extends AsyncTask<Void, Void, Void>{
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
+    private void go() {
+        loadingSpinner.hide();
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void fail() {
+        System.out.println("Test");
+        if(loadingSpinner.isShowing()){
+            loadingSpinner.hide();
+            finish();
         }
     }
-
-
-
 }

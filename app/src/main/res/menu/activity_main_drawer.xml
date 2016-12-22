@@ -15,20 +15,24 @@
 
         <item android:id="@+id/load"
               android:title="@string/load"
+              android:visible="false"
             />
 
 
         <item android:id="@+id/loadrequest"
               android:title="@string/loadrequest"
+            android:visible="false"
 
             />
 
         <item android:id="@+id/vanstock"
               android:title="@string/vanstock"
+            android:visible="false"
 
             />
         <item android:id="@+id/unload"
               android:title="@string/unload"
+            android:visible="false"
 
             />
 

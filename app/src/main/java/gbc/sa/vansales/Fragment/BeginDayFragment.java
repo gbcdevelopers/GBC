@@ -243,7 +243,6 @@ public class BeginDayFragment extends Fragment {
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
 
-        final String input = userInput.getText().toString();
 
         // set dialog message
         alertDialogBuilder
@@ -252,8 +251,18 @@ public class BeginDayFragment extends Fragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 TripHeader.load("GBC012000000001",null);
-                                Intent i = new Intent(getActivity(), LoadActivity.class);
-                                startActivity(i);
+                                String input = userInput.getText().toString();
+                                if(input.equals(""))
+                                {
+                                    dialog.cancel();
+                                    Toast.makeText(getContext(), "Please enter some valid value!",Toast.LENGTH_SHORT).show();
+
+
+                                }
+                                else {
+                                    Intent i = new Intent(getActivity(), LoadActivity.class);
+                                    startActivity(i);
+                                }
 
                             }
                         })
