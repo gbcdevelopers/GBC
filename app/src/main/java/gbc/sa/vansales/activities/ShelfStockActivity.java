@@ -20,6 +20,7 @@ import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.PagerAdapter;
+import gbc.sa.vansales.data.Const;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -36,7 +37,7 @@ public class ShelfStockActivity extends AppCompatActivity {
 
 
 
-    ImageView toolbar_iv_back,iv_add;
+    ImageView toolbar_iv_back;
     ImageView iv_search;
     EditText et_search;
 
@@ -71,9 +72,9 @@ public class ShelfStockActivity extends AppCompatActivity {
 
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
-        iv_add=(ImageView)findViewById(R.id.iv_refresh);
-        iv_add.setVisibility(View.VISIBLE);
-        iv_add.setImageResource(R.drawable.ic_add_black_24dp);
+
+
+
 
 
 
@@ -112,7 +113,7 @@ public class ShelfStockActivity extends AppCompatActivity {
                 et_search.setVisibility(View.VISIBLE);
                 toolbar_iv_back.setVisibility(View.GONE);
                 tv_top_header.setVisibility(View.GONE);
-                iv_add.setVisibility(View.GONE);
+
 
             }
         });
@@ -133,7 +134,7 @@ public class ShelfStockActivity extends AppCompatActivity {
                         iv_search.setVisibility(View.VISIBLE);
                         toolbar_iv_back.setVisibility(View.VISIBLE);
                         tv_top_header.setVisibility(View.VISIBLE);
-                        iv_add.setVisibility(View.VISIBLE);
+
 
                         return true;
                     }
@@ -199,6 +200,18 @@ public class ShelfStockActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(ShelfFragment.arrayList!=null && ShelfFragment.adapter!=null) {
+            ShelfFragment.arrayList.addAll(Const.addlist);
+            ShelfFragment.adapter.notifyDataSetChanged();
+        }
 
 
     }

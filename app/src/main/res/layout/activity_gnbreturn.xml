@@ -1,163 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey">
 
-    <include layout="@layout/common_header"
-        android:id="@+id/inc_common_header"
-        />
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/inc_common_header"
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="20dp"
-        android:background="@drawable/back_radient"
-        android:orientation="vertical"
-        android:id="@+id/ll_common"
-        >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="3106 EMARAT"
-        android:textSize="20dp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="5dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MOT tc"
-        android:textSize="18dp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="5dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PO box"
-        android:textSize="16dp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="5dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="contact no"
-        android:textSize="14dp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="5dp"
-        />
-</LinearLayout>
-
-
-
-    <LinearLayout
-    android:layout_marginTop="20dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_common"
-    android:id="@+id/ll_btn"
-    android:layout_marginLeft="24dp"
-    android:layout_marginRight="24dp"
-        android:gravity="center"
-        android:background="@color/white"
-        >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Good Return"
-        android:padding="10dp"
-        android:gravity="center"
-        android:background="@color/colorPrimary"
-        android:id="@+id/tv_goodbad"
-        android:textColor="@color/white"
-        />
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_btn"
-        android:id="@+id/ll_img"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:background="@color/white"
-        >
-
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            >
-
-
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                android:id="@+id/iv_goodbad"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="-13dp"
-                />
-
-
-            </RelativeLayout>
-
-
-    </LinearLayout>
-
-    <FrameLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/container"
-        android:layout_below="@+id/ll_img"
-        android:layout_above="@+id/view"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_above="@+id/rl_middle"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentTop="true"
         >
-    </FrameLayout>
+        <include layout="@layout/expand_good_badreturn"/>
+    </LinearLayout>
 
 
 
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@color/grey"
-        android:id="@+id/view"
-        android:layout_above="@+id/rl_bottom"
-
-        />
 
     <RelativeLayout
+
        android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:paddingRight="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_bottom"
-        android:padding="10dp"
-        android:background="@color/white"
+        android:id="@+id/rl_middle"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_marginTop="10dp"
 
-        android:layout_above="@+id/btn_float"
         >
+
+
+        <RelativeLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
+
+
+
 
         <TextView
             android:id="@+id/tv_reason"
@@ -181,6 +73,7 @@
 
 
         </Spinner>
+            </RelativeLayout>
 
 
     </RelativeLayout>
@@ -188,31 +81,61 @@
 
 
 
-    <Button
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="confirm"
-        android:background="@color/green"
-        android:textColor="@color/white"
+        android:id="@+id/rl_bottom"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
-        android:id="@+id/btn_confirm"
-        android:layout_marginTop="16dp"
-       />
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_confirm"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:id="@+id/btn_float"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_add_black_24dp"
-        app:backgroundTint="@color/colorPrimary"
+        >
 
 
-        />
 
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Amt."
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/green"
+            android:textSize="15dp"
+            android:id="@+id/tv_label" />
+
+        <TextView
+            android:layout_below="@+id/tv_label"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            />
+
+
+
+
+
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/ic_add_black_24dp"
+            android:layout_alignParentRight="true"
+            tools:ignore="RelativeOverlap" />
+
+
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

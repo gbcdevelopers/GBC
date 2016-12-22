@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:text="AM5500*LARGE SWISS ROLL VANILA (24X110G)"
             android:textColor="@color/green"
             android:layout_marginBottom="5dp"

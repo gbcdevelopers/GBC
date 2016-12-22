@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +33,8 @@ public class CustomerMessageListActivity extends AppCompatActivity {
     RoundedImageView iv_round;
   MessageListAdapter adapter;
     String arr[]={"Silent Meeting","Order Confirmed"};
+    LinearLayout ll_common;
+    ImageView img_refresh;
 
 
 
@@ -46,6 +49,12 @@ public class CustomerMessageListActivity extends AppCompatActivity {
 
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
+        ll_common=(LinearLayout)findViewById(R.id.ll_common);
+        img_refresh=(ImageView)findViewById(R.id.img_refresh);
+
+
+
+
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
@@ -57,6 +66,21 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             }
         });
         lv_message=(ListView)findViewById(R.id.lv_messages);
+
+
+
+        if(getIntent().getExtras()!=null)
+        {
+            String from=getIntent().getStringExtra("from");
+            if(from.equals("dash"))
+            {
+                ll_common.setVisibility(View.GONE);
+                img_refresh.setVisibility(View.GONE);
+            }
+        }
+        else {
+            ll_common.setVisibility(View.VISIBLE);
+        }
 
 
 

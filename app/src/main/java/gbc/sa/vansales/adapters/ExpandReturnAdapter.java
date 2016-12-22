@@ -19,12 +19,13 @@ import gbc.sa.vansales.utils.AnimatedExpandableListView;
 
 public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 
-    ArrayList<String> strproduct;
+
     Context context;
     int groupPosition;
-    public ExpandReturnAdapter(Context context,ArrayList<String> productname)
+    ArrayList<String>  arrProductList;
+    public ExpandReturnAdapter(Context context,ArrayList<String > arrProductList)
     {
-        this.strproduct=productname;
+        this.arrProductList=arrProductList;
         this.context=context;
     }
 
@@ -50,7 +51,7 @@ public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpa
 
     @Override
     public int getGroupCount() {
-        return strproduct.size();
+        return arrProductList.size();
     }
 
     @Override
@@ -89,7 +90,7 @@ public class ExpandReturnAdapter extends AnimatedExpandableListView.AnimatedExpa
         RelativeLayout rl_expand=(RelativeLayout)convertView.findViewById(R.id.rl_expand);
         ImageView iv_expand=(ImageView)convertView.findViewById(R.id.iv_expand);
         TextView tv_productname=(TextView)convertView.findViewById(R.id.tv_product_name);
-        tv_productname.setText(strproduct.get(groupPosition));
+        tv_productname.setText(arrProductList.get(groupPosition));
 
 
 

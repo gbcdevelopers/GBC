@@ -2,27 +2,15 @@ package gbc.sa.vansales.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import gbc.sa.vansales.Fragment.BadReturnFragment;
-import gbc.sa.vansales.Fragment.GoodReturnFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryAdapter;
-import gbc.sa.vansales.adapters.ExpandReturnAdapter;
-import gbc.sa.vansales.models.PreSaleProceed;
-import gbc.sa.vansales.utils.AnimatedExpandableListView;
 
 public class PreSaleOrderActivity extends AppCompatActivity {
 

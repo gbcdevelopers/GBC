@@ -12,11 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ProductListAdapter;
-import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.data.Const;
 
 /**
@@ -33,7 +31,9 @@ public class ProductListActivity extends AppCompatActivity {
 
     TextView tv_top_header;
     ImageView iv_back;
-    String from="";
+
+
+
 
 
     @Override
@@ -50,16 +50,10 @@ public class ProductListActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
 
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Product List");
+        tv_top_header.setText("Product");
 
 
 
-
-        if(getIntent().getExtras()!=null)
-        {
-            Bundle bundle=getIntent().getExtras();
-            from=bundle.getString("from");
-        }
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,8 +63,8 @@ public class ProductListActivity extends AppCompatActivity {
                 if(Const.addlist.size()>0)
                 {
                         Intent intent=new Intent();
-                        Log.v("arraylist",Const.addlist.size()+"--"+from);
-                        intent.putStringArrayListExtra("product",Const.addlist);
+
+                        intent.putStringArrayListExtra("product", Const.addlist);
                         setResult(RESULT_OK,intent);
 
                 }
@@ -85,7 +79,7 @@ public class ProductListActivity extends AppCompatActivity {
         arrayList.add("van");
         arrayList.add("san");
         arrayList.add("can");
-        adapter=new ProductListAdapter(ProductListActivity.this,arrayList,R.layout.checkable_productlist);
+        adapter=new ProductListAdapter(ProductListActivity.this,arrayList, R.layout.checkable_productlist,"productlist");
         list_product.setAdapter(adapter);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +91,8 @@ public class ProductListActivity extends AppCompatActivity {
                 {
 
                     Intent intent=new Intent();
-                    Log.v("arraylistconsts",Const.addlist.size()+"--"+from);
-                    intent.putStringArrayListExtra("product",Const.addlist);
+
+                    intent.putStringArrayListExtra("product", Const.addlist);
                     setResult(RESULT_OK,intent);
 
                 }

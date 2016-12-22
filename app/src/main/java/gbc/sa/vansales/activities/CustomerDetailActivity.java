@@ -160,6 +160,11 @@ public class CustomerDetailActivity extends AppCompatActivity{
                             Intent intent4=new Intent(CustomerDetailActivity.this,DeliveryActivity.class);
                             startActivity(intent4);
                             break;
+                        case 5:
+                            Intent intent5=new Intent(CustomerDetailActivity.this,PrinterReportsActivity.class);
+                            intent5.putExtra("from","customer");
+                            startActivity(intent5);
+                            break;
 
                         default:
                             break;

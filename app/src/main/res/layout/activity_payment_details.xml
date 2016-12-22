@@ -58,7 +58,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="146.40" />
+                android:text="146.40"
+
+                />
 
         </LinearLayout>
 
@@ -87,18 +89,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="146.40" />
+                    android:text=""
+                    android:id="@+id/edt_cash_amount"
+                    android:enabled="false"
+                    android:inputType="numberDecimal"
+                    />
 
             </LinearLayout>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/btn_edit1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:background="@color/green"
-                android:text="EDIT"
-                android:textColor="@color/white" />
+                android:background="@drawable/ic_create_black_24dp"
+                android:textColor="@color/white"
+
+                />
+
+
+
+
 
         </RelativeLayout>
 
@@ -130,7 +142,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="82555555" />
+                    android:text="82555555"
+                    android:id="@+id/edt_check_no"
+                    android:enabled="false"
+                    />
 
             </LinearLayout>
 
@@ -152,7 +167,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="70" />
+                    android:text=""
+                    android:id="@+id/edt_check_amt"
+                    android:enabled="false"
+                    android:inputType="numberDecimal"
+                    />
 
             </LinearLayout>
 
@@ -166,23 +185,36 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="2dp"
-                android:text="19-12-2016" />
+                android:text="19-12-2016"
+                android:textColor="@color/black"
+                />
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_calendar" />
+                android:src="@drawable/ic_calendar"
+                android:id="@+id/image_cal"
 
-            <TextView
+                />
+
+            <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="2dp"
-                android:text="ABN AMRO" />
+                android:text="ABN AMRO"
+                android:entries="@array/paymentitem"
+                android:id="@+id/sp_item"
+
+
+
+
+                />
 
 
         </LinearLayout>
@@ -190,14 +222,14 @@
 
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/btn_edit2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/green"
-            android:text="EDIT"
-            android:textColor="@color/white" />
+            android:background="@drawable/ic_create_black_24dp"
+            />
 
 
     </LinearLayout>
@@ -224,8 +256,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="140.40"
-            android:textSize="20sp" />
+            android:text="0.00"
+            android:textSize="20sp"
+            android:id="@+id/tv_total_amt"
+            android:textColor="@color/black"
+            />
 
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton

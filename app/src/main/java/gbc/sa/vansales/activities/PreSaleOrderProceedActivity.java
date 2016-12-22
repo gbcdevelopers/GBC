@@ -1,16 +1,24 @@
 package gbc.sa.vansales.activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.PreSaleProceed;
@@ -23,6 +31,35 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 //    FloatingActionButton float_presale_proceed;
     int arrSize = 5;
 
+
+    TextView tv_date;
+    ImageView iv_calendar,iv_search;
+    Calendar myCalendar;
+    DatePickerDialog.OnDateSetListener date;
+    Button btn_confirm;
+
+
+
+
+
+
+
+
+    ListView list;
+    LoadRequestAdapter adapter;
+
+    String[] itemName;
+    String[] category;
+    String[] cases;
+    String[] units;
+    int[] categoryImage;
+
+
+
+    ArrayList<LoadRequestConstants> arraylist = new ArrayList<LoadRequestConstants>();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +67,12 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+        tv_date = (TextView) findViewById(R.id.tv_date);
+        iv_calendar = (ImageView) findViewById(R.id.iv_calander);
+        iv_search=(ImageView)findViewById(R.id.iv_search);
+        iv_search.setVisibility(View.VISIBLE);
+        btn_confirm=(Button)findViewById(R.id.btn_confirm_delivery_presale_proceed);
+
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
@@ -49,9 +92,143 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 //                setData();
 //            }
 //        });
-        setData();
+//        setData();
+
+        myCalendar = Calendar.getInstance();
+
+        iv_calendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                new DatePickerDialog(PreSaleOrderProceedActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
+
+            }
+        });
+
+
+        date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+
+
+
+
+
+        itemName = new String[] { "Berain_Regular", "Berain_Half_Liter", "Berain_1.5_Liter" };
+
+        category = new String[] { "Regular", "Half Liter", "1.5 Liter"};
+
+        cases = new String[] { "10", "20","30"};
+
+        units = new String[] { "100", "200", "300"};
+
+        categoryImage = new int[] { R.drawable.beraincategory, R.drawable.beraincategory,
+                R.drawable.beraincategory};
+
+
+        // Locate the ListView in listview_main.xml
+        list = (ListView) findViewById(R.id.listview);
+
+        for (int i = 0; i < itemName.length; i++)
+        {
+            LoadRequestConstants lrc = new LoadRequestConstants(itemName[i], category[i],
+                    cases[i],units[i], categoryImage[i]);
+            // Binds all strings into an array
+            arraylist.add(lrc);
+        }
+
+        // Pass results to ListViewAdapter Class
+        adapter = new LoadRequestAdapter(this, arraylist);
+
+        // Binds the Adapter to the ListView
+        list.setAdapter(adapter);
+
+
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                final Dialog dialog=new Dialog(PreSaleOrderProceedActivity.this);
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                LinearLayout ll_top=(LinearLayout)dialog.findViewById(R.id.llTop);
+
+
+                Button btn_print=(Button)dialog.findViewById(R.id.btn_print);
+                Button btn_notprint=(Button)dialog.findViewById(R.id.btn_donotprint);
+
+                ll_top.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+
+                btn_print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        dialog.cancel();
+
+
+                    }
+                });
+                btn_notprint.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        dialog.cancel();
+
+                    }
+                });
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
+
+        private void updateLabel() {
+
+            String myFormat = "dd/MM" +
+                    "/yy"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
+
+            tv_date.setText(sdf.format(myCalendar.getTime()));
+        }
+
+
+
 
     public void setData() {
         if (preSaleProceeds != null){

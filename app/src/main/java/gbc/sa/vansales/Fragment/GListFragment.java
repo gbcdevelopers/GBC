@@ -3,18 +3,20 @@ package gbc.sa.vansales.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.activities.GNBReturnActivity;
-import gbc.sa.vansales.adapters.SalesAdapter;
+import gbc.sa.vansales.activities.CategoryListActivity;
+import gbc.sa.vansales.activities.ProductListActivity;
+import gbc.sa.vansales.adapters.ExpandReturnAdapter;
+import gbc.sa.vansales.utils.AnimatedExpandableListView;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -24,41 +26,40 @@ public class GListFragment extends Fragment {
 
 
     View view;
-    ListView listSales;
-    SalesAdapter adapter;
-    ArrayList<String> arrayList;
+    FloatingActionButton btn_float;
+
+    AnimatedExpandableListView exp_list;
+    public static ExpandReturnAdapter adapter;
+   public static ArrayList<String>  arrProductList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view=inflater.inflate(R.layout.fragment_salesinvoice,container,false);
-        listSales=(ListView)view.findViewById(R.id.list_sales);
+        view=inflater.inflate(R.layout.activity_gnbreturn,container,false);
+        btn_float=(FloatingActionButton)view.findViewById(R.id.fab);
+        exp_list=(AnimatedExpandableListView)view.findViewById(R.id.exp_product);
 
+        arrProductList=new ArrayList<>();
 
-        arrayList = new ArrayList<>();
-        arrayList.add("A");
-        arrayList.add("B");
-        arrayList.add("C");
+        adapter=new ExpandReturnAdapter(getActivity(),arrProductList);
+        exp_list.setAdapter(adapter);
 
-
-
-        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.sales_list);
-        listSales.setAdapter(adapter);
-
-        listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        btn_float.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onClick(View v) {
 
-            Intent intent=new Intent(getActivity(), GNBReturnActivity.class);
-                intent.putExtra("from","g");
-                startActivity(intent);
-
-
-
-
+                Intent intent=new Intent(getActivity(), CategoryListActivity.class);
+                getActivity().startActivity(intent);
             }
         });
+
+       exp_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+           @Override
+           public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+               return false;
+           }
+       });
 
         return view;
     }

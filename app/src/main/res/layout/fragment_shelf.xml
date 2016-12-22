@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:background="@color/grey">
 
 
     <ListView
@@ -17,47 +19,65 @@
         android:scrollbars="none"
         android:divider="@color/grey"
         android:dividerHeight="5dp"
-        android:layout_above="@+id/ll_bottom" />
+        android:layout_above="@+id/rl_bottom" />
 
 
-    <LinearLayout
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/ll_bottom"
+        android:id="@+id/rl_bottom"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:background="@drawable/custom_border"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+
         >
 
 
+
+
         <TextView
+            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total Amt."
-            android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:textColor="@color/green"
             android:textSize="15dp"
-            android:id="@+id/textView2" />
+            android:id="@+id/tv_label" />
 
         <TextView
+            android:layout_below="@+id/tv_label"
+            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0.00"
-            android:layout_gravity="center"
             android:textSize="20dp"
             android:textColor="@color/black"
             />
 
 
 
-    </LinearLayout>
 
+
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/ic_add_black_24dp"
+            android:layout_alignParentRight="true"
+            tools:ignore="RelativeOverlap" />
+
+
+
+    </RelativeLayout>
 
 
 

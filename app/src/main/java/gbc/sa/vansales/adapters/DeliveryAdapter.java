@@ -1,16 +1,11 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 
@@ -62,10 +57,10 @@ public class DeliveryAdapter extends BaseAdapter {
         {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(resource, null);
-       /*     TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
+            TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
             TextView tv1=(TextView)convertView.findViewById(R.id.tv_del_date);
             tv.setText("Order# 1234");
-            tv1.setText("Order date:23-oct-2016");*/
+            tv1.setText("Order date:23-oct-2016");
 
         }else if(from.equals("delivery"))
         {

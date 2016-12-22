@@ -21,7 +21,27 @@ public class PrinterReportsActivity extends AppCompatActivity {
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("End Trip");
+
+        if(getIntent().getExtras()!=null)
+        {
+            String from=getIntent().getStringExtra("from");
+            if(from.equals("customer"))
+            {
+                tv_top_header.setText("Print");
+            }
+            else {
+                tv_top_header.setText("Print");
+            }
+
+        }else {
+            tv_top_header.setText("End Trip");
+        }
+
+
+
+
+
+
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -82,6 +82,9 @@ public class LoginActivity extends Activity {
             //For development purpose hardcoding credentials
             new LoginUser("E2000", "PASSWORD");
 
+/*            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+            startActivityForResult(intent, 0);
+            finish();*/
             //new LoginUser(id, password);
         }
     }
@@ -175,6 +178,14 @@ public class LoginActivity extends Activity {
                    else{
                        Settings.setString(TRIP_ID,this.returnList.get(2));
                        db.addLoginCredentials("E2000","PASSWORD");
+
+
+                       //temporarily if login problem occurs
+//                       downloadData("GBC012000000001");
+//                       Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+//                       startActivityForResult(intent, 0);
+//                       finish();
+//                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
                    }
 

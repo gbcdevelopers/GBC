@@ -3,7 +3,8 @@ package gbc.sa.vansales.activities;
 /**
  * Created by Muhammad Umair on 29/11/2016.
  */import android.app.Application;
-        import android.text.TextUtils;
+import android.provider.Settings;
+import android.text.TextUtils;
 
         import com.android.volley.Request;
         import com.android.volley.RequestQueue;
@@ -22,6 +23,8 @@ public class AppController extends Application
         super.onCreate();
         mInstance = this;
         System.out.println("On Create");
+        gbc.sa.vansales.utils.Settings.initialize(mInstance);
+
     }
 
     public static synchronized AppController getInstance() {

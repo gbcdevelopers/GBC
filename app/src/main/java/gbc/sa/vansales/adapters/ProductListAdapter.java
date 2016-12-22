@@ -1,7 +1,6 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -31,15 +28,17 @@ public class ProductListAdapter extends BaseAdapter  {
     int resource;
 
     ArrayList<String> dataList;
+    String from="";
 
 
 
 
-    public ProductListAdapter(Context context,ArrayList<String> item,int resource)
+    public ProductListAdapter(Context context,ArrayList<String> item,int resource,String from)
     {
         this.context=context;
 
         this.resource=resource;
+        this.from=from;
 
 
         dataList=item;
@@ -73,6 +72,7 @@ public class ProductListAdapter extends BaseAdapter  {
         Log.v("size",getCount()+"");
 
 
+
          final   Holder holder;
             if(convertView==null) {
 
@@ -82,6 +82,14 @@ public class ProductListAdapter extends BaseAdapter  {
                 holder=new Holder();
                 holder.tv_product_name=(TextView)convertView.findViewById(R.id.tv_product);
                 holder.chk_product=(CheckBox) convertView.findViewById(R.id.chk_product);
+
+
+
+                if(from.equals("category"))
+                {
+                        holder.chk_product.setVisibility(View.GONE
+                        );
+                }
 
 
                 convertView.setTag(holder);

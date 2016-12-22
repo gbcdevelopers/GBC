@@ -95,6 +95,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -141,9 +142,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
-                        android:text="SKU"
+                        android:text="Product"
                         android:padding="5dp"
+
                         android:background="@drawable/light_border"
+                        android:textColor="@drawable/edit_text_color"
+                        android:textStyle="bold"
                         />
 
                     <TextView
@@ -151,9 +155,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="CTN"
+                        android:text="Cases"
                         android:padding="5dp"
                         android:background="@drawable/light_border"
+                        android:textColor="@drawable/edit_text_color"
+                        android:textStyle="bold"
+
                         />
 
                     <TextView
@@ -161,9 +168,11 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="BTL"
+                        android:text="Pcs"
                         android:padding="5dp"
                         android:background="@drawable/light_border"
+                        android:textColor="@drawable/edit_text_color"
+                        android:textStyle="bold"
                         />
 
                     <TextView
@@ -174,6 +183,9 @@
                         android:text="Price"
                         android:padding="5dp"
                         android:background="@drawable/light_border"
+                        android:textColor="@drawable/edit_text_color"
+                        android:textStyle="bold"
+                        android:visibility="gone"
                         />
 
                 </LinearLayout>
@@ -210,14 +222,43 @@
         android:visibility="invisible"
         />
 
-    <Button
+
+
+
+    <RelativeLayout
         android:id="@+id/btn_confirm_delivery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/green"
-        android:text="Confirm Delivery"
+
         android:textColor="@color/white"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/green"
+        android:layout_alignParentBottom="true"
+
         android:layout_marginTop="10dp"
-        />
+
+        >
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Amt."
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:id="@+id/tv_label" />
+
+        <TextView
+            android:layout_below="@+id/tv_label"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            />
+
+
+    </RelativeLayout>
 </RelativeLayout>

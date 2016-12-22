@@ -77,11 +77,12 @@
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/ed_cases_inv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Cases"
                         android:textColor="@color/black"
-
+                        android:inputType="number"
 
                         android:textColorHint="@color/colorPrimary"
                         app:backgroundTint="@color/base" />
@@ -97,9 +98,11 @@
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/ed_pcs_inv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="pcs"
+                        android:inputType="number"
                         android:textColor="@color/black"
                         android:textColorHint="@color/colorPrimary"
                         app:backgroundTint="@color/base" />
@@ -136,12 +139,15 @@
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/ed_cases"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Cases"
                         android:textColor="@color/black"
                         android:textColorHint="@color/colorPrimary"
-                        app:backgroundTint="@color/base" />
+                        app:backgroundTint="@color/base"
+                        android:inputType="number"
+                        />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -154,9 +160,11 @@
                     app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/ed_pcs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="pcs"
+                        android:inputType="number"
                         android:textColor="@color/black"
                         android:textColorHint="@color/colorPrimary"
                         app:backgroundTint="@color/base" />
@@ -169,6 +177,7 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_main"

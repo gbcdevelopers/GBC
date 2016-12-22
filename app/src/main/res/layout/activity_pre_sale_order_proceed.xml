@@ -23,6 +23,7 @@
         android:background="@drawable/back_radient"
         android:orientation="vertical"
         android:id="@+id/ll_common"
+        android:visibility="gone"
         >
 
     <TextView
@@ -68,7 +69,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_above="@+id/btn_confirm_delivery_presale_proceed"
         android:layout_below="@+id/ll_common"
         android:orientation="vertical">
 
@@ -100,15 +101,16 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/iv_calander_presale_proced"
+                    android:layout_toLeftOf="@+id/iv_calander"
                     android:text="16/01/2017"
                     android:textSize="20dp" />
 
                 <ImageView
-                    android:id="@+id/iv_calander_presale_proced"
+                    android:id="@+id/iv_calander"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_alignParentRight="true"
@@ -118,6 +120,45 @@
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
+
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -131,7 +172,9 @@
             android:layout_marginRight="16dp"
             card_view:cardCornerRadius="3dp"
             card_view:cardElevation="4dp"
-            card_view:cardUseCompatPadding="true">
+            card_view:cardUseCompatPadding="true"
+            android:visibility="gone"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"

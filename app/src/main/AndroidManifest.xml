@@ -43,6 +43,7 @@
             android:label="Single Item"/>
 
 
+
         <activity
             android:name=".activities.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -50,6 +51,13 @@
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
 
+
+        <activity
+            android:name=".activities.CategoryListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/dashboard"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="portrait" />
 
 
 
@@ -65,7 +73,7 @@
             android:name=".activities.SalesInvoiceOptionActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" />
 
         <activity
@@ -84,14 +92,14 @@
             android:name=".activities.SalesInvoiceActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".activities.ShelfStockActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" />
 
         <activity
@@ -207,6 +215,13 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activities.CustomerMessageListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activities.ProductListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
@@ -266,15 +281,9 @@
 
 
         <activity
-            android:name=".activities.GNBReturnActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.PaymentDetails"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
 
             android:screenOrientation="portrait" />
         <activity
@@ -367,7 +376,64 @@
             android:name=".activities.CustomerOperationsMapActivity"
             android:label="@string/map"
             android:parentActivityName=".activities.CustomerOperationsActivity"
-            android:screenOrientation="portrait" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.InformationsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.ReviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.TodaysSummaryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.CustomerListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.TodaysUnservicedActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.TodaysScheduleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.AllRouteCustomerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.ItemListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.PriceListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.TodaysOrderActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.DataPoustingAuditActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"

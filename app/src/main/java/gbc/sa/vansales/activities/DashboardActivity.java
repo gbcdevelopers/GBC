@@ -41,6 +41,7 @@ public class DashboardActivity extends AppCompatActivity
     TextView tv_dashboard;
     ImageView iv_drawer;
     DrawerLayout drawer;
+    Button btn_message;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,27 @@ public class DashboardActivity extends AppCompatActivity
         tv_dashboard=(TextView)findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
         iv_drawer=(ImageView)findViewById(R.id.iv_drawer);
+        btn_message=(Button)findViewById(R.id.btn_messages);
+
+
+
+
+        btn_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(DashboardActivity.this,CustomerMessageListActivity.class);
+                intent.putExtra("from","dash");
+                startActivity(intent);
+
+
+
+            }
+        });
+
+
+
+
+
         iv_drawer.setVisibility(View.VISIBLE);
         iv_drawer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -239,7 +261,8 @@ public class DashboardActivity extends AppCompatActivity
             startActivity(intent);
             //Toast.makeText(getApplicationContext(),"Customer Operation",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.information) {
-            Toast.makeText(getApplicationContext(),"Information",Toast.LENGTH_SHORT).show();
+            Intent i =new Intent(DashboardActivity.this,InformationsActivity.class);
+            startActivity(i);
         } else if (id == R.id.endtrip) {
             Intent intent=new Intent(DashboardActivity.this,EndTripActivity.class);
             startActivity(intent);

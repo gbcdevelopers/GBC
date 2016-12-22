@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -14,9 +15,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.BListFragment;
+import gbc.sa.vansales.Fragment.GListFragment;
+import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.CustomerData;
 
 /**
@@ -56,8 +61,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         tabLayout=(TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Sales"));
         tabLayout.addTab(tabLayout.newTab().setText("Foc"));
-        tabLayout.addTab(tabLayout.newTab().setText("G.return"));
-        tabLayout.addTab(tabLayout.newTab().setText("B.return"));
+        tabLayout.addTab(tabLayout.newTab().setText("G.R"));
+        tabLayout.addTab(tabLayout.newTab().setText("B.R"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 
@@ -134,6 +139,19 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(GListFragment.arrProductList!=null && GListFragment.adapter!=null) {
+            GListFragment.arrProductList.addAll(Const.addlist);
+            GListFragment.adapter.notifyDataSetChanged();
+        }
 
 
     }

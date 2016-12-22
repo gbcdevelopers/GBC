@@ -9,8 +9,10 @@ import gbc.sa.vansales.Fragment.AllCustomerFragment;
 import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.CaptureImageFragment;
+import gbc.sa.vansales.Fragment.CategoryFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
+import gbc.sa.vansales.Fragment.ProductFragment;
 import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
@@ -25,13 +27,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     Bundle bundle;
 
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs,String activtyname) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs, String activtyname) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         activity=activtyname;
     }
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs,String activtyname,Bundle bundle) {
+    public PagerAdapter(FragmentManager fm, int NumOfTabs, String activtyname, Bundle bundle) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         this.bundle = bundle;
@@ -123,6 +125,23 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 default:
                     return null;
             }
+
+        }
+        else if(activity.equals("category"))
+        {
+
+            switch (position) {
+                case 0:
+                    ProductFragment tab1 = new ProductFragment();
+                    return tab1;
+                case 1:
+                    CategoryFragment tab2 = new CategoryFragment();
+                    return tab2;
+                default:
+                    return null;
+
+            }
+
 
         }
 

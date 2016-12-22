@@ -1,18 +1,25 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.PromotionActivity;
+import gbc.sa.vansales.activities.PromotionListActivity;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -110,10 +117,37 @@ public class SalesAdapter extends BaseAdapter  implements Filterable {
         }
         else
         {
+
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(resource, null);
             if(resource== R.layout.custom_promotionlist) {
-                TextView tv = (TextView) convertView.findViewById(R.id.tv_promotion);
+                TextView tv = (TextView) convertView.findViewById(R.id.tv_product);
+                CheckBox checkBox=(CheckBox)convertView.findViewById(R.id.chk_product);
+                LinearLayout ll_promotion=(LinearLayout)convertView.findViewById(R.id.ll_promotion);
+
+
+
+
+                View view=(View)convertView.findViewById(R.id.view);
+                if(position==1)
+                {
+                    view.setBackgroundColor(Color.RED);
+                    checkBox.setVisibility(View.GONE);
+                }
+                else {
+                    view.setBackgroundColor(Color.BLUE);
+                    checkBox.setVisibility(View.VISIBLE);
+
+                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        }
+                    });
+                }
+
+
+
                 tv.setText(strarr[position]);
             }
         }

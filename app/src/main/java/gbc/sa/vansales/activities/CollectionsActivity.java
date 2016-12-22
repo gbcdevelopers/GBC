@@ -3,9 +3,7 @@ package gbc.sa.vansales.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ColletionAdapter;
-import gbc.sa.vansales.adapters.PagerAdapter;
 import gbc.sa.vansales.models.ColletionData;
 
 public class CollectionsActivity extends AppCompatActivity {
@@ -26,15 +23,18 @@ public class CollectionsActivity extends AppCompatActivity {
     TextView tv_top_header;
     ArrayList<ColletionData> colletionDatas = new ArrayList<>();
     ColletionAdapter colletionAdapter;
+    TextView tv_amt_paid;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
 
-        lv_colletions_view= (ListView) findViewById(R.id.lv_colletions_view);
+        lv_colletions_view = (ListView) findViewById(R.id.lv_colletions_view);
 
-        iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
-        tv_top_header=(TextView)findViewById(R.id.tv_top_header);
+        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
@@ -46,6 +46,10 @@ public class CollectionsActivity extends AppCompatActivity {
             }
         });
 
+
+        tv_amt_paid = (TextView) findViewById(R.id.tv_amt_paid);
+
+
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
@@ -53,8 +57,8 @@ public class CollectionsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(CollectionsActivity.this, PaymentDetails.class);
-                startActivity(intent);
+                Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
+                startActivityForResult(intent, 1);
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -71,17 +75,17 @@ public class CollectionsActivity extends AppCompatActivity {
 
     }
 
-    public void setData(){
+    public void setData() {
 
-        for (int i=0; i<10; i++){
+        for (int i = 0; i < 10; i++) {
             ColletionData colletionData = new ColletionData();
-            colletionData.setId("16-12-2016/132456458792"+i);
-            colletionData.setSelsemanId("10000241"+i);
-            colletionData.setAmoutDue("0.2"+i+" AED");
+            colletionData.setId("16-12-2016/132456458792" + i);
+            colletionData.setSelsemanId("10000241" + i);
+            colletionData.setAmoutDue("0.2" + i + " AED");
             colletionData.setAmoutAde("0.00");
             colletionDatas.add(colletionData);
         }
-        colletionAdapter = new ColletionAdapter(this,colletionDatas);
+        colletionAdapter = new ColletionAdapter(this, colletionDatas);
         lv_colletions_view.setAdapter(colletionAdapter);
     }
 
@@ -89,5 +93,22 @@ public class CollectionsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (data != null) {
+            if (requestCode == 1) {
+                if (resultCode == RESULT_OK) {
+
+                    String amt=data.getStringExtra("amt");
+                    tv_amt_paid.setText(amt);
+
+                }
+            }
+
+        }
+
     }
 }

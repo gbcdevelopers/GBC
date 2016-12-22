@@ -1,10 +1,8 @@
 package gbc.sa.vansales.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -84,9 +82,9 @@ public class PromotionListActivity extends AppCompatActivity {
         });
 
         arrayList=new ArrayList<>();
-        arrayList.add("a");
-        arrayList.add("b");
-        arrayList.add("c");
+        arrayList.add("50% AMC Invoice Discount");
+        arrayList.add("20% FOC Discount");
+        arrayList.add("10% Other Discount");
 
         adapter = new SalesAdapter(PromotionListActivity.this, arrayList, R.layout.custom_promotionlist);
         list_promotion.setAdapter(adapter);
@@ -106,15 +104,17 @@ public class PromotionListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> arg0, View view, int position,
                                     long arg3) {
                 if (swipeDetector.swipeDetected()) {
+
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
 
 
-                        TextView tv = (TextView) view.findViewById(R.id.tv_promotion);
-                        String str_promotion_message = tv.getText().toString();
+//                        TextView tv = (TextView) view.findViewById(R.id.tv_product);
+//                        String str_promotion_message = tv.getText().toString();
 
 
                         Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
-                        intent.putExtra("msg", str_promotion_message);
+                        intent.putExtra("msg", arrayList.get(position));
+                        intent.putExtra("pos",position);
                         startActivity(intent);
                         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
@@ -123,6 +123,24 @@ public class PromotionListActivity extends AppCompatActivity {
 
                     }
                 }
+                else
+                {
+
+
+
+
+                     TextView tv = (TextView) view.findViewById(R.id.tv_product);
+                        String str_promotion_message = tv.getText().toString();
+
+
+                        Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
+                        intent.putExtra("msg", str_promotion_message);
+                     intent.putExtra("pos",position);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+
+
+                }
             }
 
         };
@@ -130,6 +148,8 @@ public class PromotionListActivity extends AppCompatActivity {
 
         list_promotion.setOnTouchListener(swipeDetector);
         list_promotion.setOnItemClickListener(listener);
+
+
 
     }
 }
