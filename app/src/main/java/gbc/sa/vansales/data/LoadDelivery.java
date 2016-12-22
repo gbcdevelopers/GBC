@@ -1,4 +1,6 @@
 package gbc.sa.vansales.data;
+import java.util.HashMap;
+
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.DownloadData;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -7,10 +9,17 @@ import gbc.sa.vansales.utils.LoadingSpinner;
  */
 public class LoadDelivery {
     private static final String COLLECTION_NAME = "LoadDeliveryHdSet";
-    private static final String EXPANSION_NAME = "LoadDelItems";
+    private static final String LOAD_DEL_ITEMS = "LoadDelItems";
     private static final String TRIP_ID = "ITripId";
 
     public static void load(String tripId, DatabaseHandler db){
-        new DownloadData(tripId,COLLECTION_NAME,EXPANSION_NAME,db);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put(TRIP_ID,tripId);
+
+        HashMap<String,String>expansion = new HashMap<>();
+        expansion.put(LOAD_DEL_ITEMS,LOAD_DEL_ITEMS);
+
+        new DownloadData(COLLECTION_NAME,params,expansion,db);
     }
 }

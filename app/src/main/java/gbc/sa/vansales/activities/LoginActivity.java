@@ -132,10 +132,11 @@ public class LoginActivity extends Activity {
                                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which) {
-               Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-               startActivityForResult(intent, 0);
-               finish();
-               overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                       downloadData("GBC012000000001");
+                                Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                                startActivityForResult(intent, 0);
+                                finish();
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                    }
                                })
                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

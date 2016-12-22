@@ -25,50 +25,18 @@ import gbc.sa.vansales.utils.UrlBuilder;
  */
 public class TripHeader {
     private static final String COLLECTION_NAME = "TripHdSet";
-    private static final String EXPANSION_NAME = "TripSalesArea";
+    private static final String TRIP_SALES_AREA = "TripSalesArea";
     private static final String TRIP_ID = "ITripId";
-    LoadingSpinner loadingSpinner;
 
     public static void load(String tripId, DatabaseHandler db){
-        new DownloadData(tripId,COLLECTION_NAME,EXPANSION_NAME,db);
-       // new downloadData("GBC012000000001");
-    }
 
-    private static class downloadData extends AsyncTask<Void,Void,Void> {
+        HashMap<String, String>params = new HashMap<>();
+        params.put(TRIP_ID,tripId);
 
-        private String url;
-        private String jsonResponse;
+        HashMap<String,String>expansion = new HashMap<>();
+        expansion.put(TRIP_SALES_AREA,TRIP_SALES_AREA);
 
-        private downloadData(String tripid) {
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put(TRIP_ID, tripid);
-            this.url = UrlBuilder.build(COLLECTION_NAME, null, map);
-            this.url = url + "&$expand=" + EXPANSION_NAME;
-            execute();
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            this.jsonResponse = IntegrationService.loadData(this.url);
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            try {
-                JSONObject jsonObj = new JSONObject(this.jsonResponse);
-                jsonObj = jsonObj.getJSONObject("d");
-                JSONArray jsonArray = jsonObj.getJSONArray("results");
-                jsonObj = jsonArray.getJSONObject(0);
-                Log.e("JSON Trip", "" + jsonObj);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        new DownloadData(COLLECTION_NAME,params,expansion,db);
+        // new downloadData("GBC012000000001");
     }
 }

@@ -4,6 +4,7 @@ package gbc.sa.vansales.utils;
  */
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -37,6 +38,18 @@ public class UrlBuilder {
 
         return url;
     }
+
+    public static String buildExpansion(String collection, HashMap<String, String> parameters, HashMap<String, String> expansion) {
+        String url = collection;
+
+        if (parameters != null && parameters.size() > 0) {
+            url += expansionBuilder(parameters,expansion);
+        }
+
+        return url;
+    }
+
+
 
     public static String paramsBuilder(HashMap<String, String> hashMap) {
         ArrayList<String> list = new ArrayList<>();
@@ -76,6 +89,43 @@ public class UrlBuilder {
         }
 
         return "$filter=" + TextUtils.join("%20" + (isOr ? "or" : "and") + "%20", list);
+    }
+
+    public static String expansionBuilder(HashMap<String, String> parameters, HashMap<String,String>expansionSets){
+
+        ArrayList<String> list = new ArrayList<>();
+        for (Map.Entry entry : parameters.entrySet()) {
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
+
+            value = UrlBuilder.clean(value);
+
+            try {
+                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            list.add(entry.getKey() + "%20eq%20'" + value + "'");
+        }
+        if(!expansionSets.isEmpty()){
+            list.add("&$expand=");
+            for (Map.Entry entry : expansionSets.entrySet()) {
+                String value = entry.getValue() == null ? null : entry.getValue().toString();
+
+                value = UrlBuilder.clean(value);
+
+                try {
+                    value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                list.add(value + ",");
+            }
+        }
+
+        Log.e("Expansion Builder", "" + "$filter=" + list);
+        return "$filter=" + list;
     }
 
     public static String clean(String data) {

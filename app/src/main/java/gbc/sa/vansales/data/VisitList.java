@@ -1,4 +1,6 @@
 package gbc.sa.vansales.data;
+import java.util.HashMap;
+
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.DownloadData;
 /**
@@ -10,6 +12,11 @@ public class VisitList {
     private static final String TRIP_ID = "ITripId";
 
     public static void load(String tripId, DatabaseHandler db){
-        new DownloadData(tripId,COLLECTION_NAME,"",db);
+        HashMap<String, String> params = new HashMap<>();
+        params.put(TRIP_ID,tripId);
+
+        HashMap<String,String>expansion = new HashMap<>();
+
+        new DownloadData(COLLECTION_NAME,params,expansion,db);
     }
 }

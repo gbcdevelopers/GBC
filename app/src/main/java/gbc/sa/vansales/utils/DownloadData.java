@@ -1,5 +1,6 @@
 package gbc.sa.vansales.utils;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,31 +9,24 @@ import java.util.HashMap;
  */
 public class DownloadData extends AsyncTask<Void, Void, Void>{
 
-    private String tripId;
+    private HashMap<String,String> params;
     private String collectionName;
-    private String expansionName;
-    private String[] expansionSets;
+    private HashMap<String,String>expansions;
     private DatabaseHandler db;
 
-    public DownloadData(String tripId, String collectionName, String expansionName, DatabaseHandler db) {
-        this.tripId = tripId;
+    public DownloadData(String collectionName,HashMap<String, String> parameters, HashMap<String, String> expansion, DatabaseHandler db) {
+        this.params = parameters;
         this.collectionName = collectionName;
-        this.expansionName = expansionName;
+        this.expansions = expansion;
         this.db = db;
         execute();
     }
 
-    public DownloadData(String tripId,String collectionName,String[] expansionSets, DatabaseHandler db) {
-        this.tripId = tripId;
-        this.collectionName = collectionName;
-        this.expansionSets = expansionSets;
-        this.db = db;
-        execute();
-    }
 
     @Override
     protected Void doInBackground(Void... params) {
-
+        String url = UrlBuilder.buildExpansion(this.collectionName, this.params, this.expansions);
+        Log.e("URL in DD",url);
         return null;
     }
 }
