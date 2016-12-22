@@ -9,6 +9,7 @@ package gbc.sa.vansales.activities;
         import com.android.volley.RequestQueue;
         import com.android.volley.toolbox.Volley;
 
+import gbc.sa.vansales.utils.Settings;
 public class AppController extends Application
 {
     public static final String TAG = AppController.class.getSimpleName();
@@ -22,6 +23,7 @@ public class AppController extends Application
         super.onCreate();
         mInstance = this;
         System.out.println("On Create");
+        Settings.initialize(getApplicationContext());
     }
 
     public static synchronized AppController getInstance() {

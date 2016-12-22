@@ -132,11 +132,12 @@ public class LoginActivity extends Activity {
                                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface dialog, int which) {
+                                loadingSpinner.show();
                                        downloadData("GBC012000000001");
-                                Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                               /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                                 startActivityForResult(intent, 0);
                                 finish();
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
                                    }
                                })
                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -173,8 +174,14 @@ public class LoginActivity extends Activity {
                        alertDialog.show();
                    }
                    else{
+
+                      // Settings.getEditor().putString(TRIP_ID, this.returnList.get(2)).commit();
                        Settings.setString(TRIP_ID,this.returnList.get(2));
-                       db.addLoginCredentials("E2000","PASSWORD");
+                       Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                       startActivityForResult(intent, 0);
+                       finish();
+                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                     //  db.addLoginCredentials("E2000","PASSWORD");
 
                    }
 
@@ -197,6 +204,7 @@ public class LoginActivity extends Activity {
     }
 
     public void downloadData(final String tripId){
+        Log.e("Inside chain",""+ tripId);
        Chain chain = new Chain(new Chain.Link(){
            @Override
            public void run() {
@@ -214,13 +222,15 @@ public class LoginActivity extends Activity {
         chain.add(new Chain.Link() {
             @Override
             public void run() {
-                TripHeader.load(tripId,db);
-                LoadDelivery.load(tripId,db);
-                ArticleHeader.load(tripId,db);
-                VisitList.load(tripId,db);
-                CustomerHeader.load(tripId,db);
+                TripHeader.load(LoginActivity.this,tripId, db);
+                LoadDelivery.load(LoginActivity.this,tripId, db);
+                ArticleHeader.load(LoginActivity.this,tripId, db);
+                VisitList.load(LoginActivity.this,tripId, db);
+                CustomerHeader.load(LoginActivity.this,tripId, db);
             }
         });
+
+        chain.start();
 
     }
 
@@ -232,7 +242,7 @@ public class LoginActivity extends Activity {
     }
 
     private void fail() {
-        System.out.println("Test");
+
         if(loadingSpinner.isShowing()){
             loadingSpinner.hide();
             finish();

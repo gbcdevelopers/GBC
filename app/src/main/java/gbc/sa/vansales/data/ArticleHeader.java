@@ -1,4 +1,6 @@
 package gbc.sa.vansales.data;
+import android.content.Context;
+
 import java.util.HashMap;
 
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -12,7 +14,7 @@ public class ArticleHeader {
     private static final String ARTICLE_SALES_AREAS = "ArticleSalesareas";
     private static final String TRIP_ID = "ITripId";
 
-    public static void load(String tripId, DatabaseHandler db){
+    public static void load(Context context,String tripId, DatabaseHandler db){
         HashMap<String, String> params = new HashMap<>();
         params.put(TRIP_ID,tripId);
 
@@ -20,6 +22,6 @@ public class ArticleHeader {
         expansion.put(ARTICLE_ALT_UOM,ARTICLE_ALT_UOM);
         expansion.put(ARTICLE_SALES_AREAS,ARTICLE_SALES_AREAS);
 
-        new DownloadData(COLLECTION_NAME,params,expansion,db);
+        new DownloadData(context,COLLECTION_NAME,params,expansion,db);
     }
 }

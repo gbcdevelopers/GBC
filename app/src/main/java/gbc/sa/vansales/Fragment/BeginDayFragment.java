@@ -250,7 +250,7 @@ public class BeginDayFragment extends Fragment {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
-                                TripHeader.load("GBC012000000001",null);
+                                TripHeader.load(getActivity(),"GBC012000000001",null);
                                 String input = userInput.getText().toString();
                                 if(input.equals(""))
                                 {

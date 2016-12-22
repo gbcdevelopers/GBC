@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class UrlBuilder {
         String url = collection;
 
         if (parameters != null && parameters.size() > 0) {
-            url += expansionBuilder(parameters,expansion);
+            url += "?" + expansionBuilder(parameters,expansion);
         }
 
         return url;
@@ -93,7 +94,9 @@ public class UrlBuilder {
 
     public static String expansionBuilder(HashMap<String, String> parameters, HashMap<String,String>expansionSets){
 
-        ArrayList<String> list = new ArrayList<>();
+        boolean isOr = false;
+        ArrayList<String> paramList = new ArrayList<>();
+        ArrayList<String> expansionList = new ArrayList<>();
         for (Map.Entry entry : parameters.entrySet()) {
             String value = entry.getValue() == null ? null : entry.getValue().toString();
 
@@ -105,10 +108,9 @@ public class UrlBuilder {
                 e.printStackTrace();
             }
 
-            list.add(entry.getKey() + "%20eq%20'" + value + "'");
+            paramList.add(entry.getKey() + "%20eq%20'" + value + "'");
         }
         if(!expansionSets.isEmpty()){
-            list.add("&$expand=");
             for (Map.Entry entry : expansionSets.entrySet()) {
                 String value = entry.getValue() == null ? null : entry.getValue().toString();
 
@@ -120,12 +122,24 @@ public class UrlBuilder {
                     e.printStackTrace();
                 }
 
-                list.add(value + ",");
+                expansionList.add(value);
             }
         }
 
-        Log.e("Expansion Builder", "" + "$filter=" + list);
-        return "$filter=" + list;
+        if(!expansionList.isEmpty()){
+            Log.e("ExpansionList Size","" + expansionList.size());
+            boolean listSize = (expansionList.size()>1);
+            Log.e("Boolean","" + listSize);
+            String url = "$filter=" + TextUtils.join("%20" + (isOr ? "or" : "and") + "%20", paramList) + "&$expand=" + TextUtils.join((listSize ? "," : "" ),expansionList);
+            Log.e("URL for Expansion","" + url);
+            return url;
+        }
+        else{
+            String url = "$filter=" + TextUtils.join("%20" + (isOr ? "or" : "and") + "%20", paramList);
+            Log.e("URL W/o Expansion","" + url);
+            return url;
+        }
+
     }
 
     public static String clean(String data) {
