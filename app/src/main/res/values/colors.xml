@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#E43F3F</color>
+    <color name="primary_dark">#E12929</color>
+    <color name="primary_darker">#CC1D1D</color>
+    <color name="accent">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+    <color name="jet">#222222</color>
+    <color name="oil">#333333</color>
+    <color name="monsoon">#777777</color>
+    <color name="jumbo">#888888</color>
+    <color name="aluminum">#999999</color>
+    <color name="base">#AAAAAA</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="aqua">#0bb5ff</color>
+    <color name="cream">#f9f0ed</color>
+
+    <color name="enabled_color">#000000</color>
+    <color name="disabled_color">#000000</color>
+
+
+    <color name="colorPrimary">#511656</color>
+    <color name="colorPrimaryDark">#340E37</color>
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="colorAccent">#340E37</color>
+
+    <!--<color name="colorPrimary">#125688</color>-->
+    <!--<color name="colorPrimaryDark">#012642</color>-->
+    <!--<color name="textColorPrimary">#FFFFFF</color>-->
+    <!--<color name="colorAccent">#125688</color>-->
+
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+
+    <color name="btn_negative">#dc0d0e</color>
+    <color name="btn_positive">#358a4d</color>
+
+
+    <color name="tile_background">#FFFFFF</color>
+    <color name="tile_highlight">@android:color/holo_blue_light</color>
+    <color name="tile_label">#ECF0F1</color>
+    <color name="blue">#125688</color>
+    <color name="grey_border">#FFF4F4F4</color>
+
+
+    <!--<color name="grey">#808080</color>-->
+    <color name="grey">#ebebeb</color>
+
+
+    <color name="light_purple">#800080</color>
+
+
+
+
+
+    <color name="symptom_color_selected">#003366</color>
+    <color name="reaction_color_selected">#003366</color>
+    <color name="static_text_color">#003366</color>
+    <color name="journal_entry_listitem_text_color">#003366</color>
+    <color name="note_text_disabled">#333333</color>
+
+    <color name="navy">#6699FF</color>
+    <color name="sky">#0099CC</color>
+    <color name="gray">#808080</color>
+    <color name="lightgray">#e7e7e7</color>
+    <color name="lightgray02">#bfbfbf</color>
+    <color name="dark">#000015</color>
+    <color name="lightgreen">#336666</color>
+    <color name="orrange">#e33d1b</color>
+    <color name="darkorrange">#cc2303</color>
+
+
+    <color name="buttoncolor">#06A899</color>
+
+    <color name="manageinventorybuttons">#ffffff</color>
+
+
+    <color name="toolbarcolor">#511656</color>
+
+    <color name="cancelcolor">#E84C3D</color>
+
+
+    <color name="red">#E84C3D</color>
+    <color name="purple">#511656</color>
+    <color name="green">#008000</color>
+
+
+
+
+
+
+
+</resources>

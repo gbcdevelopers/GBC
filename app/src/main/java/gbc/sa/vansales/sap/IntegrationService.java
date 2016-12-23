@@ -136,8 +136,9 @@ public class IntegrationService extends IntentService {
         return mylist;
     }
 
-    public static JSONObject getService(Context context, String url){
+    public static JSONArray getService(Context context, String url){
         JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         try{
             DefaultHttpClient client = new DefaultHttpClient();
             client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
@@ -155,10 +156,9 @@ public class IntegrationService extends IntentService {
                 jsonObj = new JSONObject(jsonString);
                 jsonObj = jsonObj.getJSONObject("d");
                 Log.e("JSON", "" + jsonObj);
-                JSONArray jsonArray = jsonObj.getJSONArray("results");
-                jsonObj = jsonArray.getJSONObject(0);
+                jsonArray = jsonObj.getJSONArray("results");
 
-                return jsonObj;
+                return jsonArray;
             }
             else{
                 Log.e("Fail Again","Fail Again");
@@ -169,7 +169,7 @@ public class IntegrationService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return jsonObj;
+        return jsonArray;
     }
 
     public static String loadData(String url){

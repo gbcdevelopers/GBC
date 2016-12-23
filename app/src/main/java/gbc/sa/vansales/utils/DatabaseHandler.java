@@ -23,86 +23,141 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Table Names
 
-    private static final String LOGIN_CREDENTIALS = "LOGIN_CREDENTIALS";
-    private static final String VISIT_LIST = "VISIT_LIST";
-    private static final String TRIP_HEADER = "TRIP_HEADER";
-    private static final String TRIP_SALES_AREA = "TRIP_SALES_AREA";
-    private static final String ARTICLE_HEADER = "ARTICLE_HEADER";
-    private static final String ARTICLE_UOM = "ARTICLE_UOM";
-    private static final String ARTICLE_SALES_AREA = "ARTICLE_SALES_AREA";
+    public static final String LOGIN_CREDENTIALS = "LOGIN_CREDENTIALS";
+    public static final String VISIT_LIST = "VISIT_LIST";
+    public static final String TRIP_HEADER = "TRIP_HEADER";
+    public static final String TRIP_SALES_AREA = "TRIP_SALES_AREA";
+    public static final String ARTICLE_HEADER = "ARTICLE_HEADER";
+    public static final String ARTICLE_UOM = "ARTICLE_UOM";
+    public static final String ARTICLE_SALES_AREA = "ARTICLE_SALES_AREA";
+    public static final String CUSTOMER_HEADER = "CUSTOMER_HEADER";
+    public static final String CUSTOMER_SALES_AREAS = "CUSTOMER_SALES_AREAS";
+    public static final String CUSTOMER_OPEN_ITEMS = "CUSTOMER_OPEN_ITEMS";
+    public static final String CUSTOMER_CREDIT = "CUSTOMER_CREDIT";
+    public static final String LOAD_DELIVERY_HEADER = "LOAD_DELIVERY";
+    public static final String LOAD_DELIVERY_ITEMS = "LOAD_DELIVERY_ITEMS";
 
     //Properties for Table(Based on Entity Sets)
 
     //UserAuthenticationSet
-    private static final String KEY_ID = "_id";
-    private static final String KEY_USERNAME = "username";
-    private static final String KEY_PASSWORD = "password";
-    private static final String KEY_IV = "iv";
-    private static final String KEY_SYM = "symKey";
+    public static final String KEY_ID = "_id";
+    public static final String KEY_USERNAME = "username";
+    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_IV = "iv";
+    public static final String KEY_SYM = "symKey";
 
     //VisitListSet
-    private static final String KEY_TRIP_ID = "tripId";
-    private static final String KEY_VISITLISTID = "visitListId";
-    private static final String KEY_ITEMNO = "itemNo";
-    private static final String KEY_CUSTOMER_NO = "customerNo";
-    private static final String KEY_EXEC_DATE = "execDate";
-    private static final String KEY_DRIVER = "driver1";
-    private static final String KEY_VP_TYPE = "vpType";
+    public static final String KEY_TRIP_ID = "tripId";
+    public static final String KEY_VISITLISTID = "visitListId";
+    public static final String KEY_ITEMNO = "itemNo";
+    public static final String KEY_CUSTOMER_NO = "customerNo";
+    public static final String KEY_EXEC_DATE = "execDate";
+    public static final String KEY_DRIVER = "driver1";
+    public static final String KEY_VP_TYPE = "vpType";
 
     //TripHeaderSet
-    private static final String KEY_ROUTE = "route";
-    private static final String KEY_TRUCK = "truck";
-    private static final String KEY_PS_DATE = "psDate";
-    private static final String KEY_AS_DATE = "asDate";
-    private static final String KEY_TOUR_TYPE = "tourType";
-    private static final String KEY_CREATED_TIME = "createdTime";
-    private static final String KEY_CREATED_BY = "createdBy";
-    private static final String KEY_SETTLED_BY = "settledBy";
-    private static final String KEY_DOWN_STATUS = "downloadStatus";
-    private static final String KEY_UP_STATUS = "uploadStatus";
-    private static final String KEY_LOADS = "loads";
+    public static final String KEY_ROUTE = "route";
+    public static final String KEY_TRUCK = "truck";
+    public static final String KEY_PS_DATE = "psDate";
+    public static final String KEY_AS_DATE = "asDate";
+    public static final String KEY_TOUR_TYPE = "tourType";
+    public static final String KEY_CREATED_TIME = "createdTime";
+    public static final String KEY_CREATED_BY = "createdBy";
+    public static final String KEY_SETTLED_BY = "settledBy";
+    public static final String KEY_DOWN_STATUS = "downloadStatus";
+    public static final String KEY_UP_STATUS = "uploadStatus";
+    public static final String KEY_LOADS = "loads";
 
     //Trip Sales Area Collection
-    private static final String KEY_DATE = "date";
-    private static final String KEY_START_DATE = "startDate";
-    private static final String KEY_START_TIME = "startTime";
-    private static final String KEY_DIST_CHANNEL = "distChannel";
-    private static final String KEY_DIVISION = "division";
+    public static final String KEY_DATE = "date";
+    public static final String KEY_START_DATE = "startDate";
+    public static final String KEY_START_TIME = "startTime";
+    public static final String KEY_DIST_CHANNEL = "distChannel";
+    public static final String KEY_DIVISION = "division";
 
     //ArticleHeaderSet
-    private static final String KEY_MATERIAL_GROUPA_DESC = "materialGroupADesc";
-    private static final String KEY_MATERIAL_GROUPB_DESC = "materialGroupBDesc";
-    private static final String KEY_MATERIAL_DESC2 = "materialDesc2";
-    private static final String KEY_BATCH_MANAGEMENT = "batchManagement";
-    private static final String KEY_VOLUME_UOM = "volumeUOM";
-    private static final String KEY_VOLUME = "volume";
-    private static final String KEY_WEIGHT_UOM = "weightUOM";
-    private static final String KEY_NET_WEIGHT = "netWeight";
-    private static final String KEY_GROSS_WEIGHT = "grossWeight";
-    private static final String KEY_ARTICLE_CATEGORY = "articleCategory";
-    private static final String KEY_ARTICLE_NO = "articleNo";
-    private static final String KEY_BASE_UOM = "baseUOM";
-    private static final String KEY_MATERIAL_GROUP = "materialGroup";
-    private static final String KEY_MATERIAL_TYPE = "materialType";
-    private static final String KEY_MATERIAL_DESC1 = "materialDesc1";
-    private static final String KEY_MATERIAL_NO = "materialNo";
+    public static final String KEY_MATERIAL_GROUPA_DESC = "materialGroupADesc";
+    public static final String KEY_MATERIAL_GROUPB_DESC = "materialGroupBDesc";
+    public static final String KEY_MATERIAL_DESC2 = "materialDesc2";
+    public static final String KEY_BATCH_MANAGEMENT = "batchManagement";
+    public static final String KEY_VOLUME_UOM = "volumeUOM";
+    public static final String KEY_VOLUME = "volume";
+    public static final String KEY_WEIGHT_UOM = "weightUOM";
+    public static final String KEY_NET_WEIGHT = "netWeight";
+    public static final String KEY_GROSS_WEIGHT = "grossWeight";
+    public static final String KEY_ARTICLE_CATEGORY = "articleCategory";
+    public static final String KEY_ARTICLE_NO = "articleNo";
+    public static final String KEY_BASE_UOM = "baseUOM";
+    public static final String KEY_MATERIAL_GROUP = "materialGroup";
+    public static final String KEY_MATERIAL_TYPE = "materialType";
+    public static final String KEY_MATERIAL_DESC1 = "materialDesc1";
+    public static final String KEY_MATERIAL_NO = "materialNo";
 
     //Article UOM Collection
-    private static final String KEY_UOM = "uom";
-    private static final String KEY_NUMERATOR = "numerator";
-    private static final String KEY_DENOMINATOR = "denominator";
+    public static final String KEY_UOM = "uom";
+    public static final String KEY_NUMERATOR = "numerator";
+    public static final String KEY_DENOMINATOR = "denominator";
 
     //Article Sales Area Collection
-    private static final String KEY_PRICE_REF_MAT = "priceRefMat";
-    private static final String KEY_SALES_UOM = "salesUOM";
-    private static final String KEY_MATERIAL_PURCHASE_GROUP = "materialPurGroup";
-    private static final String KEY_PRODUCT_HIERARCHY = "prodHierarchy";
-    private static final String KEY_MINIMUM_ORDER_QTY = "minOrderQty";
-    private static final String KEY_SALES_STATUS = "salesStatus";
-    private static final String KEY_EMPTY_R_BLOCK = "emptyRBlock";
-    private static final String KEY_EMPTY_GROUP = "emptyGroup";
-    private static final String KEY_SKT_OF = "sktOf";
-    private static final String KEY_SALES_ORG = "salesOrg";
+    public static final String KEY_PRICE_REF_MAT = "priceRefMat";
+    public static final String KEY_SALES_UOM = "salesUOM";
+    public static final String KEY_MATERIAL_PURCHASE_GROUP = "materialPurGroup";
+    public static final String KEY_PRODUCT_HIERARCHY = "prodHierarchy";
+    public static final String KEY_MINIMUM_ORDER_QTY = "minOrderQty";
+    public static final String KEY_SALES_STATUS = "salesStatus";
+    public static final String KEY_EMPTY_R_BLOCK = "emptyRBlock";
+    public static final String KEY_EMPTY_GROUP = "emptyGroup";
+    public static final String KEY_SKT_OF = "sktOf";
+    public static final String KEY_SALES_ORG = "salesOrg";
+
+    //Customer Header Set
+    public static final String KEY_ORDER_BLOCK = "orderBlock";
+    public static final String KEY_INVOICE_BLOCK = "invoiceBlock";
+    public static final String KEY_DELIVERY_BLOCK = "deliveryBlock";
+    public static final String KEY_ROOM_NO = "roomNo";
+    public static final String KEY_FLOOR = "floor";
+    public static final String KEY_BUILDING = "building";
+    public static final String KEY_HOME_CITY = "homeCity";
+    public static final String KEY_STREET5 = "street5";
+    public static final String KEY_STREET4 = "street4";
+    public static final String KEY_STREET3 = "street3";
+    public static final String KEY_STREET2 = "street2";
+    public static final String KEY_NAME4 = "name4";
+    public static final String KEY_COUNTRY_CODE = "countryCode";
+    public static final String KEY_NAME3 = "name3";
+    public static final String KEY_NAME1 = "name1";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_STREET = "street";
+    public static final String KEY_NAME2 = "name2";
+    public static final String KEY_CITY = "city";
+    public static final String KEY_DISTRICT = "district";
+    public static final String KEY_REGION = "region";
+    public static final String KEY_SITE_CODE = "siteCode";
+    public static final String KEY_POST_CODE = "postCode";
+    public static final String KEY_PHONE_NO = "phoneNo";
+    public static final String KEY_COMPANY_CODE = "companyCode";
+
+    //Customer Sales Area
+    public static final String KEY_SOLD_TO_NO= "soldTo";
+    public static final String KEY_BILL_TO_NO = "billTo";
+    public static final String KEY_SHIP_TO_NO = "shipTo";
+    public static final String KEY_PAYER_NO = "payer";
+    public static final String KEY_SALES_NO = "salesNo";
+    public static final String KEY_CUSTOMER_GROUP1 = "customerGroup1";
+    public static final String KEY_PAYCODE = "payCode";
+    public static final String KEY_CUSTOMER_GROUP2 = "customerGroup2";
+    public static final String KEY_CUSTOMER_GROUP3 = "customerGroup3";
+    public static final String KEY_CUSTOMER_GROUP4 = "customerGroup4";
+    public static final String KEY_CUSTOMER_GROUP5 = "customerGroup5";
+
+    //Customer Credit Collection
+    public static final String KEY_CREDIT_CONTROL_AREA= "creditControlArea";
+    public static final String KEY_CREDIT_LIMIT = "creditLimit";
+    public static final String KEY_SPECIAL_LIABILITIES = "specialLiability";
+    public static final String KEY_RECEIVABLES = "receivables";
+    public static final String KEY_CURRENCY = "currency";
+    public static final String KEY_RISK_CAT = "riskCategory";
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -205,6 +260,66 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_SALES_ORG + " TEXT,"
                 + KEY_MATERIAL_NO + " TEXT " + ")";
 
+        String TABLE_CUSTOMER_HEADER = "CREATE TABLE " + CUSTOMER_HEADER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_ORDER_BLOCK  + " TEXT,"
+                + KEY_INVOICE_BLOCK  + " TEXT,"
+                + KEY_DELIVERY_BLOCK  + " TEXT,"
+                + KEY_ROOM_NO  + " TEXT,"
+                + KEY_FLOOR  + " TEXT,"
+                + KEY_BUILDING   + " TEXT,"
+                + KEY_HOME_CITY   + " TEXT,"
+                + KEY_STREET5   + " TEXT,"
+                + KEY_STREET4   + " TEXT,"
+                + KEY_STREET3   + " TEXT,"
+                + KEY_STREET2   + " TEXT,"
+                + KEY_NAME4   + " TEXT,"
+                + KEY_DRIVER  + " TEXT,"
+                + KEY_CUSTOMER_NO  + " TEXT,"
+                + KEY_COUNTRY_CODE   + " TEXT,"
+                + KEY_NAME3   + " TEXT,"
+                + KEY_NAME1   + " TEXT,"
+                + KEY_ADDRESS   + " TEXT,"
+                + KEY_STREET   + " TEXT,"
+                + KEY_NAME2   + " TEXT,"
+                + KEY_CITY   + " TEXT,"
+                + KEY_DISTRICT   + " TEXT,"
+                + KEY_REGION   + " TEXT,"
+                + KEY_SITE_CODE   + " TEXT,"
+                + KEY_POST_CODE   + " TEXT,"
+                + KEY_PHONE_NO   + " TEXT,"
+                + KEY_COMPANY_CODE  + " TEXT " + ")";
+
+        String TABLE_CUSTOMER_SALES_AREAS = "CREATE TABLE " + CUSTOMER_SALES_AREAS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_CUSTOMER_NO  + " TEXT,"
+                + KEY_DIVISION  + " TEXT,"
+                + KEY_DIST_CHANNEL  + " TEXT,"
+                + KEY_SALES_ORG  + " TEXT,"
+                + KEY_DRIVER  + " TEXT,"
+                + KEY_SOLD_TO_NO  + " TEXT,"
+                + KEY_BILL_TO_NO   + " TEXT,"
+                + KEY_SHIP_TO_NO  + " TEXT,"
+                + KEY_PAYER_NO   + " TEXT,"
+                + KEY_SALES_NO   + " TEXT,"
+                + KEY_CUSTOMER_GROUP1   + " TEXT,"
+                + KEY_PAYCODE   + " TEXT,"
+                + KEY_CUSTOMER_GROUP2  + " TEXT,"
+                + KEY_CUSTOMER_GROUP3  + " TEXT,"
+                + KEY_CUSTOMER_GROUP4   + " TEXT,"
+                + KEY_CUSTOMER_GROUP5  + " TEXT " + ")";
+
+        String TABLE_CUSTOMER_CREDIT = "CREATE TABLE " + CUSTOMER_CREDIT + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_CREDIT_CONTROL_AREA + " TEXT,"
+                + KEY_CREDIT_LIMIT  + " TEXT,"
+                + KEY_SPECIAL_LIABILITIES  + " TEXT,"
+                + KEY_RECEIVABLES  + " TEXT,"
+                + KEY_CURRENCY  + " TEXT,"
+                + KEY_RISK_CAT  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -214,6 +329,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_ARTICLE_HEADER);
         db.execSQL(TABLE_ARTICLE_UOM);
         db.execSQL(TABLE_ARTICLE_SALES_AREA);
+        db.execSQL(TABLE_CUSTOMER_HEADER);
+        db.execSQL(TABLE_CUSTOMER_SALES_AREAS);
+        db.execSQL(TABLE_CUSTOMER_CREDIT);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -224,7 +342,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ARTICLE_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + ARTICLE_UOM);
         db.execSQL("DROP TABLE IF EXISTS " + ARTICLE_SALES_AREA);
-
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_HEADER);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_SALES_AREAS);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_CREDIT);
         onCreate(db);
     }
 
@@ -235,7 +355,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         byte[] sym = SecureStore.validateKey(SecureStore.generateKey(32));
         byte[] iv = SecureStore.validateKey(SecureStore.generateKey(16));
-        String encryptedPassword = SecureStore.encryptData(sym,iv,password);
+        String encryptedPassword = SecureStore.encryptData(sym, iv, password);
 
 
         values.put(KEY_SYM,new String(sym));
@@ -246,13 +366,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Storing Data inside Database Table
-    public void addData(String tablename, HashMap<String, String> parameters, HashMap<String, String> filters, boolean isOr){
+    public void addData(String tablename, HashMap<String, String> keyMap){
         SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-
+        for (Map.Entry entry : keyMap.entrySet()){
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
+            value = clean(value);
+            try {
+                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            values.put(entry.getKey().toString(),value);
+        }
+        db.insert(tablename, null, values);
+        db.close();
     }
 
-    public static String paramsBuilder(HashMap<String, String> hashMap) {
+    public static String paramsBuilder(HashMap<String, String> hashMap,boolean isValue) {
         ArrayList<String> list = new ArrayList<>();
 
         for (Map.Entry entry : hashMap.entrySet()) {
@@ -263,10 +395,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            list.add(entry.getKey() + "," + value + "");
+            if(!isValue){
+                list.add(entry.getKey().toString());
+            }
+            else{
+                list.add(value);
+            }
+
         }
 
-        return "(" + TextUtils.join(",", list) + ")";
+        return  TextUtils.join(",", list);
     }
 
     public static String clean(String data) {
