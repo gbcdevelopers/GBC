@@ -54,6 +54,16 @@ public class VanStockActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
+
+             /*   Dialog alertDialog = new Dialog(VanStockActivity.this);
+                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                alertDialog.setContentView(R.layout.activity_print);
+                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                alertDialog.show();
+*/
+
+
                 Dialog dialog = new Dialog(VanStockActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);

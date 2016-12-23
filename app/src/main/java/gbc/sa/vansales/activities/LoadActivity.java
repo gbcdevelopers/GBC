@@ -22,9 +22,12 @@ import gbc.sa.vansales.R;
 
 public class LoadActivity extends AppCompatActivity
 {
-   public static ArrayList<LoadConstants> searchResults;
+    public static ArrayList<LoadConstants> searchResults;
     public static ListAdapter adapter;
     public static ListView lv;
+
+    public static Object o;
+    public static LoadConstants fullObject;
 
     //    TextView status;
     public void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,8 @@ public class LoadActivity extends AppCompatActivity
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                Object o = lv.getItemAtPosition(position);
-                LoadConstants fullObject = (LoadConstants) o;
+                o = lv.getItemAtPosition(position);
+                fullObject = (LoadConstants) o;
 
 
                // lv.invalidateViews();
@@ -71,8 +74,8 @@ public class LoadActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            Toast.makeText(getApplicationContext(),Integer.toString(searchResults.size()),Toast.LENGTH_SHORT).show();
-    lv.setAdapter(new SingleLoadActivity(LoadActivity.this,searchResults));
+        Toast.makeText(getApplicationContext(),"Load Checked!",Toast.LENGTH_SHORT).show();
+        lv.setAdapter(new SingleLoadActivity(LoadActivity.this,searchResults));
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -97,19 +100,12 @@ public class LoadActivity extends AppCompatActivity
 
         LoadConstants sr = new LoadConstants();
 
-        sr.setName("Load #");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
-        sr.setStatus("UnChecked");
-        results.add(sr);
-
-
-        sr = new LoadConstants();
         sr.setName("Load # 1");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
+
 
         sr = new LoadConstants();
         sr.setName("Load # 2");
@@ -119,28 +115,35 @@ public class LoadActivity extends AppCompatActivity
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #3");
+        sr.setName("Load # 3");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load # 4" );
+        sr.setName("Load #4");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load # 5");
+        sr.setName("Load # 5" );
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #");
+        sr.setName("Load # 6");
+        sr.setCityState("Loading Date");
+        sr.setPhone("Available Load");
+        sr.setStatus("UnChecked");
+        results.add(sr);
+
+        sr = new LoadConstants();
+        sr.setName("Load 7");
         sr.setCityState("Loading Date");
         sr.setPhone("Available Load");
         sr.setStatus("UnChecked");

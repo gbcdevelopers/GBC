@@ -71,7 +71,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                listView.setAdapter(null);
 
-                LoadActivity.searchResults.remove(position);
+               // LoadActivity.searchResults.remove(position);
+
+                LoadActivity.fullObject.setStatus("Checked");
+
 
                 String size=Integer.toString(LoadActivity.searchResults.size());
                // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();

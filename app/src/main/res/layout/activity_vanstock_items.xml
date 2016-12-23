@@ -3,21 +3,39 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
+
+    <View
+        android:id="@+id/v1"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"/>
+
+
     <TextView
+        android:layout_below="@+id/v1"
         android:id="@+id/ranklabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Item Code : "
         android:textStyle="bold"
+        android:layout_marginTop="5dp"
         android:paddingBottom="5dp"
+        android:textColor="@color/colorPrimary"
         />
 
     <TextView
         android:id="@+id/item"
+        android:layout_below="@+id/v1"
+
+        android:layout_marginTop="5dp"
+
+
+        android:textColor="@color/black"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ranklabel"
-
         android:paddingBottom="5dp"
         />
 
@@ -28,6 +46,8 @@
         android:layout_below="@+id/ranklabel"
         android:text="Cases : "
 
+        android:textColor="@color/colorPrimary"
+
         android:paddingBottom="5dp"
         android:textStyle="bold"
         />
@@ -36,8 +56,10 @@
         android:id="@+id/cases"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/item"
+        android:layout_below="@+id/ranklabel"
 
+
+        android:textColor="@color/black"
         android:paddingBottom="5dp"
         android:layout_toRightOf="@+id/countrylabel"
         />
@@ -49,6 +71,8 @@
         android:layout_below="@+id/countrylabel"
         android:text="Description : "
 
+        android:textColor="@color/colorPrimary"
+
         android:paddingBottom="5dp"
         android:textStyle="bold"
         />
@@ -57,8 +81,9 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/cases"
+        android:layout_below="@+id/countrylabel"
 
+        android:textColor="@color/black"
         android:paddingBottom="5dp"
         android:layout_toRightOf="@+id/populationlabel"
 
@@ -72,6 +97,8 @@
         android:layout_below="@+id/description"
         android:text="Units : "
 
+        android:textColor="@color/colorPrimary"
+
         android:paddingBottom="5dp"
         android:textStyle="bold"
         />
@@ -83,9 +110,18 @@
         android:layout_below="@+id/description"
         android:layout_toRightOf="@+id/unitlabel"
 
+        android:textColor="@color/black"
         android:paddingBottom="5dp"
 
         />
+
+    <View
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/units"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"/>
+
 
 
 </RelativeLayout>

@@ -17,12 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Helpers;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static gbc.sa.vansales.R.id.day;
 import static gbc.sa.vansales.R.id.editTextDialogUserInput;
 
@@ -54,15 +56,15 @@ public class BeginDayFragment extends Fragment {
 
     String TAG = BeginDayFragment.class.getSimpleName();
 
-    TextView salesDate;
-    TextView time;
-    TextView delieveryDate;
-    TextView route;
-    TextView salesManNo;
-    TextView salesManName;
-    TextView deliveryRoute;
-    TextView vehicleNo;
-    TextView day;
+    EditText salesDate;
+    EditText time;
+    EditText delieveryDate;
+    EditText route;
+    EditText salesManNo;
+    EditText salesManName;
+    EditText deliveryRoute;
+    EditText vehicleNo;
+    EditText day;
     View view;
     Calendar myCalendar = Calendar.getInstance();
     String stringSalesDate = "";
@@ -75,15 +77,15 @@ public class BeginDayFragment extends Fragment {
 
         view =inflater.inflate(R.layout.activity_begin_day, container, false);
 
-        salesDate = (TextView) view.findViewById(R.id.salesDate);
-        time = (TextView) view.findViewById(R.id.time);
-        delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
-        route = (TextView)view.findViewById(R.id.route);
-        salesManNo = (TextView)view.findViewById(R.id.salesManNo);
-        salesManName = (TextView)view.findViewById(R.id.salesManName);
-        deliveryRoute = (TextView)view.findViewById(R.id.delieveryRoute);
-        vehicleNo = (TextView)view.findViewById(R.id.vehicleNo);
-        day = (TextView)view.findViewById(R.id.day);
+        salesDate = (EditText) view.findViewById(R.id.salesDate);
+        time = (EditText) view.findViewById(R.id.time);
+        delieveryDate = (EditText) view.findViewById(R.id.delieveryDate);
+        route = (EditText)view.findViewById(R.id.route);
+        salesManNo = (EditText)view.findViewById(R.id.salesManNo);
+        salesManName = (EditText)view.findViewById(R.id.salesManName);
+        deliveryRoute = (EditText)view.findViewById(R.id.delieveryRoute);
+        vehicleNo = (EditText)view.findViewById(R.id.vehicleNo);
+        day = (EditText)view.findViewById(R.id.day);
 
         route.setEnabled(false);
         salesManNo.setEnabled(false);
@@ -230,6 +232,19 @@ public class BeginDayFragment extends Fragment {
     }
 
 
+
+
+    void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        View focusedView = getActivity().getCurrentFocus();
+        if (focusedView != null) {
+            inputManager.hideSoftInputFromWindow(focusedView.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+
     public void showDialog()
     {
         LayoutInflater li = LayoutInflater.from(getActivity());
@@ -269,7 +284,11 @@ public class BeginDayFragment extends Fragment {
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
+                                hideKeyboard();
                                 dialog.cancel();
+
+
+
 
 //                                Intent i=new Intent(getActivity(),DashboardActivity.class);
 //                                startActivity(i);
