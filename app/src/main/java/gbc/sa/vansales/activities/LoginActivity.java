@@ -80,12 +80,9 @@ public class LoginActivity extends Activity {
 
             //Logic to Login the user
             //For development purpose hardcoding credentials
-            new LoginUser("E2000", "PASSWORD");
+            //new LoginUser("E2000", "PASSWORD");
 
-/*            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-            startActivityForResult(intent, 0);
-            finish();*/
-            //new LoginUser(id, password);
+            new LoginUser(id, password);
         }
     }
 
@@ -123,82 +120,84 @@ public class LoginActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-           if(loadingSpinner.isShowing()){
-               loadingSpinner.hide();
-               Log.e("Return List", "" + this.returnList.size());
-               if(this.returnList.size()>0){
-                   if(this.returnList.get(2).contains("Trip")){
-                       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-                       alertDialogBuilder.setTitle("Message")
-                               .setMessage(this.returnList.get(2))
-                               .setCancelable(false)
-                               .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
-                                   @Override
-                                   public void onClick(DialogInterface dialog, int which) {
-                                loadingSpinner.show();
-                                       downloadData("GBC012000000001");
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+                Log.e("Return List", "" + this.returnList.size());
+                if(this.returnList.size()>0){
+                    if(this.returnList.get(2).contains("Trip")){
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                        alertDialogBuilder.setTitle("Message")
+                                .setMessage(this.returnList.get(2))
+                                .setCancelable(false)
+                                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        loadingSpinner.show();
+                                /*if(!checkTripID("GBC012000000003")){
+                                    downloadData("GBC012000000003");
+                                }*/
+                                        downloadData("GBC012000000003");
                                /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                                 startActivityForResult(intent, 0);
                                 finish();
                                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
-                                   }
-                               })
-                               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                   @Override
-                                   public void onClick(DialogInterface dialog, int which) {
-                                       dialog.cancel();
-                                   }
-                               });
-                       // create alert dialog
-                       AlertDialog alertDialog = alertDialogBuilder.create();
-                       // show it
-                       alertDialog.show();
-                   }
-                   else if(this.returnList.get(2).contains("Incorrect")){
-                       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-                       alertDialogBuilder.setTitle("Message")
-                               .setMessage(this.returnList.get(2))
-                               .setCancelable(false)
-                               .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                   @Override
-                                   public void onClick(DialogInterface dialog, int which) {
-                                      dialog.cancel();
-                                   }
-                               })
-                               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                   @Override
-                                   public void onClick(DialogInterface dialog, int which) {
-                                       dialog.cancel();
-                                   }
-                               });
-                       // create alert dialog
-                       AlertDialog alertDialog = alertDialogBuilder.create();
-                       // show it
-                       alertDialog.show();
-                   }
-                   else{
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                    }
+                    else if(this.returnList.get(2).contains("Incorrect")){
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                        alertDialogBuilder.setTitle("Message")
+                                .setMessage(this.returnList.get(2))
+                                .setCancelable(false)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                    }
+                    else{
 
-                      // Settings.getEditor().putString(TRIP_ID, this.returnList.get(2)).commit();
-                       Settings.setString(TRIP_ID,this.returnList.get(2));
-                       Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                        // Settings.getEditor().putString(TRIP_ID, this.returnList.get(2)).commit();
+                        Settings.setString(TRIP_ID, this.returnList.get(2));
+                        boolean checkTripID = checkTripID(this.returnList.get(2));
+                        if(!checkTripID){
+                            downloadData(this.returnList.get(2));
+                        }
+                        db.addLoginCredentials("E2000", "PASSWORD");
+
+
+                      /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                        startActivityForResult(intent, 0);
                        finish();
-                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                     //  db.addLoginCredentials("E2000","PASSWORD");
+                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
+                        //  db.addLoginCredentials("E2000","PASSWORD");
 
+                    }
 
-                       //temporarily if login problem occurs
-//                       downloadData("GBC012000000001");
-//                       Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-//                       startActivityForResult(intent, 0);
-//                       finish();
-//                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                }
 
-                   }
-
-               }
-
-           }
+            }
         }
     }
 
@@ -216,12 +215,12 @@ public class LoginActivity extends Activity {
 
     public void downloadData(final String tripId){
         Log.e("Inside chain",""+ tripId);
-       Chain chain = new Chain(new Chain.Link(){
-           @Override
-           public void run() {
-               go();
-           }
-       });
+        Chain chain = new Chain(new Chain.Link(){
+            @Override
+            public void run() {
+                go();
+            }
+        });
 
         chain.setFail(new Chain.Link() {
             @Override
@@ -233,11 +232,11 @@ public class LoginActivity extends Activity {
         chain.add(new Chain.Link() {
             @Override
             public void run() {
-                TripHeader.load(LoginActivity.this,tripId, db);
-                LoadDelivery.load(LoginActivity.this,tripId, db);
-                ArticleHeader.load(LoginActivity.this,tripId, db);
-                VisitList.load(LoginActivity.this,tripId, db);
-                CustomerHeader.load(LoginActivity.this,tripId, db);
+                //    TripHeader.load(LoginActivity.this,tripId, db);
+                    LoadDelivery.load(LoginActivity.this,tripId, db);
+               // ArticleHeader.load(LoginActivity.this,tripId, db);
+              //  VisitList.load(LoginActivity.this,tripId, db);
+               // CustomerHeader.load(LoginActivity.this,tripId, db);
             }
         });
 

@@ -146,7 +146,7 @@ public class BeginTripActivity extends AppCompatActivity  {
         protected Void doInBackground(Void... params) {
             try{
                 //Login the user
-                this.data =  IntegrationService.getService(BeginTripActivity.this, this.url);
+              //  this.data =  IntegrationService.getService(BeginTripActivity.this, this.url);
             }
             catch(Exception e){
                 e.printStackTrace();

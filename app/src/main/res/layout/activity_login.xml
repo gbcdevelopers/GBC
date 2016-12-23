@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_top_bg"
                 android:textColorHint="#cccccc"
-                android:text="admin"
+                android:text="E2000"
                 android:drawableLeft="@drawable/user"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -57,7 +57,7 @@
                 android:background="@drawable/edittext_bottom_bg"
                 android:layout_marginTop="-12dp"
                 android:textColorHint="#cccccc"
-                android:text="admin"
+                android:text="PASSWORD"
                 android:password="true"
                 android:drawableLeft="@drawable/password"/>
         </android.support.design.widget.TextInputLayout>
