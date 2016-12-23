@@ -35,10 +35,12 @@ public class CustomerMessageListActivity extends AppCompatActivity {
     String arr[]={"Silent Meeting","Order Confirmed"};
     LinearLayout ll_common;
     ImageView img_refresh;
+    ImageView iv_refresh;
 
 
 
     SwipeRefreshLayout refreshLayout;
+
 
 
     @Override
@@ -51,6 +53,8 @@ public class CustomerMessageListActivity extends AppCompatActivity {
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
         ll_common=(LinearLayout)findViewById(R.id.ll_common);
         img_refresh=(ImageView)findViewById(R.id.img_refresh);
+        iv_refresh=(ImageView)findViewById(R.id.iv_refresh);
+
 
 
 
@@ -76,6 +80,8 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             {
                 ll_common.setVisibility(View.GONE);
                 img_refresh.setVisibility(View.GONE);
+                iv_refresh.setVisibility(View.VISIBLE);
+
             }
         }
         else {
@@ -92,9 +98,6 @@ public class CustomerMessageListActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
-
-
                 Handler handler=new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -111,5 +114,34 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             }
         });
 
+        iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchRefresh();
+            }
+        });
+
+
     }
+
+
+    public void dispatchRefresh()
+    {
+
+        refreshLayout.setRefreshing(true);
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                if(refreshLayout.isRefreshing())
+                {
+                    refreshLayout.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+
+            }
+        },2000);
+    }
+
 }

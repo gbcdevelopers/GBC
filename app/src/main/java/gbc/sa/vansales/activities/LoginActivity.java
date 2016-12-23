@@ -80,11 +80,12 @@ public class LoginActivity extends Activity {
 
             //Logic to Login the user
             //For development purpose hardcoding credentials
-            new LoginUser("E2000", "PASSWORD");
+//            new LoginUser("E2000", "PASSWORD");
 
-/*            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
             startActivityForResult(intent, 0);
-            finish();*/
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             //new LoginUser(id, password);
         }
     }

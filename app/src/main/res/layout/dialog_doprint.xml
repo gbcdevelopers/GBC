@@ -1,84 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/white"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_printer"
-                />
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-
             >
 
 
             <LinearLayout
+                android:id="@+id/ll_print"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="10dp"
+                android:orientation="vertical"
+                android:background="@drawable/circular_bg"
+                android:layout_marginRight="10dp"
                 >
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/green"
-                    android:textColor="@color/white"
-                    android:text="Print"
-                    android:id="@+id/btn_print"
-
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_print"
                     />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Print"
+                    android:textColor="@color/black"
+                    />
+
+
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_notprint"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="10dp"
+                android:orientation="vertical"
+                android:background="@drawable/circular_bg"
+                android:layout_marginLeft="10dp"
                 >
 
-                <Button
-                    android:id="@+id/btn_donotprint"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/green"
-                    android:text="Do not Print"
-                    android:textColor="@color/white"
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_notprint"
 
                     />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Do not Print"
+                    android:textColor="@color/black"
+                    />
+
 
             </LinearLayout>
 
@@ -94,23 +83,5 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:orientation="vertical">
 
-        <ImageButton
-            android:clickable="false"
-            android:id="@+id/btnCancel"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_below="@+id/btnBookK"
-            android:background="@drawable/iv_cancel"
-             />
 
-    </LinearLayout>
-
-</RelativeLayout>

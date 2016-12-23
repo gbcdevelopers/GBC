@@ -82,18 +82,12 @@ public class PromotionActivity extends AppCompatActivity {
                     dialog.setCancelable(false);
                     dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-                    LinearLayout ll_top=(LinearLayout)dialog.findViewById(R.id.llTop);
 
 
-                    Button btn_print=(Button)dialog.findViewById(R.id.btn_print);
-                    Button btn_notprint=(Button)dialog.findViewById(R.id.btn_donotprint);
+                    LinearLayout btn_print=(LinearLayout) dialog.findViewById(R.id.ll_print);
+                    LinearLayout btn_notprint=(LinearLayout) dialog.findViewById(R.id.ll_notprint);
 
-                    ll_top.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                        }
-                    });
+
                     dialog.show();
 
                     btn_print.setOnClickListener(new View.OnClickListener() {
@@ -125,21 +119,16 @@ public class PromotionActivity extends AppCompatActivity {
                     {
                         final Dialog dialog=new Dialog(PromotionActivity.this);
                         dialog.setContentView(R.layout.dialog_doprint);
-                        dialog.setCancelable(false);
+                        dialog.setCancelable(true);
                         dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-                        LinearLayout ll_top=(LinearLayout)dialog.findViewById(R.id.llTop);
 
 
-                        Button btn_print=(Button)dialog.findViewById(R.id.btn_print);
-                        Button btn_notprint=(Button)dialog.findViewById(R.id.btn_donotprint);
 
-                        ll_top.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
-                            }
-                        });
+                        LinearLayout btn_print=(LinearLayout) dialog.findViewById(R.id.ll_print);
+                        LinearLayout btn_notprint=(LinearLayout) dialog.findViewById(R.id.ll_notprint);
+
+
                         dialog.show();
 
                         btn_print.setOnClickListener(new View.OnClickListener() {
