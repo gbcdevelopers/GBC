@@ -38,6 +38,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener date;
     RelativeLayout btn_confirm_delivery;
     TextView tv_date;
+    TextView tv_amt;
 
 
     @Override
@@ -58,6 +59,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        tv_amt=(TextView)findViewById(R.id.tv_amt);
 
 
 
@@ -104,6 +107,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 
         myCalendar = Calendar.getInstance();
 
+        iv_calendar.setEnabled(false);
+
         iv_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +146,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         for (int i = 0; i < arrSize; i++) {
             Log.d("iiii","-->"+i);
             PreSaleProceed proceed = new PreSaleProceed();
-            proceed.setSKU("Berain 250 ml");
+            proceed.setPRODUCT_NAME("Berain 250 ml");
             proceed.setCTN("6");
             proceed.setBTL("50");
             proceed.setPRICE("1 SAR");
@@ -162,6 +167,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 
 
     private void setLayout() {
+
+        double totalamt=0;
         LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         if (options_layout != null){
@@ -179,13 +186,21 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             TextView text2 = (TextView) to_add.findViewById(R.id.tv_btl_pre_proceed);
             TextView text3 = (TextView) to_add.findViewById(R.id.tv_price);
             text3.setVisibility(View.GONE);
-            text.setText(saleProceed.getSKU());
+            text.setText(saleProceed.getPRODUCT_NAME());
             text1.setText(saleProceed.getCTN());
             text2.setText(saleProceed.getBTL());
             text3.setText(saleProceed.getPRICE());
+
+            totalamt=totalamt+(Double.parseDouble(saleProceed.getCTN())*54+Double.parseDouble(saleProceed.getBTL())*2.25);
+
+
+
+
 //            text.setTypeface(FontSelector.getBold(getActivity()));
             options_layout.addView(to_add);
         }
+        tv_amt.setText(String.valueOf(totalamt));
+
     }
 
     @Override

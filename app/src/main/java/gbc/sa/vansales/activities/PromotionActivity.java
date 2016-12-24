@@ -52,13 +52,13 @@ public class PromotionActivity extends AppCompatActivity {
             str_promotion_message = getIntent().getExtras().getString("msg","extra Promotion");
             tv_promotion.setText(str_promotion_message);
             int pos=getIntent().getIntExtra("pos",10);
-            if(pos==1)
+            if(str_promotion_message.equals("Final Invoice"))
             {
-                ll_bottom.setVisibility(View.GONE);
+                ll_bottom.setVisibility(View.VISIBLE);
             }
             else
             {
-                ll_bottom.setVisibility(View.VISIBLE);
+                ll_bottom.setVisibility(View.GONE);
             }
         }
 

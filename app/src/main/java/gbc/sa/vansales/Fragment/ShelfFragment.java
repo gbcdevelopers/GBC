@@ -24,6 +24,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.models.ShelfProduct;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -55,6 +56,11 @@ public class ShelfFragment extends Fragment {
 
         Const.addlist.clear();
         arrayList = new ArrayList<>();
+
+
+
+
+
         arrayList.add("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
         arrayList.add("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
         arrayList.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
@@ -63,7 +69,7 @@ public class ShelfFragment extends Fragment {
 
 
 
-        adapter=new SalesAdapter(getActivity().getBaseContext(),arrayList, R.layout.sales_list);
+        adapter=new SalesAdapter(getActivity().getBaseContext(),arrayList, R.layout.sales_list,"");
         listShelf.setAdapter(adapter);
 
         listShelf.setOnItemClickListener(new AdapterView.OnItemClickListener() {

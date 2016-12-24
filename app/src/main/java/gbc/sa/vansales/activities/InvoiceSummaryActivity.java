@@ -50,7 +50,7 @@ public class InvoiceSummaryActivity extends AppCompatActivity {
         arrayList.add("d");
         arrayList.add("e");
         arrayList.add("f");
-        adapter=new SalesAdapter(InvoiceSummaryActivity.this,arrayList, R.layout.custom_invoice_summary);
+        adapter=new SalesAdapter(InvoiceSummaryActivity.this,arrayList, R.layout.custom_invoice_summary,"");
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

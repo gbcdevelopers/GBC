@@ -33,8 +33,8 @@ public class SalesFragment extends Fragment {
 
     View view;
     ListView listSales;
-    SalesAdapter adapter;
-    ArrayList<String> arrayList;
+    public static  SalesAdapter adapter;
+    public static ArrayList<String> arrayList;
     FloatingActionButton fab;
 
     @Nullable
@@ -52,7 +52,7 @@ public class SalesFragment extends Fragment {
 
 
 
-        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.sales_list);
+        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.sales_list,"");
         listSales.setAdapter(adapter);
 
         listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,6 +73,11 @@ public class SalesFragment extends Fragment {
 
                     final EditText ed_cases_inv=(EditText)dialog.findViewById(R.id.ed_cases_inv);
                     final EditText ed_pcs_inv=(EditText)dialog.findViewById(R.id.ed_pcs_inv);
+                        ed_cases_inv.setText("10");
+                    ed_pcs_inv.setText("3");
+                ed_cases_inv.setEnabled(false);
+                ed_pcs_inv.setEnabled(false);
+
 
 
 

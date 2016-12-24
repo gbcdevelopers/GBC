@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -18,9 +19,11 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.PreSaleProceed;
 
 public class PreSaleOrderProceedActivity extends AppCompatActivity {
@@ -28,8 +31,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     ArrayList<PreSaleProceed> preSaleProceeds = new ArrayList<>();
     ImageView iv_back;
     TextView tv_top_header;
-//    FloatingActionButton float_presale_proceed;
-    int arrSize = 5;
+
+
 
 
     TextView tv_date;
@@ -37,12 +40,6 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
     Button btn_confirm;
-
-
-
-
-
-
 
 
     ListView list;
@@ -57,6 +54,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
 
     ArrayList<LoadRequestConstants> arraylist = new ArrayList<LoadRequestConstants>();
+    HashMap<Integer,ArrayList<LoadRequestConstants>> constantsHashMap=new HashMap<>();
 
 
 
@@ -70,7 +68,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         tv_date = (TextView) findViewById(R.id.tv_date);
         iv_calendar = (ImageView) findViewById(R.id.iv_calander);
         iv_search=(ImageView)findViewById(R.id.iv_search);
-        iv_search.setVisibility(View.VISIBLE);
+        iv_search.setVisibility(View.GONE);
         btn_confirm=(Button)findViewById(R.id.btn_confirm_delivery_presale_proceed);
 
 
@@ -84,17 +82,10 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             }
         });
 
-//        float_presale_proceed=(FloatingActionButton)findViewById(R.id.float_presale_proceed);
-//        float_presale_proceed.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                arrSize = arrSize +1;
-//                setData();
-//            }
-//        });
-//        setData();
+
 
         myCalendar = Calendar.getInstance();
+
 
         iv_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,28 +131,35 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 R.drawable.beraincategory};
 
 
-        // Locate the ListView in listview_main.xml
-        list = (ListView) findViewById(R.id.listview);
 
-        for (int i = 0; i < itemName.length; i++)
-        {
-            LoadRequestConstants lrc = new LoadRequestConstants(itemName[i], category[i],
-                    cases[i],units[i], categoryImage[i]);
-            // Binds all strings into an array
-            arraylist.add(lrc);
-        }
+        list = (ListView) findViewById(R.id.listview);
+        list.setItemsCanFocus(true);
+
+
+       setData();
+
+
+
+
+
+
+//        for (int i = 0; i < itemName.length; i++)
+//        {
+//            LoadRequestConstants lrc = new LoadRequestConstants(itemName[i], category[i],
+//                    cases[i],units[i], categoryImage[i]);
+//            // Binds all strings into an array
+//            arraylist.add(lrc);
+//        }
 
         // Pass results to ListViewAdapter Class
-        adapter = new LoadRequestAdapter(this, arraylist);
 
-        // Binds the Adapter to the ListView
-        list.setAdapter(adapter);
+
+
 
 
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 final Dialog dialog=new Dialog(PreSaleOrderProceedActivity.this);
                 dialog.setContentView(R.layout.dialog_doprint);
@@ -182,6 +180,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         dialog.cancel();
+                        finish();
 
 
                     }
@@ -191,6 +190,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         dialog.cancel();
+                        finish();
 
                     }
                 });
@@ -215,54 +215,57 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
         private void updateLabel() {
 
-            String myFormat = "dd/MM" +
-                    "/yy"; //In which you need put here
+            String myFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
 
             tv_date.setText(sdf.format(myCalendar.getTime()));
+
+
+
+            PreSaleProceed proceed=new PreSaleProceed();
+            proceed.setDATE(tv_date.getText().toString());
+            Const.proceedArrayList.add(Const.id,proceed);
         }
 
 
 
 
     public void setData() {
-        if (preSaleProceeds != null){
-            preSaleProceeds.clear();
+        if (arraylist != null){
+            arraylist.clear();
         }
-        for (int i = 0; i < arrSize; i++) {
+        for (int i = 0; i < itemName.length; i++) {
             Log.d("iiii","-->"+i);
-            PreSaleProceed proceed = new PreSaleProceed();
-            proceed.setSKU("Berain 250 ml");
-            proceed.setCTN("6");
-            proceed.setBTL("50");
-            preSaleProceeds.add(proceed);
+//            PreSaleProceed proceed = new PreSaleProceed();
+//
+//            proceed.setPRODUCT_NAME(itemName[i]);
+//            proceed.setCATEGORY_NAME(category[i]);
+//            proceed.setCTN("");
+//            proceed.setBTL("");
+//            preSaleProceeds.add(proceed);
+
+
+
+            LoadRequestConstants constants=new LoadRequestConstants();
+            constants.setItemName(itemName[i]);
+            constants.setCategory(category[i]);
+            constants.setCategoryImage(categoryImage[i]);
+
+            constants.setCases("");
+            constants.setUnits("");
+            arraylist.add(constants);
+
         }
-        setLayout();
+
+        adapter = new LoadRequestAdapter(this, arraylist,constantsHashMap);
+
+        // Binds the Adapter to the ListView
+        list.setAdapter(adapter);
+
     }
 
-    private void setLayout() {
-        LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        if (options_layout != null){
-            options_layout.removeAllViews();
-        }
-        Log.d("size","-->"+preSaleProceeds.size());
-        for (int i = 0; i < preSaleProceeds.size(); i++) {
-            Log.d("i","-->"+i);
-            View to_add = inflater.inflate(R.layout.presale_proceed_list_item,
-                    options_layout, false);
 
-            PreSaleProceed saleProceed = preSaleProceeds.get(i);
-            TextView text = (TextView) to_add.findViewById(R.id.tv_sku_pre_proceed);
-            TextView text1 = (TextView) to_add.findViewById(R.id.tv_ctn_pre_proceed);
-            TextView text2 = (TextView) to_add.findViewById(R.id.tv_btl_pre_proceed);
-            text.setText(saleProceed.getSKU());
-            text1.setText(saleProceed.getCTN());
-            text2.setText(saleProceed.getBTL());
-//            text.setTypeface(FontSelector.getBold(getActivity()));
-            options_layout.addView(to_add);
-        }
-    }
+
 
     @Override
     public void onBackPressed() {

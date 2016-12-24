@@ -17,10 +17,12 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
+import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
+import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.CustomerData;
 
@@ -101,7 +103,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 
         iv_search=(ImageView)findViewById(R.id.iv_search);
         if (iv_search != null) {
-            iv_search.setVisibility(View.VISIBLE);
+            iv_search.setVisibility(View.GONE);
         }
 
        /* iv_search.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +153,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         if(GListFragment.arrProductList!=null && GListFragment.adapter!=null) {
             GListFragment.arrProductList.addAll(Const.addlist);
             GListFragment.adapter.notifyDataSetChanged();
+        }
+        if(SalesFragment.arrayList!=null && SalesFragment.adapter!=null)
+        {
+            SalesFragment.arrayList.addAll(Const.addlist);
+            SalesFragment.adapter.notifyDataSetChanged();
         }
 
 

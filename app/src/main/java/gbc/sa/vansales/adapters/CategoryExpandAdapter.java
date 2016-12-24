@@ -1,6 +1,7 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,6 +94,7 @@ public class CategoryExpandAdapter extends BaseExpandableListAdapter {
         CheckBox checkBox=(CheckBox)convertView.findViewById(R.id.chk_product);
         checkBox.setVisibility(View.GONE);
         TextView tv_product=(TextView)convertView.findViewById(R.id.tv_product);
+        tv_product.setTypeface(null, Typeface.BOLD);
         tv_product.setText(headerTitle);
 
         return convertView;
@@ -111,7 +113,7 @@ public class CategoryExpandAdapter extends BaseExpandableListAdapter {
         LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = infalInflater.inflate(R.layout.checkable_productlist, null);
         TextView tv_product=(TextView)convertView.findViewById(R.id.tv_product);
-        tv_product.setGravity(Gravity.CENTER);
+
         CheckBox checkBox=(CheckBox)convertView.findViewById(R.id.chk_product);
 
 

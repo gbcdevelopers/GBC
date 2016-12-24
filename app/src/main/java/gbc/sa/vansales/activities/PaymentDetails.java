@@ -40,6 +40,7 @@ public class PaymentDetails extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener date;
     FloatingActionButton fab;
     double total_amt=0.00;
+    int pos=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,13 @@ public class PaymentDetails extends AppCompatActivity {
         fab=(FloatingActionButton)findViewById(R.id.fab);
 
 
+        if(getIntent().getExtras()!=null)
+        {
+            pos=getIntent().getIntExtra("pos",0);
+        }
+
+
+
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Payment Details");
@@ -60,6 +68,7 @@ public class PaymentDetails extends AppCompatActivity {
 
 
                 Intent intent=new Intent();
+                intent.putExtra("pos",0);
                 intent.putExtra("amt",String.valueOf(total_amt));
 
                 setResult(RESULT_OK,intent);
@@ -205,7 +214,7 @@ public class PaymentDetails extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        dialog.cancel();
+                        dialog.dismiss();
 
 
                     }
@@ -214,12 +223,16 @@ public class PaymentDetails extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
+                        dialog.dismiss();
+
 
                         Intent intent=new Intent();
+                        intent.putExtra("pos",pos);
                         intent.putExtra("amt",String.valueOf(total_amt));
 
                         setResult(RESULT_OK,intent);
                         finish();
+
 
 
                     }

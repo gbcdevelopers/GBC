@@ -12,8 +12,9 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="Frahn"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:layout_toLeftOf="@+id/chk_product"
+
         />
 
     <CheckBox

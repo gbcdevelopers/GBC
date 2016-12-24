@@ -33,7 +33,7 @@ public class CaptureImageFragment extends Fragment {
         arrayList.add("B");
         arrayList.add("C");
 
-        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.custom_captureimage);
+        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.custom_captureimage,"");
          gridView.setAdapter(adapter);
 
 

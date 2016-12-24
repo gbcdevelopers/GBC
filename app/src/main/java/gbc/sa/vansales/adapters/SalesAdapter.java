@@ -33,6 +33,7 @@ public class SalesAdapter extends BaseAdapter  implements Filterable {
 
     ArrayList<String> dataList;
    ArrayList<String> dataListOne;
+    String from;
 
    ItemFilter mFilter = new ItemFilter();
 
@@ -44,11 +45,12 @@ public class SalesAdapter extends BaseAdapter  implements Filterable {
 
 
 
-    public SalesAdapter(Context context,ArrayList<String> item,int resource)
+    public SalesAdapter(Context context,ArrayList<String> item,int resource,String from)
     {
         this.context=context;
 
         this.resource=resource;
+        this.from=from;
 
 
         dataList=item;
@@ -121,12 +123,24 @@ public class SalesAdapter extends BaseAdapter  implements Filterable {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(resource, null);
             if(resource== R.layout.custom_promotionlist) {
+
+
+
+
+
+
                 TextView tv = (TextView) convertView.findViewById(R.id.tv_product);
                 CheckBox checkBox=(CheckBox)convertView.findViewById(R.id.chk_product);
                 LinearLayout ll_promotion=(LinearLayout)convertView.findViewById(R.id.ll_promotion);
 
 
-
+                if(from.equals("promo"))
+                {
+                         checkBox.setVisibility(View.VISIBLE);
+                }
+                else {
+                    checkBox.setVisibility(View.GONE);
+                }
 
                 View view=(View)convertView.findViewById(R.id.view);
                 if(position==1)
@@ -136,7 +150,11 @@ public class SalesAdapter extends BaseAdapter  implements Filterable {
                 }
                 else {
                     view.setBackgroundColor(Color.BLUE);
-                    checkBox.setVisibility(View.VISIBLE);
+
+
+                    if(from.equals("promo")) {
+                        checkBox.setVisibility(View.VISIBLE);
+                    }
 
                     checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override

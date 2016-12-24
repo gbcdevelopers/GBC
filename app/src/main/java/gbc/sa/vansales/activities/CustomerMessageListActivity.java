@@ -31,7 +31,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
 
     ListView lv_message;
     RoundedImageView iv_round;
-  MessageListAdapter adapter;
+    MessageListAdapter adapter;
     String arr[]={"Silent Meeting","Order Confirmed"};
     LinearLayout ll_common;
     ImageView img_refresh;
@@ -115,6 +115,13 @@ public class CustomerMessageListActivity extends AppCompatActivity {
         });
 
         iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchRefresh();
+            }
+        });
+
+        img_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchRefresh();

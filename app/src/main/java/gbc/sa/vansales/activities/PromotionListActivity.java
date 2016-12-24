@@ -32,6 +32,7 @@ public class PromotionListActivity extends AppCompatActivity {
     Button btn_apply;
 
     ArrayList<String> arrayList;
+    String from="promo";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +55,18 @@ public class PromotionListActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+
+        if(getIntent().getExtras()!=null)
+        {
+
+            from = getIntent().getExtras().getString("from","");
+            if(from.equals("review"))
+            {
+                btn_apply.setVisibility(View.GONE);
+            }
+        }
 
 
         btn_apply.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +99,7 @@ public class PromotionListActivity extends AppCompatActivity {
         arrayList.add("20% FOC Discount");
         arrayList.add("10% Other Discount");
 
-        adapter = new SalesAdapter(PromotionListActivity.this, arrayList, R.layout.custom_promotionlist);
+        adapter = new SalesAdapter(PromotionListActivity.this, arrayList, R.layout.custom_promotionlist,from);
         list_promotion.setAdapter(adapter);
 
       /*  list_promotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {

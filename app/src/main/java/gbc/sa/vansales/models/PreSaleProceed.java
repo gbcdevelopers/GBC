@@ -5,10 +5,43 @@ package gbc.sa.vansales.models;
  */
 
 public class PreSaleProceed {
-    String SKU = "";
+
+
+    String PRODUCT_NAME = "";
+    String CATEGORY_NAME="";
     String CTN = "";
     String BTL = "";
     String PRICE="";
+    String DATE="";
+
+
+    public String getCATEGORY_NAME() {
+        return CATEGORY_NAME;
+    }
+
+    public void setCATEGORY_NAME(String CATEGORY_NAME) {
+        this.CATEGORY_NAME = CATEGORY_NAME;
+    }
+
+    public int getImg() {
+        return img;
+    }
+
+    public void setImg(int img) {
+        this.img = img;
+    }
+
+    int img;
+
+    public String getDATE() {
+        return DATE;
+    }
+
+    public void setDATE(String DATE) {
+        this.DATE = DATE;
+    }
+
+
 
     public String getPRICE() {
         return PRICE;
@@ -18,15 +51,14 @@ public class PreSaleProceed {
         this.PRICE = PRICE;
     }
 
-
-
-    public String getSKU() {
-        return SKU;
+    public String getPRODUCT_NAME() {
+        return PRODUCT_NAME;
     }
 
-    public void setSKU(String SKU) {
-        this.SKU = SKU;
+    public void setPRODUCT_NAME(String PRODUCT_NAME) {
+        this.PRODUCT_NAME = PRODUCT_NAME;
     }
+
 
     public String getCTN() {
         return CTN;

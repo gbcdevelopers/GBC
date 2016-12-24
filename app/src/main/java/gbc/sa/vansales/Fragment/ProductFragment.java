@@ -40,10 +40,12 @@ public class ProductFragment extends Fragment {
         button=(FloatingActionButton)view.findViewById(R.id.btn_float);
 
         arrayList=new ArrayList<>();
-        arrayList.add("pen");
-        arrayList.add("van");
-        arrayList.add("san");
-        arrayList.add("can");
+        arrayList.add("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
+        arrayList.add("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
+        arrayList.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
+        arrayList.add("DM5508 SWISS ROLL VANILL (24x110G)");
+        arrayList.add("EM5508 ROLL VANILL (24x110G)");
+
 
         adapter=new ProductListAdapter(getActivity(),arrayList, R.layout.checkable_productlist,"product");
         list_product.setAdapter(adapter);

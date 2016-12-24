@@ -1,6 +1,7 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.CollectionsActivity;
+import gbc.sa.vansales.activities.PaymentDetails;
 import gbc.sa.vansales.models.ColletionData;
 
 /**
@@ -65,6 +68,7 @@ public class ColletionAdapter extends BaseAdapter implements Filterable {
             view = li.inflate(R.layout.colletion_list_item, null);
             holder = new ItemRowHolder();
             holder.ll_items = (LinearLayout) view.findViewById(R.id.ll_items);
+
             holder.tv_colletion_number = (TextView) view.findViewById(R.id.tv_colletion_number);
             holder.tv_colletion__selsemen_number = (TextView) view.findViewById(R.id.tv_colletion__selsemen_number);
             holder.tv_colletion__amout_due_number = (TextView) view.findViewById(R.id.tv_colletion__amout_due_number);
@@ -80,38 +84,40 @@ public class ColletionAdapter extends BaseAdapter implements Filterable {
         holder.tv_colletion__amout_due_number.setText(dataList.get(i).getAmoutDue());
         holder.tv_colletion__ade_number.setText(dataList.get(i).getAmoutAde());
 
-        if (intlist.contains(i)) {
-            holder.check_selected.setChecked(true);
-            holder.ll_items.setBackgroundColor(Color.parseColor("#FFC0C0C0"));
-        } else {
-            holder.check_selected.setChecked(false);
-            holder.ll_items.setBackgroundColor(0);
-        }
+//        if (intlist.contains(i)) {
+//            holder.check_selected.setChecked(true);
+//            holder.ll_items.setBackgroundColor(Color.parseColor("#FFC0C0C0"));
+//        } else {
+//            holder.check_selected.setChecked(false);
+//            holder.ll_items.setBackgroundColor(0);
+//        }
 
-        holder.check_selected.setClickable(false);
-        holder.tv_colletion_number.setClickable(false);
-        holder.tv_colletion__amout_due_number.setClickable(false);
-        holder.tv_colletion__ade_number.setClickable(false);
+//        holder.check_selected.setClickable(false);
+//        holder.tv_colletion_number.setClickable(false);
+//        holder.tv_colletion__amout_due_number.setClickable(false);
+//        holder.tv_colletion__ade_number.setClickable(false);
 
 
 
         final ItemRowHolder finalHolder = holder;
-        holder.ll_items.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("DataAdapter", i + "-- item click");
-
-                if (finalHolder.check_selected.isChecked()) {
-                    finalHolder.check_selected.setChecked(false);
-                    finalHolder.ll_items.setBackgroundColor(0);
-                    intlist.remove((Integer) i);
-                } else {
-                    finalHolder.check_selected.setChecked(true);
-                    finalHolder.ll_items.setBackgroundColor(Color.parseColor("#FFC0C0C0"));
-                    intlist.add(i);
-                }
-            }
-        });
+//        holder.ll_items.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.v("DataAdapter", i + "-- item click");
+//
+////                if (finalHolder.check_selected.isChecked()) {
+////                    finalHolder.check_selected.setChecked(false);
+////                    finalHolder.ll_items.setBackgroundColor(0);
+////                    intlist.remove((Integer) i);
+////                } else {
+////                    finalHolder.check_selected.setChecked(true);
+////                    finalHolder.ll_items.setBackgroundColor(Color.parseColor("#FFC0C0C0"));
+////                    intlist.add(i);
+////                }
+//
+//
+//            }
+//        });
 
 
         return view;

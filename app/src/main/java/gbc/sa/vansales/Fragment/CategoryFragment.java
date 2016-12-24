@@ -52,35 +52,35 @@ public class CategoryFragment extends Fragment {
 
 
         groupList=new ArrayList<>();
-        groupList.add("pen");
-        groupList.add("van");
-        groupList.add("san");
-        groupList.add("can");
+        groupList.add("a");
+        groupList.add("b");
+        groupList.add("c");
+        groupList.add("d");
 
 
         ArrayList<String> pen=new ArrayList<>();
-        pen.add("a");
-        pen.add("b");
-        pen.add("c");
+        pen.add("DM5508 SWISS ROLL VANILL (24x110G)");
+        pen.add("EM5508 ROLL VANILL (24x110G)");
+
 
 
         ArrayList<String> van=new ArrayList<>();
-        van.add("d");
-        van.add("e");
-        van.add("f");
+        van.add("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
+        van.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
+
 
 
         ArrayList<String> san=new ArrayList<>();
-        san.add("g");
-        san.add("h");
-        san.add("i");
+        san.add("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
+        san.add("DM5508 SWISS ROLL VANILL (24x110G)");
+        san.add("EM5508 ROLL VANILL (24x110G)");
 
 
 
         ArrayList<String> can=new ArrayList<>();
-        can.add("j");
-        can.add("k");
-        can.add("l");
+        can.add("EM5508 ROLL VANILL (24x110G)");
+        can.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
+
 
 
         childList=new HashMap<>();

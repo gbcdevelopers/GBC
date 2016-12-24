@@ -56,6 +56,7 @@ public class ReviewActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         Intent promolist = new Intent(ReviewActivity.this, PromotionListActivity.class);
+                        promolist.putExtra("from","review");
                         startActivity(promolist);
                         break;
                     case 1:

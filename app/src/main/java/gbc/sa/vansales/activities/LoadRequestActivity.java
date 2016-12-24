@@ -130,7 +130,7 @@ public class LoadRequestActivity extends AppCompatActivity
         }
 
         // Pass results to ListViewAdapter Class
-        adapter = new LoadRequestAdapter(this, arraylist);
+        adapter = new LoadRequestAdapter(this, arraylist,null);
 
         // Binds the Adapter to the ListView
         list.setAdapter(adapter);

@@ -135,14 +135,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="CHWQUE NO:"
+                    android:text="CHEQUE NO:"
                     android:textColor="@color/green" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="82555555"
+                    android:text=""
                     android:id="@+id/edt_check_no"
                     android:enabled="false"
                     />
@@ -160,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="CHWQUE AMOUNT:"
+                    android:text="CHEQUE AMOUNT:"
                     android:textColor="@color/green" />
 
                 <EditText

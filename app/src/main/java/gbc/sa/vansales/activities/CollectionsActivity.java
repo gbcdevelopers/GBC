@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,6 +26,8 @@ public class CollectionsActivity extends AppCompatActivity {
     ArrayList<ColletionData> colletionDatas = new ArrayList<>();
     ColletionAdapter colletionAdapter;
     TextView tv_amt_paid;
+   double amount=0.00;
+    int pos=0;
 
 
     @Override
@@ -70,6 +74,10 @@ public class CollectionsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                Toast.makeText(getApplicationContext(),pos+"",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
+                intent.putExtra("pos",position);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -82,11 +90,22 @@ public class CollectionsActivity extends AppCompatActivity {
             colletionData.setId("16-12-2016/132456458792" + i);
             colletionData.setSelsemanId("10000241" + i);
             colletionData.setAmoutDue("0.2" + i + " AED");
-            colletionData.setAmoutAde("0.00");
+
+            if(pos==i)
+            {
+                colletionData.setAmoutAde(String.valueOf(amount));
+            }
+            else {
+                colletionData.setAmoutAde("0.00");
+            }
+
+
+
             colletionDatas.add(colletionData);
         }
         colletionAdapter = new ColletionAdapter(this, colletionDatas);
         lv_colletions_view.setAdapter(colletionAdapter);
+
     }
 
     @Override
@@ -103,7 +122,14 @@ public class CollectionsActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
 
                     String amt=data.getStringExtra("amt");
+
+                    pos = data.getIntExtra("pos",0);
+                    Log.v("pos",amt+"--");
                     tv_amt_paid.setText(amt);
+                    amount=Double.parseDouble(amt);
+                    ColletionData colletionData=colletionDatas.get(pos);
+                    colletionData.setAmoutAde(amt);
+                   colletionAdapter.notifyDataSetChanged();
 
                 }
             }
