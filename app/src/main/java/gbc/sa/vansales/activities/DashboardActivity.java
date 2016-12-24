@@ -6,12 +6,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,18 +33,33 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import gbc.sa.vansales.R;
+
+import static gbc.sa.vansales.R.drawable.ic_begintrip;
+
 /**
  * Created by Rakshit on 15-Nov-16.
  */
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
     Button btnBDay;
     TextView tv_dashboard;
     ImageView iv_drawer;
     DrawerLayout drawer;
     Button btn_message;
+
+
+    private DrawerLayout mDrawerLayout;
+    ExpanableListAdapterActivity mMenuAdapter;
+    ExpandableListView expandableList;
+    List<ExpandedMenuModel> listDataHeader;
+    HashMap<ExpandedMenuModel, List<String>> listDataChild;
+
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +70,6 @@ public class DashboardActivity extends AppCompatActivity
         tv_dashboard.setVisibility(View.VISIBLE);
         iv_drawer=(ImageView)findViewById(R.id.iv_drawer);
         btn_message=(Button)findViewById(R.id.btn_messages);
-
-
-
-
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +81,97 @@ public class DashboardActivity extends AppCompatActivity
 
             }
         });
+
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        expandableList = (ExpandableListView) findViewById(R.id.navigationmenu);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
+
+        prepareListData();
+        mMenuAdapter = new ExpanableListAdapterActivity(this, listDataHeader, listDataChild, expandableList);
+
+        // setting list adapter
+        expandableList.setAdapter(mMenuAdapter);
+
+        expandableList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+
+
+                String selectedItem=listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                if(selectedItem=="Load")
+                {
+                    Intent i=new Intent(DashboardActivity.this,LoadActivity.class);
+                    startActivity(i);
+                }
+                else if(selectedItem=="Load Request")
+                {
+                    Intent i=new Intent(DashboardActivity.this,LoadRequestActivity.class);
+                    startActivity(i);
+                }
+
+                else if(selectedItem=="VanStock")
+                {
+                    Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
+                    startActivity(i);
+                }
+
+                else if(selectedItem=="Unload")
+                {
+                    Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
+                    startActivity(i);
+                }
+
+                else if(selectedItem=="Begin Trip")
+                {
+                    Intent i=new Intent(DashboardActivity.this,BeginTripActivity.class);
+                    startActivity(i);
+                }
+
+                else if(selectedItem=="Customer Operations")
+                {
+                    Intent i=new Intent(DashboardActivity.this,MyCalendarActivity.class);
+                    startActivity(i);
+                }
+
+                else if(selectedItem=="End Trip")
+                {
+                    Intent i=new Intent(DashboardActivity.this,EndTripActivity.class);
+                    startActivity(i);
+
+                }
+
+                else if(selectedItem=="Informtion")
+                {
+                    Toast.makeText(getApplicationContext(), "Information",Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+        expandableList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,
+                                        int groupPosition, long id)
+            {
+
+                // Toast.makeText(getApplicationContext(), "Group Clicked " + listDataHeader.get(groupPosition),
+                //Toast.LENGTH_SHORT).show();
+
+
+                return false;
+            }
+        });
+
+
+
+
+
 
 
 
@@ -103,7 +208,7 @@ public class DashboardActivity extends AppCompatActivity
 ////        drawer.closeDrawers();
 ////        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 //        toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView2 = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
         createPieChart();
@@ -151,6 +256,75 @@ public class DashboardActivity extends AppCompatActivity
         pieChart.animateY(3000);
 
     }
+
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<ExpandedMenuModel>();
+        listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
+
+        ExpandedMenuModel beginTrip = new ExpandedMenuModel();
+        beginTrip.setIconName("Begin Trip");
+        beginTrip.setIconImg(R.drawable.ic_begintrip);
+        // Adding data header
+        listDataHeader.add(beginTrip);
+
+        ExpandedMenuModel manageInventory = new ExpandedMenuModel();
+        manageInventory.setIconName("Manage Inventory");
+        manageInventory.setIconImg(R.drawable.ic_manageinventory);
+        listDataHeader.add(manageInventory);
+
+        ExpandedMenuModel customerOperations = new ExpandedMenuModel();
+        customerOperations.setIconName("Customer Operations");
+        customerOperations.setIconImg(R.drawable.ic_customeropt);
+        listDataHeader.add(customerOperations);
+
+        ExpandedMenuModel endTrip = new ExpandedMenuModel();
+        endTrip.setIconName("End Trip");
+        endTrip.setIconImg(R.drawable.ic_info);
+        listDataHeader.add(endTrip);
+
+        ExpandedMenuModel information = new ExpandedMenuModel();
+        information.setIconName("Information");
+        information.setIconImg(R.drawable.ic_info);
+        listDataHeader.add(information);
+
+
+        // Adding child data
+
+        List<String>beginTripItems = new ArrayList<String>();
+        beginTripItems.add("Begin Trip");
+
+        List<String>customerOperationsItems = new ArrayList<String>();
+        customerOperationsItems.add("Customer Operations");
+
+
+        List<String>endTripItems = new ArrayList<String>();
+        endTripItems.add("End Trip");
+
+        List<String>informationsItems = new ArrayList<String>();
+        informationsItems.add("Information");
+
+
+        List<String> manageInventoryItems = new ArrayList<String>();
+        manageInventoryItems.add("Load");
+        manageInventoryItems.add("Load Request");
+        manageInventoryItems.add("VanStock");
+        manageInventoryItems.add("Unload");
+
+        listDataChild.put(listDataHeader.get(0), beginTripItems);
+
+        listDataChild.put(listDataHeader.get(1), manageInventoryItems);
+
+        listDataChild.put(listDataHeader.get(2), customerOperationsItems);
+
+        listDataChild.put(listDataHeader.get(3), endTripItems);
+
+        listDataChild.put(listDataHeader.get(4), informationsItems);
+
+    }
+
+
+
     void createLineChart(){
         LineChart lineChart = (LineChart) findViewById(R.id.lineChart);
 
@@ -225,57 +399,74 @@ public class DashboardActivity extends AppCompatActivity
 
         return true;
     }
-    @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        int id = menuItem.getItemId();
-        if(id==R.id.begintrip){
-
-            Intent intent=new Intent(DashboardActivity.this,BeginTripActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.manageinventory) {
-            Intent intent = new Intent(DashboardActivity.this,ManageInventory.class);
-            startActivity(intent);
-//            Toast.makeText(getApplicationContext(),"Manage Inventory",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.load) {
-            Intent intent = new Intent(DashboardActivity.this,LoadActivity.class);
-            startActivity(intent);
-           // Toast.makeText(getApplicationContext(),"Load",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.loadrequest) {
-            Intent i =new Intent(DashboardActivity.this,LoadRequestActivity.class);
-            startActivity(i);
-        }
-        else if(id==R.id.vanstock){
-//            Toast.makeText(getApplicationContext(),"Van Stock",Toast.LENGTH_SHORT).show();
-            Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
-            startActivity(i);
-        } else if (id == R.id.unload) {
-//            Toast.makeText(getApplicationContext(),"Unload",Toast.LENGTH_SHORT).show();
-            Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
-            startActivity(i);
-        } else if (id == R.id.customeroperation) {
-           /* Intent intent = new Intent(getApplicationContext(), CustomerOperationsActivity.class);
-            startActivityForResult(intent, 0);
-            finish();
-            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
-            Intent intent = new Intent(DashboardActivity.this,MyCalendarActivity.class);
-            startActivity(intent);
-            //Toast.makeText(getApplicationContext(),"Customer Operation",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.information) {
-            Intent i =new Intent(DashboardActivity.this,InformationsActivity.class);
-            startActivity(i);
-        } else if (id == R.id.endtrip) {
-            Intent intent=new Intent(DashboardActivity.this,EndTripActivity.class);
-            startActivity(intent);
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    public boolean onNavigationItemSelected(MenuItem menuItem) {
+//        int id = menuItem.getItemId();
+//        if(id==R.id.begintrip){
+//
+//            Intent intent=new Intent(DashboardActivity.this,BeginTripActivity.class);
+//            startActivity(intent);
+//        } else if (id == R.id.manageinventory) {
+//            Intent intent = new Intent(DashboardActivity.this,ManageInventory.class);
+//            startActivity(intent);
+////            Toast.makeText(getApplicationContext(),"Manage Inventory",Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.load) {
+//            Intent intent = new Intent(DashboardActivity.this,LoadActivity.class);
+//            startActivity(intent);
+//           // Toast.makeText(getApplicationContext(),"Load",Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.loadrequest) {
+//            Intent i =new Intent(DashboardActivity.this,LoadRequestActivity.class);
+//            startActivity(i);
+//        }
+//        else if(id==R.id.vanstock){
+////            Toast.makeText(getApplicationContext(),"Van Stock",Toast.LENGTH_SHORT).show();
+//            Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
+//            startActivity(i);
+//        } else if (id == R.id.unload) {
+////            Toast.makeText(getApplicationContext(),"Unload",Toast.LENGTH_SHORT).show();
+//            Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
+//            startActivity(i);
+//        } else if (id == R.id.customeroperation) {
+//           /* Intent intent = new Intent(getApplicationContext(), CustomerOperationsActivity.class);
+//            startActivityForResult(intent, 0);
+//            finish();
+//            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
+//            Intent intent = new Intent(DashboardActivity.this,MyCalendarActivity.class);
+//            startActivity(intent);
+//            //Toast.makeText(getApplicationContext(),"Customer Operation",Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.information) {
+//            Intent i =new Intent(DashboardActivity.this,InformationsActivity.class);
+//            startActivity(i);
+//        } else if (id == R.id.endtrip) {
+//            Intent intent=new Intent(DashboardActivity.this,EndTripActivity.class);
+//            startActivity(intent);
+//        }
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawers();
         }
          super.onBackPressed();
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        //revision: this don't works, use setOnChildClickListener() and setOnGroupClickListener() above instead
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        menuItem.setChecked(true);
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        return false;
     }
 }

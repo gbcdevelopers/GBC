@@ -21,8 +21,33 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:itemIconTint="@null"
-        app:menu="@menu/activity_main_drawer"/>
+        app:itemIconTint="@null">
+
+
+        <ExpandableListView
+            android:id="@+id/navigationmenu"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+
+            android:layout_marginTop="200dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/nav_header_main"
+            app:itemIconTint="@null"
+            android:background="@android:color/transparent"
+            >
+        </ExpandableListView>
+
+
+
+
+
+
+
+
+    </android.support.design.widget.NavigationView>
+
 
 
 

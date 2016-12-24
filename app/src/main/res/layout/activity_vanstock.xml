@@ -15,12 +15,12 @@
 
     <Button
         android:id ="@+id/btnPrintVanStock"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
 
-        android:drawableTop="@drawable/print"
+        android:drawableTop="@drawable/prints"
         android:background="@drawable/rounded_buttons"
         android:padding="15dp"
         />

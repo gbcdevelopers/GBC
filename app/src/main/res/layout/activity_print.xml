@@ -10,35 +10,43 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="15dp"
-        android:background="#FFFFFF">
+        android:background="@android:color/transparent">
 
         <!--Main Body of your custom dialog-->
 
 
         <Button
             android:id ="@+id/btnPrint"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="30dp"
 
-            android:drawableTop="@drawable/print"
+            android:drawableTop="@drawable/prints"
             android:background="@drawable/rounded_buttons"
             android:padding="15dp"
+            android:text="Print"
+
+            android:drawablePadding="0dp"
             />
 
 
         <Button
             android:id ="@+id/btnCancel2"
             android:layout_toRightOf="@+id/btnPrint"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:text="Do Not Print"
 
             android:layout_marginTop="15dp"
-            android:drawableTop="@drawable/print"
+            android:drawableTop="@drawable/dontprints"
             android:layout_marginLeft="15dp"
             android:background="@drawable/rounded_buttons"
             android:padding="15dp"
+            android:drawablePadding="0dp"
+
+
+
             />
 
 
