@@ -19,4 +19,8 @@
     <dimen name="good_return_dialog_height">420dp</dimen>
     <dimen name="default_padding">10dp</dimen>
     <dimen name="top_header_size">25dp</dimen>
+    <dimen name="h1">20dp</dimen>
+    <dimen name="h2">15dp</dimen>
+    <dimen name="h3">10dp</dimen>
+    <dimen name="label_size">20dp</dimen>
 </resources>

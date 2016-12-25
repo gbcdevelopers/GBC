@@ -102,7 +102,7 @@ public class BeginDayFragment extends Fragment {
             Log.e("Data in Fragment", "" + data);
             route.setText(data.getString("route"));
             salesManNo.setText(data.getString("driver1"));
-            salesManName.setText(data.getString("Driver1"));
+            salesManName.setText(data.getString("driver1"));
 
             /*String dateStr = data.getString("Execdate");
             dateStr = dateStr.replace("/","").trim();
@@ -268,7 +268,7 @@ public class BeginDayFragment extends Fragment {
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
-                                TripHeader.load(getActivity(),"GBC012000000001",null);
+                                
                                 String input = userInput.getText().toString();
                                 if(input.equals(""))
                                 {

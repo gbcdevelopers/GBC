@@ -454,8 +454,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String parameters = paramsBuilder(params, false);
         String[] paramArray = paramsBuilder(params,false).split(",");
+        String filterKeys = null;
+        String filterValues = null;
+        String [] filterArray = null;
+        if(!filters.isEmpty()){
+            filterKeys = filterBuilder(filters,false);
+            filterValues = paramsBuilder(filters, true);
+            filterArray = paramsBuilder(filters,true).split(",");
+        }
+
         Log.e("Parameter", "" + parameters);
-        Cursor cursor = db.query(tablename, paramArray ,null ,null ,null,null,null);
+        Log.e("Filters","" + filterKeys);
+        Cursor cursor = db.query(tablename, paramArray ,filterKeys ,filterArray ,null,null,null);
         if(cursor!=null)
         {
             cursor.moveToFirst();
@@ -484,6 +494,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         return  TextUtils.join(",", list);
+    }
+
+    public static String filterBuilder(HashMap<String, String> hashMap,boolean isValue) {
+        ArrayList<String> list = new ArrayList<>();
+        boolean isOr = false;
+        for (Map.Entry entry : hashMap.entrySet()) {
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
+
+            value = clean(value);
+
+            try {
+                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            if(!isValue){
+                list.add(entry.getKey().toString() + "=?");
+            }
+            else{
+                list.add(value);
+            }
+        }
+
+        return TextUtils.join((isOr ? "or" : "and"), list);
+
     }
 
     public static String clean(String data) {

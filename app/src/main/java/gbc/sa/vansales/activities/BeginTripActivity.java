@@ -165,7 +165,10 @@ public class BeginTripActivity extends AppCompatActivity  {
                 map.put(db.KEY_SETTLED_BY   ,"");
                 map.put(db.KEY_UP_STATUS   ,"");
                 map.put(db.KEY_LOADS  ,"");
-                Cursor cursor = db.getData(db.TRIP_HEADER,map,null);
+
+                HashMap<String, String> filters = new HashMap<>();
+
+                Cursor cursor = db.getData(db.TRIP_HEADER,map,filters);
                 if(cursor.getCount()>0){
                     cursor.moveToFirst();
                 }

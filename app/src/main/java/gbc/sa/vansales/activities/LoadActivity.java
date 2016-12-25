@@ -1,73 +1,64 @@
 package gbc.sa.vansales.activities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gbc.sa.vansales.R;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import gbc.sa.vansales.R;
-
-
+import gbc.sa.vansales.adapters.LoadDeliveryHeaderAdapter;
+import gbc.sa.vansales.models.LoadDeliveryHeader;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Settings;
 public class LoadActivity extends AppCompatActivity
 {
-    public static ArrayList<LoadConstants> searchResults;
-    public static ListAdapter adapter;
-    public static ListView lv;
+    ArrayList<LoadDeliveryHeader> loadDeliveryHeaders;
+    private ArrayAdapter<LoadDeliveryHeader> adapter;
+    //LoadDeliveryHeaderAdapter adapter;
+    ListView lv;
 
     public static Object o;
     public static LoadConstants fullObject;
+
+    DatabaseHandler db = new DatabaseHandler(this);
+    private static final String TRIP_ID = "ITripId";
 
     //    TextView status;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
-
-//        status=(TextView)findViewById(R.id.status);
-
         setTitle("Load");
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        searchResults= GetSearchResults();
-        adapter=new SingleLoadActivity(this,searchResults);
+        loadDeliveryHeaders = new ArrayList<>();
 
+       // searchResults= GetSearchResults();
+        adapter = new LoadDeliveryHeaderAdapter(this,loadDeliveryHeaders);
         lv = (ListView) findViewById(R.id.srListView);
-
-
         lv.setAdapter(adapter);
-
-
+        new fetchLoads(Settings.getString(TRIP_ID));
 
         lv.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                o = lv.getItemAtPosition(position);
-                fullObject = (LoadConstants) o;
 
-
-               // lv.invalidateViews();
-
-
-
-                //Toast.makeText(LoadActivity.this, "You have chosen: " + " " + fullObject.getName(), Toast.LENGTH_LONG).show();
-
-//                status.setText("Checked");
-
-                Intent i =new Intent(LoadActivity.this, LoadSummaryActivity.class);
-                i.putExtra("1",position);
-                startActivityForResult(i,10);
+           LoadDeliveryHeader load = loadDeliveryHeaders.get(position);
+           Intent i = new Intent(LoadActivity.this, LoadSummaryActivity.class);
+           i.putExtra("headerObj",load);
+           startActivityForResult(i,10);
             }
         });
     }
@@ -75,7 +66,7 @@ public class LoadActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Toast.makeText(getApplicationContext(),"Load Checked!",Toast.LENGTH_SHORT).show();
-        lv.setAdapter(new SingleLoadActivity(LoadActivity.this,searchResults));
+        lv.setAdapter(new LoadDeliveryHeaderAdapter(LoadActivity.this, loadDeliveryHeaders));
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,5 +141,60 @@ public class LoadActivity extends AppCompatActivity
         results.add(sr);
 
         return results;
+    }
+
+    public void setLoadDelivery(Cursor loadCursor){
+        Cursor cursor = loadCursor;
+        cursor.moveToFirst();
+        Log.e("cursor", "" + cursor.getCount());
+        do {
+            LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
+            loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
+            loadDeliveryHeader.setLoadingDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
+            loadDeliveryHeader.setLoadVerified(false);
+            //loadDeliveryHeader.setAvailableLoad("1");
+            loadDeliveryHeaders.add(loadDeliveryHeader);
+            loadDeliveryHeaders.add(loadDeliveryHeader);
+        }
+        while (cursor.moveToNext());
+        Log.e("loadDeliver","" + loadDeliveryHeaders.size());
+        adapter.notifyDataSetChanged();
+        Log.e("adapter","" + adapter.getCount());
+    }
+
+    private class fetchLoads extends AsyncTask<Void, Void, Void>{
+        private String tripId;
+
+        private fetchLoads(String tripId) {
+            this.tripId = tripId;
+            execute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TRIP_ID,"");
+            map.put(db.KEY_DELIVERY_NO,"");
+            map.put(db.KEY_DELIVERY_DATE,"");
+            map.put(db.KEY_DELIVERY_TYPE,"");
+
+            HashMap<String, String> filters = new HashMap<>();
+            filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
+
+            Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER,map,filters);
+            Log.e("Cursor","" + cursor.getString(1));
+            if(cursor.getCount()>0){
+                setLoadDelivery(cursor);
+            }
+            return null;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
     }
 }

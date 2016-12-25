@@ -82,11 +82,7 @@ public class LoginActivity extends Activity {
             //For development purpose hardcoding credentials
             //new LoginUser("E2000", "PASSWORD");
 
-//            new LoginUser(id, password);
-            loadingSpinner.hide();
-            Intent intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
+            new LoginUser(id, password);
         }
     }
 

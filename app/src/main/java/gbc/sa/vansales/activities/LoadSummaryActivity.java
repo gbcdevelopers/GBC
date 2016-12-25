@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,14 +21,17 @@ import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.ShopStatusBadgeAdapter;
 import gbc.sa.vansales.adapters.StockTakeBadgeAdapter;
+import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
 import gbc.sa.vansales.models.ShopStatus;
+import gbc.sa.vansales.utils.DatabaseHandler;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
@@ -41,6 +45,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private int loadSummaryCount=0;
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
 
+    DatabaseHandler db = new DatabaseHandler(this);
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +54,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_load_summary);
 
-        Intent i=getIntent();
-        final int position=i.getIntExtra("1",0);
+        Intent i=this.getIntent();
+        LoadDeliveryHeader object = (LoadDeliveryHeader)i.getParcelableExtra("headerObj");
+        Log.e("Object","" + object.getDeliveryNo());
+       // final int position=i.getIntExtra("headerObj",0);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,19 +71,15 @@ public class LoadSummaryActivity extends AppCompatActivity {
         verifyAll=(Button)findViewById(R.id.btn_verify_all);
         loadListView=(ListView)findViewById(R.id.srListView);
         setListView();
-        new loadSummary().execute();
+        new loadSummary(object.getDeliveryNo().toString());
 
         verifyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                listView.setAdapter(null);
+               LoadActivity.fullObject.setStatus("Checked");
 
-               // LoadActivity.searchResults.remove(position);
-
-                LoadActivity.fullObject.setStatus("Checked");
-
-
-                String size=Integer.toString(LoadActivity.searchResults.size());
+                String size=Integer.toString(0);
                // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();
 
                 if(size=="0")
@@ -88,7 +91,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     startActivity(i);
                 }
 
-                //LoadActivity.lv.setAdapter(new SingleLoadActivity(LoadSummaryActivity.this,LoadActivity.searchResults));
+                //LoadActivity.lv.setAdapter(new LoadDeliveryHeaderAdapter(LoadSummaryActivity.this,LoadActivity.searchResults));
                // LoadActivity.adapter.notifyAll();
 
                 Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
@@ -114,7 +117,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView)findViewById(R.id.list_item);
         setListView();
-        new loadSummary().execute();
+        //new loadSummary().execute();
     }
 
     private void loadData(){
@@ -135,7 +138,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
         return loadSummaryUnmodList;
 
     }
-
     private void setListView() {
         LayoutInflater inflater = getLayoutInflater();
         View header = inflater.inflate(R.layout.badge_load_summary, listView, false);
@@ -143,7 +145,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
         setSwipeViewFeatures();
        // listView.addHeaderView(header);
     }
-
     private void setSwipeViewFeatures() {
         //set show mode.
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
@@ -177,8 +178,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
             }
         });
     }
-
-
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -188,8 +187,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
     public static LoadSummary createLoadSummaryData(int index){
         LoadSummary loadSummary = new LoadSummary();
         switch(index){
@@ -235,8 +232,13 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         return loadSummary;
     }
-
     private class loadSummary extends AsyncTask<String, Void, Void> {
+        private String deliveryNo;
+
+        private loadSummary(String deliveryNo) {
+            this.deliveryNo = deliveryNo;
+            execute();
+        }
 
         @Override
         protected void onPreExecute() {
@@ -246,7 +248,22 @@ public class LoadSummaryActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             //Logic to fetch Data
-            loadData();
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_DELIVERY_NO,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_ITEM_CATEGORY,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_ACTUAL_QTY,"");
+            map.put(db.KEY_UOM,"");
+
+
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_DELIVERY_NO,this.deliveryNo);
+
+            Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
+            if(cursor.getCount()>0){
+                setLoadItems(cursor);
+            }
             return null;
         }
 
@@ -260,7 +277,22 @@ public class LoadSummaryActivity extends AppCompatActivity {
             // super.onPostExecute(aVoid);
         }
     }
+    private void setLoadItems(Cursor loadSummary) {
 
+        loadSummaryList.clear();
+        Cursor cursor = loadSummary;
+        cursor.moveToFirst();
+        do {
+            LoadSummary loadItem = new LoadSummary();
+            loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+            loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadSummaryList.add(loadItem);
+        }
+        while (cursor.moveToNext());
+        adapter.notifyDataSetChanged();
+    }
     public void updateAdapter(ArrayList<LoadSummary>data) {
         adapter.notifyDataSetChanged();//update adapter
         if(adapter.getCount()==0&&loadSummaryCount!=0){
