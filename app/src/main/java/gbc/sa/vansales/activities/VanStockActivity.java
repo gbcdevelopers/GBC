@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.app.Activity;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,7 +36,7 @@ public class VanStockActivity extends AppCompatActivity {
     String[] vanStcokCase;
     String[] vanStcokDescription;
     String[] vanStcokUnits;
-    Button printVanStock;
+    FloatingActionButton printVanStock;
     ArrayList<VanStockConstants> arraylist = new ArrayList<VanStockConstants>();
 
     @Override
@@ -46,7 +47,7 @@ public class VanStockActivity extends AppCompatActivity {
         setTitle("VanStock Activity");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        printVanStock=(Button)findViewById(R.id.btnPrintVanStock);
+        printVanStock=(FloatingActionButton) findViewById(R.id.fabVanStock);
 
 
 
@@ -54,14 +55,6 @@ public class VanStockActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-
-             /*   Dialog alertDialog = new Dialog(VanStockActivity.this);
-                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                alertDialog.setContentView(R.layout.activity_print);
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                alertDialog.show();
-*/
 
 
                 Dialog dialog = new Dialog(VanStockActivity.this);

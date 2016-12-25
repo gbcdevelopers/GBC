@@ -43,14 +43,28 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
     }
 
     @Override
+//    public int getChildrenCount(int groupPosition) {
+//        // int childCount = 0;
+//        //if (groupPosition != 0) {
+//        //  childCount = this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
+//        //        .size();
+//        //}
+//        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
+//                .size();
+//
+//
+//
+//        // return childCount;
+//    }
+
     public int getChildrenCount(int groupPosition) {
-        int childCount = 0;
-        if (groupPosition != 5) {
-            childCount = this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                    .size();
+        List childList = mListDataChild.get(mListDataHeader.get(groupPosition));
+        if (childList != null && ! childList.isEmpty()) {
+            return childList.size();
         }
-        return childCount;
+        return 0;
     }
+
 
     @Override
     public Object getGroup(int groupPosition) {
@@ -59,10 +73,11 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        Log.d("CHILD", mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                .get(childPosition).toString());
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-                .get(childPosition);
+        List childList = mListDataChild.get(mListDataHeader.get(groupPosition));
+        if (childList != null && ! childList.isEmpty()) {
+            return childList.get(childPosition);
+        }
+        return null;
     }
 
     @Override
@@ -87,6 +102,11 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.expandable_list_group, null);
+
+//            if (getChildrenCount(groupPosition)==0) {
+//                convertView.setVisibility(View.GONE);
+//            }
+
         }
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.submenu);
@@ -94,24 +114,29 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle.getIconName());
         headerIcon.setImageResource(headerTitle.getIconImg());
+
+
+
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final String childText;
+        if( getChild(groupPosition, childPosition)!=null) {
+            childText = (String)(getChild(groupPosition, childPosition));
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this.mContext
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.expandable_list_item, null);
+            }
 
-        if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.mContext
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.expandable_list_item, null);
+
+            TextView txtListChild = (TextView) convertView
+                    .findViewById(R.id.submenu);
+
+            txtListChild.setText(childText);
         }
-
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.submenu);
-
-        txtListChild.setText(childText);
-
         return convertView;
     }
 

@@ -26,6 +26,8 @@ public class LoadActivity extends AppCompatActivity
     public static ListAdapter adapter;
     public static ListView lv;
 
+    public  static int count;
+
     public static Object o;
     public static LoadConstants fullObject;
 
@@ -41,7 +43,13 @@ public class LoadActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         searchResults= GetSearchResults();
+
+        count=0;
+
+
         adapter=new SingleLoadActivity(this,searchResults);
+
+
 
         lv = (ListView) findViewById(R.id.srListView);
 
@@ -56,12 +64,11 @@ public class LoadActivity extends AppCompatActivity
                 o = lv.getItemAtPosition(position);
                 fullObject = (LoadConstants) o;
 
-
-               // lv.invalidateViews();
-
+                // lv.invalidateViews();
 
 
-                //Toast.makeText(LoadActivity.this, "You have chosen: " + " " + fullObject.getName(), Toast.LENGTH_LONG).show();
+
+                //Toast.makeText(LoadActivity.this, "You have chosen: " + " " + fullObject.getloadNumber(), Toast.LENGTH_LONG).show();
 
 //                status.setText("Checked");
 
@@ -76,6 +83,7 @@ public class LoadActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Toast.makeText(getApplicationContext(),"Load Checked!",Toast.LENGTH_SHORT).show();
         lv.setAdapter(new SingleLoadActivity(LoadActivity.this,searchResults));
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -100,52 +108,52 @@ public class LoadActivity extends AppCompatActivity
 
         LoadConstants sr = new LoadConstants();
 
-        sr.setName("Load # 1");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load # 1");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
 
         sr = new LoadConstants();
-        sr.setName("Load # 2");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load # 2");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load # 3");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load # 3");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load #4");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load #4");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load # 5" );
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load # 5" );
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load # 6");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load # 6");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 
         sr = new LoadConstants();
-        sr.setName("Load 7");
-        sr.setCityState("Loading Date");
-        sr.setPhone("Available Load");
+        sr.setloadNumber("Load 7");
+        sr.setloadDate("Loading Date");
+        sr.setavailableLoad("Available Load");
         sr.setStatus("UnChecked");
         results.add(sr);
 

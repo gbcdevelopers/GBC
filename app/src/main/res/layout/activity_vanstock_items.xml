@@ -1,127 +1,166 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvitems"
+                android:text="Items"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+            <TextView
+
+                android:id="@+id/items"
+                android:text="TextView 2"
+                android:textSize="15dp"
+
+                android:textColor="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+
+                android:id="@+id/tvcases"
+                android:text="Cases"
+                android:textSize="20dp"
+
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+            <TextView
+
+                android:id="@+id/cases"
+                android:text="TextView 4"
+                android:textSize="15dp"
+
+                android:textColor="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+
+                android:id="@+id/tvdescription"
+                android:text="Description"
+                android:textSize="20dp"
+
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+            <TextView
+
+                android:id="@+id/description"
+                android:text="TextView 6"
+                android:textSize="15dp"
+
+                android:textColor="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+
+                android:id="@+id/tvunits"
+                android:text="Units"
+                android:textSize="20dp"
+
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+            <TextView
+
+                android:id="@+id/units"
+                android:text="TextView 8"
+                android:layout_width="0dp"
+                android:textSize="15dp"
+
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <View
-        android:id="@+id/v1"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/colorPrimary"/>
 
 
-    <TextView
-        android:layout_below="@+id/v1"
-        android:id="@+id/ranklabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Item Code : "
-        android:textStyle="bold"
-        android:layout_marginTop="5dp"
-        android:paddingBottom="5dp"
-        android:textColor="@color/colorPrimary"
-        />
-
-    <TextView
-        android:id="@+id/item"
-        android:layout_below="@+id/v1"
-
-        android:layout_marginTop="5dp"
-
-
-        android:textColor="@color/black"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ranklabel"
-        android:paddingBottom="5dp"
-        />
-
-    <TextView
-        android:id="@+id/countrylabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ranklabel"
-        android:text="Cases : "
-
-        android:textColor="@color/colorPrimary"
-
-        android:paddingBottom="5dp"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/cases"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ranklabel"
-
-
-        android:textColor="@color/black"
-        android:paddingBottom="5dp"
-        android:layout_toRightOf="@+id/countrylabel"
-        />
-
-    <TextView
-        android:id="@+id/populationlabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/countrylabel"
-        android:text="Description : "
-
-        android:textColor="@color/colorPrimary"
-
-        android:paddingBottom="5dp"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/countrylabel"
-
-        android:textColor="@color/black"
-        android:paddingBottom="5dp"
-        android:layout_toRightOf="@+id/populationlabel"
-
-        />
-
-
-    <TextView
-        android:id="@+id/unitlabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/description"
-        android:text="Units : "
-
-        android:textColor="@color/colorPrimary"
-
-        android:paddingBottom="5dp"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/units"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/description"
-        android:layout_toRightOf="@+id/unitlabel"
-
-        android:textColor="@color/black"
-        android:paddingBottom="5dp"
-
-        />
-
-    <View
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/units"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"/>
-
-
-
-</RelativeLayout>
+</LinearLayout>

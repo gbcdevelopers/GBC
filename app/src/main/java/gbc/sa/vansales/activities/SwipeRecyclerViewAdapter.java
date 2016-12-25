@@ -48,7 +48,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
         viewHolder.tvCases.setText(item.getCases());
         viewHolder.tvPcs.setText(item.getPcs());
 
-       
+
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
@@ -129,29 +129,32 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
 
 
-                Dialog dialog = new Dialog(view.getContext());
+                final Dialog dialog = new Dialog(view.getContext());
                 dialog.setContentView(R.layout.activity_unload_popup);
                 Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
                 Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
 
-                            btnOK.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+                btnOK.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Intent i=new Intent(v.getContext(),UnloadActivity.class);
+                        // v.getContext().startActivity(i);
 
-                                }
-                            });
-                            btnCancel.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+                        dialog.cancel();
+
+                    }
+                });
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
+//                                    v.getContext().startActivity(i);
+                        dialog.cancel();
 
 
-                                }
-                            });
-                            dialog.setCancelable(false);
+                    }
+                });
+                dialog.setCancelable(false);
                 dialog.show();
 
 

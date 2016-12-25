@@ -65,7 +65,7 @@ public class VanStockAdapter extends BaseAdapter {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.activity_vanstock_items, null);
             // Locate the TextViews in listview_item.xml
-            holder.item = (TextView) view.findViewById(R.id.item);
+            holder.item = (TextView) view.findViewById(R.id.items);
             holder.cases = (TextView) view.findViewById(R.id.cases);
             holder.description = (TextView) view.findViewById(R.id.description);
             holder.units = (TextView) view.findViewById(R.id.units);

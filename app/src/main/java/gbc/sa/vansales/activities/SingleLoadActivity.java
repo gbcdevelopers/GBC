@@ -59,10 +59,10 @@ public class SingleLoadActivity  extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.activity_single_load, null);
             holder = new ViewHolder();
-            holder.txtName = (TextView) convertView.findViewById(R.id.name);
-            holder.txtCityState = (TextView) convertView
-                    .findViewById(R.id.cityState);
-            holder.txtPhone = (TextView) convertView.findViewById(R.id.phone);
+            holder.txtLoadNumber = (TextView) convertView.findViewById(R.id.loadNumber);
+            holder.txtLoadDate = (TextView) convertView
+                    .findViewById(R.id.loadingDate);
+            holder.txtAvailableLoad = (TextView) convertView.findViewById(R.id.availableLoad);
             holder.txtStatus = (TextView) convertView.findViewById(R.id.status);
 
             convertView.setTag(holder);
@@ -70,10 +70,10 @@ public class SingleLoadActivity  extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtName.setText(searchArrayList.get(position).getName());
-        holder.txtCityState.setText(searchArrayList.get(position)
-                .getCityState());
-        holder.txtPhone.setText(searchArrayList.get(position).getPhone());
+        holder.txtLoadNumber.setText(searchArrayList.get(position).getloadNumber());
+        holder.txtLoadDate.setText(searchArrayList.get(position)
+                .getloadDate());
+        holder.txtAvailableLoad.setText(searchArrayList.get(position).getavailableLoad());
 
         holder.txtStatus.setText(searchArrayList.get(position).getStatus());
 
@@ -81,9 +81,9 @@ public class SingleLoadActivity  extends BaseAdapter {
     }
 
     static class ViewHolder {
-        TextView txtName;
-        TextView txtCityState;
-        TextView txtPhone;
+        TextView txtLoadNumber;
+        TextView txtLoadDate;
+        TextView txtAvailableLoad;
         TextView txtStatus;
     }
 }

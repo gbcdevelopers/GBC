@@ -8,12 +8,28 @@
     android:paddingTop="10dip" >
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/loadNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/colorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/loadingDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/colorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/availableLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textColor="@color/colorPrimary"
         />
 
     <TextView
@@ -22,24 +38,9 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/red"
         />
 
-    <TextView
-        android:id="@+id/cityState"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textColor="@color/black"
-        />
-
-    <TextView
-        android:id="@+id/phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:textColor="@color/black"
-        />
 
 
 

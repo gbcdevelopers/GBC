@@ -169,7 +169,7 @@ public class UnloadAdapter extends BaseAdapter {
                             public void onClick(View v) {
                                 dialog.cancel();
                             }
-                            });
+                        });
 
 
                         btnCancel.setOnClickListener(new View.OnClickListener() {

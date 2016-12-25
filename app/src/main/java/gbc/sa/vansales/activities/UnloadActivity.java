@@ -112,7 +112,8 @@ public class UnloadActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                navigation();
+                //  navigation();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

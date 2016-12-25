@@ -28,6 +28,8 @@ import gbc.sa.vansales.adapters.StockTakeBadgeAdapter;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
 import gbc.sa.vansales.models.ShopStatus;
+
+
 /**
  * Created by Rakshit on 19-Nov-16.
  */
@@ -39,6 +41,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private ListView listView,loadListView;
     private Button verifyAll;
     private int loadSummaryCount=0;
+    public static int size;
+
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
 
     @Override
@@ -69,17 +73,25 @@ public class LoadSummaryActivity extends AppCompatActivity {
         verifyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               listView.setAdapter(null);
+                listView.setAdapter(null);
 
-               // LoadActivity.searchResults.remove(position);
+                // LoadActivity.searchResults.remove(position);
+
+
+
 
                 LoadActivity.fullObject.setStatus("Checked");
 
+                LoadActivity.count++;
 
-                String size=Integer.toString(LoadActivity.searchResults.size());
-               // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();
+                size=LoadActivity.searchResults.size();
 
-                if(size=="0")
+
+                // String size=Integer.toString(LoadActivity.searchResults.size());
+                // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();
+
+
+                if(size==LoadActivity.count)
                 {
                     Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
 
@@ -89,7 +101,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 }
 
                 //LoadActivity.lv.setAdapter(new SingleLoadActivity(LoadSummaryActivity.this,LoadActivity.searchResults));
-               // LoadActivity.adapter.notifyAll();
+                // LoadActivity.adapter.notifyAll();
 
                 Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
 
@@ -127,7 +139,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     }
 
     private ArrayList<LoadSummary> loadDataOld(){
-       // adapter.clear();
+        // adapter.clear();
         for (int i = 0; i < 2; i++) {
             LoadSummary loadSummary = createLoadSummaryData(i);
             loadSummaryUnmodList.add(loadSummary);
@@ -141,7 +153,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         View header = inflater.inflate(R.layout.badge_load_summary, listView, false);
         swipeLayout = (SwipeLayout)header.findViewById(R.id.swipe_layout);
         setSwipeViewFeatures();
-       // listView.addHeaderView(header);
+        // listView.addHeaderView(header);
     }
 
     private void setSwipeViewFeatures() {
@@ -274,6 +286,23 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
 
+                    LoadActivity.fullObject.setStatus("Checked");
+
+                    LoadActivity.count++;
+
+
+                    if(size==LoadActivity.count)
+                    {
+                        Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(getApplicationContext(), "Going to VanStock",Toast.LENGTH_SHORT).show();
+                        Intent i=new Intent(LoadSummaryActivity.this,VanStockActivity.class);
+                        startActivity(i);
+                    }
+
+
+
+
 //                    Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
 //                    intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
 //                    intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
@@ -283,12 +312,12 @@ public class LoadSummaryActivity extends AppCompatActivity {
 //                    startActivity(i);
                 }
             })
-            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
             // create alert dialog
             AlertDialog alertDialog = builder.create();
 
@@ -296,6 +325,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
             alertDialog.show();
 
         }
-       // totalClassmates.setText("(" + friendsList.size() + ")"); //update total friends in list
+        // totalClassmates.setText("(" + friendsList.size() + ")"); //update total friends in list
     }
 }

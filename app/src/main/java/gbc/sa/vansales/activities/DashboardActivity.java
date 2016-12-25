@@ -61,6 +61,7 @@ public class DashboardActivity extends AppCompatActivity
 
 
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
@@ -104,78 +105,49 @@ public class DashboardActivity extends AppCompatActivity
                                         int groupPosition, int childPosition, long id) {
 
 
-                String selectedItem=listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
-                if(selectedItem=="Load")
-                {
-                    Intent i=new Intent(DashboardActivity.this,LoadActivity.class);
+                String selectedItem = listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition);
+                if (selectedItem == "Load") {
+                    Intent i = new Intent(DashboardActivity.this, LoadActivity.class);
                     startActivity(i);
-                }
-                else if(selectedItem=="Load Request")
-                {
-                    Intent i=new Intent(DashboardActivity.this,LoadRequestActivity.class);
+                } else if (selectedItem == "Load Request") {
+                    Intent i = new Intent(DashboardActivity.this, LoadRequestActivity.class);
                     startActivity(i);
-                }
-
-                else if(selectedItem=="VanStock")
-                {
-                    Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
+                } else if (selectedItem == "VanStock") {
+                    Intent i = new Intent(DashboardActivity.this, VanStockActivity.class);
                     startActivity(i);
-                }
-
-                else if(selectedItem=="Unload")
-                {
-                    Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
+                } else if (selectedItem == "Unload") {
+                    Intent i = new Intent(DashboardActivity.this, UnloadActivity.class);
                     startActivity(i);
-                }
-
-                else if(selectedItem=="Begin Trip")
-                {
-                    Intent i=new Intent(DashboardActivity.this,BeginTripActivity.class);
-                    startActivity(i);
-                }
-
-                else if(selectedItem=="Customer Operations")
-                {
-                    Intent i=new Intent(DashboardActivity.this,MyCalendarActivity.class);
-                    startActivity(i);
-                }
-
-                else if(selectedItem=="End Trip")
-                {
-                    Intent i=new Intent(DashboardActivity.this,EndTripActivity.class);
-                    startActivity(i);
-
-                }
-
-                else if(selectedItem=="Informtion")
-                {
-                    Toast.makeText(getApplicationContext(), "Information",Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
         });
         expandableList.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id)
-            {
+                                        int groupPosition, long id) {
 
-                // Toast.makeText(getApplicationContext(), "Group Clicked " + listDataHeader.get(groupPosition),
-                //Toast.LENGTH_SHORT).show();
-
-
+                Object item = parent.getExpandableListAdapter().getGroupId(groupPosition);
+                String position = item.toString();
+                if (position == "0") {
+                    Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
+                    startActivity(i);
+                } else if (position == "1") {
+                    Intent i = new Intent(DashboardActivity.this, ManageInventory.class);
+                    startActivity(i);
+                } else if (position == "2") {
+                    Intent i = new Intent(DashboardActivity.this, MyCalendarActivity.class);
+                    startActivity(i);
+                } else if (position == "3") {
+                    Intent i = new Intent(DashboardActivity.this, EndTripActivity.class);
+                    startActivity(i);
+                } else if (position == "4") {
+                    Toast.makeText(getApplicationContext(), "Information", Toast.LENGTH_SHORT).show();
+                }
                 return false;
             }
         });
-
-
-
-
-
-
-
-
-
 
         iv_drawer.setVisibility(View.VISIBLE);
         iv_drawer.setOnClickListener(new View.OnClickListener() {
@@ -192,22 +164,12 @@ public class DashboardActivity extends AppCompatActivity
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
         });
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
             }
         });
-//       ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.setDrawerListener(toggle);
-////        drawer.closeDrawers();
-////        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-//        toggle.syncState();
         NavigationView navigationView2 = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
@@ -291,18 +253,6 @@ public class DashboardActivity extends AppCompatActivity
 
         // Adding child data
 
-        List<String>beginTripItems = new ArrayList<String>();
-        beginTripItems.add("Begin Trip");
-
-        List<String>customerOperationsItems = new ArrayList<String>();
-        customerOperationsItems.add("Customer Operations");
-
-
-        List<String>endTripItems = new ArrayList<String>();
-        endTripItems.add("End Trip");
-
-        List<String>informationsItems = new ArrayList<String>();
-        informationsItems.add("Information");
 
 
         List<String> manageInventoryItems = new ArrayList<String>();
@@ -311,15 +261,9 @@ public class DashboardActivity extends AppCompatActivity
         manageInventoryItems.add("VanStock");
         manageInventoryItems.add("Unload");
 
-        listDataChild.put(listDataHeader.get(0), beginTripItems);
 
         listDataChild.put(listDataHeader.get(1), manageInventoryItems);
 
-        listDataChild.put(listDataHeader.get(2), customerOperationsItems);
-
-        listDataChild.put(listDataHeader.get(3), endTripItems);
-
-        listDataChild.put(listDataHeader.get(4), informationsItems);
 
     }
 
@@ -399,51 +343,6 @@ public class DashboardActivity extends AppCompatActivity
 
         return true;
     }
-//    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//        int id = menuItem.getItemId();
-//        if(id==R.id.begintrip){
-//
-//            Intent intent=new Intent(DashboardActivity.this,BeginTripActivity.class);
-//            startActivity(intent);
-//        } else if (id == R.id.manageinventory) {
-//            Intent intent = new Intent(DashboardActivity.this,ManageInventory.class);
-//            startActivity(intent);
-////            Toast.makeText(getApplicationContext(),"Manage Inventory",Toast.LENGTH_SHORT).show();
-//        } else if (id == R.id.load) {
-//            Intent intent = new Intent(DashboardActivity.this,LoadActivity.class);
-//            startActivity(intent);
-//           // Toast.makeText(getApplicationContext(),"Load",Toast.LENGTH_SHORT).show();
-//        } else if (id == R.id.loadrequest) {
-//            Intent i =new Intent(DashboardActivity.this,LoadRequestActivity.class);
-//            startActivity(i);
-//        }
-//        else if(id==R.id.vanstock){
-////            Toast.makeText(getApplicationContext(),"Van Stock",Toast.LENGTH_SHORT).show();
-//            Intent i=new Intent(DashboardActivity.this,VanStockActivity.class);
-//            startActivity(i);
-//        } else if (id == R.id.unload) {
-////            Toast.makeText(getApplicationContext(),"Unload",Toast.LENGTH_SHORT).show();
-//            Intent i=new Intent(DashboardActivity.this,UnloadActivity.class);
-//            startActivity(i);
-//        } else if (id == R.id.customeroperation) {
-//           /* Intent intent = new Intent(getApplicationContext(), CustomerOperationsActivity.class);
-//            startActivityForResult(intent, 0);
-//            finish();
-//            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
-//            Intent intent = new Intent(DashboardActivity.this,MyCalendarActivity.class);
-//            startActivity(intent);
-//            //Toast.makeText(getApplicationContext(),"Customer Operation",Toast.LENGTH_SHORT).show();
-//        } else if (id == R.id.information) {
-//            Intent i =new Intent(DashboardActivity.this,InformationsActivity.class);
-//            startActivity(i);
-//        } else if (id == R.id.endtrip) {
-//            Intent intent=new Intent(DashboardActivity.this,EndTripActivity.class);
-//            startActivity(intent);
-//        }
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//        return true;
-//    }
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -453,7 +352,6 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-        //revision: this don't works, use setOnChildClickListener() and setOnGroupClickListener() above instead
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override

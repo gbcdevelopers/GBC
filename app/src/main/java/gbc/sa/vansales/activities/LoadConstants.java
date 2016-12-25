@@ -4,19 +4,19 @@ package gbc.sa.vansales.activities;
  * Created by Muhammad Umair on 29/11/2016.
  */
 public class LoadConstants {
-    private String name = "";
-    private String cityState = "";
-    private String phone = "";
+    private String loadNumber = "";
+    private String loadDate = "";
+    private String availableLoad = "";
     private String status = "";
 
 
 
-    public void setName(String name) {
-        this.name = name;
+    public void setloadNumber(String loadNumber) {
+        this.loadNumber = loadNumber;
     }
 
-    public String getName() {
-        return name;
+    public String getloadNumber() {
+        return loadNumber;
     }
 
     public void setStatus(String status) {
@@ -27,19 +27,19 @@ public class LoadConstants {
         return status;
     }
 
-    public void setCityState(String cityState) {
-        this.cityState = cityState;
+    public void setloadDate(String loadDate) {
+        this.loadDate = loadDate;
     }
 
-    public String getCityState() {
-        return cityState;
+    public String getloadDate() {
+        return loadDate;
     }
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setavailableLoad(String availableLoad) {
+        this.availableLoad = availableLoad;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getavailableLoad() {
+        return availableLoad;
     }
 
 }
