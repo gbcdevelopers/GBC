@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.data.ArticleHeader;
+import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerHeader;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.TripHeader;
@@ -22,27 +21,8 @@ import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
-import gbc.sa.vansales.utils.SecureStore;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -259,7 +239,7 @@ public class LoginActivity extends Activity {
             public void run() {
                 TripHeader.load(LoginActivity.this,tripId, db);
                 LoadDelivery.load(LoginActivity.this,tripId, db);
-                ArticleHeader.load(LoginActivity.this,tripId, db);
+                ArticleHeaders.load(LoginActivity.this, tripId, db);
                 VisitList.load(LoginActivity.this,tripId, db);
                 CustomerHeader.load(LoginActivity.this,tripId, db);
             }

@@ -37,6 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
 
 import static gbc.sa.vansales.R.drawable.ic_begintrip;
 
@@ -82,7 +84,8 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
 
-
+        //Load all Articles
+        ArticleHeaders.loadData(DashboardActivity.this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         expandableList = (ExpandableListView) findViewById(R.id.navigationmenu);

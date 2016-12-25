@@ -27,6 +27,8 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.ShopStatusBadgeAdapter;
 import gbc.sa.vansales.adapters.StockTakeBadgeAdapter;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
@@ -45,6 +47,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private int loadSummaryCount=0;
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
 
+    private ArrayList<ArticleHeader> articles;
     DatabaseHandler db = new DatabaseHandler(this);
     @Override
 
@@ -65,7 +68,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         loadSummaryList = new ArrayList<>();
         loadSummaryUnmodList = new ArrayList<>();
-
+        articles = new ArrayList<>();
+        articles = ArticleHeaders.get();
+        Log.e("Articles","" + articles.size());
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView)findViewById(R.id.list_item);
         verifyAll=(Button)findViewById(R.id.btn_verify_all);
@@ -285,7 +290,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         do {
             LoadSummary loadItem = new LoadSummary();
             loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            loadItem.setItemDescription(article.getMaterialDesc2());
+           // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadSummaryList.add(loadItem);
