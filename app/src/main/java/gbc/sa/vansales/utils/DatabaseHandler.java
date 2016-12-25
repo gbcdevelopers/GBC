@@ -1,6 +1,7 @@
 package gbc.sa.vansales.utils;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
@@ -158,6 +159,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_CURRENCY = "currency";
     public static final String KEY_RISK_CAT = "riskCategory";
 
+    //Load Delivery Header
+    public static final String KEY_DELIVERY_NO = "deliveryNo";
+    public static final String KEY_ENTRY_TIME = "entryTime";
+    public static final String KEY_SALES_DIST = "salesDist";
+    public static final String KEY_SHIPPING_PT = "shippingPoint";
+    public static final String KEY_DELIVERY_TYPE = "deliveryType";
+    public static final String KEY_DELIVERY_DEFN = "deliveryDefinition";
+    public static final String KEY_ORDER_COMB = "orderComb";
+    public static final String KEY_GOODS_MOVEMENT_DATE = "goodMovementDate";
+    public static final String KEY_LOADING_DATE = "loadingDate";
+    public static final String KEY_TRANSPLANT_DATE = "transplantDate";
+    public static final String KEY_DELIVERY_DATE = "deliveryDate";
+    public static final String KEY_PICKING_DATE = "pickingDate";
+    public static final String KEY_UNLOAD_POINT = "unloadPoint";
+
+    //Load Items
+    public static final String KEY_ITEM_NO = "itemNo";
+    public static final String KEY_ITEM_CATEGORY = "itemCategory";
+    public static final String KEY_MATERIAL_ENTERED = "materialEntered";
+    public static final String KEY_PLANT = "plant";
+    public static final String KEY_STORAGE_LOCATION = "storage";
+    public static final String KEY_BATCH = "batch";
+    public static final String KEY_ACTUAL_QTY = "actualQty";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -320,6 +344,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CURRENCY  + " TEXT,"
                 + KEY_RISK_CAT  + " TEXT " + ")";
 
+        String TABLE_LOAD_DELIVERY_HEADER = "CREATE TABLE " + LOAD_DELIVERY_HEADER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_CREATED_BY  + " TEXT,"
+                + KEY_CREATED_TIME  + " TEXT,"
+                + KEY_DATE  + " TEXT,"
+                + KEY_SALES_DIST  + " TEXT,"
+                + KEY_SHIPPING_PT   + " TEXT,"
+                + KEY_SALES_ORG   + " TEXT,"
+                + KEY_DELIVERY_TYPE   + " TEXT,"
+                + KEY_DELIVERY_DEFN   + " TEXT,"
+                + KEY_ORDER_COMB   + " TEXT,"
+                + KEY_GOODS_MOVEMENT_DATE   + " TEXT,"
+                + KEY_LOADING_DATE   + " TEXT,"
+                + KEY_TRANSPLANT_DATE  + " TEXT,"
+                + KEY_DELIVERY_DATE  + " TEXT,"
+                + KEY_PICKING_DATE   + " TEXT,"
+                + KEY_UNLOAD_POINT  + " TEXT " + ")";
+
+        String TABLE_LOAD_DELIVERY_ITEMS = "CREATE TABLE " + LOAD_DELIVERY_ITEMS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_ITEM_CATEGORY  + " TEXT,"
+                + KEY_CREATED_BY  + " TEXT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_DATE   + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_ENTERED   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_PLANT   + " TEXT,"
+                + KEY_STORAGE_LOCATION   + " TEXT,"
+                + KEY_BATCH   + " TEXT,"
+                + KEY_ACTUAL_QTY  + " TEXT,"
+                + KEY_UOM  + " TEXT,"
+                + KEY_DIST_CHANNEL   + " TEXT,"
+                + KEY_DIVISION  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -332,6 +395,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_CUSTOMER_HEADER);
         db.execSQL(TABLE_CUSTOMER_SALES_AREAS);
         db.execSQL(TABLE_CUSTOMER_CREDIT);
+        db.execSQL(TABLE_LOAD_DELIVERY_HEADER);
+        db.execSQL(TABLE_LOAD_DELIVERY_ITEMS);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -358,7 +423,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String encryptedPassword = SecureStore.encryptData(sym, iv, password);
 
 
-        values.put(KEY_SYM,new String(sym));
+        values.put(KEY_SYM, new String(sym));
         values.put(KEY_IV, new String(iv));
         values.put(KEY_USERNAME, username);
         values.put(KEY_PASSWORD, encryptedPassword);
@@ -382,6 +447,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.insert(tablename, null, values);
         db.close();
+    }
+
+    public Cursor getData(String tablename, HashMap<String, String> params, HashMap<String, String>filters){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String parameters = paramsBuilder(params, false);
+        String[] paramArray = paramsBuilder(params,false).split(",");
+        Log.e("Parameter", "" + parameters);
+        Cursor cursor = db.query(tablename, paramArray ,null ,null ,null,null,null);
+        if(cursor!=null)
+        {
+            cursor.moveToFirst();
+        }
+        return cursor;
     }
 
     public static String paramsBuilder(HashMap<String, String> hashMap,boolean isValue) {

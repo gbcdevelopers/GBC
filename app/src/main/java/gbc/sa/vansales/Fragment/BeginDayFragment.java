@@ -100,11 +100,11 @@ public class BeginDayFragment extends Fragment {
         try{
             JSONObject data = new JSONObject(getArguments().getString("data"));
             Log.e("Data in Fragment", "" + data);
-            route.setText(data.getString("ItemNo"));
-            salesManNo.setText(data.getString("Driver1"));
+            route.setText(data.getString("route"));
+            salesManNo.setText(data.getString("driver1"));
             salesManName.setText(data.getString("Driver1"));
 
-            String dateStr = data.getString("Execdate");
+            /*String dateStr = data.getString("Execdate");
             dateStr = dateStr.replace("/","").trim();
             dateStr = dateStr.replace("Date(","").trim();
             dateStr = dateStr.replace(")","");
@@ -117,8 +117,11 @@ public class BeginDayFragment extends Fragment {
             int mDay = calendar.get(Calendar.DAY_OF_MONTH);
             salesDate.setText(mYear + "-" + (mMonth+1) + "-" + mDay);
             delieveryDate.setText(mYear + "-" + (mMonth+1) + "-" + mDay);
-            deliveryRoute.setText(data.getString("Vlid"));
-            vehicleNo.setText(data.getString("Truck"));
+*/
+            salesDate.setText(data.getString("psDate"));
+            delieveryDate.setText(data.getString("asDate"));
+            deliveryRoute.setText(data.getString("route"));
+            vehicleNo.setText(data.getString("truck"));
 
         }
         catch (Exception e){

@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
 /**
@@ -85,5 +87,18 @@ public class Helpers {
         File file = new File(App.APP_DB_BACKUP_PATH);
         Date lastModDate = new Date(file.lastModified());
         Log.e("Last modified date","" + lastModDate);
+    }
+
+    public static Date formatDate(String date){
+        Date formatDate = null;
+        String pattern1 = "/Date(";
+        String pattern2 = ")/";
+        Pattern p = Pattern.compile(Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2));
+        Matcher m = p.matcher(date);
+        while(m.find()){
+            long milli = Long.parseLong(m.group(1));
+            formatDate = new Date(milli);
+        }
+        return formatDate;
     }
 }

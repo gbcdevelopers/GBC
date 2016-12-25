@@ -137,10 +137,20 @@ public class LoginActivity extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         loadingSpinner.show();
-                                /*if(!checkTripID("GBC012000000003")){
+                                 //For development purpose only
+
+                                      //  downloadData("GBC012000000003");
+                                if(!checkTripID("GBC012000000003")){
+                                    Settings.setString(TRIP_ID, "GBC012000000003");
                                     downloadData("GBC012000000003");
-                                }*/
-                                        downloadData("GBC012000000003");
+                                }
+                                else{
+                                    Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                                    startActivityForResult(intent, 0);
+                                    finish();
+                                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                                }
+                                   //     downloadData("GBC012000000003");
                                /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                                 startActivityForResult(intent, 0);
                                 finish();
@@ -183,12 +193,21 @@ public class LoginActivity extends Activity {
                     else{
 
                         // Settings.getEditor().putString(TRIP_ID, this.returnList.get(2)).commit();
-                        Settings.setString(TRIP_ID, this.returnList.get(2));
+
                         boolean checkTripID = checkTripID(this.returnList.get(2));
+
                         if(!checkTripID){
+                            Settings.setString(TRIP_ID, this.returnList.get(2));
                             downloadData(this.returnList.get(2));
+                            db.addLoginCredentials("E2000", "PASSWORD");
                         }
-                        db.addLoginCredentials("E2000", "PASSWORD");
+                        else{
+                            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                            startActivityForResult(intent, 0);
+                            finish();
+                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        }
+
 
 
                       /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
@@ -207,14 +226,20 @@ public class LoginActivity extends Activity {
 
     public boolean checkTripID(String trip_Id){
 
-        String tripID = Settings.getString(TRIP_ID);
-        if(tripID.equals(trip_Id)){
-            return true;
+        String tripID = "";
+        tripID = Settings.getString(TRIP_ID);
+        boolean returnVal = false;
+        if(tripID == null){
+            returnVal = false;
         }
         else if(tripID.isEmpty()){
-            return false;
+            returnVal =  false;
         }
-        return false;
+        else if(tripID.equals(trip_Id)){
+            returnVal =  true;
+        }
+
+        return returnVal;
     }
 
     public void downloadData(final String tripId){
@@ -236,11 +261,11 @@ public class LoginActivity extends Activity {
         chain.add(new Chain.Link() {
             @Override
             public void run() {
-                //    TripHeader.load(LoginActivity.this,tripId, db);
-                    LoadDelivery.load(LoginActivity.this,tripId, db);
-               // ArticleHeader.load(LoginActivity.this,tripId, db);
-              //  VisitList.load(LoginActivity.this,tripId, db);
-               // CustomerHeader.load(LoginActivity.this,tripId, db);
+                TripHeader.load(LoginActivity.this,tripId, db);
+                LoadDelivery.load(LoginActivity.this,tripId, db);
+                ArticleHeader.load(LoginActivity.this,tripId, db);
+                VisitList.load(LoginActivity.this,tripId, db);
+                CustomerHeader.load(LoginActivity.this,tripId, db);
             }
         });
 
