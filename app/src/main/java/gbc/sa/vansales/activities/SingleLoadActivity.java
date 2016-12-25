@@ -59,23 +59,23 @@ public class SingleLoadActivity  extends BaseAdapter {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.activity_single_load, null);
             holder = new ViewHolder();
-            holder.txtLoadNumber = (TextView) convertView.findViewById(R.id.loadNumber);
+            holder.txtLoadNumber = (TextView) convertView.findViewById(R.id.deliveryNo);
             holder.txtLoadDate = (TextView) convertView
                     .findViewById(R.id.loadingDate);
-            holder.txtAvailableLoad = (TextView) convertView.findViewById(R.id.availableLoad);
-            holder.txtStatus = (TextView) convertView.findViewById(R.id.status);
+        //    holder.txtAvailableLoad = (TextView) convertView.findViewById(R.id.availableLoad);
+        //    holder.txtStatus = (TextView) convertView.findViewById(R.id.status);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.txtLoadNumber.setText(searchArrayList.get(position).getloadNumber());
+        /*holder.txtLoadNumber.setText(searchArrayList.get(position).getloadNumber());
         holder.txtLoadDate.setText(searchArrayList.get(position)
                 .getloadDate());
         holder.txtAvailableLoad.setText(searchArrayList.get(position).getavailableLoad());
 
-        holder.txtStatus.setText(searchArrayList.get(position).getStatus());
+        holder.txtStatus.setText(searchArrayList.get(position).getStatus());*/
 
         return convertView;
     }

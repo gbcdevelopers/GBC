@@ -8,6 +8,7 @@ import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class UrlBuilder {
         String url = collection;
 
         if (parameters != null && parameters.size() > 0) {
-            url += "?" + expansionBuilder(parameters,expansion);
+            url += "?" + expansionBuilder(parameters, expansion);
         }
 
         return url;
@@ -148,7 +149,16 @@ public class UrlBuilder {
         data = data.replaceAll("([^A-Za-z0-9&: \\-\\.,_\\?\\*]*)", "");
 
         data = data.replaceAll("([ ]+)", " ");
+        return data;
+    }
 
+    public static String decodeString(String data){
+        if(data == null) return "";
+        try {
+            data = URLDecoder.decode(data,ConfigStore.CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return data;
     }
 }

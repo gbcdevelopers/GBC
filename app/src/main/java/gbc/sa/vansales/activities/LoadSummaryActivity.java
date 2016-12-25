@@ -34,6 +34,7 @@ import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
 import gbc.sa.vansales.models.ShopStatus;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
@@ -291,7 +292,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
             LoadSummary loadItem = new LoadSummary();
             loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
             ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            loadItem.setItemDescription(article.getMaterialDesc2());
+            Log.e("Article IF","" + article);
+
+            loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
            // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
