@@ -154,7 +154,7 @@ public class LoadActivity extends AppCompatActivity
             loadDeliveryHeader.setLoadVerified(false);
             //loadDeliveryHeader.setAvailableLoad("1");
             loadDeliveryHeaders.add(loadDeliveryHeader);
-            loadDeliveryHeaders.add(loadDeliveryHeader);
+
         }
         while (cursor.moveToNext());
         Log.e("loadDeliver","" + loadDeliveryHeaders.size());

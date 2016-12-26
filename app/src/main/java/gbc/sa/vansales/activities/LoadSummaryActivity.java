@@ -23,6 +23,7 @@ import com.daimajia.swipe.SwipeLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.ShopStatusBadgeAdapter;
@@ -149,8 +150,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadSummaryUnmodList.add(loadItem);
-            loadSummaryUnmodList.add(loadItem);
-            loadSummaryUnmodList.add(loadItem);
+
         }
         while (cursor.moveToNext());
 
@@ -302,19 +302,29 @@ public class LoadSummaryActivity extends AppCompatActivity {
         Cursor cursor = loadSummary;
         cursor.moveToFirst();
         do {
-            LoadSummary loadItem = new LoadSummary();
-            loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            Log.e("Article IF","" + article);
+            try{
+                LoadSummary loadItem = new LoadSummary();
+                loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Log.e("Article IF", "" + article);
 
-            loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
-           // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-            loadSummaryList.add(loadItem);
-            loadSummaryList.add(loadItem);
-            loadSummaryList.add(loadItem);
-            loadSummaryList.add(loadItem);
+                if(!(article==null)){
+                    loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                }
+                else{
+                    loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                }
+                // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                //String quantity = cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0";
+                //loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+                loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+                loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+                loadSummaryList.add(loadItem);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
         while (cursor.moveToNext());
         adapter.notifyDataSetChanged();
