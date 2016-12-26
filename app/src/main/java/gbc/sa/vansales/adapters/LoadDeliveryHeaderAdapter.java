@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -47,6 +48,7 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             holder.deliveryNo = (TextView) convertView.findViewById(R.id.deliveryNo);
             holder.loadingDate = (TextView) convertView
                     .findViewById(R.id.loadingDate);
+            holder.loadAvailable = (ImageView)convertView.findViewById(R.id.img_loadVerified);
           //  holder.availableLoad = (TextView) convertView.findViewById(R.id.availableLoad);
            // holder.txtStatus = (TextView) convertView.findViewById(R.id.status);
 
@@ -57,6 +59,14 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
         LoadDeliveryHeader load = getItem(position);
         holder.deliveryNo.setText("Load No : " + load.getDeliveryNo());
         holder.loadingDate.setText("Delivery Date : " + load.getLoadingDate());
+
+        if(load.isLoadVerified()){
+            holder.loadAvailable.setVisibility(View.VISIBLE);
+            convertView.setClickable(false);
+            convertView.setEnabled(false);
+            convertView.setOnClickListener(null);
+        }
+
 //        holder.availableLoad.setText(load.getAvailableLoad());
 
 
@@ -68,5 +78,6 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
         TextView loadingDate;
         TextView availableLoad;
         TextView txtStatus;
+        ImageView loadAvailable;
     }
 }

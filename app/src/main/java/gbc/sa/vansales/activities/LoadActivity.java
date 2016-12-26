@@ -151,7 +151,7 @@ public class LoadActivity extends AppCompatActivity
             LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
             loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
             loadDeliveryHeader.setLoadingDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
-            loadDeliveryHeader.setLoadVerified(false);
+            loadDeliveryHeader.setLoadVerified(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_VERIFIED))));
             //loadDeliveryHeader.setAvailableLoad("1");
             loadDeliveryHeaders.add(loadDeliveryHeader);
 
@@ -177,12 +177,13 @@ public class LoadActivity extends AppCompatActivity
             map.put(db.KEY_DELIVERY_NO,"");
             map.put(db.KEY_DELIVERY_DATE,"");
             map.put(db.KEY_DELIVERY_TYPE,"");
+            map.put(db.KEY_IS_VERIFIED,"");
 
             HashMap<String, String> filters = new HashMap<>();
             filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
+           // filters.put(db.KEY_IS_VERIFIED,"false");
 
             Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER,map,filters);
-            Log.e("Cursor","" + cursor.getString(1));
             if(cursor.getCount()>0){
                 setLoadDelivery(cursor);
             }

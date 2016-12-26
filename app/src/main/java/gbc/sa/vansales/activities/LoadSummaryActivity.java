@@ -152,8 +152,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             }
             // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+            loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
             loadSummaryUnmodList.add(loadItem);
 
         }
@@ -279,7 +281,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             map.put(db.KEY_MATERIAL_NO,"");
             map.put(db.KEY_ACTUAL_QTY,"");
             map.put(db.KEY_UOM,"");
-
+            map.put(db.KEY_IS_VERIFIED,"");
 
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_DELIVERY_NO,this.deliveryNo);
@@ -324,7 +326,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //String quantity = cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0";
                 //loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
                 loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
-                loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+                loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
                 loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadSummaryList.add(loadItem);
             }
@@ -352,6 +354,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
                     intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
                     intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
+                    intent.putExtra("headerObj",object);
                     startActivity(intent);
 
 //                    Intent i=new Intent(LoadSummaryActivity.this,OdometerPopupActivity.class);
