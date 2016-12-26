@@ -346,7 +346,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
-                    
+
 //                    Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
 //                    intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
 //                    intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
