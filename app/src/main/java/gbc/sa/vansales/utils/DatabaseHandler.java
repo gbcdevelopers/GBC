@@ -183,6 +183,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_BATCH = "batch";
     public static final String KEY_ACTUAL_QTY = "actualQty";
 
+    public static final String KEY_IS_VERIFIED = "isVerified";
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
@@ -362,7 +364,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TRANSPLANT_DATE  + " TEXT,"
                 + KEY_DELIVERY_DATE  + " TEXT,"
                 + KEY_PICKING_DATE   + " TEXT,"
-                + KEY_UNLOAD_POINT  + " TEXT " + ")";
+                + KEY_UNLOAD_POINT   + " TEXT,"
+                + KEY_IS_VERIFIED  + " TEXT " + ")";
 
         String TABLE_LOAD_DELIVERY_ITEMS = "CREATE TABLE " + LOAD_DELIVERY_ITEMS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -381,7 +384,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ACTUAL_QTY  + " TEXT,"
                 + KEY_UOM  + " TEXT,"
                 + KEY_DIST_CHANNEL   + " TEXT,"
-                + KEY_DIVISION  + " TEXT " + ")";
+                + KEY_DIVISION   + " TEXT,"
+                + KEY_IS_VERIFIED  + " TEXT " + ")";
 
 
         //Execute to create tables
@@ -410,6 +414,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_SALES_AREAS);
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_CREDIT);
+        db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_HEADER);
+        db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS);
         onCreate(db);
     }
 

@@ -47,6 +47,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private Button verifyAll;
     private int loadSummaryCount=0;
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
+    LoadDeliveryHeader object;
 
     private ArrayList<ArticleHeader> articles;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -59,7 +60,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_summary);
 
         Intent i=this.getIntent();
-        LoadDeliveryHeader object = (LoadDeliveryHeader)i.getParcelableExtra("headerObj");
+        object = (LoadDeliveryHeader)i.getParcelableExtra("headerObj");
         Log.e("Object","" + object.getDeliveryNo());
        // final int position=i.getIntExtra("headerObj",0);
 
@@ -72,6 +73,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         articles = new ArrayList<>();
         articles = ArticleHeaders.get();
         Log.e("Articles","" + articles.size());
+
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView)findViewById(R.id.list_item);
         verifyAll=(Button)findViewById(R.id.btn_verify_all);
@@ -86,8 +88,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
                LoadActivity.fullObject.setStatus("Checked");
 
                 String size=Integer.toString(0);
-               // Toast.makeText(getApplicationContext(), ( Integer.toString(LoadActivity.searchResults.size())),Toast.LENGTH_SHORT).show();
-
                 if(size=="0")
                 {
                     Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
@@ -96,22 +96,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     Intent i=new Intent(LoadSummaryActivity.this,VanStockActivity.class);
                     startActivity(i);
                 }
-
-                //LoadActivity.lv.setAdapter(new LoadDeliveryHeaderAdapter(LoadSummaryActivity.this,LoadActivity.searchResults));
-               // LoadActivity.adapter.notifyAll();
-
                 Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
 
-
-                //LoadActivity obj=new LoadActivity();
-                //obj.removeItems();
-
-
-                /*final int position = loadListView.getPositionForView(v);
-
-                loadListView.removeViewAt(position);
-
-                notifyDataSetChanged();*/
             }
         });
 
@@ -137,10 +123,37 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
     private ArrayList<LoadSummary> loadDataOld(){
        // adapter.clear();
-        for (int i = 0; i < 2; i++) {
-            LoadSummary loadSummary = createLoadSummaryData(i);
-            loadSummaryUnmodList.add(loadSummary);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_DELIVERY_NO,"");
+        map.put(db.KEY_ITEM_NO,"");
+        map.put(db.KEY_ITEM_CATEGORY,"");
+        map.put(db.KEY_MATERIAL_NO,"");
+        map.put(db.KEY_ACTUAL_QTY,"");
+        map.put(db.KEY_UOM,"");
+
+
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
+
+        Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
+
+        cursor.moveToFirst();
+        do {
+            LoadSummary loadItem = new LoadSummary();
+            loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+            ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            Log.e("Article IF","" + article);
+
+            loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+            // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadSummaryUnmodList.add(loadItem);
+            loadSummaryUnmodList.add(loadItem);
+            loadSummaryUnmodList.add(loadItem);
         }
+        while (cursor.moveToNext());
+
         return loadSummaryUnmodList;
 
     }
@@ -275,7 +288,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            loadSummaryUnmodList = loadSummaryList;
+            //loadSummaryUnmodList = loadSummaryList;
             adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
             loadSummaryCount = loadSummaryList.size();
             listView.setAdapter(adapter);
@@ -298,6 +311,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
            // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+            loadSummaryList.add(loadItem);
+            loadSummaryList.add(loadItem);
+            loadSummaryList.add(loadItem);
             loadSummaryList.add(loadItem);
         }
         while (cursor.moveToNext());

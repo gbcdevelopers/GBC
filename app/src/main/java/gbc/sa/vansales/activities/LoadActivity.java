@@ -163,7 +163,7 @@ public class LoadActivity extends AppCompatActivity
     }
 
     private class fetchLoads extends AsyncTask<Void, Void, Void>{
-        private String tripId;
+        String tripId;
 
         private fetchLoads(String tripId) {
             this.tripId = tripId;
