@@ -29,6 +29,9 @@ public class App extends Application {
     public static final String DATE_FORMAT = "yyyy.MM.dd";
     public static final String TIME_FORMAT = "HH:mm:ss";
 
+    public static final String CASE_UOM = "KAR";
+    public static final String BOTTLES_UOM = "ZSR";
+
     @Override
     public void onCreate() {
         super.onCreate();
