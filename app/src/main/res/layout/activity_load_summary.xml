@@ -20,12 +20,12 @@
 
             <Button
                 android:id="@+id/btn_verify_all"
-                android:layout_width="50dp"
+                android:layout_width="30dp"
 
                 android:layout_marginTop="0dp"
-
-                android:background="@drawable/btn_select_icon"
-                android:layout_height="50dp"
+                android:layout_marginRight="@dimen/list_space"
+                android:background="@drawable/btn_select_all"
+                android:layout_height="30dp"
                 android:layout_gravity="right"
                 />
 
