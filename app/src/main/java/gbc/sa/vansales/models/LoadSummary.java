@@ -9,6 +9,13 @@ public class LoadSummary implements Parcelable{
     private String item_description;
     private String quantity_cases;
     private String quantity_units;
+    public String getMaterialNo() {
+        return materialNo;
+    }
+    public void setMaterialNo(String materialNo) {
+        this.materialNo = materialNo;
+    }
+    private String materialNo;
 
     //Get Instance
     public LoadSummary(){
@@ -53,6 +60,7 @@ public class LoadSummary implements Parcelable{
             loadSummary.item_description = source.readString();
             loadSummary.quantity_cases = source.readString();
             loadSummary.quantity_units = source.readString();
+            loadSummary.materialNo = source.readString();
 
             return loadSummary;
         }
@@ -71,7 +79,7 @@ public class LoadSummary implements Parcelable{
         parcel.writeString(item_description);
         parcel.writeString(quantity_cases);
         parcel.writeString(quantity_units);
-
+        parcel.writeString(materialNo);
     }
 
 }

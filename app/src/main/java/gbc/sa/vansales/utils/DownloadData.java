@@ -121,7 +121,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_DELIVERY_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("DelvDate").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_PICKING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("PickingDae").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_UNLOAD_POINT   ,headerObj.get("UnloadPt").toString());
-                    headerParams.put(db.KEY_IS_VERIFIED, String.valueOf(false));
+                    headerParams.put(db.KEY_IS_VERIFIED, "false");
                     db.addData(db.LOAD_DELIVERY_HEADER, headerParams);
 
                     for(int j=0;j<loadItems.length();j++){
@@ -143,7 +143,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_UOM ,object.get("Uom").toString());
                         params.put(db.KEY_DIST_CHANNEL ,object.get("DistCha").toString());
                         params.put(db.KEY_DIVISION ,object.get("Division").toString());
-                        params.put(db.KEY_IS_VERIFIED,String.valueOf(false));
+                        params.put(db.KEY_IS_VERIFIED,"false");
                         db.addData(db.LOAD_DELIVERY_ITEMS,params);
                     }
 

@@ -455,6 +455,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateData(String tablename, HashMap<String, String> hashMap,HashMap<String, String>filters){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String [] filterArray = null;
+        String filterKeys = null;
+        String filterValues = null;
+        ContentValues values = new ContentValues();
+        for (Map.Entry entry : hashMap.entrySet()){
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
+            value = clean(value);
+            try {
+                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            values.put(entry.getKey().toString(),value);
+        }
+        if(!filters.isEmpty()){
+            filterKeys = filterBuilder(filters,false);
+            filterValues = paramsBuilder(filters, true);
+            filterArray = paramsBuilder(filters,true).split(",");
+        }
+        int records = db.update(tablename,values,filterKeys,filterArray);
+        Log.e("Records updated","" + records);
+        db.close();
+    }
+
     public Cursor getData(String tablename, HashMap<String, String> params, HashMap<String, String>filters){
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -524,7 +550,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
         }
 
-        return TextUtils.join((isOr ? "or" : "and"), list);
+        return TextUtils.join((isOr ? "or" : " and "), list);
 
     }
 

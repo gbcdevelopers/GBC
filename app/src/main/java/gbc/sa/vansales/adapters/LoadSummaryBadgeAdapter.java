@@ -16,12 +16,17 @@ import com.daimajia.swipe.SwipeLayout;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.LoadVerifyActivity;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadSummary;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.UrlBuilder;
 import gbc.sa.vansales.views.TextViewWithLabel;
 /**
  * Created by Rakshit on 19-Nov-16.
@@ -32,12 +37,14 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
     private ArrayList<LoadSummary> loadSummaryList;
     private ArrayList<LoadSummary> tempList;
 
-
+    DatabaseHandler db;
     public LoadSummaryBadgeAdapter(Context context, ArrayList<LoadSummary> loadSummaries){
 
         super(context, R.layout.badge_load_summary, loadSummaries);
+        db = new DatabaseHandler(context);
         if(context instanceof LoadSummaryActivity){
             this.activity = (LoadSummaryActivity) context;
+
         }
         else if(context instanceof LoadVerifyActivity){
             this.loadVerifyActivity = (LoadVerifyActivity) context;
@@ -87,9 +94,19 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
             public void onClick(View v) {
                 //showEditDialog(position, holder);
                 tempList.add(loadSummaryList.get(position));
+                LoadSummary loadSummary = loadSummaryList.get(position);
                 loadSummaryList.remove(position);
                 holder.swipeLayout.close();
                 activity.updateAdapter(tempList);
+
+                //Logic to update is verified flag
+                HashMap<String, String> parameters = new HashMap<>();
+                parameters.put(db.KEY_IS_VERIFIED,"true");
+
+                HashMap<String,String> filters = new HashMap<>();
+                filters.put(db.KEY_MATERIAL_NO, loadSummary.getMaterialNo());
+                db.updateData(db.LOAD_DELIVERY_ITEMS,parameters,filters);
+
             }
         };
     }

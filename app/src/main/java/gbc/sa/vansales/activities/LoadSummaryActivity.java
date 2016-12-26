@@ -51,7 +51,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
     LoadDeliveryHeader object;
 
-    private ArrayList<ArticleHeader> articles;
+    public ArrayList<ArticleHeader> articles;
     DatabaseHandler db = new DatabaseHandler(this);
     @Override
 
@@ -283,6 +283,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_DELIVERY_NO,this.deliveryNo);
+            filter.put(db.KEY_IS_VERIFIED,"false");
 
             Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
             if(cursor.getCount()>0){
@@ -324,6 +325,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
                 loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
                 loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+                loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadSummaryList.add(loadItem);
             }
             catch (Exception e){
@@ -347,10 +349,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
 
-//                    Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
-//                    intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
-//                    intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
-//                    startActivity(intent);
+                    Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
+                    intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
+                    intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
+                    startActivity(intent);
 
 //                    Intent i=new Intent(LoadSummaryActivity.this,OdometerPopupActivity.class);
 //                    startActivity(i);
