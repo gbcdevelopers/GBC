@@ -39,7 +39,10 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
         super(context, R.layout.activity_single_load, loads);
         mInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-
+    @Override
+    public boolean isEnabled(int position) {
+        return super.isEnabled(position);
+    }
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -65,6 +68,7 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             convertView.setClickable(false);
             convertView.setEnabled(false);
             convertView.setOnClickListener(null);
+
         }
 
 //        holder.availableLoad.setText(load.getAvailableLoad());
