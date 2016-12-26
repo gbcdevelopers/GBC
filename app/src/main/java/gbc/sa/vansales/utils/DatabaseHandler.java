@@ -37,6 +37,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CUSTOMER_CREDIT = "CUSTOMER_CREDIT";
     public static final String LOAD_DELIVERY_HEADER = "LOAD_DELIVERY";
     public static final String LOAD_DELIVERY_ITEMS = "LOAD_DELIVERY_ITEMS";
+    public static final String LOAD_DELIVERY_ITEMS_POST = "LOAD_DELIVERY_ITEMS_POST";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -182,6 +183,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_STORAGE_LOCATION = "storage";
     public static final String KEY_BATCH = "batch";
     public static final String KEY_ACTUAL_QTY = "actualQty";
+
+    //For Posting
+    public static final String KEY_ORG_CASE = "orgCase";
+    public static final String KEY_ORG_UNITS = "orgUnits";
+    public static final String KEY_VAR_CASE = "varCase";
+    public static final String KEY_VAR_UNITS = "varUnits";
+
 
     public static final String KEY_IS_VERIFIED = "isVerified";
 
@@ -387,6 +395,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DIVISION   + " TEXT,"
                 + KEY_IS_VERIFIED  + " TEXT " + ")";
 
+        String TABLE_LOAD_DELIVERY_ITEMS_POST = "CREATE TABLE " + LOAD_DELIVERY_ITEMS_POST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_ORG_CASE   + " TEXT,"
+                + KEY_ORG_UNITS   + " TEXT,"
+                + KEY_VAR_CASE   + " TEXT,"
+                + KEY_VAR_UNITS  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -401,6 +421,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_CUSTOMER_CREDIT);
         db.execSQL(TABLE_LOAD_DELIVERY_HEADER);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS);
+        db.execSQL(TABLE_LOAD_DELIVERY_ITEMS_POST);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -416,6 +437,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_CREDIT);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS_POST);
         onCreate(db);
     }
 
