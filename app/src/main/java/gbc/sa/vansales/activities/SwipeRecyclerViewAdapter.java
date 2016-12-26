@@ -129,7 +129,7 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
 
 
 
-                Dialog dialog = new Dialog(view.getContext());
+                final Dialog dialog = new Dialog(view.getContext());
                 dialog.setContentView(R.layout.activity_unload_popup);
                 Button btnOK=(Button)dialog.findViewById(R.id.btnOk);
                 Button btnCancel=(Button)dialog.findViewById(R.id.btnCancel);
@@ -137,16 +137,18 @@ public class SwipeRecyclerViewAdapter extends RecyclerSwipeAdapter<SwipeRecycler
                             btnOK.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+//                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
+//                                    v.getContext().startActivity(i);
+                                    dialog.cancel();
 
                                 }
                             });
                             btnCancel.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
-                                    v.getContext().startActivity(i);
+//                                    Intent i=new Intent(v.getContext(),UnloadActivity.class);
+//                                    v.getContext().startActivity(i);
+                                    dialog.cancel();
 
 
                                 }

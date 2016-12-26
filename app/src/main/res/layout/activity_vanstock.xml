@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
 
@@ -9,20 +11,19 @@
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="30px"
+        android:padding="0px"
         android:background="@color/white"
         />
 
-    <Button
-        android:id ="@+id/btnPrintVanStock"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabVanStock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-
-        android:drawableTop="@drawable/prints"
-        android:background="@drawable/rounded_buttons"
-        android:padding="15dp"
+        android:clickable="true"
+        android:src="@drawable/ic_printer"
         />
 
 
