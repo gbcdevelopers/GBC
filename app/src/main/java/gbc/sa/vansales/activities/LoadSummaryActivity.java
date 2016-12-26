@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,7 +60,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_load_summary);
-
         Intent i=this.getIntent();
         object = (LoadDeliveryHeader)i.getParcelableExtra("headerObj");
         Log.e("Object","" + object.getDeliveryNo());
@@ -142,10 +142,15 @@ public class LoadSummaryActivity extends AppCompatActivity {
         do {
             LoadSummary loadItem = new LoadSummary();
             loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             Log.e("Article IF","" + article);
 
-            loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+            if(!(article==null)){
+                loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+            }
+            else{
+                loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            }
             // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
             loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
@@ -341,7 +346,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
-
+                    
 //                    Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
 //                    intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
 //                    intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);

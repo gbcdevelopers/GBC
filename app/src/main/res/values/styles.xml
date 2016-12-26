@@ -83,8 +83,6 @@
     </style>
 
 
-
-
     <!--<style name="MyTabLayout" parent="Base.Widget.Design.TabLayout">-->
         <!--<item name="tabTextAppearance">@style/MyTabTextAppearance</item>-->
     <!--</style>-->

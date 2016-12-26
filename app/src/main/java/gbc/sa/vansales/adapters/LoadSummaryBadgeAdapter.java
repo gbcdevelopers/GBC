@@ -34,6 +34,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
 
 
     public LoadSummaryBadgeAdapter(Context context, ArrayList<LoadSummary> loadSummaries){
+
         super(context, R.layout.badge_load_summary, loadSummaries);
         if(context instanceof LoadSummaryActivity){
             this.activity = (LoadSummaryActivity) context;
@@ -106,7 +107,6 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
 
         final Dialog dialog = new Dialog(activity);
         dialog.setContentView(R.layout.alert_dialog_variance_load);
-
         Button btn_update = (Button)dialog.findViewById(R.id.btn_update_alert);
         Button btn_cancel = (Button)dialog.findViewById(R.id.btn_cancel_alert);
 
@@ -120,7 +120,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         et_quantity_case.setText(loadSummaryList.get(position).getQuantityCases());
         et_quantity_unit.setText(loadSummaryList.get(position).getQuantityUnits());
 
-        dialog.getWindow().setLayout(500,550);
+       // dialog.getWindow().setLayout(500,550);
 
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
