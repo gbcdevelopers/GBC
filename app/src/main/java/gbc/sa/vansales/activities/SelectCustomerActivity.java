@@ -64,11 +64,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_LOCATION = 1;
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<CustomerHeader> customers = new ArrayList<>();
+    LoadingSpinner loadingSpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
+
+        loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
         new loadVisitList(Settings.getString(App.TRIP_ID));
         new loadAllCustomers(Settings.getString(App.TRIP_ID));
@@ -340,10 +343,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingSpinner.show();
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
         }
     }
     private class loadAllCustomers extends AsyncTask<Void, Void, Void> {
