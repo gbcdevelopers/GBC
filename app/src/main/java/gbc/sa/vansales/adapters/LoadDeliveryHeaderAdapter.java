@@ -71,6 +71,9 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             convertView.setOnClickListener(null);
 
         }
+        else{
+            holder.loadAvailable.setImageResource(R.drawable.right_arrow_icon);
+        }
 
 //        holder.availableLoad.setText(load.getAvailableLoad());
 

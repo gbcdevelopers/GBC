@@ -85,10 +85,17 @@ public class LoadSummaryActivity extends AppCompatActivity {
         verifyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               listView.setAdapter(null);
-               LoadActivity.fullObject.setStatus("Checked");
+              // listView.setAdapter(null);
+              // LoadActivity.fullObject.setStatus("Checked");
 
-                String size=Integer.toString(0);
+                loadSummaryUnmodList = loadDataOld();
+                Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
+                intent.putParcelableArrayListExtra("loadSummary", loadSummaryList);
+                intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
+                intent.putExtra("headerObj", object);
+                startActivity(intent);
+
+                /*String size=Integer.toString(0);
                 if(size=="0")
                 {
                     Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
@@ -97,7 +104,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     Intent i=new Intent(LoadSummaryActivity.this,VanStockActivity.class);
                     startActivity(i);
                 }
-                Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();*/
 
             }
         });
@@ -107,9 +114,15 @@ public class LoadSummaryActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
-        listView = (ListView)findViewById(R.id.list_item);
-        setListView();
+        try{
+            adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
+            listView = (ListView)findViewById(R.id.list_item);
+            setListView();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         //new loadSummary().execute();
     }
 
@@ -165,10 +178,16 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
     }
     private void setListView() {
-        LayoutInflater inflater = getLayoutInflater();
-        View header = inflater.inflate(R.layout.badge_load_summary, listView, false);
-        swipeLayout = (SwipeLayout)header.findViewById(R.id.swipe_layout);
-        setSwipeViewFeatures();
+        try{
+            LayoutInflater inflater = getLayoutInflater();
+            View header = inflater.inflate(R.layout.badge_load_summary, listView, false);
+            swipeLayout = (SwipeLayout)header.findViewById(R.id.swipe_layout);
+            setSwipeViewFeatures();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
        // listView.addHeaderView(header);
     }
     private void setSwipeViewFeatures() {
@@ -350,7 +369,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
-
                     Intent intent = new Intent(LoadSummaryActivity.this,LoadVerifyActivity.class);
                     intent.putParcelableArrayListExtra("loadSummary", loadSummaryData);
                     intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
