@@ -69,7 +69,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_confirm_delivery_presale_proceed"
+        android:layout_marginBottom="60dp"
         android:layout_below="@+id/ll_common"
         android:orientation="vertical">
 
@@ -129,7 +129,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:descendantFocusability="afterDescendants"
+            android:descendantFocusability="beforeDescendants"
+
+
             />
 
 
@@ -249,14 +251,64 @@
         <!--android:src="@drawable/ic_add_black_24dp"-->
         <!--app:backgroundTint="@color/colorPrimary" />-->
 
+
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            >
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_print"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               android:layout_alignParentLeft="true"
+                app:backgroundTint="@color/colorPrimary"
+                android:src="@drawable/double_tick"
+                />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/colorPrimary"
+                android:src="@drawable/ic_white"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+
+
     <Button
         android:id="@+id/btn_confirm_delivery_presale_proceed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@color/green"
         android:text="Confirm Order"
         android:textColor="@color/white"
-        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/ll_common"
+        android:layout_toEndOf="@+id/ll_common"
+       android:visibility="gone"
         />
 </RelativeLayout>

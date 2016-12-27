@@ -10,11 +10,13 @@ import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.BeginDayFragment;
 import gbc.sa.vansales.Fragment.CaptureImageFragment;
 import gbc.sa.vansales.Fragment.CategoryFragment;
+import gbc.sa.vansales.Fragment.FocFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.Fragment.MessageFragment;
 import gbc.sa.vansales.Fragment.ProductFragment;
 import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
+import gbc.sa.vansales.Fragment.StoreFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 
 /**
@@ -84,7 +86,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                    SalesFragment tab1 = new SalesFragment();
                     return tab1;
                 case 1:
-                    SalesFragment tab2 = new SalesFragment();
+                    FocFragment tab2 = new FocFragment();
                     return tab2;
                 case 2:
                     GListFragment tab3 = new GListFragment();
@@ -106,7 +108,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     ShelfFragment tab1 = new ShelfFragment();
                     return tab1;
                 case 1:
-                    ShelfFragment tab2 = new ShelfFragment();
+                    StoreFragment tab2 = new StoreFragment();
                     return tab2;
                 default:
                     return null;

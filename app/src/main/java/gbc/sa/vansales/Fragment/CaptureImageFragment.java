@@ -10,6 +10,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.PromotionAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 
 /**
@@ -18,26 +19,20 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 
 public class CaptureImageFragment extends Fragment {
 
-    SalesAdapter adapter;
+    PromotionAdapter adapter;
     View view;
     GridView gridView;
-    ArrayList<String> arrayList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view=inflater.inflate(R.layout.fragment_captureimage, container, false);
         gridView=(GridView)view.findViewById(R.id.grid);
 
-        arrayList=new ArrayList<>();
-        arrayList.add("A");
-        arrayList.add("B");
-        arrayList.add("C");
 
-        adapter=new SalesAdapter(getActivity(),arrayList, R.layout.custom_captureimage,"");
+
+        adapter=new PromotionAdapter(getActivity(),3, R.layout.custom_captureimage);
          gridView.setAdapter(adapter);
-
-
-
 
 
         return view;

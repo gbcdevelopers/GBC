@@ -15,12 +15,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import gbc.sa.vansales.Fragment.AllCustomerFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
+
+import gbc.sa.vansales.Fragment.StoreFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.PagerAdapter;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.models.ShelfProduct;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -117,68 +122,6 @@ public class ShelfStockActivity extends AppCompatActivity {
 
             }
         });
-
-        et_search.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-
-                        et_search.setVisibility(View.GONE);
-                        iv_search.setVisibility(View.VISIBLE);
-                        toolbar_iv_back.setVisibility(View.VISIBLE);
-                        tv_top_header.setVisibility(View.VISIBLE);
-
-
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-
-
-
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                Log.v("addtext","change");
-
-
-                    ShelfFragment.adapter.getFilter().filter(s.toString());
-
-
-
-                //planBadgeAdapter.notifyDataSetChanged();
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
-
-            }
-        });
-
-
-
-
-
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(),"shelf");
         viewPager.setAdapter(adapter);
@@ -202,16 +145,137 @@ public class ShelfStockActivity extends AppCompatActivity {
         });
 
 
+        et_search.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        // your action here
+
+                        et_search.setVisibility(View.GONE);
+                        iv_search.setVisibility(View.VISIBLE);
+                        toolbar_iv_back.setVisibility(View.VISIBLE);
+                        tv_top_header.setVisibility(View.VISIBLE);
+
+                        if (tab_position ==0) {
+                            ShelfFragment.adapter.getFilter().filter("");
+                        }else {
+                            StoreFragment.adapter.getFilter().filter("");
+                        }
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+
+
+
+        et_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                Log.v("addtext","change");
+
+                if (tab_position ==0) {
+                    ShelfFragment.adapter.getFilter().filter(s.toString());
+                }else {
+                    StoreFragment.adapter.getFilter().filter(s.toString());
+                }
+
+
+                //planBadgeAdapter.notifyDataSetChanged();
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+
+            }
+        });
+
+
+
+
+
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if(ShelfFragment.arrayList!=null && ShelfFragment.adapter!=null) {
-            ShelfFragment.arrayList.addAll(Const.addlist);
-            ShelfFragment.adapter.notifyDataSetChanged();
+
+
+
+        if(tab_position==0)
+        {
+
+            if(ShelfFragment.arrayList!=null && ShelfFragment.adapter!=null) {
+
+
+                ArrayList<ShelfProduct> productArrayList=new ArrayList<>();
+                for(int i=0;i<Const.addlist.size();i++)
+                {
+
+                    ShelfProduct product=new ShelfProduct();
+                    product.setProductname(Const.addlist.get(i));
+                    product.setPro_case(0);
+                    product.setPro_pcs(0);
+                    productArrayList.add(product);
+                }
+
+
+
+
+                ShelfFragment.arrayList.addAll(productArrayList);
+                ShelfFragment.adapter.notifyDataSetChanged();
+            }
+
+
+        }else
+        {
+            if(StoreFragment.arrayList!=null && StoreFragment.adapter!=null) {
+
+
+                ArrayList<ShelfProduct> productArrayList=new ArrayList<>();
+                for(int i=0;i<Const.addlist.size();i++)
+                {
+
+                    ShelfProduct product=new ShelfProduct();
+                    product.setProductname(Const.addlist.get(i));
+                    product.setPro_case(0);
+                    product.setPro_pcs(0);
+                    productArrayList.add(product);
+                }
+
+
+
+
+                StoreFragment.arrayList.addAll(productArrayList);
+                StoreFragment.adapter.notifyDataSetChanged();
+            }
+
         }
+
+
 
 
     }

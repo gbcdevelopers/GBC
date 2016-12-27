@@ -9,12 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
-import gbc.sa.vansales.activities.ProductListActivity;
 import gbc.sa.vansales.adapters.ExpandReturnAdapter;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
 
@@ -25,12 +27,19 @@ import gbc.sa.vansales.utils.AnimatedExpandableListView;
 public class GListFragment extends Fragment {
 
 
+    public static ExpandReturnAdapter adapter;
+    public static ArrayList<String> arrProductList;
     View view;
     FloatingActionButton btn_float;
 
     AnimatedExpandableListView exp_list;
-    public static ExpandReturnAdapter adapter;
-   public static ArrayList<String>  arrProductList;
+   public static RelativeLayout rl_middle;
+
+
+
+
+
+
 
     @Nullable
     @Override
@@ -39,10 +48,19 @@ public class GListFragment extends Fragment {
         view=inflater.inflate(R.layout.activity_gnbreturn,container,false);
         btn_float=(FloatingActionButton)view.findViewById(R.id.fab);
         exp_list=(AnimatedExpandableListView)view.findViewById(R.id.exp_product);
+        rl_middle=(RelativeLayout)view.findViewById(R.id.rl_middle);
 
         arrProductList=new ArrayList<>();
 
-        adapter=new ExpandReturnAdapter(getActivity(),arrProductList);
+
+        if(arrProductList.size()==0)
+        {
+            rl_middle.setVisibility(View.VISIBLE);
+        }else {
+            rl_middle.setVisibility(View.GONE);
+        }
+
+        adapter=new ExpandReturnAdapter(getActivity(),arrProductList,exp_list);
         exp_list.setAdapter(adapter);
 
         btn_float.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +75,7 @@ public class GListFragment extends Fragment {
        exp_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
            @Override
            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-               return false;
+               return true;
            }
        });
 

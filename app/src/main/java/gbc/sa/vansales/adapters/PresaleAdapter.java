@@ -2,6 +2,7 @@ package gbc.sa.vansales.adapters;
 
 import android.content.Context;
 import android.drm.ProcessedData;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,16 @@ public class PresaleAdapter extends BaseAdapter {
 
     Context context;
     int resource;
-    ArrayList<PreSaleProceed> proceedArrayList;
+
     int item;
 
 
-    public PresaleAdapter(Context context,ArrayList<PreSaleProceed> proceedArrayList, int resource,int item)
+    public PresaleAdapter(Context context, int resource,int item)
     {
+        Log.v("called","adapter");
         this.context=context;
         this.resource=resource;
-        this.proceedArrayList=proceedArrayList;
+
         this.item=item;
 
 
@@ -61,8 +63,10 @@ public class PresaleAdapter extends BaseAdapter {
             convertView = inflater.inflate(resource, null);
             TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
             TextView tv1=(TextView)convertView.findViewById(R.id.tv_del_date);
-            tv.setText("Order#"+position);
-            tv1.setText("Order date : 24/12/2016 ");
+            if(item>0) {
+                tv.setText("Order#"+position);
+                tv1.setText("Order date : 27/12/2016");
+            }
 
             return convertView;
     }

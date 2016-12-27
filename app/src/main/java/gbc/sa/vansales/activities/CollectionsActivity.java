@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ColletionAdapter;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.ColletionData;
 
 public class CollectionsActivity extends AppCompatActivity {
@@ -74,8 +75,9 @@ public class CollectionsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast.makeText(getApplicationContext(),pos+"",Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
+                intent.putExtra("msg","collection");
                 intent.putExtra("pos",position);
                 startActivityForResult(intent, 1);
             }
@@ -86,22 +88,26 @@ public class CollectionsActivity extends AppCompatActivity {
     public void setData() {
 
         for (int i = 0; i < 10; i++) {
+
             ColletionData colletionData = new ColletionData();
             colletionData.setId("16-12-2016/132456458792" + i);
             colletionData.setSelsemanId("10000241" + i);
-            colletionData.setAmoutDue("0.2" + i + " AED");
+            colletionData.setAmoutDue(String.valueOf(100+i));
 
-            if(pos==i)
-            {
-                colletionData.setAmoutAde(String.valueOf(amount));
-            }
-            else {
-                colletionData.setAmoutAde("0.00");
-            }
+//            if(pos==i)
+//            {
+//                colletionData.setAmoutAde(String.valueOf(amount));
+//            }
+//            else {
+//                colletionData.setAmoutAde("0.00");
+//            }
+
+            colletionData.setAmoutAde("0.00");
 
 
 
             colletionDatas.add(colletionData);
+            Const.colletionDatas=colletionDatas;
         }
         colletionAdapter = new ColletionAdapter(this, colletionDatas);
         lv_colletions_view.setAdapter(colletionAdapter);
@@ -129,6 +135,10 @@ public class CollectionsActivity extends AppCompatActivity {
                     amount=Double.parseDouble(amt);
                     ColletionData colletionData=colletionDatas.get(pos);
                     colletionData.setAmoutAde(amt);
+
+                    double amountdue=Double.parseDouble(colletionData.getAmoutDue())-amount;
+                    Log.v("amountdue",colletionData.getAmoutDue()+"");
+                    colletionData.setAmoutDue(String.valueOf(amountdue));
                    colletionAdapter.notifyDataSetChanged();
 
                 }

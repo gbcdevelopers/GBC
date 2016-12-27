@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.PromotionAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
 
@@ -24,7 +25,7 @@ import gbc.sa.vansales.adapters.SwipeDetector;
 public class PromotionListActivity extends AppCompatActivity {
 
     ListView list_promotion;
-    SalesAdapter adapter;
+    PromotionAdapter adapter;
 
 
     ImageView iv_back;
@@ -68,6 +69,11 @@ public class PromotionListActivity extends AppCompatActivity {
             }
         }
 
+        arrayList=new ArrayList<>();
+        arrayList.add("50% AMC Invoice Discount");
+        arrayList.add("20% FOC Discount");
+        arrayList.add("10% Other Discount");
+
 
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +100,9 @@ public class PromotionListActivity extends AppCompatActivity {
             }
         });
 
-        arrayList=new ArrayList<>();
-        arrayList.add("50% AMC Invoice Discount");
-        arrayList.add("20% FOC Discount");
-        arrayList.add("10% Other Discount");
 
-        adapter = new SalesAdapter(PromotionListActivity.this, arrayList, R.layout.custom_promotionlist,from);
+
+        adapter = new PromotionAdapter(PromotionListActivity.this,3, R.layout.custom_promotionlist);
         list_promotion.setAdapter(adapter);
 
       /*  list_promotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {

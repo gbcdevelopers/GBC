@@ -26,18 +26,16 @@ import gbc.sa.vansales.activities.CategoryListActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.ShelfAdapter;
 import gbc.sa.vansales.data.Const;
-
 import gbc.sa.vansales.models.ShelfProduct;
 
 /**
  * Created by eheuristic on 12/5/2016.
  */
 
-public class ShelfFragment extends Fragment {
+public class StoreFragment extends Fragment {
 
     View viewmain;
     ListView listShelf;
-
   public static ShelfAdapter adapter;
 
     FloatingActionButton fab;
@@ -61,6 +59,8 @@ public class ShelfFragment extends Fragment {
 
 
 
+
+
         String strProductname[]={"AM5508 LARGE SWISS ROLL VANILL (24x110G)","BM5508 SMALL SWISS ROLL VANILL (24x110G)","CM5508 BIG SWISS ROLL VANILL (24x110G)","DM5508 SWISS ROLL VANILL (24x110G)","EM5508 ROLL VANILL (24x110G)"};
 
 
@@ -80,39 +80,13 @@ public class ShelfFragment extends Fragment {
             arrayList.add(product);
         }
 
-        /*for (int j =0; j<5; j++){
-            Sales shelfProduct = new Sales();
-            if (j == 1) {
-                shelfProduct.setName("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
-                shelfProduct.setPrice("Price:54.00/2.25");
-                shelfProduct.setCases("0");
-
-            }
-            if (j==0){
-                shelfProduct.setProductname("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
-            }
-            if (j == 2) {
-                shelfProduct.setProductname("CM5508 BIG SWISS ROLL VANILL (24x110G)");
-            }
-            if (j == 3) {
-                shelfProduct.setProductname("DM5508 SWISS ROLL VANILL (24x110G)");
-            }
-            if (j == 4) {
-                shelfProduct.setProductname("EM5508 ROLL VANILL (24x110G)");
-            }
-
-        }*/
-
-
-
-
 
         adapter=new ShelfAdapter(getActivity().getBaseContext(),arrayList, R.layout.sales_list);
         listShelf.setAdapter(adapter);
 
         listShelf.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+            public void onItemClick(AdapterView<?> parent, final View view,final int position, long id) {
 
 
                 final Dialog dialog=new Dialog(getActivity());
@@ -150,6 +124,7 @@ public class ShelfFragment extends Fragment {
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);
 
+
                         ShelfProduct product=arrayList.get(position);
                         product.setPro_pcs(Integer.parseInt(strpcs));
                         product.setPro_case(Integer.parseInt(strCase));
@@ -166,15 +141,8 @@ public class ShelfFragment extends Fragment {
                         tv.setText(String.valueOf(total));
 
 
+
                         dialog.dismiss();
-
-
-
-
-
-
-
-
 
                     }
                 });
@@ -196,7 +164,6 @@ public class ShelfFragment extends Fragment {
 
         return viewmain;
     }
-
 
 
 }

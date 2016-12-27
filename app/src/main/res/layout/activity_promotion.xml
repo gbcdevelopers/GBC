@@ -159,7 +159,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="TOTAL PROMO AMOUNT"
+                android:hint="Total Promo Amount"
                 android:textSize="15dp"
                 android:text="150"
                 android:enabled="false"

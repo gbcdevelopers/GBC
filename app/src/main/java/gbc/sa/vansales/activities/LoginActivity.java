@@ -63,7 +63,12 @@ public class LoginActivity extends Activity {
             //For development purpose hardcoding credentials
             //new LoginUser("E2000", "PASSWORD");
             if(Helpers.isNetworkAvailable(LoginActivity.this)){
-                new LoginUser(id, password);
+//                new LoginUser(id, password);
+
+                loadingSpinner.hide();
+                Intent intent = new Intent(this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
             }
             else{
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
@@ -138,9 +143,9 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("GBC012000000004")){
-                                    Settings.setString(TRIP_ID, "GBC012000000004");
-                                    downloadData("GBC012000000004");
+                                if(!checkTripID("GBC012000000003")){
+                                    Settings.setString(TRIP_ID, "GBC012000000003");
+                                    downloadData("GBC012000000003");
                                 }
                                 else{
                                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);

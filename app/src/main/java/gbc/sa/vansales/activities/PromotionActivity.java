@@ -58,7 +58,14 @@ public class PromotionActivity extends AppCompatActivity {
             }
             else
             {
-                ll_bottom.setVisibility(View.GONE);
+                if(str_promotion_message.equals("delivery"))
+                {
+                    ll_bottom.setVisibility(View.VISIBLE);
+                }
+                else {
+                    ll_bottom.setVisibility(View.GONE);
+                }
+
             }
         }
 
@@ -110,6 +117,15 @@ public class PromotionActivity extends AppCompatActivity {
 
                         }
                     });
+
+                }
+                else if(str_promotion_message.equals("delivery"))
+                {
+
+                    Intent intent=new Intent(PromotionActivity.this,PaymentDetails.class);
+                    intent.putExtra("msg",str_promotion_message);
+                    startActivity(intent);
+                    finish();
 
                 }
                 else {

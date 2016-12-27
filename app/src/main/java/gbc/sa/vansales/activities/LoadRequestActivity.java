@@ -130,7 +130,7 @@ public class LoadRequestActivity extends AppCompatActivity
         }
 
         // Pass results to ListViewAdapter Class
-        adapter = new LoadRequestAdapter(this, arraylist,null);
+        adapter = new LoadRequestAdapter(this, arraylist,null,"");
 
         // Binds the Adapter to the ListView
         list.setAdapter(adapter);
@@ -145,7 +145,7 @@ public class LoadRequestActivity extends AppCompatActivity
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
-                adapter.filter(text);
+                adapter.getFilter().filter(text);
             }
 
             @Override
