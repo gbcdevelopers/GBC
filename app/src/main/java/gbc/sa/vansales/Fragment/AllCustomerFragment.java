@@ -14,7 +14,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CustomerDetailActivity;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.data.Const;
-
+import gbc.sa.vansales.models.Customer;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -40,7 +40,9 @@ public class AllCustomerFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Customer customer = Const.allCustomerdataArrayList.get(position);
                 Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
+                intent.putExtra("headerObj", customer);
                 startActivity(intent);
 
             }

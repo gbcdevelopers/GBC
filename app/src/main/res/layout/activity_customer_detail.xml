@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/grey"
+              android:orientation="vertical"
     >
 
 
@@ -18,76 +19,83 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:paddingTop="16dp"
-            android:paddingLeft="16dp"
-            android:paddingBottom="20dp"
             android:background="@drawable/back_radient"
             android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
             >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/tv_customer_id"
                 android:text="3106 EMARAT"
+                android:textColor="@color/white"
                 android:textSize="20dp"
-                android:textColor="@color/white"
-                android:layout_marginBottom="5dp"
                 />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/tv_customer_address"
                 android:text="MOT tc"
+                android:textColor="@color/white"
                 android:textSize="18dp"
-                android:textColor="@color/white"
-                android:layout_marginBottom="5dp"
                 />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/tv_customer_pobox"
                 android:text="PO box"
-                android:textSize="16dp"
                 android:textColor="@color/white"
-                android:layout_marginBottom="5dp"
+                android:textSize="16dp"
                 />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="contact no"
-                android:textSize="14dp"
-                android:textColor="@color/white"
                 android:layout_marginBottom="5dp"
+                android:id="@+id/tv_customer_contact"
+                android:text="contact no"
+                android:textColor="@color/white"
+                android:textSize="14dp"
                 />
 
 
             <LinearLayout
+                android:id="@+id/ll_updown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="4"
-                android:id="@+id/ll_updown"
                 android:visibility="gone"
+                android:weightSum="4"
 
 
                 >
 
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:id="@+id/ll_order"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dp"
                     android:visibility="gone"
 
                     >
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_order"
-                        android:scaleType="fitCenter"
-                        android:layout_gravity="center"
 
                         />
 
@@ -95,36 +103,35 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:singleLine="true"
                         android:text="order"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:maxLines="1"
                         android:textColor="@color/white"
                         android:textSize="14dp"
-
 
 
                         />
 
 
-
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:id="@+id/ll_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dp"
 
                     >
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_message"
-                        android:scaleType="fitCenter"
-                        android:layout_gravity="center"
 
                         />
 
@@ -132,34 +139,34 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+
+                        android:singleLine="true"
                         android:text="messages"
-                        android:ellipsize="end"
-
-                        android:singleLine="true"
-                        android:maxLines="1"
                         android:textColor="@color/white"
                         android:textSize="14dp"
 
                         />
 
 
-
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:id="@+id/ll_pricelist"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dp"
                     >
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_price_list"
-                        android:scaleType="fitCenter"
-                        android:layout_gravity="center"
 
                         />
 
@@ -167,34 +174,34 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+
+                        android:singleLine="true"
                         android:text="Price List"
-                        android:ellipsize="end"
-
-                        android:singleLine="true"
-                        android:maxLines="1"
                         android:textColor="@color/white"
                         android:textSize="14dp"
 
                         />
 
 
-
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:id="@+id/ll_promotion"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dp"
                     >
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_promotion"
-                        android:scaleType="fitCenter"
                         android:layout_gravity="center"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_promotion"
 
                         />
 
@@ -202,56 +209,53 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Promotion"
                         android:ellipsize="end"
+                        android:maxLines="1"
 
                         android:singleLine="true"
-                        android:maxLines="1"
+                        android:text="Promotion"
                         android:textColor="@color/white"
                         android:textSize="14dp"
 
                         />
-
 
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:id="@+id/ll_balance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dp"
                     >
+
                     <ImageView
+                        android:id="@+id/iv_round"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_balance"
-                        android:scaleType="fitCenter"
                         android:layout_gravity="center"
-                        android:id="@+id/iv_round"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_balance"
                         />
 
 
                     <TextView
+                        android:id="@+id/tv_iv_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Balance"
                         android:ellipsize="end"
 
-                        android:singleLine="true"
                         android:maxLines="1"
+                        android:singleLine="true"
+                        android:text="Balance"
                         android:textColor="@color/white"
                         android:textSize="14dp"
-                        android:id="@+id/tv_iv_title"
                         />
 
 
-
                 </LinearLayout>
-
-
 
 
             </LinearLayout>
@@ -267,191 +271,191 @@
             >
 
             <ImageView
+                android:id="@+id/iv_updown"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_up"
                 android:layout_gravity="end"
-                android:id="@+id/iv_updown"
+                android:src="@drawable/ic_up"
                 />
-
 
 
         </FrameLayout>
 
 
         <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp"
-        android:weightSum="3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-        >
-
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:background="@drawable/red_border"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp"
-        android:padding="5dp"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="credit days"
-            android:textColor="@color/black"
-            android:id="@+id/tv_credit"
-            android:layout_marginBottom="5dp"
-            android:textSize="15dp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="10007665"
-            android:layout_below="@+id/tv_credit"
-            android:textSize="20dp"
-            android:id="@+id/tv_digits"
-            android:layout_marginRight="5dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:maxLines="1"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="days"
-            android:textColor="@color/btn_positive"
-            android:gravity="end"
-            android:layout_below="@id/tv_digits"
-
-            />
-
-    </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/red_border"
-            android:layout_marginRight="5dp"
-            android:padding="5dp"
+            android:weightSum="3"
             >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="credit limit"
-                android:textColor="@color/black"
-                android:id="@+id/tv_credit1"
-                android:layout_marginBottom="5dp"
-                android:textSize="15dp"
-
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10007665"
-                android:layout_below="@+id/tv_credit1"
-                android:textSize="20dp"
-                android:id="@+id/tv_digits1"
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:maxLines="1"
-                />
+                android:layout_weight="1"
+                android:background="@drawable/red_border"
+                android:padding="5dp"
+                >
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="days"
-                android:textColor="@color/btn_positive"
+                <TextView
+                    android:id="@+id/tv_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/credit_days"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    />
 
-                android:layout_below="@id/tv_digits1"
-                android:gravity="end"
-                />
+                <TextView
+                    android:id="@+id/tv_digits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_credit"
+                    android:layout_marginRight="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="10007665"
+                    android:textSize="20dp"
+                    />
 
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/red_border"
-            android:layout_marginBottom="10dp"
-            android:padding="5dp"
-            >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_digits"
+                    android:gravity="end"
+                    android:text="@string/days"
+                    android:textColor="@color/btn_positive"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:text="Avail Limit"
-                android:textColor="@color/black"
-                android:id="@+id/tv_credit2"
-                android:layout_marginBottom="5dp"
-                android:textSize="15dp"
+                    />
 
-                />
+            </RelativeLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="days"
-                android:textColor="@color/btn_positive"
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/red_border"
+                android:padding="5dp"
+                >
 
-                android:layout_below="@+id/tv_digits2"
-               android:gravity="end"
-                />
+                <TextView
+                    android:id="@+id/tv_credit1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/credit_limit"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10007665"
-                android:textSize="20dp"
-                android:id="@+id/tv_digits2"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_credit2" />
+                    />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_digits1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_credit1"
+                    android:layout_marginRight="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="10007665"
+                    android:textSize="20dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_digits1"
+                    android:gravity="end"
+                    android:text="@string/currency"
+                    android:textColor="@color/btn_positive"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/red_border"
+                android:padding="5dp"
+                >
+
+                <TextView
+                    android:id="@+id/tv_credit2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/credit_available"
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_digits2"
+                    android:gravity="end"
+                    android:text="@string/currency"
+                    android:textColor="@color/btn_positive"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_digits2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tv_credit2"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="10007665"
+                    android:textSize="20dp"/>
+
+            </RelativeLayout>
 
 
-    </LinearLayout>
+        </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-
-        >
-
-        <GridView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/grid"
-            android:numColumns="3"
-            android:verticalSpacing="10dp"
-            android:horizontalSpacing="10dp"
-            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+
             >
 
+            <GridView
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:horizontalSpacing="10dp"
+                android:numColumns="3"
+                android:verticalSpacing="10dp"
+                >
 
-        </GridView>
+
+            </GridView>
 
 
-    </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

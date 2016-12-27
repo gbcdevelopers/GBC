@@ -223,7 +223,13 @@ public class DashboardActivity extends AppCompatActivity
         labels.add("Credit");
         labels.add("TC");
         PieData data = new PieData(labels, dataset);
-        dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
+
+        List<Integer> colorCodes = new ArrayList<Integer>();
+        colorCodes.add(Color.parseColor("#c15525"));
+        colorCodes.add(Color.parseColor("#ffc502"));
+        colorCodes.add(Color.parseColor("#ff9201"));
+
+        dataset.setColors(colorCodes); //
         //  pieChart.setDescription("Description");
         pieChart.setDrawSliceText(false);
         pieChart.setData(data);
@@ -335,9 +341,9 @@ public class DashboardActivity extends AppCompatActivity
         BarDataSet dataset = new BarDataSet(entries, "");
        // dataset.setColors(ColorTemplate.PASTEL_COLORS);
         List<Integer> colorCodes = new ArrayList<Integer>();
-        colorCodes.add(Color.parseColor("#01B39B"));
-        colorCodes.add(Color.parseColor("#017F6E"));
-        colorCodes.add(Color.parseColor("#004C42"));
+        colorCodes.add(Color.parseColor("#82d173"));
+        colorCodes.add(Color.parseColor("#3e7aae"));
+        colorCodes.add(Color.parseColor("#ff715b"));
         dataset.setColors(colorCodes);
 
         ArrayList<String> labels = new ArrayList<String>();
