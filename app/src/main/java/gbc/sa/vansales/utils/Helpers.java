@@ -51,6 +51,11 @@ public class Helpers {
         return dateFormat.format(date);
     }
 
+    public static String getCurrentTimeStamp(){
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        return timeStamp;
+    }
+
     public void backupDatabase(){
         File dbFile = new File(App.APP_DB_PATH);
         FileInputStream inputStream = null;

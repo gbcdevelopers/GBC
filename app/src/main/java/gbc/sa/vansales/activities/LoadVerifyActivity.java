@@ -22,6 +22,7 @@ import gbc.sa.vansales.adapters.LoadVerifyBadgeAdapter;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
 /**
  * Created by Rakshit on 19-Nov-16.
@@ -77,7 +78,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
         if(!checkIfLoadExists()){
             if(createDataForPost(dataNew,dataOld)){
-                Intent intent = new Intent(LoadVerifyActivity.this,DashboardActivity.class);
+                Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);
             }
         }
@@ -120,9 +121,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
     private boolean createDataForPost(ArrayList<LoadSummary>dataNew,ArrayList<LoadSummary>dataOld){
         for(int i=0;i<dataNew.size();i++){
 
-            String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+
             HashMap<String,String> map = new HashMap<>();
-            map.put(db.KEY_ENTRY_TIME,timeStamp);
+            map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
             map.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
             map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
             map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());

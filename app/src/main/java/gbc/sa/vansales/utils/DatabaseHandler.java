@@ -38,6 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String LOAD_DELIVERY_HEADER = "LOAD_DELIVERY";
     public static final String LOAD_DELIVERY_ITEMS = "LOAD_DELIVERY_ITEMS";
     public static final String LOAD_DELIVERY_ITEMS_POST = "LOAD_DELIVERY_ITEMS_POST";
+    public static final String BEGIN_DAY = "BEGIN_DAY";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -192,6 +193,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public static final String KEY_IS_VERIFIED = "isVerified";
+    public static final String KEY_IS_SELECTED = "isSelected";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -407,6 +409,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_VAR_CASE   + " TEXT,"
                 + KEY_VAR_UNITS  + " TEXT " + ")";
 
+        String TABLE_BEGIN_DAY = "CREATE TABLE " + BEGIN_DAY + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_TRIP_ID  + " TEXT,"
+                + KEY_DATE  + " TEXT,"
+                + KEY_IS_SELECTED  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -422,6 +431,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_LOAD_DELIVERY_HEADER);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS_POST);
+        db.execSQL(TABLE_BEGIN_DAY);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -438,6 +448,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + BEGIN_DAY);
         onCreate(db);
     }
 
@@ -499,7 +510,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             filterArray = paramsBuilder(filters,true).split(",");
         }
         int records = db.update(tablename,values,filterKeys,filterArray);
-        Log.e("Records updated","" + records);
+        Log.e("Records updated", "" + records);
         db.close();
     }
 
@@ -519,12 +530,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Log.e("Parameter", "" + parameters);
         Log.e("Filters","" + filterKeys);
-        Cursor cursor = db.query(tablename, paramArray ,filterKeys ,filterArray ,null,null,null);
+        Cursor cursor = db.query(tablename, paramArray, filterKeys, filterArray, null, null, null);
         if(cursor!=null)
         {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    public boolean checkData(String tablename,HashMap<String, String>filters){
+        SQLiteDatabase db=this.getReadableDatabase();
+
+        String filterKeys = null;
+        String filterValues = null;
+        String [] filterArray = null;
+        if(!filters.isEmpty()){
+            filterKeys = filterBuilder(filters,false);
+            filterValues = paramsBuilder(filters, true);
+            filterArray = paramsBuilder(filters,true).split(",");
+        }
+
+        Cursor cursor=db.rawQuery("Select * from " + tablename + " where " + filterKeys,filterArray);
+        boolean exists=(cursor.getCount()>0);
+        cursor.close();
+        return exists;
     }
 
     public static String paramsBuilder(HashMap<String, String> hashMap,boolean isValue) {
