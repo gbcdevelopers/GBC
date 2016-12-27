@@ -60,6 +60,7 @@
     <string name="printload">Print Load</string>
     <string name="quantitybt">Quantity Units</string>
     <string name="quantitycs">Quantity Case</string>
+    <string name="request_timeout">Request Timeout</string>
     <string name="returns">Good/Bad Return</string>
     <string name="return_item">Return Item</string>
     <string name="return_reason">Reason</string>

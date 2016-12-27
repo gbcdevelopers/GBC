@@ -217,6 +217,9 @@ public class LoginActivity extends Activity {
                     }
 
                 }
+                else{
+                    Toast.makeText(LoginActivity.this,R.string.request_timeout,Toast.LENGTH_SHORT).show();
+                }
 
             }
         }

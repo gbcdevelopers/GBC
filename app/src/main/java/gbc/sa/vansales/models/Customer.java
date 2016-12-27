@@ -17,6 +17,8 @@ public class Customer implements Parcelable{
     private boolean collection;
     private boolean returns;
 
+    private boolean isCredit;
+
     //Get Instance of the Customer
     public Customer(){
     }

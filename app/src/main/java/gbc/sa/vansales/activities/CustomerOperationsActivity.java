@@ -46,7 +46,7 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
 
 
 
-    ArrayList<CustomerData> dataArrayList;
+    ArrayList<Customer> dataArrayList;
 
 //    private ArrayAdapter<Customer> adapter;
     JourneyPlanBadgeAdapter planBadgeAdapter;
@@ -324,7 +324,7 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
         return super.onOptionsItemSelected(item);
     }
 
-    public void loadData(){
+   /* public void loadData(){
 //        planBadgeAdapter.clear();
 
         for (int i = 0; i < 10; i++) {
@@ -336,7 +336,7 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
             dataArrayList.add(customerData);
         }
 
-    }
+    }*/
 
     public static CustomerData createCustomerData(int index){
         CustomerData customer=new CustomerData();
@@ -357,7 +357,7 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
         @Override
         protected Void doInBackground(String... params) {
             //Logic to fetch Data
-            loadData();
+            //loadData();
             return null;
         }
 

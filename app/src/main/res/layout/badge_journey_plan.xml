@@ -1,161 +1,142 @@
-<android.support.v7.widget.CardView android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:elevation="5dp"
-    app:cardBackgroundColor="@color/white"
-    >
-
-
-
-
-
-
-<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-
+    app:cardBackgroundColor="@color/white"
+    app:elevation="5dp"
     >
 
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="8dp"
-        >
-        <View
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:id="@+id/view"
-            />
-
-    </LinearLayout>
-
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/ll_items"
-        android:background="@color/white"
+        android:orientation="horizontal"
+
         >
 
-
-
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-
-            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dp"
             >
 
-            <gbc.sa.vansales.views.TextViewWithLabel
-                android:id="@+id/customer_id"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                app:label="@string/customerid" />
+            <View
+                android:id="@+id/view"
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                />
+
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
 
+
+        <LinearLayout android:id="@+id/ll_items"
+                      xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:app="http://schemas.android.com/apk/res-auto"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:background="@color/white"
+                      android:orientation="vertical"
             >
 
-            <gbc.sa.vansales.views.TextViewWithLabel
-                android:id="@+id/customer_name"
-                android:layout_width="0dp"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                app:label="@string/customer_name" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
 
-            >
+                android:weightSum="3"
+                >
 
-            <gbc.sa.vansales.views.TextViewWithLabel
-                android:id="@+id/customer_address"
-                android:layout_width="0dp"
+                <gbc.sa.vansales.views.TextViewWithLabel
+                    android:id="@+id/customer_id"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    app:label="@string/customerid"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                app:label="@string/customer_address" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_top"
-            android:orientation="horizontal"
-            android:weightSum="12"
+                android:orientation="horizontal"
+                android:weightSum="3"
 
-            android:layout_marginBottom="5dp"
-            >
+                >
 
-            <ImageView
-                android:id="@+id/img_sale"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_c1"
-                />
-            <ImageView
-                android:id="@+id/img_delivery"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_c2"
-                />
-            <ImageView
-                android:id="@+id/img_collection"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_c3"
-                />
-            <ImageView
-                android:id="@+id/img_returns"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_c4"
-                />
+                <gbc.sa.vansales.views.TextViewWithLabel
+                    android:id="@+id/customer_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    app:label="@string/customer_name"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+
+                >
+
+                <gbc.sa.vansales.views.TextViewWithLabel
+                    android:id="@+id/customer_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    app:label="@string/customer_address"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="@dimen/margin_top"
+                android:orientation="horizontal"
+
+                android:weightSum="12"
+                >
+
+                <ImageView
+                    android:id="@+id/img_sale"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_c1"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_delivery"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_c2"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_collection"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_c3"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_returns"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_c4"
+                    />
+            </LinearLayout>
+
+
         </LinearLayout>
 
 
     </LinearLayout>
-
-
-
-
-
-
-
-</LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </android.support.v7.widget.CardView>

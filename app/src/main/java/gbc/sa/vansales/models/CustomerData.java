@@ -6,8 +6,6 @@ package gbc.sa.vansales.models;
 
 public class CustomerData
 {
-
-
     public CustomerData(String id, String name, String address) {
         this.id = id;
         this.name = name;
@@ -22,6 +20,13 @@ public class CustomerData
     String id;
     String name;
     String address;
+    public String getIsCredit() {
+        return isCredit;
+    }
+    public void setIsCredit(String isCredit) {
+        this.isCredit = isCredit;
+    }
+    String isCredit;
 
     public String getId() {
         return id;

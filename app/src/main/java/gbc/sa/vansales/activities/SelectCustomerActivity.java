@@ -37,6 +37,7 @@ import gbc.sa.vansales.adapters.PagerAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
@@ -54,7 +55,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     DataAdapter dataAdapter;
-    ArrayList<CustomerData> dataArrayList;
+    ArrayList<Customer> dataArrayList;
     ImageView toolbar_iv_back;
     ImageView iv_search;
     EditText et_search;
@@ -198,7 +199,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
             Log.e("KeyBoardUtil", e.toString(), e);
         }
     }
-    public void loadData() {
+    /*public void loadData() {
 //        planBadgeAdapter.clear();
         for (int i = 0; i < 10; i++) {
 //            Customer customer = createCustomerData(i);
@@ -208,7 +209,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         }
 //        dataAdapter = new DataAdapter(SelectCustomerActivity.this,dataArrayList);
         //Const.dataArrayList = dataArrayList;
-    }
+    }*/
     public static CustomerData createCustomerData(int index) {
         CustomerData customer = new CustomerData();
         int i = 100 + index;
@@ -245,49 +246,69 @@ public class SelectCustomerActivity extends AppCompatActivity {
         Log.e("Cursor count", "" + cursor.getCount());
         if(isVisitList){
             dataArrayList.clear();
-            ArrayList<CustomerData> data = new ArrayList<>();
+            ArrayList<Customer> data = new ArrayList<>();
             do {
-                CustomerData customer = new CustomerData();
-                customer.setId(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                Customer customer = new Customer();
+                customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
                 if(!(customerHeader==null)){
-                    customer.setName(customerHeader.getName1());
-                    customer.setAddress(customerHeader.getAddress());
+                    customer.setCustomerName(customerHeader.getName1());
+                    customer.setCustomerAddress(customerHeader.getAddress());
                 }
                 else{
-                    customer.setName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    customer.setAddress("");
+                    customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    customer.setCustomerAddress("");
+                }
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                if(db.checkData(db.CUSTOMER_CREDIT,map)){
+                    Log.e("Credit Exist","Credit Exist");
+                    customer.setPaymentMethod("Credit");
+                }
+                else{
+                    customer.setPaymentMethod("Cash");
                 }
                 data.add(customer);
             }
             while (cursor.moveToNext());
 
             Const.dataArrayList = data;
+            Log.e("Data Array","" + Const.dataArrayList.size());
         }
         else{
             dataArrayList.clear();
-            ArrayList<CustomerData> data = new ArrayList<>();
+            ArrayList<Customer> data = new ArrayList<>();
 
             do {
-                CustomerData customer = new CustomerData();
+                Customer customer = new Customer();
                 Log.e("Cursor count","" + cursor.getCount());
-                customer.setId(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
                 if(!(customerHeader==null)){
-                    customer.setName(customerHeader.getName1());
-                    customer.setAddress(customerHeader.getAddress());
+                    customer.setCustomerName(customerHeader.getName1());
+                    customer.setCustomerAddress(customerHeader.getAddress());
                 }
                 else{
-                    customer.setName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    customer.setAddress("");
+                    customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    customer.setCustomerAddress("");
+                }
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                if(db.checkData(db.CUSTOMER_CREDIT,map)){
+                    Log.e("Credit Exist", "Credit Exist");
+                    customer.setPaymentMethod("Credit");
+                }
+                else{
+                     customer.setPaymentMethod("Cash");
                 }
                 data.add(customer);
             }
             while (cursor.moveToNext());
 
             Const.allCustomerdataArrayList = data;
+            Log.e("All Array","" + Const.allCustomerdataArrayList.size());
         }
 
     }

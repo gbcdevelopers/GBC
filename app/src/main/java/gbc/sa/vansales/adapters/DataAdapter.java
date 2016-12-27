@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
 import gbc.sa.vansales.views.TextViewWithLabel;
 
@@ -25,11 +26,11 @@ public class DataAdapter extends BaseAdapter implements Filterable {
 
     ArrayList<Integer> intlist;
     ItemFilter mFilter = new ItemFilter();
-    private ArrayList<CustomerData> dataList;
-    private ArrayList<CustomerData> dataListOne;
+    private ArrayList<Customer> dataList;
+    private ArrayList<Customer> dataListOne;
     private Context mContext;
 
-    public DataAdapter(Context context, ArrayList<CustomerData> dataList) {
+    public DataAdapter(Context context, ArrayList<Customer> dataList) {
         this.dataList = dataList;
         this.dataListOne = dataList;
         this.mContext = context;
@@ -91,17 +92,24 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             holder = (ItemRowHolder) view.getTag();
         }
 
-        holder.customer_id.setText(dataList.get(i).getId());
-        holder.customer_name.setText(dataList.get(i).getName());
-        holder.customer_address.setText(dataList.get(i).getAddress());
+        Customer customer = dataList.get(i);
+        holder.customer_id.setText(customer.getCustomerID());
+        holder.customer_name.setText(customer.getCustomerName());
+        holder.customer_address.setText(customer.getCustomerAddress());
 
-        if(i==2 || i==5)
+        if(customer.getPaymentMethod().equals("Credit")){
+            holder.horizontal_view.setBackgroundColor(Color.RED);
+        }
+        else{
+            holder.horizontal_view.setBackgroundColor(Color.BLUE);
+        }
+        /*if(i==2 || i==5)
         {
             holder.horizontal_view.setBackgroundColor(Color.RED);
         }
         else {
             holder.horizontal_view.setBackgroundColor(Color.BLUE);
-        }
+        }*/
 
 
 
@@ -122,12 +130,12 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             Log.v("DataAdapter", "constratinst : " + constraint);
             FilterResults result = new FilterResults();
             if (constraint.toString().length() > 0) {
-                ArrayList<CustomerData> filteredItems =
+                ArrayList<Customer> filteredItems =
                         new ArrayList<>();
                 for (int i = 0, l = dataList.size(); i < l; i++) {
                     // ArrayList<HashMap<String, String>> p =
                     // originalList.get(i);
-                    String p = dataList.get(i).getId();
+                    String p = dataList.get(i).getCustomerID();
                     if (p.contains(constraint))
                         filteredItems.add(dataList.get(i));
                 }
@@ -150,7 +158,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         protected void publishResults(CharSequence constraint, FilterResults results) {
             // users = (List<GraphUser>) results.values;
             //filteredData = (ArrayList<String>) results.values;
-            dataList = (ArrayList<CustomerData>) results.values;
+            dataList = (ArrayList<Customer>) results.values;
             notifyDataSetChanged();
 
 //            for (int i = 0, l = dataList.size(); i < l; i++)
