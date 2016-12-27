@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
-import gbc.sa.vansales.data.CustomerHeader;
+import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.data.VisitList;
@@ -263,7 +263,7 @@ public class LoginActivity extends Activity {
                 LoadDelivery.load(LoginActivity.this,tripId, db);
                 ArticleHeaders.load(LoginActivity.this, tripId, db);
                 VisitList.load(LoginActivity.this,tripId, db);
-                CustomerHeader.load(LoginActivity.this,tripId, db);
+                CustomerHeaders.load(LoginActivity.this, tripId, db);
             }
         });
 

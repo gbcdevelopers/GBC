@@ -33,7 +33,7 @@ public class AllCustomerFragment extends Fragment {
         view = inflater.inflate(R.layout.visitall_fragment, container, false);
 //        dataArrayList =new ArrayList<>();
 //        loadData();
-        dataAdapter1 = new DataAdapter(getActivity(), Const.dataArrayList);
+        dataAdapter1 = new DataAdapter(getActivity(), Const.allCustomerdataArrayList);
         listView = (ListView) view.findViewById(R.id.journeyPlanList);
         listView.setAdapter(dataAdapter1);
 

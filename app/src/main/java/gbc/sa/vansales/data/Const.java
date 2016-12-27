@@ -15,7 +15,7 @@ import gbc.sa.vansales.models.ShelfProduct;
 
 public class Const {
     public static ArrayList<CustomerData> dataArrayList;
-
+    public static ArrayList<CustomerData> allCustomerdataArrayList;
     public static  ArrayList<String> addlist=new ArrayList<>();
 
     public static List<LoadRequestConstants> loadRequestConstantsList=new ArrayList<>();

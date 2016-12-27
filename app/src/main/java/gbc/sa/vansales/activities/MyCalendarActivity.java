@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import gbc.sa.vansales.R;
-
-
+import gbc.sa.vansales.data.CustomerHeaders;
 @TargetApi(3)
 public class MyCalendarActivity extends Activity implements OnClickListener {
 	private static final String tag = "MyCalendarActivity";
@@ -489,7 +488,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
 			try {
 				Date parsedDate = dateFormatter.parse(date_month_year);
 				Log.d(tag, "Parsed Date: " + parsedDate.toString());
-
+				CustomerHeaders.loadData(MyCalendarActivity.this);
 				Intent intent=new Intent(MyCalendarActivity.this,SelectCustomerActivity.class);
 				startActivity(intent);
 
