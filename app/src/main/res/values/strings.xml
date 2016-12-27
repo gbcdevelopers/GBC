@@ -9,6 +9,7 @@
     <string name="cancel">Cancel</string>
     <string name="cases">Cases</string>
     <string name="changingstatus">Changing Status?</string>
+    <string name="close">Close</string>
     <string name="changingstatustext">Your current location does not match with Customer Location.Do you want to continue?</string>
     <string name="credit_available">Credit Available</string>
     <string name="credit_days">Credit Days</string>
@@ -26,6 +27,7 @@
     <string name="delivery">Delivery</string>
     <string name="desiredload">Desired Load</string>
     <string name="discount">Discount</string>
+    <string name="dismiss">Dismiss</string>
     <string name="edit">Edit</string>
     <string name="endtrip">End Trip</string>
     <string name="enter_employee_id">Please enter employee ID</string>
@@ -33,6 +35,8 @@
     <string name="good">Good</string>
     <string name="information">Informations</string>
     <string name="item_code">Item Code</string>
+    <string name="internet_available_title">No Connection</string>
+    <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
     <string name="no">No</string>
     <string name="load">Load</string>
     <string name="load_title">Select Load</string>

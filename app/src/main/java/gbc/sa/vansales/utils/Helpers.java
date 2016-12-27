@@ -12,6 +12,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -35,6 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
+import android.net.NetworkInfo;
 /**
  * Created by Rakshit on 17-Dec-16.
  */
@@ -100,5 +103,12 @@ public class Helpers {
             formatDate = new Date(milli);
         }
         return formatDate;
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

@@ -20,6 +20,7 @@ import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -61,8 +62,29 @@ public class LoginActivity extends Activity {
             //Logic to Login the user
             //For development purpose hardcoding credentials
             //new LoginUser("E2000", "PASSWORD");
+            if(Helpers.isNetworkAvailable(LoginActivity.this)){
+                new LoginUser(id, password);
+            }
+            else{
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                alertDialogBuilder.setTitle(R.string.internet_available_title)
+                        .setMessage(R.string.internet_available_msg)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            if(loadingSpinner.isShowing()){
+                                loadingSpinner.hide();
+                            }
+                            dialog.dismiss();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+            }
 
-            new LoginUser(id, password);
         }
     }
 
@@ -116,9 +138,9 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("GBC012000000003")){
-                                    Settings.setString(TRIP_ID, "GBC012000000003");
-                                    downloadData("GBC012000000003");
+                                if(!checkTripID("GBC012000000004")){
+                                    Settings.setString(TRIP_ID, "GBC012000000004");
+                                    downloadData("GBC012000000004");
                                 }
                                 else{
                                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);

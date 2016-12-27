@@ -26,6 +26,19 @@ public class LoadingSpinner {
         progressDialog.setMessage(context.getString(R.string.loading));
     }
 
+    public LoadingSpinner(Context context,String message) {
+        this.context = context;
+
+        progressDialog = new ProgressDialog(context);
+
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+
+        progressDialog.setMessage(message);
+    }
+
     public boolean isShowing(){
         return progressDialog.isShowing();
     }
