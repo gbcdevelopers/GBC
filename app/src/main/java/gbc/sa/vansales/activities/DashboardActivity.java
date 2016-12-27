@@ -19,10 +19,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -31,6 +35,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.github.mikephil.charting.formatter.XAxisValueFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import java.util.List;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
@@ -66,6 +72,8 @@ public class DashboardActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        ArticleHeaders.loadData(getApplicationContext());
+        CustomerHeaders.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
@@ -81,7 +89,7 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
         //Load all Articles
-        ArticleHeaders.loadData(DashboardActivity.this);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         expandableList = (ExpandableListView) findViewById(R.id.navigationmenu);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -173,7 +181,8 @@ public class DashboardActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
         createPieChart();
-        createLineChart();
+       // createLineChart();
+        createBarChart();
         TextView lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
         TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         TextView lbl_targetachieved = (TextView) findViewById(R.id.lbl_targetachieved);
@@ -183,7 +192,7 @@ public class DashboardActivity extends AppCompatActivity
     }
     private void setBeginDayVisibility() {
         HashMap<String,String> map = new HashMap<>();
-        map.put(db.KEY_IS_SELECTED,"true");
+        map.put(db.KEY_IS_SELECTED, "true");
         if(db.checkData(db.BEGIN_DAY,map)){
             btnBDay.setEnabled(false);
             btnBDay.setAlpha(.5f);
@@ -257,7 +266,7 @@ public class DashboardActivity extends AppCompatActivity
         manageInventoryItems.add("Unload");
         listDataChild.put(listDataHeader.get(1), manageInventoryItems);
     }
-    void createLineChart() {
+    /*void createLineChart() {
         LineChart lineChart = (LineChart) findViewById(R.id.lineChart);
         ArrayList<Entry> salesEntries = new ArrayList<>();
         salesEntries.add(new Entry(300f, 0));
@@ -311,6 +320,38 @@ public class DashboardActivity extends AppCompatActivity
         lineChart.getAxisRight().setEnabled(false);
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         lineChart.animateY(2000);
+    }*/
+    void createBarChart(){
+        BarChart barChart = (BarChart) findViewById(R.id.barChart);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(false);
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(4f, 0));
+        entries.add(new BarEntry(8f, 1));
+        entries.add(new BarEntry(6f, 2));
+        BarDataSet dataset = new BarDataSet(entries, "");
+       // dataset.setColors(ColorTemplate.PASTEL_COLORS);
+        List<Integer> colorCodes = new ArrayList<Integer>();
+        colorCodes.add(Color.parseColor("#01B39B"));
+        colorCodes.add(Color.parseColor("#017F6E"));
+        colorCodes.add(Color.parseColor("#004C42"));
+        dataset.setColors(colorCodes);
+
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("Sales");
+        labels.add("Good Return");
+        labels.add("Bad Return");
+
+        BarData data = new BarData(labels, dataset);
+        barChart.setData(data);
+        barChart.animateY(2000);
+        barChart.setDescription("");
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

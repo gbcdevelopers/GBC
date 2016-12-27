@@ -65,6 +65,7 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
 
         if(load.isLoadVerified()){
             holder.loadAvailable.setVisibility(View.VISIBLE);
+            holder.loadAvailable.setImageResource(R.drawable.green_tick_icon);
             convertView.setClickable(false);
             convertView.setEnabled(false);
             convertView.setOnClickListener(null);

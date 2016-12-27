@@ -31,13 +31,21 @@
 
             android:layout_weight="47" >
 
-            <com.github.mikephil.charting.charts.LineChart
+            <!--<com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/lineChart"
                 android:layout_marginBottom="@dimen/margin_top"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            </com.github.mikephil.charting.charts.LineChart>
+            </com.github.mikephil.charting.charts.LineChart>-->
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_marginBottom="@dimen/margin_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.github.mikephil.charting.charts.BarChart>
 
         </LinearLayout>
 

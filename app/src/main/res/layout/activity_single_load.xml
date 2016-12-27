@@ -44,9 +44,9 @@
 
             <ImageView
                 android:id="@+id/img_loadVerified"
-                android:visibility="invisible"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
-                android:background="@drawable/green_tick_icon"
+                android:background="@drawable/right_arrow_icon"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>
