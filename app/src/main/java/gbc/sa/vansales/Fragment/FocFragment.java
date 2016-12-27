@@ -29,7 +29,7 @@ import gbc.sa.vansales.models.Sales;
  * Created by eheuristic on 12/5/2016.
  */
 
-public class SalesFragment extends Fragment {
+public class FocFragment extends Fragment {
 
 
     View viewmain;
@@ -47,7 +47,6 @@ public class SalesFragment extends Fragment {
         fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
 
         String strProductname[]={"A","B","c","D"};
-
         salesarrayList = new ArrayList<>();
 
 
@@ -63,9 +62,7 @@ public class SalesFragment extends Fragment {
 
 
 
-
-
-        adapter=new SalesAdapter(getActivity(), salesarrayList);
+        adapter=new SalesAdapter(getActivity(),salesarrayList);
         listSales.setAdapter(adapter);
 
         listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,10 +84,11 @@ public class SalesFragment extends Fragment {
                     final EditText ed_cases_inv=(EditText)dialog.findViewById(R.id.ed_cases_inv);
                     final EditText ed_pcs_inv=(EditText)dialog.findViewById(R.id.ed_pcs_inv);
 
-                    ed_cases_inv.setText("10");
-                    ed_pcs_inv.setText("3");
-                    ed_cases_inv.setEnabled(false);
-                    ed_pcs_inv.setEnabled(false);
+
+                        ed_cases_inv.setText("10");
+                        ed_pcs_inv.setText("3");
+                        ed_cases_inv.setEnabled(false);
+                        ed_pcs_inv.setEnabled(false);
 
 
 
@@ -125,8 +123,6 @@ public class SalesFragment extends Fragment {
                         tv_pcs.setText(strpcs);
 
 
-
-
                         Sales sales=salesarrayList.get(position);
                         sales.setPic(strpcs);
                         sales.setCases(strCase);
@@ -141,8 +137,6 @@ public class SalesFragment extends Fragment {
                         }
                         TextView tv=(TextView)viewmain.findViewById(R.id.tv_amt);
                         tv.setText(String.valueOf(total));
-
-
 
                         dialog.dismiss();
 

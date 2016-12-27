@@ -8,11 +8,14 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,6 +42,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     RelativeLayout btn_confirm_delivery;
     TextView tv_date;
     TextView tv_amt;
+    ArrayList<EditText[]> editTextArrayList;
 
 
     @Override
@@ -62,6 +66,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 
         tv_amt=(TextView)findViewById(R.id.tv_amt);
 
+        editTextArrayList=new ArrayList<>();
+
 
 
         iv_calendar=(ImageView)findViewById(R.id.iv_calander_presale_proced) ;
@@ -83,6 +89,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent=new Intent(DeliveryOrderActivity.this,PromotionActivity.class);
+                intent.putExtra("msg","delivery");
                 startActivity(intent);
                 finish();
 
@@ -106,6 +113,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         });
 
         myCalendar = Calendar.getInstance();
+        int year=myCalendar.get(Calendar.YEAR);
+        int month=myCalendar.get(Calendar.MONTH);
+        int day=myCalendar.get(Calendar.DAY_OF_MONTH);
+        updateLabel(year,month,day);
 
         iv_calendar.setEnabled(false);
 
@@ -129,10 +140,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+
+                updateLabel(year,monthOfYear,dayOfMonth);
             }
 
         };
@@ -156,7 +165,11 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     }
 
 
-    private void updateLabel() {
+    private void updateLabel(int year,int monthOfYear,int dayOfMonth) {
+
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, monthOfYear);
+        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
         String myFormat = "dd/MM" +
                 "/yy"; //In which you need put here
@@ -181,9 +194,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     options_layout, false);
 
             PreSaleProceed saleProceed = preSaleProceeds.get(i);
-            TextView text = (TextView) to_add.findViewById(R.id.tv_sku_pre_proceed);
-            TextView text1 = (TextView) to_add.findViewById(R.id.tv_ctn_pre_proceed);
-            TextView text2 = (TextView) to_add.findViewById(R.id.tv_btl_pre_proceed);
+            EditText text = (EditText) to_add.findViewById(R.id.tv_sku_pre_proceed);
+            final EditText text1 = (EditText) to_add.findViewById(R.id.tv_ctn_pre_proceed);
+            EditText text2 = (EditText) to_add.findViewById(R.id.tv_btl_pre_proceed);
             TextView text3 = (TextView) to_add.findViewById(R.id.tv_price);
             text3.setVisibility(View.GONE);
             text.setText(saleProceed.getPRODUCT_NAME());
@@ -193,11 +206,45 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 
             totalamt=totalamt+(Double.parseDouble(saleProceed.getCTN())*54+Double.parseDouble(saleProceed.getBTL())*2.25);
 
+            EditText ed[]={text1,text2};
+            editTextArrayList.add(ed);
+
 
 
 
 //            text.setTypeface(FontSelector.getBold(getActivity()));
             options_layout.addView(to_add);
+
+            text1.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                    if(!text1.getText().toString().equals("")) {
+
+                        double totalamt = 0;
+
+                        for (int i = 0; i < editTextArrayList.size(); i++) {
+                            EditText ed[] = editTextArrayList.get(i);
+                            EditText text1 = ed[0];
+                            EditText text2 = ed[1];
+                            totalamt = totalamt + (Double.parseDouble(text1.getText().toString()) * 54 + Double.parseDouble(text2.getText().toString()) * 2.25);
+
+                        }
+                        tv_amt.setText(String.valueOf(totalamt));
+                    }
+                }
+            });
+
         }
         tv_amt.setText(String.valueOf(totalamt));
 

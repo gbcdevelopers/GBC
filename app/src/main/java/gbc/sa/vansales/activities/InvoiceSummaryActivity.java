@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.PromotionAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 
 /**
@@ -26,8 +27,8 @@ public class InvoiceSummaryActivity extends AppCompatActivity {
     TextView tv_top_header;
     ImageView iv_back;
 
-    SalesAdapter adapter;
-    ArrayList<String> arrayList;
+    PromotionAdapter adapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +44,8 @@ public class InvoiceSummaryActivity extends AppCompatActivity {
 
 
 
-        arrayList = new ArrayList<>();
-        arrayList.add("A");
-        arrayList.add("B");
-        arrayList.add("C");
-        arrayList.add("d");
-        arrayList.add("e");
-        arrayList.add("f");
-        adapter=new SalesAdapter(InvoiceSummaryActivity.this,arrayList, R.layout.custom_invoice_summary,"");
+
+        adapter=new PromotionAdapter (InvoiceSummaryActivity.this,6, R.layout.custom_invoice_summary);
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -26,15 +26,16 @@
     <Button
         android:layout_marginTop="10dp"
         android:id="@+id/btn_apply"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="apply"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/black"
-        android:background="@drawable/red_border"
-        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:background="@color/green"
+
+
         />
 
 </RelativeLayout>

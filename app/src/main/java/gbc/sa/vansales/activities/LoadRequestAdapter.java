@@ -7,17 +7,24 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.ProductListAdapter;
 import gbc.sa.vansales.data.Const;
 
 /**
@@ -26,22 +33,31 @@ import gbc.sa.vansales.data.Const;
 
 
 
-public class LoadRequestAdapter extends BaseAdapter {
+public class LoadRequestAdapter extends BaseAdapter implements Filterable {
 
     // Declare Variables
     Context mContext;
     LayoutInflater inflater;
     private List<LoadRequestConstants> loadRequestConstants = null;
-    private List<LoadRequestConstants> arraylist;
-    HashMap<Integer,ArrayList<LoadRequestConstants>> constantsHashMap;
+    private List<LoadRequestConstants> loadRequestConstantsone = null;
+
+
+    public static String isEnabled = "no";
+
+    ItemFilter mFilter=new ItemFilter();
 
     public LoadRequestAdapter(Context context,
-                           List<LoadRequestConstants> categoryLists,HashMap<Integer,ArrayList<LoadRequestConstants>> constantsHashMap) {
+                           List<LoadRequestConstants> categoryLists,
+                              HashMap<Integer,ArrayList<LoadRequestConstants>> constantsHashMap,String from) {
+
+
+        Toast.makeText(context,"size"+categoryLists.size(),Toast.LENGTH_SHORT).show();
         mContext = context;
         this.loadRequestConstants = categoryLists;
+        this.loadRequestConstantsone = categoryLists;
         inflater = LayoutInflater.from(mContext);
-        this.arraylist = categoryLists;
-        this.arraylist.addAll(categoryLists);
+
+        Const.loadRequestConstantsList=categoryLists;
     }
 
     public class ViewHolder {
@@ -95,48 +111,132 @@ public class LoadRequestAdapter extends BaseAdapter {
         // Set the results into ImageView
         holder.categoryImage.setImageResource(loadRequestConstants.get(position)
                 .getCategoryImage());
-        // Listen for ListView Item Click
+
+
+
+       setEnabled(holder);
 
 
         holder.cases.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if(!hasFocus)
+                {
+                    EditText et =(EditText)v.findViewById(R.id.tvCases);
+                    loadRequestConstants.get(position).setCases(et.getText().toString());
+                    loadRequestConstantsone.get(position).setCases(et.getText().toString());
 
-                    final EditText Caption = (EditText) v;
-                    arraylist.get(position).setCases(Caption.getText().toString());
-                    Const.loadRequestConstantsList=arraylist;
+
+                    Const.loadRequestConstantsList=loadRequestConstantsone;
                 }
             }
         });
+
+
 
         holder.units.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
 
-                    final EditText Caption = (EditText) v;
-                    arraylist.get(position).setUnits(Caption.getText().toString());
-                    Const.loadRequestConstantsList=arraylist;
+                if(!hasFocus)
+                {
+                    EditText et =(EditText)v.findViewById(R.id.tvUnit);
+                    loadRequestConstants.get(position).setUnits(et.getText().toString());
+                    loadRequestConstantsone.get(position).setUnits(et.getText().toString());
+
+
+                    Const.loadRequestConstantsList=loadRequestConstantsone;
                 }
             }
         });
+
+
         return view;
     }
 
-    // Filter Class
+
+    private void setEnabled(ViewHolder holder)
+    {
+        if (isEnabled.equals("yes")) {
+                holder.cases.setEnabled(false);
+                holder.units.setEnabled(false);
+        }else if (isEnabled.equals("no")){
+                holder.cases.setEnabled(true);
+                holder.units.setEnabled(true);
+        }
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return mFilter;
+    }
+
+    public class ItemFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+
+            constraint = constraint.toString().toLowerCase();
+            Log.v("DataAdapter", "constratinst : " + constraint);
+            FilterResults result = new FilterResults();
+            if (constraint.toString().length() > 0) {
+                List<LoadRequestConstants> filteredItems =
+                        new ArrayList<>();
+                for (int i = 0, l = loadRequestConstants.size(); i < l; i++) {
+                    // ArrayList<HashMap<String, String>> p =
+                    // originalList.get(i);
+                    String p = loadRequestConstants.get(i).getItemName().toLowerCase();
+                    if (p.contains(constraint))
+                        filteredItems.add(loadRequestConstants.get(i));
+                }
+                Log.v("DataAdapter", "not blank");
+                result.count = filteredItems.size();
+                result.values = filteredItems;
+
+            } else {
+                synchronized (this) {
+                    result.count = loadRequestConstantsone.size();
+                    result.values = loadRequestConstantsone;
+//                    result.values = dataList;
+//                    result.count = dataList.size();
+                }
+            }
+            return result;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            // users = (List<GraphUser>) results.values;
+            //filteredData = (ArrayList<String>) results.values;
+            loadRequestConstants = (List<LoadRequestConstants>) results.values;
+            notifyDataSetChanged();
+
+//            for (int i = 0, l = dataList.size(); i < l; i++)
+//                dataList.get(i);
+            //add(productList.get(i));
+
+            notifyDataSetInvalidated();
+        }
+    }
+
+
+
+
+    /*// Filter Class
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
-        loadRequestConstants.clear();
+        dataList.clear();
         if (charText.length() == 0) {
-            loadRequestConstants.addAll(arraylist);
+            dataList.addAll(arraylist);
         } else {
             for (LoadRequestConstants lrc : arraylist) {
                 if (lrc.getCategory().toLowerCase(Locale.getDefault())
                         .contains(charText)) {
-                    loadRequestConstants.add(lrc);
+                    dataList.add(lrc);
                 }
             }
         }
         notifyDataSetChanged();
 
-    }
+    }*/
 }

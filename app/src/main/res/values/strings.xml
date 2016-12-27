@@ -37,7 +37,7 @@
     <string name="good">Good</string>
     <string name="information">Informations</string>
     <string name="item_code">Item Code</string>
-    <string name="internet_available_title">No Connection</string>
+
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
     <string name="no">No</string>
     <string name="load">Load</string>
@@ -49,6 +49,7 @@
     <string name="loading">Loading…</string>
     <string name="map">Map</string>
     <string name="manageinventory">Manage Inventory</string>
+    <string name="internet_available_title">No Connection</string>
 
     <string name="beginDay">Begin Day</string>
     <string name="merchandizing">Merchandizing</string>
@@ -125,9 +126,10 @@
     </string-array>
 
     <string-array name="returnReasons">
-        <item>Select one</item>
-        <item>Select two</item>
-        <item>select three</item>
+        <item></item>
+        <item>reason one</item>
+        <item>reason two</item>
+        <item>reason three</item>
     </string-array>
 
     <string-array name="deliveryorder">

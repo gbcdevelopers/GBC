@@ -4,34 +4,38 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <TextView
+    <EditText
         android:id="@+id/tv_sku_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="3"
-        android:text="SKU"
         android:background="@drawable/light_border"
         android:padding="5dp"
+        android:inputType="text"
+        android:text="product"
+        android:textColor="@drawable/edit_text_color"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:enabled="false"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_ctn_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="CTN"
+
         android:background="@drawable/light_border"
         android:padding="5dp"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_btl_pre_proceed"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="BTL"
         android:background="@drawable/light_border"
         android:padding="5dp"
         />

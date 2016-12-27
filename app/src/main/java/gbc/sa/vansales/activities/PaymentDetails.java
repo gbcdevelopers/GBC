@@ -2,10 +2,12 @@ package gbc.sa.vansales.activities;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +25,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.models.ColletionData;
 
 public class PaymentDetails extends AppCompatActivity {
 
@@ -42,6 +46,9 @@ public class PaymentDetails extends AppCompatActivity {
     double total_amt=0.00;
     int pos=0;
 
+
+    String from="";
+    String amountdue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +58,6 @@ public class PaymentDetails extends AppCompatActivity {
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
         fab=(FloatingActionButton)findViewById(R.id.fab);
 
-
-        if(getIntent().getExtras()!=null)
-        {
-            pos=getIntent().getIntExtra("pos",0);
-        }
 
 
 
@@ -99,6 +101,29 @@ public class PaymentDetails extends AppCompatActivity {
 
         btn_edit1=(Button)findViewById(R.id.btn_edit1);
         btn_edit2=(Button)findViewById(R.id.btn_edit2);
+
+
+
+
+
+        if(getIntent().getExtras()!=null)
+        {
+
+
+            from=getIntent().getStringExtra("msg");
+            pos=getIntent().getIntExtra("pos",0);
+
+            amountdue = Const.colletionDatas.get(pos).getAmoutDue();
+            tv_due_amt.setText(amountdue);
+
+        }
+
+
+
+
+
+
+
 
         btn_edit1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,48 +221,122 @@ public class PaymentDetails extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                final Dialog dialog=new Dialog(PaymentDetails.this);
-                dialog.setContentView(R.layout.dialog_doprint);
-                dialog.setCancelable(false);
-                dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
 
+                double cash_amt=getcashamt();
+                double check_amt=getcheckamt();
+
+                total_amt = cash_amt+check_amt;
+
+                if(total_amt>Double.parseDouble(amountdue))
+                {
 
 
-                LinearLayout btn_print=(LinearLayout) dialog.findViewById(R.id.ll_print);
-                LinearLayout btn_notprint=(LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                    AlertDialog.Builder builder=new AlertDialog.Builder(PaymentDetails.this);
+                    builder.setTitle("Payment Detail");
+                    builder.setCancelable(true);
+                    builder.setIcon(R.mipmap.ic_launcher);
+                    builder.setMessage("Amount should not be greater than actual amount");
+                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.show();
 
 
-                dialog.show();
-
-                btn_print.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        dialog.dismiss();
+                }
+                else {
 
 
+                    if (from.equals("delivery")) {
+
+
+                        final Dialog dialog = new Dialog(PaymentDetails.this);
+                        dialog.setContentView(R.layout.dialog_doprint);
+                        dialog.setCancelable(false);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+
+                        LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                        LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+
+
+                        dialog.show();
+
+                        btn_print.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                dialog.dismiss();
+                                Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish();
+
+
+                            }
+                        });
+                        btn_notprint.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                dialog.dismiss();
+                                Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish();
+
+
+                            }
+                        });
+
+                    } else {
+
+                        final Dialog dialog = new Dialog(PaymentDetails.this);
+                        dialog.setContentView(R.layout.dialog_doprint);
+                        dialog.setCancelable(false);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+
+                        LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                        LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+
+
+                        dialog.show();
+
+                        btn_print.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                dialog.dismiss();
+                                Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish();
+
+
+                            }
+                        });
+                        btn_notprint.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                dialog.dismiss();
+
+
+                                Intent intent = new Intent();
+                                intent.putExtra("pos", pos);
+                                intent.putExtra("amt", String.valueOf(total_amt));
+
+                                setResult(RESULT_OK, intent);
+                                finish();
+
+
+                            }
+                        });
                     }
-                });
-                btn_notprint.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        dialog.dismiss();
-
-
-                        Intent intent=new Intent();
-                        intent.putExtra("pos",pos);
-                        intent.putExtra("amt",String.valueOf(total_amt));
-
-                        setResult(RESULT_OK,intent);
-                        finish();
-
-
-
-                    }
-                });
-
+                }
 
 
             }
@@ -285,6 +384,33 @@ public class PaymentDetails extends AppCompatActivity {
         double check_amt=getcheckamt();
 
         total_amt = cash_amt+check_amt;
-        tv_total_amount.setText(String.valueOf(total_amt));
+
+        if(total_amt>Double.parseDouble(amountdue))
+        {
+
+
+            AlertDialog.Builder builder=new AlertDialog.Builder(PaymentDetails.this);
+            builder.setTitle("Payment Detail");
+            builder.setCancelable(true);
+            builder.setIcon(R.mipmap.ic_launcher);
+            builder.setMessage("Amount should not be greater than actual amount");
+            builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+
+
+        }
+        else {
+            tv_total_amount.setText(String.valueOf(total_amt));
+        }
+
+
+
+
     }
 }
