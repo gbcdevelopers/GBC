@@ -286,6 +286,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_CUSTOMER_NO  ,customerCreditObj.get("CustNo").toString());
                         params.put(db.KEY_CREDIT_CONTROL_AREA ,customerCreditObj.get("CreditCtrlArea").toString());
                         params.put(db.KEY_CREDIT_LIMIT ,customerCreditObj.get("CreditLimit").toString());
+                        params.put(db.KEY_AVAILABLE_LIMIT ,customerCreditObj.get("CreditLimit").toString());
                         params.put(db.KEY_SPECIAL_LIABILITIES ,customerCreditObj.get("SpecialLiabilities").toString());
                         params.put(db.KEY_RECEIVABLES ,customerCreditObj.get("Recievables").toString());
                         params.put(db.KEY_CURRENCY ,customerCreditObj.get("currency").toString());

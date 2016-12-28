@@ -272,6 +272,8 @@ public class LoginActivity extends Activity {
                 ArticleHeaders.load(LoginActivity.this, tripId, db);
                 VisitList.load(LoginActivity.this,tripId, db);
                 CustomerHeaders.load(LoginActivity.this, tripId, db);
+                ArticleHeaders.loadData(getApplicationContext());
+                CustomerHeaders.loadData(getApplicationContext());
             }
         });
 

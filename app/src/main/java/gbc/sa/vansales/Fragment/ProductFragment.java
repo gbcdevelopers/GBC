@@ -37,6 +37,7 @@ public class ProductFragment extends Fragment {
 
         view =inflater.inflate(R.layout.activity_product_list, container, false);
         list_product=(ListView)view.findViewById(R.id.list_product);
+
         articles = ArticleHeaders.get();
 
         common_header=(View)view.findViewById(R.id.inc_common_header);

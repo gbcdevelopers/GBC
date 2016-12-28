@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
         android:orientation="horizontal"
+
+        android:weightSum="2"
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
         android:id="@+id/ll_top"
         >
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:layout_weight="1"
             android:orientation="vertical"
+
+            android:weightSum="2"
             android:paddingLeft="@dimen/size_five"
             android:paddingRight="@dimen/size_five"
             >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/avail_limit"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
+                android:text="@string/credit_available"
                 android:textColor="@color/green"
                 android:textSize="@dimen/label_small"
                 />
+
             <TextView
+                android:id="@+id/tv_available_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="100000"
                 android:layout_gravity="center"
+
+                android:text="100000"
+                android:textColor="@color/black"
+
                 android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
                 android:layout_marginBottom="@dimen/size_five"
@@ -53,27 +64,35 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:layout_weight="1"
             android:orientation="vertical"
+
+            android:weightSum="2"
             android:paddingLeft="@dimen/size_five"
             android:paddingRight="@dimen/size_five"
             >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sales_qty"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
+                android:text="@string/sales_qty"
                 android:textColor="@color/green"
                 android:textSize="@dimen/label_small"
                 />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/_0_0_0_1"
                 android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:text="0.0/0.1"
+                android:textColor="@color/black"
+
                 android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
                 android:layout_marginBottom="@dimen/size_five"
@@ -87,7 +106,7 @@
         </LinearLayout>
 
     </LinearLayout>
-    
+
 
 
         <ListView
@@ -109,6 +128,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rl_bottom"
@@ -116,62 +136,54 @@
         android:paddingBottom="@dimen/h3"
         android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
+
+        android:background="@drawable/custom_border"
+
         android:layout_marginBottom="@dimen/h3"
         android:layout_marginTop="@dimen/h3"
 
         >
 
 
-
-
         <TextView
-            android:layout_centerHorizontal="true"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+
+            android:text="@string/total_amount"
             android:text="Total Amt."
             android:layout_marginBottom="@dimen/size_five"
             android:textColor="@color/green"
             android:textSize="@dimen/label_small"
-            android:id="@+id/tv_label" />
+            android:id="@+id/tv_label"/>
+            />
 
         <TextView
-            android:layout_below="@+id/tv_label"
-            android:layout_centerHorizontal="true"
+            android:id="@+id/tv_amt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_label"
+            android:layout_centerHorizontal="true"
+
             android:text="@string/_0_00"
             android:textSize="@dimen/label_big"
             android:textColor="@color/black"
-            android:id="@+id/tv_amt"
+
             />
-
-
 
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/colorPrimary"
-            android:src="@drawable/ic_add_black_24dp"
             android:layout_alignParentRight="true"
-            tools:ignore="RelativeOverlap" />
-
+            android:src="@drawable/ic_add_black_24dp"
+            app:backgroundTint="@color/colorPrimary"
+            tools:ignore="RelativeOverlap"/>
 
 
     </RelativeLayout>
-
-
-
-
-
-
-
-
-
-    
-    
-    
 
 
 </RelativeLayout>

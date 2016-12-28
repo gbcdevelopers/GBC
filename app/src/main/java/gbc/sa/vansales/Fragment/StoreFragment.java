@@ -88,7 +88,7 @@ public class StoreFragment extends Fragment {
                         TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);
-                        
+
                         if(ed_cases.getText().toString().isEmpty()||ed_cases.getText().toString()==null){
                             strCase = "0";
                         }

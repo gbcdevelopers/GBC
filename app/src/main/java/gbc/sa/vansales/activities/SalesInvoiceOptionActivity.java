@@ -66,17 +66,25 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
             tv_credit_limit.setText("0");
             tv_available_limit.setText("0");
         } else {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_CUSTOMER_NO, "");
-            map.put(db.KEY_CREDIT_LIMIT, "");
-            HashMap<String, String> filters = new HashMap<>();
-            filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-            Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                tv_credit_days.setText("0");
-                tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-                tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+            try {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO, "");
+                map.put(db.KEY_CREDIT_LIMIT, "");
+                map.put(db.KEY_AVAILABLE_LIMIT,"");
+                HashMap<String, String> filters = new HashMap<>();
+                filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    tv_credit_days.setText("0");
+                    tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                    tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT)));
+                    Const.availableLimit = cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                db.close();
             }
         }
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
@@ -105,6 +113,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         break;
                     case 1:
                         Intent intent1 = new Intent(SalesInvoiceOptionActivity.this, SalesInvoiceActivity.class);
+                        intent1.putExtra("headerObj", object);
                         startActivity(intent1);
                         break;
                     case 2:

@@ -22,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = App.APP_DB_NAME;
 
+
     //Table Names
 
     public static final String LOGIN_CREDENTIALS = "LOGIN_CREDENTIALS";
@@ -157,6 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Customer Credit Collection
     public static final String KEY_CREDIT_CONTROL_AREA= "creditControlArea";
     public static final String KEY_CREDIT_LIMIT = "creditLimit";
+    public static final String KEY_AVAILABLE_LIMIT = "availableLimit";
     public static final String KEY_SPECIAL_LIABILITIES = "specialLiability";
     public static final String KEY_RECEIVABLES = "receivables";
     public static final String KEY_CURRENCY = "currency";
@@ -200,10 +202,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_VERIFIED = "isVerified";
     public static final String KEY_IS_SELECTED = "isSelected";
 
+    private static DatabaseHandler sInstance;
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -356,6 +361,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_CREDIT_CONTROL_AREA + " TEXT,"
                 + KEY_CREDIT_LIMIT  + " TEXT,"
+                + KEY_AVAILABLE_LIMIT  + " TEXT,"
                 + KEY_SPECIAL_LIABILITIES  + " TEXT,"
                 + KEY_RECEIVABLES  + " TEXT,"
                 + KEY_CURRENCY  + " TEXT,"
@@ -493,6 +499,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Storing Data inside Database Table
     public void addData(String tablename, HashMap<String, String> keyMap){
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         ContentValues values = new ContentValues();
 
         for (Map.Entry entry : keyMap.entrySet()){
@@ -506,11 +513,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(entry.getKey().toString(),value);
         }
         db.insert(tablename, null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
     public void updateData(String tablename, HashMap<String, String> hashMap,HashMap<String, String>filters){
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         String [] filterArray = null;
         String filterKeys = null;
         String filterValues = null;
@@ -532,12 +542,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         int records = db.update(tablename,values,filterKeys,filterArray);
         Log.e("Records updated", "" + records);
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 
     public Cursor getData(String tablename, HashMap<String, String> params, HashMap<String, String>filters){
         SQLiteDatabase db = this.getReadableDatabase();
-
+        db.beginTransaction();
         String parameters = paramsBuilder(params, false);
         String[] paramArray = paramsBuilder(params,false).split(",");
         String filterKeys = null;
@@ -556,12 +568,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         {
             cursor.moveToFirst();
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
         return cursor;
+
     }
 
     public boolean checkData(String tablename,HashMap<String, String>filters){
         SQLiteDatabase db=this.getReadableDatabase();
 
+        db.beginTransaction();
         String filterKeys = null;
         String filterValues = null;
         String [] filterArray = null;
@@ -574,6 +590,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cursor=db.rawQuery("Select * from " + tablename + " where " + filterKeys,filterArray);
         boolean exists=(cursor.getCount()>0);
         cursor.close();
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
         return exists;
     }
 
