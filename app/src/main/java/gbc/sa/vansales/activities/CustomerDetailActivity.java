@@ -80,19 +80,28 @@ public class CustomerDetailActivity extends AppCompatActivity {
             tv_available_limit.setText("0");
         }
         else{
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_CUSTOMER_NO,"");
-            map.put(db.KEY_CREDIT_LIMIT,"");
+            try{
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,"");
+                map.put(db.KEY_CREDIT_LIMIT,"");
 
-            HashMap<String, String>filters = new HashMap<>();
-            filters.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-            Cursor cursor = db.getData(db.CUSTOMER_CREDIT,map,filters);
-            if(cursor.getCount()>0){
-                cursor.moveToFirst();
-                tv_credit_days.setText("0");
-                tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-                tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                HashMap<String, String>filters = new HashMap<>();
+                filters.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                Cursor cursor = db.getData(db.CUSTOMER_CREDIT,map,filters);
+                if(cursor.getCount()>0){
+                    cursor.moveToFirst();
+                    tv_credit_days.setText("0");
+                    tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                    tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                }
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                db.close();
+            }
+
         }
 
 

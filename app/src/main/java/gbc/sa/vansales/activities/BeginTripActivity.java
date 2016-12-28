@@ -185,6 +185,9 @@ public class BeginTripActivity extends AppCompatActivity  {
             catch(Exception e){
                 e.printStackTrace();
             }
+            finally {
+                db.close();
+            }
             return null;
         }
         @Override

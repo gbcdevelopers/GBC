@@ -36,7 +36,7 @@ public class CategoryListActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Product"));
-       // tabLayout.addTab(tabLayout.newTab().setText("Category"));
+        tabLayout.addTab(tabLayout.newTab().setText("Category"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);

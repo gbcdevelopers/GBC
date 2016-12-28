@@ -26,6 +26,8 @@ public class AppController extends Application
         Settings.initialize(getApplicationContext());
     }
 
+
+
     public static synchronized AppController getInstance() {
         return mInstance;
     }

@@ -75,11 +75,11 @@ public class SelectCustomerActivity extends AppCompatActivity {
         customers = CustomerHeaders.get();
         new loadVisitList(Settings.getString(App.TRIP_ID));
         new loadAllCustomers(Settings.getString(App.TRIP_ID));
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        /*viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Sequence"));
         tabLayout.addTab(tabLayout.newTab().setText("All"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         floatButton = (FloatingActionButton) findViewById(R.id.float_map);
@@ -175,6 +175,32 @@ public class SelectCustomerActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+        /*final PagerAdapter adapter = new PagerAdapter
+                (getSupportFragmentManager(), tabLayout.getTabCount(), "s");
+        viewPager.setAdapter(adapter);*/
+       /* viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                tab_position = tab.getPosition();
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });*/
+    }
+
+    public void setTabs(){
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("Sequence"));
+        tabLayout.addTab(tabLayout.newTab().setText("All"));
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(), "s");
         viewPager.setAdapter(adapter);
@@ -323,20 +349,26 @@ public class SelectCustomerActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_TRIP_ID, "");
-            map.put(db.KEY_VISITLISTID, "");
-            map.put(db.KEY_ITEMNO, "");
-            map.put(db.KEY_CUSTOMER_NO, "");
-            map.put(db.KEY_EXEC_DATE, "");
-            map.put(db.KEY_DRIVER, "");
-            map.put(db.KEY_VP_TYPE, "");
-            HashMap<String, String> filters = new HashMap<>();
-            filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-            // filters.put(db.KEY_IS_VERIFIED,"false");
-            Cursor cursor = db.getData(db.VISIT_LIST, map, filters);
-            if (cursor.getCount() > 0) {
-                setVisitList(cursor,true);
+            try {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TRIP_ID, "");
+                map.put(db.KEY_VISITLISTID, "");
+                map.put(db.KEY_ITEMNO, "");
+                map.put(db.KEY_CUSTOMER_NO, "");
+                map.put(db.KEY_EXEC_DATE, "");
+                map.put(db.KEY_DRIVER, "");
+                map.put(db.KEY_VP_TYPE, "");
+                HashMap<String, String> filters = new HashMap<>();
+                filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                // filters.put(db.KEY_IS_VERIFIED,"false");
+                Cursor cursor = db.getData(db.VISIT_LIST, map, filters);
+                if (cursor.getCount() > 0) {
+                    setVisitList(cursor,true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                db.close();
             }
             return null;
         }
@@ -361,15 +393,21 @@ public class SelectCustomerActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_TRIP_ID, "");
-            map.put(db.KEY_CUSTOMER_NO, "");
-            HashMap<String, String> filters = new HashMap<>();
-            filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-            // filters.put(db.KEY_IS_VERIFIED,"false");
-            Cursor cursor = db.getData(db.CUSTOMER_HEADER, map, filters);
-            if (cursor.getCount() > 0) {
-                setVisitList(cursor,false);
+            try {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TRIP_ID, "");
+                map.put(db.KEY_CUSTOMER_NO, "");
+                HashMap<String, String> filters = new HashMap<>();
+                filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                // filters.put(db.KEY_IS_VERIFIED,"false");
+                Cursor cursor = db.getData(db.CUSTOMER_HEADER, map, filters);
+                if (cursor.getCount() > 0) {
+                    setVisitList(cursor,false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                db.close();
             }
             return null;
         }
@@ -380,6 +418,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            setTabs();
         }
     }
 

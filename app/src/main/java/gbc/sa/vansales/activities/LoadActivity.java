@@ -142,19 +142,28 @@ public class LoadActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_TRIP_ID, "");
-            map.put(db.KEY_DELIVERY_NO, "");
-            map.put(db.KEY_DELIVERY_DATE, "");
-            map.put(db.KEY_DELIVERY_TYPE, "");
-            map.put(db.KEY_IS_VERIFIED, "");
-            HashMap<String, String> filters = new HashMap<>();
-            filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
-            // filters.put(db.KEY_IS_VERIFIED,"false");
-            Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER, map, filters);
-            if (cursor.getCount() > 0) {
-                setLoadDelivery(cursor);
+            try{
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TRIP_ID, "");
+                map.put(db.KEY_DELIVERY_NO, "");
+                map.put(db.KEY_DELIVERY_DATE, "");
+                map.put(db.KEY_DELIVERY_TYPE, "");
+                map.put(db.KEY_IS_VERIFIED, "");
+                HashMap<String, String> filters = new HashMap<>();
+                filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
+                // filters.put(db.KEY_IS_VERIFIED,"false");
+                Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER, map, filters);
+                if (cursor.getCount() > 0) {
+                    setLoadDelivery(cursor);
+                }
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+            finally {
+                db.close();
+            }
+
             return null;
         }
         @Override

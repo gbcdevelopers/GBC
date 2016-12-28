@@ -137,45 +137,54 @@ public class LoadSummaryActivity extends AppCompatActivity {
 
     private ArrayList<LoadSummary> loadDataOld(){
        // adapter.clear();
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_DELIVERY_NO,"");
-        map.put(db.KEY_ITEM_NO,"");
-        map.put(db.KEY_ITEM_CATEGORY,"");
-        map.put(db.KEY_MATERIAL_NO,"");
-        map.put(db.KEY_ACTUAL_QTY,"");
-        map.put(db.KEY_UOM,"");
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_DELIVERY_NO,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_ITEM_CATEGORY,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_ACTUAL_QTY,"");
+            map.put(db.KEY_UOM,"");
 
 
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
 
-        Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
+            Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
 
-        cursor.moveToFirst();
-        do {
-            LoadSummary loadItem = new LoadSummary();
-            loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            Log.e("Article IF","" + article);
+            cursor.moveToFirst();
+            do {
+                LoadSummary loadItem = new LoadSummary();
+                loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Log.e("Article IF","" + article);
 
-            if(!(article==null)){
-                loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                if(!(article==null)){
+                    loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                }
+                else{
+                    loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                }
+                // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
+                loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+                loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                loadSummaryUnmodList.add(loadItem);
+
             }
-            else{
-                loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            }
-            // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
-            loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
-            loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            while (cursor.moveToNext());
 
-            loadSummaryUnmodList.add(loadItem);
 
         }
-        while (cursor.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            db.close();
+        }
 
         return loadSummaryUnmodList;
-
     }
     private void setListView() {
         try{
