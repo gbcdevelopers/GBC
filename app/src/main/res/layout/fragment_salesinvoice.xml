@@ -16,7 +16,7 @@
         android:weightSum="2"
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
-        android:id="@+id/ll_top"
+       
         >
 
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:text="@string/avail_limit"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:text="@string/credit_available"
+                
                 android:textColor="@color/green"
                 android:textSize="@dimen/label_small"
                 />
@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
 
                 android:text="100000"
-                android:textColor="@color/black"
+               
 
                 android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
@@ -76,7 +76,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sales_qty"
+               
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:text="@string/sales_qty"
@@ -89,9 +89,9 @@
                 android:layout_height="wrap_content"
                 android:text="@string/_0_0_0_1"
                 android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:text="0.0/0.1"
-                android:textColor="@color/black"
+              
+            
+               
 
                 android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
@@ -131,10 +131,10 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_bottom"
+       
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
-        android:background="@drawable/custom_border"
+      
         android:layout_alignParentBottom="true"
 
         android:background="@drawable/custom_border"
@@ -152,7 +152,7 @@
             android:layout_centerHorizontal="true"
 
             android:text="@string/total_amount"
-            android:text="Total Amt."
+         
             android:layout_marginBottom="@dimen/size_five"
             android:textColor="@color/green"
             android:textSize="@dimen/label_small"
