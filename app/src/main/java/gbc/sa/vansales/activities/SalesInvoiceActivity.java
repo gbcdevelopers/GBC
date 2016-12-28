@@ -112,8 +112,10 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                 tv_top_header.setVisibility(View.GONE);
             }
         });
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("data",object);
         final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), "sales");
+                (getSupportFragmentManager(), tabLayout.getTabCount(), "sales",bundle);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

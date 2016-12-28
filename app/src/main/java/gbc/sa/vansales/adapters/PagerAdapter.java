@@ -66,6 +66,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             switch (position) {
                 case 0:
                     SalesFragment tab1 = new SalesFragment();
+                    if (bundle != null) {
+                        tab1.setArguments(this.bundle);
+                    }
                     return tab1;
                 case 1:
                     FocFragment tab2 = new FocFragment();

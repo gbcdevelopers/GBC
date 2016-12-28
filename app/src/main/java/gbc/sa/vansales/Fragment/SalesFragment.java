@@ -22,6 +22,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -33,9 +35,11 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -47,16 +51,43 @@ public class SalesFragment extends Fragment {
     public static SalesAdapter adapter;
     public static ArrayList<Sales> salesarrayList;
     FloatingActionButton fab;
-
+    boolean workStarted = false;
     DatabaseHandler db;
-
+    Customer object;
     public ArrayList<ArticleHeader> articles;
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(!isVisibleToUser){
+            if(workStarted){
+                for(Sales sale:salesarrayList){
+                    HashMap<String,String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                    map.put(db.KEY_ITEM_CATEGORY,sale.getItem_category());
+                    map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                    map.put(db.KEY_MATERIAL_GROUP,"");
+                    map.put(db.KEY_ORG_CASE,sale.getCases());
+                    map.put(db.KEY_ORG_UNITS,sale.getPic());
+                    map.put(db.KEY_AMOUNT,sale.getPrice());
+
+                    db.addData(db.CAPTURE_SALES_INVOICE,map);
+                    
+                }
+
+            }
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewmain = inflater.inflate(R.layout.fragment_salesinvoice, container, false);
 
+        object = getArguments().getParcelable("data");
+        Log.e("Sales Frag","" + object.getCustomerID());
         TextView tv = (TextView)viewmain.findViewById(R.id.tv_available_limit);
         tv.setText(Const.availableLimit);
         db = new DatabaseHandler(getActivity());
@@ -98,10 +129,12 @@ public class SalesFragment extends Fragment {
                 final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
                 final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
                 final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-                ed_cases_inv.setText(sales.getCases());
-                ed_pcs_inv.setText(sales.getPic());
+                ed_cases_inv.setText(sales.getInv_cases());
+                ed_pcs_inv.setText(sales.getInv_piece());
                 ed_cases_inv.setEnabled(false);
                 ed_pcs_inv.setEnabled(false);
+                ed_cases.setText(sales.getCases());
+                ed_pcs.setText(sales.getPic());
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -122,6 +155,7 @@ public class SalesFragment extends Fragment {
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);
 
+
                         if(strCase.isEmpty()||strCase==null||strCase.trim().equals("")){
                             strCase = String.valueOf(0);
                         }
@@ -134,6 +168,8 @@ public class SalesFragment extends Fragment {
                         if(strpcsinv.isEmpty()||strpcsinv==null||strpcsinv.trim().equals("")){
                             strpcsinv = String.valueOf(0);
                         }
+                        sales.setCases(strCase);
+                        sales.setPic(strpcs);
 
                         if(Float.parseFloat(strCase)>Float.parseFloat(strcaseinv)){
                             Toast.makeText(getActivity(),getString(R.string.input_larger),Toast.LENGTH_SHORT).show();
@@ -142,9 +178,12 @@ public class SalesFragment extends Fragment {
                             Toast.makeText(getActivity(),getString(R.string.input_larger),Toast.LENGTH_SHORT).show();
                         }
                         else{
+
                             double total = 0;
                             for (int i = 0; i < salesarrayList.size(); i++) {
                                 Sales sales1 = salesarrayList.get(i);
+                                Log.e("Sales1 Cs","" + sales1.getCases());
+                                Log.e("Sales1 Pc","" + sales1.getPic());
                                 total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
                             }
                             TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
@@ -210,6 +249,7 @@ public class SalesFragment extends Fragment {
     }
 
     private void setLoadItems(Cursor loadItems){
+        workStarted = true;
         salesarrayList.clear();
         Cursor cursor = loadItems;
         cursor.moveToFirst();
@@ -217,9 +257,9 @@ public class SalesFragment extends Fragment {
             try{
                 LoadSummary loadItem = new LoadSummary();
                 Sales product = new Sales();
-
-
-                loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                product.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                product.setItem_category(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_CATEGORY)));
+                product.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 ArticleHeader article = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 Log.e("Article IF", "" + article);
 
@@ -231,8 +271,10 @@ public class SalesFragment extends Fragment {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                     product.setName(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
-                product.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0");
-                product.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+                product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+                product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+                product.setCases("0");
+                product.setPic("0");
                 salesarrayList.add(product);
             }
             catch (Exception e){
