@@ -149,7 +149,7 @@
     <string name="product">Product</string>
     <string name="pcs">Pcs</string>
     <string name="price">Price</string>
-    <string name="total_amt">Total Amt.</string>
+   
     <string name="total_amount">TOTAL AMOUNT</string>
     <string name="specify_reason">specify Reason:</string>
     <string name="_1177711565">1177711565</string>
@@ -250,7 +250,7 @@
     <string name="q_btl">Q/BTL</string>
     <string name="_250_ml_qty">250 ML QTY</string>
     <string name="avail_limit">Avail. Limit</string>
-    <string name="sales_qty">Sales Qty.</string>
+   
     <string name="_0_0_0_1">0.0/0.1</string>
     <string name="customer_decs">Customer decs</string>
     <string name="item_number">Item number</string>
