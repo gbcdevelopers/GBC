@@ -39,6 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String LOAD_DELIVERY_ITEMS = "LOAD_DELIVERY_ITEMS";
     public static final String LOAD_DELIVERY_ITEMS_POST = "LOAD_DELIVERY_ITEMS_POST";
     public static final String BEGIN_DAY = "BEGIN_DAY";
+    public static final String CAPTURE_CUSTOMER_STOCK = "CUSTOMER_STOCK";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -185,6 +186,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_BATCH = "batch";
     public static final String KEY_ACTUAL_QTY = "actualQty";
     public static final String KEY_REMAINING_QTY = "remainingQty";
+
+    //Capture Customer Stock
+    public static final String KEY_AMOUNT = "amount";
 
     //For Posting
     public static final String KEY_ORG_CASE = "orgCase";
@@ -418,6 +422,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DATE  + " TEXT,"
                 + KEY_IS_SELECTED  + " TEXT " + ")";
 
+        String TABLE_CAPTURE_CUSTOMER_STOCK = "CREATE TABLE " + CAPTURE_CUSTOMER_STOCK + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_TRIP_ID  + " TEXT,"
+                + KEY_CUSTOMER_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_ITEM_CATEGORY  + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_ORG_CASE   + " TEXT,"
+                + KEY_ORG_UNITS   + " TEXT,"
+                + KEY_AMOUNT  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -434,6 +451,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS_POST);
         db.execSQL(TABLE_BEGIN_DAY);
+        db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -451,6 +469,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS_POST);
         db.execSQL("DROP TABLE IF EXISTS " + BEGIN_DAY);
+        db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_CUSTOMER_STOCK);
         onCreate(db);
     }
 
