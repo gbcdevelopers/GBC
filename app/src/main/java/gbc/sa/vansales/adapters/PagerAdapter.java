@@ -106,9 +106,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 case 0:
                     ProductFragment tab1 = new ProductFragment();
                     return tab1;
-                case 1:
+                /*case 1:
                     CategoryFragment tab2 = new CategoryFragment();
-                    return tab2;
+                    return tab2;*/
                 default:
                     return null;
             }
