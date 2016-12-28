@@ -161,26 +161,32 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         Intent intent = new Intent(CustomerDetailActivity.this, PreSaleOrderActivity.class);
+                        intent.putExtra("headerObj", object);
                         startActivity(intent);
                         break;
                     case 1:
                         Intent intent1 = new Intent(CustomerDetailActivity.this, CollectionsActivity.class);
+                        intent1.putExtra("headerObj", object);
                         startActivity(intent1);
                         break;
                     case 2:
                         Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                        intent2.putExtra("headerObj", object);
                         startActivity(intent2);
                         break;
                     case 3:
                         Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);
+                        intent3.putExtra("headerObj", object);
                         startActivity(intent3);
                         break;
                     case 4:
                         Intent intent4 = new Intent(CustomerDetailActivity.this, DeliveryActivity.class);
+                        intent4.putExtra("headerObj", object);
                         startActivity(intent4);
                         break;
                     case 5:
                         Intent intent5 = new Intent(CustomerDetailActivity.this, PrinterReportsActivity.class);
+                        intent5.putExtra("headerObj", object);
                         intent5.putExtra("from", "customer");
                         startActivity(intent5);
                         break;

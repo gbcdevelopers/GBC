@@ -140,6 +140,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_STORAGE_LOCATION , object.get("StorLocation").toString());
                         params.put(db.KEY_BATCH , object.get("Batch").toString());
                         params.put(db.KEY_ACTUAL_QTY,object.get("ActQtyDel").toString());
+                        params.put(db.KEY_REMAINING_QTY,object.get("ActQtyDel").toString());
                         params.put(db.KEY_UOM ,object.get("Uom").toString());
                         params.put(db.KEY_DIST_CHANNEL ,object.get("DistCha").toString());
                         params.put(db.KEY_DIVISION ,object.get("Division").toString());

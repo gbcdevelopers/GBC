@@ -48,7 +48,6 @@ public class VisitAllFragment extends Fragment {
                 Customer customer = Const.dataArrayList.get(position);
                 Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
                 intent.putExtra("headerObj", customer);
-                intent.putExtra("customer",customers);
                 startActivity(intent);
 
             }

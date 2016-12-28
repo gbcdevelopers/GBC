@@ -184,6 +184,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_STORAGE_LOCATION = "storage";
     public static final String KEY_BATCH = "batch";
     public static final String KEY_ACTUAL_QTY = "actualQty";
+    public static final String KEY_REMAINING_QTY = "remainingQty";
 
     //For Posting
     public static final String KEY_ORG_CASE = "orgCase";
@@ -392,6 +393,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_STORAGE_LOCATION   + " TEXT,"
                 + KEY_BATCH   + " TEXT,"
                 + KEY_ACTUAL_QTY  + " TEXT,"
+                + KEY_REMAINING_QTY  + " TEXT,"
                 + KEY_UOM  + " TEXT,"
                 + KEY_DIST_CHANNEL   + " TEXT,"
                 + KEY_DIVISION   + " TEXT,"

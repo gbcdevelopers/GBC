@@ -8,6 +8,7 @@
     <string name="begintrip">Begin Trip</string>
     <string name="cancel">Cancel</string>
     <string name="cases">Cases</string>
+    <string name="cash">Cash</string>
     <string name="changingstatus">Changing Status?</string>
     <string name="close">Close</string>
     <string name="changingstatustext">Your current location does not match with Customer Location.Do you want to continue?</string>
@@ -17,6 +18,7 @@
     <string name="collection">Collection</string>
     <string name="confirmload">Confirm Load</string>
     <string name="confirmreturn">Confirm Returns</string>
+    <string name="credit">Credit</string>
     <string name="currency">SAR</string>
     <string name="customerid">Customer ID</string>
     <string name="customer_name">Customer Name</string>
@@ -49,6 +51,7 @@
     <string name="loading">Loading…</string>
     <string name="map">Map</string>
     <string name="manageinventory">Manage Inventory</string>
+    <string name="methodofPayment">Method of Payment</string>
     <string name="internet_available_title">No Connection</string>
 
     <string name="beginDay">Begin Day</string>

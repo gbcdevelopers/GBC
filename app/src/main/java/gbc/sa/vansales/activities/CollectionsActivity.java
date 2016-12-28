@@ -17,8 +17,11 @@ import java.util.ArrayList;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ColletionAdapter;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ColletionData;
-
+import gbc.sa.vansales.models.Customer;
+import gbc.sa.vansales.models.CustomerHeader;
+import gbc.sa.vansales.utils.DatabaseHandler;
 public class CollectionsActivity extends AppCompatActivity {
 
     ListView lv_colletions_view;
@@ -27,14 +30,37 @@ public class CollectionsActivity extends AppCompatActivity {
     ArrayList<ColletionData> colletionDatas = new ArrayList<>();
     ColletionAdapter colletionAdapter;
     TextView tv_amt_paid;
-   double amount=0.00;
+    double amount=0.00;
     int pos=0;
-
+    Customer object;
+    ArrayList<CustomerHeader> customers;
+    DatabaseHandler db = new DatabaseHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
+
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
+        customers = CustomerHeaders.get();
+
+        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
+        TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_id);
+        TextView tv_method_of_payment = (TextView)findViewById(R.id.tv_method_of_payment);
+
+        if(!(customerHeader==null)){
+            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+        }
+        else{
+            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+        }
+        if(object.getPaymentMethod().equalsIgnoreCase("cash")){
+            tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.cash));
+        }
+        else{
+            tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.credit));
+        }
 
         lv_colletions_view = (ListView) findViewById(R.id.lv_colletions_view);
 
