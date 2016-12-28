@@ -1,5 +1,4 @@
 package gbc.sa.vansales.adapters;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,54 +17,41 @@ import gbc.sa.vansales.Fragment.SalesFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.StoreFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
-
 /**
  * Created by eheuristic on 12/2/2016.
  */
-
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
     String activity;
     Bundle bundle;
-
-
     public PagerAdapter(FragmentManager fm, int NumOfTabs, String activtyname) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
-        activity=activtyname;
+        activity = activtyname;
     }
-
     public PagerAdapter(FragmentManager fm, int NumOfTabs, String activtyname, Bundle bundle) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
         this.bundle = bundle;
-        activity=activtyname;
+        activity = activtyname;
     }
-
     @Override
     public Fragment getItem(int position) {
-
-
-
-        if(activity.equals("b")) {
+        if (activity.equals("b")) {
             switch (position) {
                 case 0:
                     BeginDayFragment tab1 = new BeginDayFragment();
-                    if(bundle!=null){
-                    tab1.setArguments(this.bundle);
+                    if (bundle != null) {
+                        tab1.setArguments(this.bundle);
                     }
-
                     return tab1;
                 case 1:
                     MessageFragment tab2 = new MessageFragment();
                     return tab2;
-
                 default:
                     return null;
             }
-        }
-        else if(activity.equals("s"))
-        {
+        } else if (activity.equals("s")) {
             switch (position) {
                 case 0:
                     VisitAllFragment tab1 = new VisitAllFragment();
@@ -73,17 +59,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 case 1:
                     AllCustomerFragment tab2 = new AllCustomerFragment();
                     return tab2;
-
                 default:
                     return null;
             }
-        }
-
-        else if(activity.equals("sales"))
-        {
+        } else if (activity.equals("sales")) {
             switch (position) {
                 case 0:
-                   SalesFragment tab1 = new SalesFragment();
+                    SalesFragment tab1 = new SalesFragment();
                     return tab1;
                 case 1:
                     FocFragment tab2 = new FocFragment();
@@ -94,15 +76,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 case 3:
                     BListFragment tab4 = new BListFragment();
                     return tab4;
-
                 default:
                     return null;
             }
-
-        }
-        else if(activity.equals("shelf"))
-        {
-
+        } else if (activity.equals("shelf")) {
             switch (position) {
                 case 0:
                     ShelfFragment tab1 = new ShelfFragment();
@@ -113,10 +90,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 default:
                     return null;
             }
-        }
-        else if(activity.equals("capture"))
-        {
-
+        } else if (activity.equals("capture")) {
             switch (position) {
                 case 0:
                     CaptureImageFragment tab1 = new CaptureImageFragment();
@@ -127,11 +101,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 default:
                     return null;
             }
-
-        }
-        else if(activity.equals("category"))
-        {
-
+        } else if (activity.equals("category")) {
             switch (position) {
                 case 0:
                     ProductFragment tab1 = new ProductFragment();
@@ -141,16 +111,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     return tab2;
                 default:
                     return null;
-
             }
-
-
         }
-
-
         return null;
     }
-
     @Override
     public int getCount() {
         return mNumOfTabs;

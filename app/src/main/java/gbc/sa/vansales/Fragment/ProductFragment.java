@@ -12,7 +12,10 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ProductListAdapter;
-
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/21/2016.
  */
@@ -27,12 +30,14 @@ public class ProductFragment extends Fragment {
     ArrayList<String> arrayList;
     ProductListAdapter adapter;
     FloatingActionButton button;
+    ArrayList<ArticleHeader> articles = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view =inflater.inflate(R.layout.activity_product_list, container, false);
         list_product=(ListView)view.findViewById(R.id.list_product);
+        articles = ArticleHeaders.get();
 
         common_header=(View)view.findViewById(R.id.inc_common_header);
         common_header.setVisibility(View.GONE);
@@ -40,12 +45,9 @@ public class ProductFragment extends Fragment {
         button=(FloatingActionButton)view.findViewById(R.id.btn_float);
 
         arrayList=new ArrayList<>();
-        arrayList.add("AM5508 LARGE SWISS ROLL VANILL (24x110G)");
-        arrayList.add("BM5508 SMALL SWISS ROLL VANILL (24x110G)");
-        arrayList.add("CM5508 BIG SWISS ROLL VANILL (24x110G)");
-        arrayList.add("DM5508 SWISS ROLL VANILL (24x110G)");
-        arrayList.add("EM5508 ROLL VANILL (24x110G)");
-
+        for(ArticleHeader article: articles){
+            arrayList.add(UrlBuilder.decodeString(article.getMaterialDesc1()));
+        }
 
         adapter=new ProductListAdapter(getActivity(),arrayList, R.layout.checkable_productlist,"product");
         list_product.setAdapter(adapter);
