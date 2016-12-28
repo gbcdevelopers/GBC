@@ -21,8 +21,8 @@
             android:id="@+id/radio_btn_shopstatus"
             android:layout_weight="1"
             android:layout_gravity="right"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"/>
     </LinearLayout>
 
 </LinearLayout>

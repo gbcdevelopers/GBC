@@ -25,14 +25,14 @@
             android:layout_below="@+id/inc_common_header_payment_details"
             android:background="@drawable/back_radient"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="@dimen/h3">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="5dp"
-                android:text="3106,EMARAT (EGPC)(DE455)"
+                android:layout_marginBottom="@dimen/h3"
+                android:layout_marginTop="@dimen/size_five"
+                android:text="@string/tv_cust_detail"
                 android:textColor="@color/white" />
 
         </LinearLayout>
@@ -42,23 +42,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_payment_title"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/h3"
             android:orientation="vertical"
-            android:paddingLeft="6dp">
+            android:paddingLeft="@dimen/elevation_size">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="AMOUNT DUE"
+                android:layout_marginTop="@dimen/size_two"
+                android:text="@string/amount_due"
                 android:textColor="@color/green" />
 
             <TextView
                 android:id="@+id/tv_payment__amout_due_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="146.40"
+                android:layout_marginTop="@dimen/size_two"
+                android:text="@string/_146_40"
 
                 />
 
@@ -68,9 +68,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_payment_main_aue_top"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/image_width"
             android:background="@drawable/textline_gray"
-            android:paddingLeft="6dp">
+            android:paddingLeft="@dimen/elevation_size">
 
 
             <LinearLayout
@@ -81,14 +81,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="ENTER CASH AMOUNT:"
+                    android:layout_marginTop="@dimen/size_two"
+                    android:text="@string/enter_cash_amount"
                     android:textColor="@color/green" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/size_two"
                     android:text=""
                     android:id="@+id/edt_cash_amount"
                     android:enabled="false"
@@ -99,10 +99,10 @@
 
             <Button
                 android:id="@+id/btn_edit1"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/image_width"
+                android:layout_height="@dimen/image_width"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="@dimen/h3"
                 android:background="@drawable/ic_create_black_24dp"
                 android:textColor="@color/white"
 
@@ -119,7 +119,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/h3"
             android:background="@drawable/textline_gray"
             >
 
@@ -127,21 +127,21 @@
                 android:id="@+id/ll_cash_payment_dummy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="@dimen/image_width"
                 android:orientation="vertical"
-                android:paddingLeft="6dp">
+                android:paddingLeft="@dimen/elevation_size">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="CHEQUE NO:"
+                    android:layout_marginTop="@dimen/size_two"
+                    android:text="@string/cheque_no"
                     android:textColor="@color/green" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/size_two"
                     android:text=""
                     android:id="@+id/edt_check_no"
                     android:enabled="false"
@@ -160,13 +160,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="CHEQUE AMOUNT:"
+                    android:text="@string/cheque_amount"
                     android:textColor="@color/green" />
 
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/size_two"
                     android:text=""
                     android:id="@+id/edt_check_amt"
                     android:enabled="false"
@@ -180,7 +180,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/h1"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -188,9 +188,9 @@
                 android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="@dimen/h1"
                 android:layout_marginTop="2dp"
-                android:text="19-12-2016"
+                android:text="@string/date"
                 android:textColor="@color/black"
                 />
 
@@ -205,9 +205,9 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
-                android:text="ABN AMRO"
+                android:layout_marginLeft="@dimen/h1"
+                android:layout_marginTop="@dimen/size_two"
+                android:text="@string/abn_amro"
                 android:entries="@array/paymentitem"
                 android:id="@+id/sp_item"
 
@@ -223,11 +223,11 @@
 
         <Button
             android:id="@+id/btn_edit2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_width"
             android:layout_gravity="right"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginRight="@dimen/h3"
+            android:layout_marginTop="@dimen/h3"
             android:background="@drawable/ic_create_black_24dp"
             />
 
@@ -239,7 +239,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/size_five"
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical">
@@ -247,17 +247,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Total Amount"
+            android:layout_marginTop="@dimen/h3"
+            android:text="@string/total_amount"
             android:textColor="@color/green"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="0.00"
-            android:textSize="20sp"
+            android:layout_marginTop="@dimen/size_five"
+            android:text="@string/_0_00"
+            android:textSize="@dimen/label_big"
             android:id="@+id/tv_total_amt"
             android:textColor="@color/black"
             />

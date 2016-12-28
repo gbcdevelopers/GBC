@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="3"
         android:background="@drawable/light_border"
-        android:padding="5dp"
+        android:padding="@dimen/size_five"
         android:inputType="text"
         android:text="product"
         android:textColor="@drawable/edit_text_color"
@@ -37,7 +37,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:background="@drawable/light_border"
-        android:padding="5dp"
+        android:padding="@dimen/size_five"
         />
 
     <TextView
@@ -46,9 +46,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="PRICE"
+        android:text="@string/price"
         android:visibility="gone"
         android:background="@drawable/light_border"
-        android:padding="5dp"
+        android:padding="@dimen/size_five"
         />
 </LinearLayout>

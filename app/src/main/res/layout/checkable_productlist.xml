@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:padding="@dimen/h3"
     android:background="@color/white"
     >
 
@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="Frahn"
-        android:textSize="15dp"
+        android:text="@string/frahn"
+        android:textSize="@dimen/label_small"
         android:layout_toLeftOf="@+id/chk_product"
 
         />

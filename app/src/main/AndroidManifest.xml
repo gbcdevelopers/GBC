@@ -458,6 +458,9 @@
             android:value="@integer/google_play_services_version" />
 
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28" />
     </application>
 
 

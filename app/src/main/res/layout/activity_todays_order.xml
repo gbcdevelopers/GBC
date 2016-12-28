@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/inc_comman_todays_order_list"
-        card_view:cardCornerRadius="3dp"
-        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="@dimen/list_space"
+        card_view:cardElevation="@dimen/size_four"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -42,8 +42,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:gravity="center"
-                        android:padding="4dp"
-                        android:text="Customer"
+                        android:padding="@dimen/size_four"
+                        android:text="@string/customer"
                         android:textAllCaps="true"
                         android:textStyle="bold"
                         />
@@ -62,8 +62,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:gravity="center"
-                        android:padding="4dp"
-                        android:text="Order No"
+                        android:padding="@dimen/size_four"
+                        android:text="@string/order_no"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 
@@ -83,7 +83,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="4dp"
-                        android:text="price"
+                        android:text="@string/price"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 

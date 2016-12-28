@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+    android:background="@color/grey">
 
 
     <include layout="@layout/common_header"
@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/inc_common_header"
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="@dimen/h2"
+        android:paddingLeft="@dimen/h2"
+        android:paddingBottom="@dimen/h2"
         android:background="@drawable/back_radient"
         android:orientation="vertical"
 
@@ -28,8 +28,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="50% AMC invoice discount"
-            android:textSize="20dp"
+            android:text="@string/_50_amc_invoice_discount"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/white"
             android:id="@+id/tv_promotion"
 
@@ -44,7 +44,7 @@
         android:layout_below="@+id/ll_top"
         android:layout_above="@id/ll_bottom"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:padding="@dimen/h3"
         >
 
         <android.support.design.widget.TextInputLayout
@@ -57,9 +57,9 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Current Invoice Amount"
-                android:textSize="15dp"
-                android:text="300"
+                android:hint="@string/current_invoice_amount"
+                android:textSize="@dimen/label_small"
+                android:text="@string/_300"
                 android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
@@ -80,9 +80,9 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Return Qualified Amount"
-                android:textSize="15dp"
-                android:text="10"
+                android:hint="@string/return_qualified_amount"
+                android:textSize="@dimen/label_small"
+                android:text="@string/_10"
                 android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
@@ -113,9 +113,9 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Return Applied Promotion"
-                    android:textSize="15dp"
-                    android:text="0"
+                    android:hint="@string/return_qualified_amount"
+                    android:textSize="@dimen/label_small"
+                    android:text="@string/_0"
                     android:enabled="false"
                     android:textColorHint="@color/colorPrimary"
                     app:backgroundTint="@color/base"
@@ -135,9 +135,9 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Return Applied Promotion"
-                    android:textSize="15dp"
-                    android:text="50%"
+                    android:hint="@string/return_applied_promotion"
+                    android:textSize="@dimen/label_small"
+                    android:text="@string/_50"
                     android:enabled="false"
                     android:textColorHint="@color/colorPrimary"
                     app:backgroundTint="@color/base"
@@ -159,9 +159,9 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Total Promo Amount"
-                android:textSize="15dp"
-                android:text="150"
+                android:hint="@string/total_promo_amount"
+                android:textSize="@dimen/label_small"
+                tools:text="150"
                 android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
@@ -181,9 +181,9 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="New Invoice Amount"
-            android:textSize="15dp"
-            android:text="150"
+            android:hint="@string/new_invoice_amount"
+            android:textSize="@dimen/label_small"
+            tools:text="150"
             android:enabled="false"
             android:textColorHint="@color/colorPrimary"
             app:backgroundTint="@color/base"
@@ -206,8 +206,8 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:id="@+id/ll_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
         android:background="@color/green"
         android:gravity="center"
         >
@@ -250,8 +250,8 @@
             >
 
             <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="@dimen/h"
+                android:layout_height="@dimen/h"
                 android:src="@drawable/double_tick"
                 />
         </LinearLayout>

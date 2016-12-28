@@ -35,7 +35,7 @@ public class ShelfStockActivity extends AppCompatActivity {
     ImageView toolbar_iv_back;
     ImageView iv_search;
     EditText et_search;
-    int tab_position;
+   public static int tab_position=0;
     FloatingActionButton button;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +80,7 @@ public class ShelfStockActivity extends AppCompatActivity {
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(), "shelf");
         viewPager.setAdapter(adapter);
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -92,6 +93,9 @@ public class ShelfStockActivity extends AppCompatActivity {
             }
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                tab_position = tab.getPosition();
+
+
             }
         });
         et_search.setOnTouchListener(new View.OnTouchListener() {

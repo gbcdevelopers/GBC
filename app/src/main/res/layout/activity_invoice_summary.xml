@@ -13,29 +13,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/inc_common_header"
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:background="@drawable/back_radient"
         android:orientation="vertical"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/h3"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3106 EMARAT"
-            android:textSize="20dp"
+            android:text="@string/tv_cust_detail"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MOT tc"
-            android:textSize="18dp"
+            android:text="@string/tv_cust_detail1"
+            android:textSize="@dimen/label_medium"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
 
 
@@ -51,14 +51,14 @@
         android:layout_height="match_parent"
         android:id="@+id/grid"
         android:numColumns="2"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:verticalSpacing="@dimen/h3"
+        android:horizontalSpacing="@dimen/h3"
         android:stretchMode="columnWidth"
         android:gravity="center"
         android:layout_above="@+id/ll_bottom"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginBottom="@dimen/h3"
+        android:layout_marginLeft="@dimen/size_five"
+        android:layout_marginRight="@dimen/size_five"
 
         />
 
@@ -78,11 +78,11 @@
 
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/h3"
 
         android:id="@+id/ll_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
         android:background="@drawable/custom_border"
         >
 
@@ -91,9 +91,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00"
+            android:text="@string/_0_00"
             android:layout_gravity="center"
-            android:textSize="20dp"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/black"
             />
 

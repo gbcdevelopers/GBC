@@ -23,9 +23,9 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter category here"
 
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/h3"
+                android:layout_marginLeft="@dimen/h3"
+                android:layout_marginRight="@dimen/h3"
 
 
                 >
@@ -37,9 +37,9 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/search"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/h3"
+                android:layout_marginLeft="@dimen/h3"
+                android:layout_marginRight="@dimen/h3"
                 />
 
         </RelativeLayout>
@@ -50,7 +50,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Process Load Request"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/h2"
             android:layout_alignParentBottom="true"
             android:background="@color/buttoncolor"
             android:textColor="@color/white"
@@ -77,16 +77,16 @@
                     android:id="@+id/tv1"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:textSize="16dp"
-                    android:layout_marginLeft="10dp"
+                    android:textSize="@dimen/label_small"
+                    android:layout_marginLeft="@dimen/h3"
                     android:layout_centerVertical="true"
-                    android:text="05/12/2016"
+                    android:text="@string/date"
                     />
 
                 <ImageButton
                     android:id="@+id/btnDate"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="@dimen/big"
+                    android:layout_height="@dimen/big"
                     android:layout_toRightOf="@+id/tv1"
                     android:layout_centerVertical="true"
                     android:background="@drawable/calend"
@@ -98,7 +98,7 @@
 
             <View
                 android:id="@+id/line"
-                android:layout_width="2dp"
+                android:layout_width="@dimen/list_space"
                 android:layout_centerHorizontal="true"
                 android:layout_height="match_parent"
                 android:background="@android:color/black"

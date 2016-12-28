@@ -10,21 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="56dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp">
+        android:paddingLeft="@dimen/h"
+        android:paddingRight="@dimen/h">
 
         <ImageView android:src="@drawable/logo"
                    android:visibility="invisible"
                    android:layout_width="wrap_content"
                    android:layout_height="72dp"
-                   android:layout_marginBottom="24dp"
+                   android:layout_marginBottom="@dimen/h"
                    android:layout_gravity="center_horizontal" />
 
         <!--  Email Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/h4"
             android:layout_marginBottom="0dp">
             <!--<EditText android:id="@+id/input_email"
                       android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/edittext_top_bg"
                 android:textColorHint="#cccccc"
-                android:text="E2000"
+                android:text="@string/e2000"
                 android:drawableLeft="@drawable/user"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="@dimen/h4">
             <!--<EditText android:id="@+id/input_password"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 android:background="@drawable/edittext_bottom_bg"
                 android:layout_marginTop="-12dp"
                 android:textColorHint="#cccccc"
-                android:text="PASSWORD"
+                android:text="@string/password"
                 android:password="true"
                 android:drawableLeft="@drawable/password"/>
         </android.support.design.widget.TextInputLayout>
@@ -68,13 +68,13 @@
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
+            android:layout_marginTop="@dimen/h"
+            android:layout_marginBottom="@dimen/h"
+            android:padding="@dimen/h3"
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
             android:onClick="login"
-            android:text="Login"/>
+            android:text="@string/login"/>
 
 
     </LinearLayout>

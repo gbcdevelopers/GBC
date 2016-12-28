@@ -4,7 +4,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="@color/purple"
     android:orientation="horizontal"
-    android:elevation="6dp"
+    android:elevation="@dimen/elevation_size"
 
     >
 
@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerInParent="true"
-        android:paddingLeft="5dp"
+        android:paddingLeft="@dimen/size_five"
         android:src="@drawable/ic_arrow_back_black_24dp"
         android:visibility="gone"
 
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Dashboard"
-        android:textSize="25dp"
+        android:textSize="@dimen/label_x__big"
         android:textColor="@color/white"
         android:layout_alignParentLeft="true"
         android:layout_centerHorizontal="true"
@@ -41,13 +41,13 @@
         />
 
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="@dimen/image_width"
+        android:layout_height="@dimen/image_width"
         android:src="@drawable/ic_menu"
         android:layout_centerInParent="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="@dimen/size_five"
         android:id="@+id/iv_drawer"
         android:visibility="gone"
 
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="ROUTE-PRO"
+        android:text="@string/route_pro"
         android:textColor="@color/white"
         android:textSize="@dimen/top_header_size"
         android:visibility="gone"
@@ -73,7 +73,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="@dimen/size_five"
         android:src="@drawable/ic_youtube_searched_for_black_24dp"
         android:visibility="gone"
         android:id="@+id/iv_search"
@@ -82,14 +82,14 @@
     <EditText android:id="@+id/et_search_customer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="@dimen/size_five"
         android:visibility="gone"
         android:layout_marginTop="@dimen/space"
         android:drawableRight="@android:drawable/ic_menu_search"
         android:hint="Search Customers.."
         android:textColorHint="@color/white"
         android:textStyle="italic"
-        android:textSize="14dp"
+        android:textSize="@dimen/label_min"
         android:gravity="center"
         android:textColor="@color/white"
         android:inputType="text"/>
@@ -100,7 +100,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="@dimen/size_five"
         android:src="@drawable/ic_replay_black_24dp"
         android:id="@+id/iv_refresh"
         android:visibility="gone"

@@ -28,9 +28,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TOTAL AMOUNT"
-            android:padding="10dp"
-            android:textSize="20dp"
+            android:text="@string/total_amount"
+            android:padding="@dimen/h3"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/colorPrimary"
             />
 
@@ -38,8 +38,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="255"
-                android:padding="10dp"
-                android:textSize="20dp"
+                android:padding="@dimen/h1"
+                android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
                 />
@@ -59,10 +59,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CHEQUES"
-                    android:paddingTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textSize="20dp"
+                    android:paddingTop="@dimen/h3"
+                    android:layout_marginLeft="@dimen/h3"
+                    android:paddingRight="@dimen/h3"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/green"
                     android:id="@+id/tv_cheque"
                     android:background="@drawable/text_line"
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="255"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="@dimen/h3"
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
                 />
@@ -97,10 +97,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="CASH PAID"
-                    android:paddingTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:textSize="20dp"
+                    android:paddingTop="@dimen/h3"
+                    android:layout_marginLeft="@dimen/h3"
+                    android:paddingRight="@dimen/h3"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/green"
                     android:background="@drawable/text_line"
 
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:text="255"
                 android:textColor="@color/black"
-                android:paddingRight="10dp"
+                android:paddingRight="@dimen/h3"
                 android:layout_alignParentRight="true"
                 />
 
@@ -127,16 +127,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="EXPENSES"
-                android:padding="10dp"
-                android:textSize="20dp"
+                android:padding="@dimen/h3"
+                android:textSize="@dimen/label_big"
                 android:textColor="@color/colorPrimary"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="255"
-                android:padding="10dp"
-                android:textSize="20dp"
+                android:padding="@dimen/h3"
+                android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
                 />
@@ -159,11 +159,11 @@
         android:weightSum="2"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/h3"
+        android:layout_marginTop="@dimen/h3"
         android:id="@+id/ll_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
         android:background="@drawable/custom_border"
         >
 
@@ -174,16 +174,16 @@
             android:layout_height="wrap_content"
             android:text="Due Amt."
             android:layout_gravity="center"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             android:textColor="@color/colorPrimary"
-            android:textSize="15dp"
+            android:textSize="@dimen/label_small"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00"
+            android:text="@string/_0_00"
             android:layout_gravity="center"
-            android:textSize="20dp"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/black"
             />
 
@@ -197,7 +197,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/activity_vertical_margin"
         android:src="@drawable/double_tick"
         android:id="@+id/btn_float"
         app:backgroundTint="@color/colorPrimary"

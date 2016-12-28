@@ -44,15 +44,15 @@
                     <ListView
                         android:id="@+id/journeyPlanList"
                         android:background="@color/white"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                       android:layout_marginTop="5dp"
+                        android:paddingLeft="@dimen/h3"
+                        android:paddingRight="@dimen/h3"
+                       android:layout_marginTop="@dimen/size_five"
                         android:scrollbars="none"
                         android:divider="@color/white"
                         android:dividerHeight="@dimen/list_space"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/size_five"
                         />
 
                 </LinearLayout>
@@ -66,15 +66,15 @@
                     <ListView
                         android:id="@+id/journeyPlanList"
                         android:background="@color/white"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:layout_marginTop="5dp"
+                        android:paddingLeft="@dimen/h3"
+                        android:paddingRight="@dimen/h3"
+                        android:layout_marginTop="@dimen/size_five"
                         android:scrollbars="none"
                         android:divider="@color/white"
                         android:dividerHeight="@dimen/list_space"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/size_five"
                         />
 
                 </LinearLayout>

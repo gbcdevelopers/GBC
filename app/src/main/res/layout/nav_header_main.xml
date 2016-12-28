@@ -4,27 +4,27 @@
               android:layout_height="@dimen/nav_header_height"
               android:background="@color/colorPrimary"
                 android:orientation="vertical"
-                android:padding="16dp"
+                android:padding="@dimen/h2"
 
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Route Code: 101"
-        android:layout_marginTop="16dp"
+        android:text="@string/route_code_101"
+        android:layout_marginTop="@dimen/h2"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Welcome John Doe:1000002445"
+        android:layout_marginTop="@dimen/size_five"
+        android:text="@string/welcome_john_doe_1000002445"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h3"
         android:layout_height="wrap_content"
         android:weightSum="3"
         android:orientation="horizontal"
@@ -36,9 +36,9 @@
             android:layout_weight="1"
             android:background="@null"
             android:drawableTop="@drawable/ic_msg"
-            android:text="Messages"
+            android:text="@string/messages"
             android:layout_height="wrap_content"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/h3"
             android:textColor="@color/white"
             />
 
@@ -49,9 +49,9 @@
             android:layout_weight="1"
             android:background="@null"
             android:drawableTop="@drawable/ic_setting"
-            android:text="Settings"
+            android:text="@string/settings"
             android:layout_height="wrap_content"
-            android:drawablePadding="5dp"
+            android:drawablePadding="@dimen/size_five"
             android:textColor="@color/white"
             />
 
@@ -61,7 +61,7 @@
             android:layout_weight="1"
             android:background="@null"
             android:drawableTop="@drawable/ic_logout"
-            android:text="Log Out"
+            android:text="@string/log_out"
             android:layout_height="wrap_content"
 
             android:textColor="@color/white"

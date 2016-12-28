@@ -20,10 +20,10 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="@dimen/h3"
                 android:orientation="vertical"
                 android:background="@drawable/circular_bg"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="@dimen/h3"
                 >
 
                 <ImageView
@@ -35,7 +35,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Print"
+                    android:text="@string/print"
                     android:textColor="@color/black"
                     />
 
@@ -52,7 +52,7 @@
                 android:padding="10dp"
                 android:orientation="vertical"
                 android:background="@drawable/circular_bg"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="@dimen/h3"
                 >
 
                 <ImageView
@@ -64,7 +64,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Do not Print"
+                    android:text="@string/do_not_print"
                     android:textColor="@color/black"
                     />
 

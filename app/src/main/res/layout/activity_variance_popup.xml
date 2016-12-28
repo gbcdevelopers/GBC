@@ -16,7 +16,7 @@
         <EditText
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="M1:"
+            android:text="@string/m1"
             android:id="@+id/tvM1"
             android:layout_marginLeft="80dp"
             android:editable="false"
@@ -106,7 +106,7 @@
 
     <Button
         android:id="@+id/btnPrint"
-        android:text="Print"
+        android:text="@string/price"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:layout_marginTop="10dp"

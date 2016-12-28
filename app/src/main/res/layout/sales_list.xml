@@ -2,34 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:padding="10dp"
+       android:padding="@dimen/h3"
         android:orientation="vertical"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18dp"
-            android:text="AM5500*LARGE SWISS ROLL VANILA (24X110G)"
+            android:textSize="@dimen/label_medium"
+            android:text="@string/am5500_large_swiss_roll_vanila_24x110g"
             android:textColor="@color/green"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             android:id="@+id/tv_title"
             />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Price :54.00/2.25"
+            android:text="@string/price_54_00_2_25"
             android:textColor="@color/black"
-            android:textSize="18dp"
-            android:layout_marginBottom="5dp"
+            android:textSize="@dimen/label_medium"
+            android:layout_marginBottom="@dimen/label_min"
             android:id="@+id/tv_price"
             />
 
@@ -46,8 +46,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:text="Cases"
+                    android:textSize="@dimen/label_medium"
+                    android:text="@string/cases"
                     android:textColor="@color/colorPrimary"
                     android:id="@+id/tv_cases"
                     />
@@ -55,11 +55,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:text="0"
+                    android:layout_marginLeft="@dimen/size_five"
+                    android:layout_marginTop="@dimen/size_five"
+                    tools:text="0"
                     android:textColor="@color/black"
-                    android:textSize="15dp"
+                    android:textSize="@dimen/label_small"
                     android:id="@+id/tv_cases_value"
                     />
 
@@ -68,14 +68,14 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/label_big"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:text="pcs"
+                    android:textSize="@dimen/label_medium"
+                    android:text="@string/pcs"
                     android:textColor="@color/colorPrimary"
                     android:id="@+id/tv_pcs"
                     />
@@ -83,11 +83,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:text="0"
+                    android:layout_marginLeft="@dimen/size_five"
+                    android:layout_marginTop="@dimen/size_five"
+                    tools:text="0"
                     android:textColor="@color/black"
-                    android:textSize="15dp"
+                    android:textSize="@dimen/label_small"
                     android:id="@+id/tv_pcs_value"
                     />
 

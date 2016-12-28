@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="@dimen/h2"
+        android:paddingLeft="@dimen/h2"
+        android:paddingBottom="@dimen/h1"
         android:background="@drawable/back_radient"
         android:orientation="vertical"
         android:id="@+id/ll_common"
@@ -27,34 +27,34 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3106 EMARAT"
-            android:textSize="20dp"
+            android:text="@string/tv_cust_detail"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MOT tc"
-            android:textSize="18dp"
+            android:text="@string/tv_cust_detail1"
+            android:textSize="@dimen/label_medium"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PO box"
-            android:textSize="16dp"
+            android:text="@string/tv_cust_detail2"
+            android:textSize="@dimen/label_small"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="contact no"
-            android:textSize="14dp"
+            android:text="@string/tv_cust_detail4"
+            android:textSize="@dimen/label_min"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
     </LinearLayout>
 
@@ -71,7 +71,7 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_refresh"
             android:layout_gravity="end"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/h3"
             />
 
     </FrameLayout>
@@ -81,8 +81,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-        android:padding="16dp"
-        android:layout_marginTop="10dp"
+        android:padding="@dimen/h2"
+        android:layout_marginTop="@dimen/h3"
         >
 
 
@@ -100,7 +100,7 @@
 
             android:scrollbars="none"
             android:divider="@color/grey"
-            android:dividerHeight="5dp"
+            android:dividerHeight="@dimen/size_five"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 

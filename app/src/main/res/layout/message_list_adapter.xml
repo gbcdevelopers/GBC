@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="@dimen/h4"
     android:background="@color/white"
 
     >
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="sales meeting"
-        android:textSize="20dp"
+        android:textSize="@dimen/label_big"
         android:layout_centerInParent="true"
         android:id="@+id/tv_message"
         />

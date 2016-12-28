@@ -16,9 +16,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/inc_common_header"
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:paddingBottom="20dp"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/h1"
         android:background="@drawable/back_radient"
         android:orientation="vertical"
         android:id="@+id/ll_common"
@@ -28,37 +28,37 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_customer_id"
-            android:text="3106 EMARAT"
-            android:textSize="20dp"
+            android:text="@string/tv_cust_detail"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_customer_address"
-            android:text="MOT tc"
-            android:textSize="18dp"
+            android:text="@string/tv_cust_detail1"
+            android:textSize="@dimen/label_medium"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_customer_pobox"
-            android:text="PO box"
-            android:textSize="16dp"
+            android:text="@string/tv_cust_detail4"
+            android:textSize="@dimen/label_small"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_customer_contact"
-            android:text="contact no"
-            android:textSize="14dp"
+            android:text="@string/tv_cust_detail2"
+            android:textSize="@dimen/label_min"
             android:textColor="@color/white"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             />
     </LinearLayout>
 
@@ -74,7 +74,7 @@
             android:layout_height="40dp"
             android:src="@drawable/ic_refresh"
             android:layout_gravity="end"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/h3"
             />
 
     </FrameLayout>
@@ -82,16 +82,16 @@
 
 
     <ListView
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="@dimen/size_five"
+        android:layout_marginLeft="@dimen/h"
+        android:layout_marginRight="@dimen/h"
+        android:layout_marginBottom="@dimen/h"
         android:background="@color/white"
         android:id="@+id/list_delivery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@color/grey"
-        android:dividerHeight="10dp"
+        android:dividerHeight="@dimen/h3"
         android:layout_below="@+id/frame"
         android:drawSelectorOnTop="true"
 
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/h2"
         android:src="@drawable/ic_add_black_24dp"
         android:id="@+id/flt_presale"
         />

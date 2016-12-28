@@ -13,21 +13,21 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="4dp"
+        android:layout_width="@dimen/size_four"
         android:background="@color/red"
         android:layout_height="match_parent"
 
         />
 
     <TextView
-        android:padding="10dp"
+        android:padding="@dimen/h3"
         android:id="@+id/tv_product"
         android:layout_width="0dp"
         android:layout_weight="9"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="Frahn"
-        android:textSize="20dp"
+        android:text="@string/frahn"
+        android:textSize="@dimen/label_big"
 
         />
 

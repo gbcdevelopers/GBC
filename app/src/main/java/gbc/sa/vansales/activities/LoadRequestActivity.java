@@ -123,14 +123,14 @@ public class LoadRequestActivity extends AppCompatActivity
 
         for (int i = 0; i < itemName.length; i++)
         {
-            LoadRequestConstants lrc = new LoadRequestConstants(itemName[i], category[i],
+            LoadRequestConstants lrc = new LoadRequestConstants(String.valueOf(i),itemName[i], category[i],
                     cases[i],units[i], categoryImage[i]);
             // Binds all strings into an array
             arraylist.add(lrc);
         }
 
         // Pass results to ListViewAdapter Class
-        adapter = new LoadRequestAdapter(this, arraylist,null,"");
+        adapter = new LoadRequestAdapter(this, arraylist,null,"yes");
 
         // Binds the Adapter to the ListView
         list.setAdapter(adapter);

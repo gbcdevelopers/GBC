@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
+import gbc.sa.vansales.activities.ShelfStockActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.ShelfAdapter;
 import gbc.sa.vansales.data.Const;
@@ -112,7 +113,9 @@ public class StoreFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ShelfStockActivity.tab_position=1;
                 Intent intent = new Intent(getActivity(), CategoryListActivity.class);
+
                 getActivity().startActivity(intent);
             }
         });

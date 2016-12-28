@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="@dimen/h3"
     android:background="@color/white"
     >
 
@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:paddingTop="25dp"
+            android:paddingTop="@dimen/h"
             android:paddingBottom="25dp"
             >
 
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="25dp"
+            android:padding="@dimen/h"
 
             >
 
@@ -42,21 +42,21 @@
                 android:layout_height="wrap_content"
                 android:background="@color/green"
                 android:textColor="@color/white"
-                android:text="Thermal Print"
+                android:text="@string/thermal_print"
                 android:id="@+id/btn_thermal"
-                android:layout_marginRight="5dp"
-                android:padding="5dp"
+                android:layout_marginRight="@dimen/size_five"
+                android:padding="@dimen/size_five"
                 />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/green"
-                android:text="Multi Print"
+                android:text="@string/multi_print"
                 android:textColor="@color/white"
                 android:layout_toRightOf="@+id/btn_thermal"
-                android:layout_marginLeft="5dp"
-                android:padding="5dp"
+                android:layout_marginLeft="@dimen/size_five"
+                android:padding="@dimen/size_five"
                 />
 
         </RelativeLayout>
@@ -65,14 +65,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-           android:layout_marginBottom="25dp"
+           android:layout_marginBottom="@dimen/h"
             >
 
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="payment"
+                android:text="@string/payment"
                 android:background="@color/colorPrimary"
                 android:textColor="@color/white"
                 />

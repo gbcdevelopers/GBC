@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_items"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,28 +10,28 @@
         android:id="@+id/tv_colletion_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"
-        android:text="16-12-2016/1324564587920" />
+        android:layout_marginLeft="@dimen/size_two"
+        android:layout_marginTop="@dimen/size_two"
+        android:text="@string/_16_12_2016_1324564587920" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
+        android:layout_marginLeft="@dimen/size_two"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Selseman Code : " />
+            android:layout_marginTop="@dimen/size_two"
+            android:text="@string/selseman_code" />
 
         <TextView
             android:id="@+id/tv_colletion__selsemen_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="10000241"
+            tools:text="10000241"
             android:textColor="@color/green" />
 
     </LinearLayout>
@@ -52,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Amout Due : " />
+                android:text="@string/amout_due" />
 
             <TextView
                 android:id="@+id/tv_colletion__amout_due_number"
@@ -68,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="@dimen/h1"
             android:orientation="horizontal">
 
             <TextView
@@ -77,7 +78,7 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="2dp"
                 android:gravity="right"
-                android:text="AED" />
+                tools:text="AED" />
 
             <TextView
                 android:id="@+id/tv_colletion__ade_number"
@@ -85,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
-                android:text="0.00" />
+                tools:text="0.00" />
 
         </LinearLayout>
 

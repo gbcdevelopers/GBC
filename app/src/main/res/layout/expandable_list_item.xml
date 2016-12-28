@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
-        android:padding="10dp"
+        android:padding="@dimen/h3"
         android:textColor="#511656"
-        android:textSize="12sp"/>
+        android:textSize="@dimen/label_x_min"/>
 </LinearLayout>

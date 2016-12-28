@@ -15,8 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/inc_comman_header_poustind_audit"
-        card_view:cardCornerRadius="3dp"
-        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="@dimen/list_space"
+        card_view:cardElevation="@dimen/size_four"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -47,7 +47,7 @@
                         android:layout_gravity="center"
                         android:clickable="false"
                         android:gravity="center"
-                        android:padding="4dp"
+                        android:padding="@dimen/size_four"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:gravity="center"
-                        android:padding="4dp"
+                        android:padding="@dimen/size_four"
                         android:text="Customer Number"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
@@ -85,7 +85,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:gravity="center"
-                        android:padding="4dp"
+                        android:padding="@dimen/size_four"
                         android:text="Transaction"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
@@ -104,7 +104,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:gravity="center"
-                        android:padding="4dp"
+                        android:padding="@dimen/size_four"
                         android:text="Type"
                         android:textAllCaps="true"
                         android:textStyle="bold" />

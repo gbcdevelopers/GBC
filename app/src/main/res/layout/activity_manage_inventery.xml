@@ -17,11 +17,11 @@
             android:layout_height="150dp"
             android:layout_width="150dp"
             android:layout_marginTop="100dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="@dimen/image_width"
             android:background="@color/manageinventorybuttons"
             android:drawableTop="@drawable/load"
             android:drawablePadding="1dp"
-            android:padding="20dp"
+            android:padding="@dimen/h1"
 
 
 
@@ -35,11 +35,11 @@
             android:layout_height="150dp"
             android:layout_width="150dp"
             android:layout_marginTop="100dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/h3"
             android:background="@color/manageinventorybuttons"
             android:drawableTop="@drawable/loaqrequest"
             android:drawablePadding="1dp"
-            android:padding="20dp"
+            android:padding="@dimen/h1"
 
 
             />
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h3"
         >
         <Button
 
@@ -59,12 +59,12 @@
             android:text="VanStock"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="@dimen/image_width"
 
             android:background="@color/manageinventorybuttons"
             android:drawableTop="@drawable/vanstock"
             android:drawablePadding="1dp"
-            android:padding="20dp"
+            android:padding="@dimen/h1"
 
 
             />
@@ -76,12 +76,12 @@
             android:text="UnLoad"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/h3"
 
             android:background="@color/manageinventorybuttons"
             android:drawableTop="@drawable/unload"
             android:drawablePadding="1dp"
-            android:padding="20dp"
+            android:padding="@dimen/h1"
 
             />
     </LinearLayout>

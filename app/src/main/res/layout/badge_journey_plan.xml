@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/white"
-    app:elevation="5dp"
+    app:elevation="@dimen/size_five"
     >
 
 
@@ -18,12 +18,12 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="@dimen/h4"
             >
 
             <View
                 android:id="@+id/view"
-                android:layout_width="3dp"
+                android:layout_width="@dimen/list_space"
                 android:layout_height="match_parent"
                 />
 
@@ -43,7 +43,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/size_five"
                 android:orientation="horizontal"
 
                 android:weightSum="3"
@@ -92,7 +92,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/size_five"
                 android:layout_marginTop="@dimen/margin_top"
                 android:orientation="horizontal"
 
@@ -101,32 +101,32 @@
 
                 <ImageView
                     android:id="@+id/img_sale"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/image_width"
+                    android:layout_height="@dimen/image_width"
                     android:layout_weight="1"
                     android:src="@drawable/ic_c1"
                     />
 
                 <ImageView
                     android:id="@+id/img_delivery"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/image_width"
+                    android:layout_height="@dimen/image_width"
                     android:layout_weight="1"
                     android:src="@drawable/ic_c2"
                     />
 
                 <ImageView
                     android:id="@+id/img_collection"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/image_width"
+                    android:layout_height="@dimen/image_width"
                     android:layout_weight="1"
                     android:src="@drawable/ic_c3"
                     />
 
                 <ImageView
                     android:id="@+id/img_returns"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="@dimen/image_width"
+                    android:layout_height="@dimen/image_width"
                     android:layout_weight="1"
                     android:src="@drawable/ic_c4"
                     />

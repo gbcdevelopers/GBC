@@ -21,11 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:horizontalSpacing="10dp"
+            android:horizontalSpacing="@dimen/h3"
             android:numColumns="3"
-            android:padding="10dp"
-            android:layout_marginBottom="5sp"
-            android:verticalSpacing="10dp" />
+            android:padding="@dimen/h3"
+            android:layout_marginBottom="@dimen/size_five"
+            android:verticalSpacing="@dimen/h3" />
 
     </LinearLayout>
 

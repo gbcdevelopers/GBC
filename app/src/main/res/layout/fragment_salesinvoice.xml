@@ -12,8 +12,8 @@
         android:layout_height="wrap_content"
         android:weightSum="2"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
         android:id="@+id/ll_top"
         >
         <LinearLayout
@@ -22,26 +22,26 @@
             android:layout_height="wrap_content"
             android:weightSum="2"
             android:orientation="vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="@dimen/size_five"
+            android:paddingRight="@dimen/size_five"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Avail. Limit"
+                android:text="@string/avail_limit"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/green"
-                android:textSize="15dp"
+                android:textSize="@dimen/label_small"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100000"
+                tools:text="100000"
                 android:layout_gravity="center"
-                android:textSize="20dp"
+                android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/size_five"
                 />
 
             <View
@@ -57,26 +57,26 @@
             android:layout_height="wrap_content"
             android:weightSum="2"
             android:orientation="vertical"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="@dimen/size_five"
+            android:paddingRight="@dimen/size_five"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sales Qty."
+                android:text="@string/sales_qty"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/green"
-                android:textSize="15dp"
+                android:textSize="@dimen/label_small"
                 />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0/0.1"
+                android:text="@string/_0_0_0_1"
                 android:layout_gravity="center"
-                android:textSize="20dp"
+                android:textSize="@dimen/label_big"
                 android:textColor="@color/black"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/size_five"
                 />
 
             <View
@@ -97,11 +97,11 @@
             android:layout_below="@+id/ll_top"
             android:layout_above="@+id/rl_bottom"
 
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingLeft="@dimen/h3"
+            android:paddingRight="@dimen/h3"
             android:scrollbars="none"
             android:divider="@color/grey"
-            android:dividerHeight="5dp"
+            android:dividerHeight="@dimen/size_five"
             />
 
 
@@ -112,12 +112,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rl_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
         android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/h3"
+        android:layout_marginTop="@dimen/h3"
 
         >
 
@@ -129,9 +129,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total Amt."
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             android:textColor="@color/green"
-            android:textSize="15dp"
+            android:textSize="@dimen/label_small"
             android:id="@+id/tv_label" />
 
         <TextView
@@ -139,8 +139,8 @@
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00"
-            android:textSize="20dp"
+            android:text="@string/_0_00"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/black"
             android:id="@+id/tv_amt"
             />

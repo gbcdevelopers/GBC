@@ -12,13 +12,13 @@
         android:id="@+id/list_shelf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h3"
 
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="@dimen/h3"
+        android:paddingRight="@dimen/h3"
         android:scrollbars="none"
         android:divider="@color/grey"
-        android:dividerHeight="5dp"
+        android:dividerHeight="@dimen/size_five"
         android:layout_above="@+id/rl_bottom" />
 
 
@@ -32,8 +32,8 @@
         android:paddingBottom="10dp"
         android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/h3"
+        android:layout_marginTop="@dimen/h3"
 
         >
 
@@ -45,9 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total Amt."
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="@dimen/size_five"
             android:textColor="@color/green"
-            android:textSize="15dp"
+            android:textSize="@dimen/label_small"
             android:id="@+id/tv_label" />
 
         <TextView
@@ -55,8 +55,8 @@
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00"
-            android:textSize="20dp"
+            android:text="@string/_0_00"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/black"
             android:id="@+id/tv_total"
             />

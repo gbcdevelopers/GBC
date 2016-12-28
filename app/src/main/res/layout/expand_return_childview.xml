@@ -7,8 +7,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="@dimen/h3"
+        android:paddingRight="@dimen/h3"
 
         >
 
@@ -24,32 +24,32 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="@dimen/h3"
+                android:layout_marginTop="@dimen/h3"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="150 ML QTY"
+                    android:text="@string/_150_ml_qty"
                     android:textColor="@color/white"
-                    android:paddingLeft="20dp"
+                    android:paddingLeft="@dimen/h1"
                     android:id="@+id/tv_left"
                     android:gravity="start|center"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_ctn_value"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Q/CTN"
+                    android:text="@string/q_ctn"
                     android:layout_toRightOf="@+id/tv_left"
                     android:layout_toLeftOf="@+id/iv_ctn_minus"
                     android:gravity="end"
-                    android:paddingRight="5dp"
+                    android:paddingRight="@dimen/size_five"
                     android:textColor="@color/white"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_ctn_value"
 
                     android:layout_centerHorizontal="true"
@@ -63,7 +63,7 @@
                     android:src="@drawable/ic_remove_black_24dp"
                     android:layout_toLeftOf="@+id/tv_ctn_value"
                     android:id="@+id/iv_ctn_minus"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -76,7 +76,7 @@
                     android:textColor="@color/black"
                     android:layout_toLeftOf="@+id/iv_ctn_add"
                     android:id="@+id/tv_ctn_value"
-                    android:padding="10dp"
+                    android:padding="@dimen/h3"
                     android:background="@color/white"
                     />
 
@@ -87,7 +87,7 @@
                     android:src="@drawable/ic_add_black_24dp"
                     android:layout_alignParentRight="true"
                     android:id="@+id/iv_ctn_add"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/h3"
 
                 >
 
@@ -108,13 +108,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Q/BTL"
+                    android:text="@string/q_btl"
 
                     android:layout_toLeftOf="@+id/iv_btl_minus"
                     android:gravity="end"
-                    android:paddingRight="5dp"
+                    android:paddingRight="@dimen/size_five"
                     android:textColor="@color/white"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_btl_value"
 
 
@@ -129,7 +129,7 @@
                     android:src="@drawable/ic_remove_black_24dp"
                     android:layout_toLeftOf="@+id/tv_btl_value"
                     android:id="@+id/iv_btl_minus"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -142,7 +142,7 @@
                     android:textColor="@color/black"
                     android:layout_toLeftOf="@+id/iv_btl_add"
                     android:id="@+id/tv_btl_value"
-                    android:padding="10dp"
+                    android:padding="@dimen/h3"
                     android:background="@color/white"
 
                     />
@@ -154,7 +154,7 @@
                     android:src="@drawable/ic_add_black_24dp"
                     android:layout_alignParentRight="true"
                     android:id="@+id/iv_btl_add"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -164,15 +164,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/lightgray"
-                android:layout_marginLeft="20dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/h1"
+                android:layout_marginBottom="@dimen/size_five"
                 />
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/h3"
 
 
                 >
@@ -180,25 +180,25 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="250 ML QTY"
+                    android:text="@string/_250_ml_qty"
                     android:textColor="@color/white"
                     android:paddingLeft="20dp"
                     android:id="@+id/tv_left"
                     android:gravity="start|center"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_ctn_value1"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Q/CTN"
+                    android:text="@string/q_ctn"
                     android:layout_toRightOf="@+id/tv_left"
                     android:layout_toLeftOf="@+id/iv_ctn_minus1"
                     android:gravity="end"
-                    android:paddingRight="5dp"
+                    android:paddingRight="@dimen/size_five"
                     android:textColor="@color/white"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_ctn_value1"
 
 
@@ -213,7 +213,7 @@
                     android:src="@drawable/ic_remove_black_24dp"
                     android:layout_toLeftOf="@+id/tv_ctn_value1"
                     android:id="@+id/iv_ctn_minus1"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -226,7 +226,7 @@
                     android:textColor="@color/black"
                     android:layout_toLeftOf="@+id/iv_ctn_add1"
                     android:id="@+id/tv_ctn_value1"
-                    android:padding="10dp"
+                    android:padding="@dimen/h3"
                     android:background="@color/white"
 
                     />
@@ -238,7 +238,7 @@
                     android:src="@drawable/ic_add_black_24dp"
                     android:layout_alignParentRight="true"
                     android:id="@+id/iv_ctn_add1"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -248,7 +248,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="@dimen/h3"
 
 
                 >
@@ -257,12 +257,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Q/CTN"
+                    android:text="@string/q_btl"
                     android:layout_toLeftOf="@+id/iv_btl_minus1"
                     android:gravity="end"
                     android:paddingRight="5dp"
                     android:textColor="@color/white"
-                    android:paddingTop="5dp"
+                    android:paddingTop="@dimen/size_five"
                     android:layout_alignBaseline="@+id/tv_btl_value1"
                     android:layout_centerHorizontal="true"
                     />
@@ -275,7 +275,7 @@
                     android:src="@drawable/ic_remove_black_24dp"
                     android:layout_toLeftOf="@+id/tv_btl_value1"
                     android:id="@+id/iv_btl_minus1"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -288,7 +288,7 @@
                     android:textColor="@color/black"
                     android:layout_toLeftOf="@+id/iv_btl_add1"
                     android:id="@+id/tv_btl_value1"
-                    android:padding="10dp"
+                    android:padding="@dimen/h3"
                     android:background="@color/white"
                     />
 
@@ -299,7 +299,7 @@
                     android:src="@drawable/ic_add_black_24dp"
                     android:layout_alignParentRight="true"
                     android:id="@+id/iv_btl_add1"
-                    android:padding="5dp"
+                    android:padding="@dimen/size_five"
                     />
 
 
@@ -334,7 +334,7 @@
 
 
         <RelativeLayout
-            android:padding="10dp"
+            android:padding="@dimen/h3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -349,7 +349,7 @@
                 android:layout_height="wrap_content"
                 android:text="specify Reason: "
                 android:textColor="@color/black"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="@dimen/h3"
                 />
             <Spinner
                 android:layout_width="wrap_content"

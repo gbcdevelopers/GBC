@@ -10,7 +10,7 @@
 
 
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/container"
@@ -33,13 +33,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/rl_middle"
         android:layout_above="@+id/rl_bottom"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h1"
 
         >
 
 
         <RelativeLayout
-            android:padding="10dp"
+            android:padding="@dimen/h1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -52,9 +52,9 @@
             android:id="@+id/tv_reason"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="specify Reason: "
+            android:text="@string/specify_reason"
             android:textColor="@color/black"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/h1"
             />
         <Spinner
             android:layout_width="wrap_content"
@@ -83,12 +83,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rl_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="@dimen/h1"
+        android:paddingBottom="@dimen/h1"
         android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/h1"
+        android:layout_marginTop="@dimen/h1"
 
         >
 
@@ -99,10 +99,10 @@
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Amt."
+            android:text="@string/total_amt"
             android:layout_marginBottom="5dp"
             android:textColor="@color/green"
-            android:textSize="15dp"
+            android:textSize="@dimen/label_small"
             android:id="@+id/tv_label" />
 
         <TextView
@@ -110,8 +110,8 @@
             android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0.00"
-            android:textSize="20dp"
+            android:text="@string/_0_00"
+            android:textSize="@dimen/label_big"
             android:textColor="@color/black"
             />
 

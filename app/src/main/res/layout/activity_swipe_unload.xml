@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="EDIT"
+            android:text="@string/edit"
             android:textColor="#000000"
             android:drawableTop="@drawable/icons12"
             />
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="DELETE"
+            android:text="@string/delete"
             android:textColor="#000000"
             android:drawableTop="@drawable/icons13"
             />
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
-        android:elevation="5dp"
+        android:elevation="@dimen/size_five"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="Name"
+            android:text="@string/Name"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
 
@@ -88,20 +88,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
-            android:layout_margin="5dp"
-            android:text="Cases"
+            android:layout_margin="@dimen/size_five"
+            android:text="@string/cases"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="@dimen/label_x_min" />
 
         <TextView
             android:id="@+id/tvPcs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvCases"
-            android:layout_margin="5dp"
-            android:text="PCS"
+            android:layout_margin="@dimen/size_five"
+            android:text="@string/pcs"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="@dimen/label_x_min" />
     </LinearLayout>
 
 </com.daimajia.swipe.SwipeLayout>

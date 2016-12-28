@@ -34,17 +34,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginLeft="@dimen/elevation_size"
                     android:text="CUSTOMER #"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="@dimen/size_five"
                     />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:text="CUSTOMER Name"
+                    android:layout_marginLeft="@dimen/elevation_size"
+                    android:text="@string/customer_name"
                     android:textColor="@color/white" />
 
 
@@ -58,18 +58,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:text="1177711565"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:text="@string/_1177711565"
                     android:textColor="@color/white"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="@dimen/size_five"
                     />
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:text="ANSARI"
+                    android:layout_marginLeft="@dimen/activity_vertical_margin"
+                    android:text="@string/name"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -83,15 +83,15 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 card_view:cardUseCompatPadding="true"
-                card_view:cardElevation="4dp"
-                card_view:cardCornerRadius="3dp"
+                card_view:cardElevation="@dimen/size_four"
+                card_view:cardCornerRadius="@dimen/list_space"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:padding="@dimen/h3"
                     >
 
                     <LinearLayout
@@ -103,13 +103,13 @@
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="INVOICE"
+                            android:text="@string/invoice"
                             android:textStyle="bold"
                             android:background="@drawable/light_border"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:enabled="false"
                             android:id="@+id/editText"
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:singleLine="true"
                             android:ellipsize="end"
 
@@ -118,11 +118,11 @@
 
                         <EditText
                             android:textStyle="bold"
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:text="OUTLET INVOICE"
+                            android:padding="@dimen/size_five"
+                            android:text="@string/outlet_invoice"
                             android:background="@drawable/light_border"
                             android:enabled="false"
                             android:textColor="@drawable/edit_text_color"
@@ -130,69 +130,55 @@
 
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:enabled="false"
                             android:gravity="center|left"
-                            android:text="SALES"
+                            android:text="@string/sales"
                             android:background="@drawable/light_border"
-                            android:textColor="@drawable/edit_text_color"
-                            android:textStyle="bold"
-                            />
-
-                        <EditText
-                            android:textSize="14dp"
-                            android:enabled="false"
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center|left"
-                            android:text="FREEGOODS"
-                            android:background="@drawable/light_border"
-                            android:padding="5dp"
-                            android:textColor="@drawable/edit_text_color"
-
-                            android:textStyle="bold"
-                            />
-
-                        <EditText
-                            android:textSize="14dp"
-                            android:enabled="false"
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center|left"
-                            android:text="GOOD RETURNS"
-                            android:background="@drawable/light_border"
-                            android:padding="5dp"
                             android:textColor="@drawable/edit_text_color"
                             android:textStyle="bold"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|left"
-                            android:text="BUYBACK FREE"
+                            android:text="@string/freegoods"
                             android:background="@drawable/light_border"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
+                            android:textColor="@drawable/edit_text_color"
+
+                            android:textStyle="bold"
+                            />
+
+                        <EditText
+                            android:textSize="@dimen/label_min"
+                            android:enabled="false"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center|left"
+                            android:text="@string/good_returns"
+                            android:background="@drawable/light_border"
+                            android:padding="@dimen/size_five"
                             android:textColor="@drawable/edit_text_color"
                             android:textStyle="bold"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|left"
-                            android:text="BUYBACK FREE"
+                            android:text="@string/buyback_free"
                             android:background="@drawable/light_border"
                             android:padding="5dp"
                             android:textColor="@drawable/edit_text_color"
@@ -200,13 +186,27 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|left"
-                            android:text="BAD RETURNS"
+                            android:text="@string/buyback_free"
+                            android:background="@drawable/light_border"
+                            android:padding="@dimen/size_five"
+                            android:textColor="@drawable/edit_text_color"
+                            android:textStyle="bold"
+                            />
+
+                        <EditText
+                            android:textSize="@dimen/label_min"
+                            android:enabled="false"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center|left"
+                            android:text="@string/bad_returns"
                             android:background="@drawable/light_border"
                             android:padding="5dp"
                             android:textColor="@drawable/edit_text_color"
@@ -214,13 +214,13 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center|left"
-                            android:text="RENTAL"
+                            android:text="@string/rental"
                             android:background="@drawable/light_border"
                             android:padding="5dp"
                             android:textColor="@drawable/edit_text_color"
@@ -228,14 +228,14 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
 
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:gravity="center|left"
-                            android:text="INVOICE TOTAL"
+                            android:text="@string/invoice_total"
                             android:background="@drawable/light_border"
                             android:textColor="@drawable/edit_text_color"
                             android:textStyle="bold"
@@ -250,14 +250,14 @@
                         android:orientation="vertical">
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="CASES"
+                            android:text="@string/cases"
 
                             android:background="@drawable/light_border"
-                        android:padding="5dp"
+                        android:padding="@dimen/size_five"
                             android:id="@+id/editText2"
                             android:singleLine="true"
                             android:ellipsize="end"
@@ -266,82 +266,82 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             android:padding="5dp"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
@@ -356,12 +356,12 @@
                         >
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                         android:padding="5dp"
-                            android:text="PCS"
+                         android:padding="@dimen/size_five"
+                            android:text="@string/pcs"
                             android:textStyle="bold"
                             android:background="@drawable/light_border"
                             android:id="@+id/editText4"
@@ -372,82 +372,82 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
 
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
-                            android:background="@drawable/light_border"
-                            />
-
-                        <EditText
-                            android:textSize="14dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
-                            android:text="12"
+                            android:text="@string/_12"
+                            android:background="@drawable/light_border"
+                            />
+
+                        <EditText
+                            android:textSize="@dimen/label_min"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/size_five"
+                            android:inputType="number"
+                            android:text="@string/_12"
                             android:background="@drawable/light_border"
                             />
 
@@ -462,12 +462,12 @@
                         >
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:enabled="false"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                           android:padding="5dp"
-                            android:text="AMOUNT"
+                           android:padding="@dimen/size_five"
+                            android:text="@string/amount"
                             android:textStyle="bold"
                             android:background="@drawable/light_border"
                             android:id="@+id/editText3"
@@ -478,93 +478,91 @@
                             />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
 
                             android:background="@drawable/light_border"
                             android:inputType="number"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-
+                            android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
                             android:background="@drawable/light_border"
                             android:text="12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
                             android:background="@drawable/light_border"
                             android:inputType="number"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <EditText
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
 
                             android:inputType="number"
                             android:background="@drawable/light_border"
-                            android:text="12" />
+                            android:text="@string/_12" />
 
                         <TextView
-                            android:textSize="14dp"
+                            android:textSize="@dimen/label_min"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:padding="@dimen/size_five"
                             android:gravity="right|center"
                             android:background="@drawable/light_border"
-                            android:text="12100" />
+                            android:text="@string/_12100" />
                     </LinearLayout>
                 </LinearLayout>
 

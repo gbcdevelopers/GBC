@@ -1,15 +1,12 @@
 package gbc.sa.vansales.activities;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import gbc.sa.vansales.Fragment.AllCustomerFragment;
-import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.PreSaleProceed;
@@ -61,11 +56,14 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     String[] units;
     int[] categoryImage;
 
-    String from="";
+  public static String from="";
 
     LinearLayout ll_bottom;
     FloatingActionButton fb_print;
     FloatingActionButton fb_edit;
+
+    List<LoadRequestConstants> preSaleOrderArraylist;
+    int position;
 
 
 
@@ -263,17 +261,17 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
             List<LoadRequestConstants> arraylist = new ArrayList<LoadRequestConstants>();
 
-            Toast.makeText(getApplicationContext(),"button" +
-                    "",Toast.LENGTH_SHORT).show();
+
             for (int i = 0; i < itemName.length; i++)
             {
-                LoadRequestConstants lrc = new LoadRequestConstants(itemName[i], category[i],
+                LoadRequestConstants lrc = new LoadRequestConstants(String.valueOf(i),itemName[i], category[i],
                         cases[i],units[i], categoryImage[i]);
                 // Binds all strings into an array
                 arraylist.add(lrc);
             }
 
-            LoadRequestAdapter adapter = new LoadRequestAdapter(this, arraylist,null,from);
+
+            adapter = new LoadRequestAdapter(this, arraylist,null,"yes");
             list.setAdapter(adapter);
             // Pass results to ListViewAdapter Class
 
@@ -288,9 +286,11 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
 
 
-            List<LoadRequestConstants> arraylist = new ArrayList<LoadRequestConstants>();
 
-            int position=getIntent().getIntExtra("pos",0);
+            preSaleOrderArraylist = new ArrayList<LoadRequestConstants>();
+
+
+            position = getIntent().getIntExtra("pos",0);
 
 
             constantsHashMap=Const.constantsHashMap;
@@ -303,15 +303,16 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
             for (int i = 0; i < constantses.size(); i++)
             {
-                LoadRequestConstants lrc = new LoadRequestConstants(constantses.get(i).getItemName(),constantses.get(i).getCategory(),
+                LoadRequestConstants lrc = new LoadRequestConstants(String.valueOf(i),constantses.get(i).getItemName(),constantses.get(i).getCategory(),
                         constantses.get(i).getCases(),constantses.get(i).getUnits(), constantses.get(i).getCategoryImage());
                 // Binds all strings into an array
-                arraylist.add(lrc);
-                Log.v("arraylist",constantses.get(i).getItemName()+"  -  " +constantses.get(i).getCategory()+"  -  "+
+                preSaleOrderArraylist.add(lrc);
+                Log.v("preSaleOrderArraylist",constantses.get(i).getItemName()+"  -  " +constantses.get(i).getCategory()+"  -  "+
                         constantses.get(i).getCases()+"  -  "+constantses.get(i).getUnits()+"  -  "+ constantses.get(i).getCategoryImage());
             }
 
-           LoadRequestAdapter adapter = new LoadRequestAdapter(this, arraylist,null,from);
+
+            adapter = new LoadRequestAdapter(this, preSaleOrderArraylist,null,"no");
             list.setAdapter(adapter);
 
         }
@@ -324,6 +325,9 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
 
 
 
@@ -379,15 +383,24 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
           public void onClick(View v) {
 
 
+              Const.constantsHashMap.put(position,Const.loadRequestConstantsList);
+
+              Log.v("Const.id ","const id : "+Const.id);
+              finish();
+
+
+
           }
       });
 
         fb_edit.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 
+                adapter = new LoadRequestAdapter(PreSaleOrderProceedActivity.this, preSaleOrderArraylist,null,"yes");
+                list.setAdapter(adapter);
 
-                LoadRequestAdapter.isEnabled = "yes";
                 adapter.notifyDataSetChanged();
 
 

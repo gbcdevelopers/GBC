@@ -19,10 +19,10 @@
 
         <ImageView
             android:id="@+id/prevMonth"
-            android:layout_width="20sp"
+            android:layout_width="@dimen/h1"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:layout_marginLeft="10sp"
+            android:layout_marginLeft="@dimen/h3"
             android:src="@drawable/ic_keyboard_arrow_left_black_24dp" >
         </ImageView>
 
@@ -41,7 +41,7 @@
             android:layout_width="20sp"
             android:layout_height="fill_parent"
             android:layout_gravity="center"
-            android:layout_marginRight="10sp"
+            android:layout_marginRight="@dimen/h3"
             android:src="@drawable/ic_keyboard_arrow_right_black_24dp" >
         </ImageView>
 
@@ -68,7 +68,7 @@
         <ImageView
             android:id="@+id/calendarheader"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="@dimen/image_width"
             android:layout_gravity="center"
             android:background="@drawable/calendar_days" >
         </ImageView>

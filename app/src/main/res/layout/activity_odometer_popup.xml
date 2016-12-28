@@ -4,13 +4,13 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="@dimen/h3" >
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please enter Odometer : "
+        android:text="@string/please_enter_odometer"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:id="@+id/btn_ok"
-            android:text="Continue"
+            android:text="@string/Continue_text"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
@@ -43,7 +43,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:id="@+id/btn_cancel"
-            android:text="Cancel"
+            android:text="@string/cancel"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:textColor="@color/white"

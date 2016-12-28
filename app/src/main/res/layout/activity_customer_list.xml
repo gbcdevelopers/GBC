@@ -18,19 +18,19 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            card_view:cardCornerRadius="3dp"
-            card_view:cardElevation="4dp"
+            android:layout_marginLeft="@dimen/h1"
+            android:layout_marginRight="@dimen/h1"
+            android:layout_marginTop="@dimen/h1"
+            card_view:cardCornerRadius="@dimen/list_space"
+            card_view:cardElevation="@dimen/size_four"
             card_view:cardUseCompatPadding="true">
 
             <TextView
                 android:id="@+id/text_today_schedule_customer_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="Today's Schedule"
+                android:padding="@dimen/h1"
+                android:text="@string/today_s_schedule"
                 android:textStyle="bold" />
 
 
@@ -39,19 +39,19 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            card_view:cardCornerRadius="3dp"
-            card_view:cardElevation="4dp"
+            android:layout_marginLeft="@dimen/h1"
+            android:layout_marginRight="@dimen/h1"
+            android:layout_marginTop="@dimen/h1"
+            card_view:cardCornerRadius="@dimen/list_space"
+            card_view:cardElevation="@dimen/size_four"
             card_view:cardUseCompatPadding="true">
 
             <TextView
                 android:id="@+id/text_today_unserviced_customer_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="Today's Unserviced"
+                android:padding="@dimen/h1"
+                android:text="@string/today_s_unserviced"
                 android:textStyle="bold" />
 
 
@@ -60,19 +60,19 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            card_view:cardCornerRadius="3dp"
-            card_view:cardElevation="4dp"
+            android:layout_marginLeft="@dimen/h1"
+            android:layout_marginRight="@dimen/h1"
+            android:layout_marginTop="@dimen/h1"
+            card_view:cardCornerRadius="@dimen/list_space"
+            card_view:cardElevation="@dimen/size_four"
             card_view:cardUseCompatPadding="true">
 
             <TextView
                 android:id="@+id/text_today_all_route_customer_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="All Route Customer"
+                android:padding="@dimen/h1"
+                android:text="@string/all_route_customer"
                 android:textStyle="bold" />
 
 

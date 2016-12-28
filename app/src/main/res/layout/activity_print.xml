@@ -7,9 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="@dimen/h3"
+        android:layout_marginRight="@dimen/h3"
+        android:layout_marginTop="@dimen/h2"
         android:background="@android:color/transparent">
 
         <!--Main Body of your custom dialog-->
@@ -19,13 +19,13 @@
             android:id ="@+id/btnPrint"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginTop="@dimen/h2"
+            android:layout_marginLeft="@dimen/image_width"
 
             android:drawableTop="@drawable/prints"
             android:background="@drawable/rounded_buttons"
-            android:padding="15dp"
-            android:text="Print"
+            android:padding="@dimen/h2"
+            android:text="@string/print"
 
             android:drawablePadding="0dp"
             />
@@ -36,13 +36,13 @@
             android:layout_toRightOf="@+id/btnPrint"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:text="Do Not Print"
+            android:text="@string/do_not_print"
 
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/h2"
             android:drawableTop="@drawable/dontprints"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/h2"
             android:background="@drawable/rounded_buttons"
-            android:padding="15dp"
+            android:padding="@dimen/h2"
             android:drawablePadding="0dp"
 
 

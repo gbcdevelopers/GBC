@@ -21,9 +21,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:padding="4dp"
+                android:padding="@dimen/size_four"
                 android:gravity="center"
-                android:text="Item number"
+                android:text="@string/item_number"
                 android:textAllCaps="true"
                 android:textStyle="bold"
 
@@ -42,9 +42,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:padding="4dp"
+                android:padding="@dimen/size_four"
                 android:gravity="center"
-                android:text="Item description"
+                android:text="@string/item_description"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
@@ -62,9 +62,9 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:padding="4dp"
+                android:padding="@dimen/size_four"
                 android:gravity="center"
-                android:text="case price"
+                android:text="@string/case_price"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
@@ -81,9 +81,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:padding="4dp"
+                android:padding="@dimen/size_four"
                 android:gravity="center"
-                android:text="unit price"
+                android:text="@string/unit_price"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 
@@ -100,9 +100,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:padding="4dp"
+                android:padding="@dimen/size_four"
                 android:gravity="center"
-                android:text="UPC"
+                android:text="@string/upc"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
 

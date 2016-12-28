@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="24dp"
-    android:layout_marginRight="24dp"
+    android:layout_marginLeft="@dimen/h3"
+    android:layout_marginRight="@dimen/h3"
     android:layout_below="@+id/ll_btn"
     android:background="@color/white"
     android:orientation="vertical"
@@ -16,8 +16,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="@dimen/h1"
+        android:layout_marginRight="@dimen/h1"
 
         >
 
@@ -29,8 +29,8 @@
             android:textColor="@color/black"
             android:background="@color/lightgray"
             android:drawableRight="@drawable/ic_black_add"
-            android:layout_marginBottom="5dp"
-            android:padding="10dp"
+            android:layout_marginBottom="@dimen/size_five"
+            android:padding="@dimen/h3"
             android:id="@+id/tv_add"
             />
 

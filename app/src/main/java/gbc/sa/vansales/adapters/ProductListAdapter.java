@@ -1,6 +1,8 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.ShelfFragment;
+import gbc.sa.vansales.Fragment.StoreFragment;
+import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.ShelfStockActivity;
 import gbc.sa.vansales.data.Const;
 
 import static gbc.sa.vansales.data.Const.addlist;
@@ -87,8 +93,7 @@ public class ProductListAdapter extends BaseAdapter  {
 
                 if(from.equals("category"))
                 {
-                        holder.chk_product.setVisibility(View.GONE
-                        );
+                        holder.chk_product.setVisibility(View.GONE);
                 }
 
 
@@ -116,13 +121,86 @@ public class ProductListAdapter extends BaseAdapter  {
 
                     if(isChecked)
                     {
+                        Log.e("check",dataList.get(position));
 
-                        addlist.add(dataList.get(position));
-                        holder.chk_product.setChecked(true);
+
+                        if(ShelfStockActivity.tab_position==0)
+                        {
+
+
+                            boolean isExists=false;
+                            for(int i=0;i<ShelfFragment.arrayList.size();i++)
+                            {
+
+                                Log.e("check",dataList.get(position)+" "+ShelfFragment.arrayList.get(i).getProductname()+" "+ShelfStockActivity.tab_position);
+                                if(ShelfFragment.arrayList.get(i).getProductname().equals(dataList.get(position)))
+                                {
+                                    isExists=true;
+                                }
+                            }
+
+                            if(isExists)
+                            {
+                                holder.chk_product.setChecked(false);
+                                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                                builder.setMessage("Product already exists");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                            else {
+                                Log.e("add",dataList.get(position)+" at position "+ShelfStockActivity.tab_position);
+                                addlist.add(dataList.get(position));
+                                holder.chk_product.setChecked(true);
+                            }
+
+                        }else {
+
+
+
+                            boolean isExists=false;
+                            for(int i = 0; i< StoreFragment.arrayList.size(); i++)
+                            {
+                                Log.e("check",dataList.get(position)+" "+StoreFragment.arrayList.get(i).getProductname()+" "+ShelfStockActivity.tab_position);
+
+                                if(StoreFragment.arrayList.get(i).getProductname().equals(dataList.get(position)))
+                                {
+                                    isExists=true;
+                                }
+                            }
+
+                            if(isExists)
+                            {
+                                holder.chk_product.setChecked(false);
+                                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                                builder.setMessage("Product already exists");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                            else {
+                                Log.e("add",dataList.get(position)+" at position "+ShelfStockActivity.tab_position);
+                                addlist.add(dataList.get(position));
+                                holder.chk_product.setChecked(true);
+                            }
+
+                        }
 
 
                     }else {
-
+                        Log.e("uncheck",dataList.get(position));
 
                         holder.chk_product.setChecked(false);
                         addlist.remove(dataList.get(position));

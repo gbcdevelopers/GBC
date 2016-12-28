@@ -12,15 +12,15 @@
 
 
     <ExpandableListView
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/h3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_product"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginBottom="@dimen/h3"
+        android:layout_marginLeft="@dimen/h1"
+        android:layout_marginRight="@dimen/h1"
         android:divider="@color/grey"
-        android:dividerHeight="5dp"
+        android:dividerHeight="@dimen/size_five"
         android:groupIndicator="@null"
         >
 
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/h2"
         android:layout_alignParentRight="true"
         android:id="@+id/btn_float"
         android:src="@drawable/ic_keyboard_arrow_left_black_24dp"

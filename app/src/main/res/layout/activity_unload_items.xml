@@ -19,7 +19,7 @@
             android:orientation="vertical"
             android:gravity="center"
             android:background="#fff"
-            android:padding="5dp"
+            android:padding="@dimen/size_five"
 
 
             >
@@ -27,11 +27,11 @@
                 android:id="@+id/badReturnLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bad Return"
+                android:text="@string/bad_return"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:layout_marginTop="5dp"
-                android:textSize="30px"
+                android:layout_marginTop="@dimen/size_five"
+                android:textSize="@dimen/label_x_min"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
             </TextView>
@@ -40,9 +40,9 @@
                 android:id="@+id/badReturnCases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cases : 100"
-                android:layout_marginTop="5px"
-                android:textSize="25px"
+                android:text="@string/cases_100"
+                android:layout_marginTop="@dimen/size_five"
+                android:textSize="@dimen/label_min"
                 android:layout_below="@+id/badReturnLabel"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
@@ -51,9 +51,9 @@
                 android:id="@+id/badReturnPcs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PCS : 100"
-                android:layout_marginTop="5px"
-                android:textSize="25px"
+                android:text="@string/pcs_100"
+                android:layout_marginTop="@dimen/size_five"
+                android:textSize="@dimen/label_min"
                 android:layout_below="@+id/badReturnCases"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >
@@ -63,9 +63,9 @@
                 android:id="@+id/badReturnTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total : 500AED"
-                android:layout_marginTop="5px"
-                android:textSize="25px"
+                android:text="@string/total_500aed"
+                android:layout_marginTop="@dimen/size_five"
+                android:textSize="@dimen/label_min"
                 android:layout_below="@+id/badReturnPcs"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 >

@@ -74,12 +74,13 @@ public class LoadRequestConstants
 
 
 
-    public LoadRequestConstants(String itemName, String category, String cases,String units,int categoryImage) {
+    public LoadRequestConstants(String id,String itemName, String category, String cases,String units,int categoryImage) {
         this.itemName = itemName;
         this.category = category;
         this.cases = cases;
         this.units=units;
         this.categoryImage = categoryImage;
+        this.id=id;
 
     }
     public LoadRequestConstants()

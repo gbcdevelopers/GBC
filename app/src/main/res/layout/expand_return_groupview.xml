@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="@dimen/h3"
+    android:paddingRight="@dimen/h3"
 
     >
 
@@ -31,10 +31,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fayha"
-            android:padding="10dp"
+            android:text="@string/frahn"
+            android:padding="@dimen/h1"
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="@dimen/h1"
             android:id="@+id/tv_product_name"
 
             />
@@ -44,7 +44,7 @@
             android:src="@drawable/ic_black_add"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:padding="10dp"
+            android:padding="@dimen/h3"
             android:id="@+id/iv_expand"
             />
 

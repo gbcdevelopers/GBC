@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:padding="@dimen/h3"
     android:background="@color/white"
     >
 
@@ -10,17 +10,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="@dimen/label_big"
         android:textColor="@color/black"
         android:text="Shelf Arrangement"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/size_five"
         android:id="@+id/tv_titletext"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="image"
+        android:text="@string/image"
         android:layout_below="@+id/tv_titletext"
         android:textColor="@color/green"
         />
@@ -36,7 +36,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Remark"
+        android:text="@string/remark"
         android:layout_below="@+id/iv_end"
         android:textColor="@color/green"
         />

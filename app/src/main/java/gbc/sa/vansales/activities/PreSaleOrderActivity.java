@@ -42,6 +42,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
+        Const.constantsHashMap.clear();
 
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");

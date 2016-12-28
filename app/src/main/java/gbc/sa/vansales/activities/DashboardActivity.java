@@ -118,6 +118,9 @@ public class DashboardActivity extends AppCompatActivity
                     Intent i = new Intent(DashboardActivity.this, UnloadActivity.class);
                     startActivity(i);
                 }
+
+
+
                 return false;
             }
         });
@@ -140,7 +143,8 @@ public class DashboardActivity extends AppCompatActivity
                     Intent i = new Intent(DashboardActivity.this, EndTripActivity.class);
                     startActivity(i);
                 } else if (position == "4") {
-                    Toast.makeText(getApplicationContext(), "Information", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(DashboardActivity.this, InformationsActivity.class);
+                    startActivity(i);
                 }
                 return false;
             }

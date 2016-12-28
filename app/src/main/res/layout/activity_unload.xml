@@ -16,21 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#e5e5e5"
-            android:horizontalSpacing="2dp"
+            android:horizontalSpacing="@dimen/size_two"
             android:numColumns="auto_fit"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/size_five"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="3dp" >
+            android:verticalSpacing="@dimen/list_space" >
 
         </GridView>
     </RelativeLayout>
 
     <Button
         android:id="@+id/btnUnloadInventory"
-        android:text="Unload Inventory"
+        android:text="@string/unload_inventory"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
+        android:layout_marginTop="@dimen/h3"
         android:layout_alignParentBottom="true"
 
         android:background="@color/buttoncolor"

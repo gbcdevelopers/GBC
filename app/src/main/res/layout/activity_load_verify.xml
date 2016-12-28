@@ -45,7 +45,7 @@
             android:textColor="@color/white"
             android:background="@color/buttoncolor"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/h3"
             />
 
         <Button
@@ -57,7 +57,7 @@
             android:layout_height="match_parent"
             android:textColor="@color/white"
             android:background="@color/cancelcolor"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/h3"
 
             />
 

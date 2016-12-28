@@ -12,7 +12,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:padding="@dimen/all_padding">
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -21,24 +21,24 @@
                     android:id="@+id/tvroute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Route # : "
-                    android:textSize="20dp"
+                    android:layout_marginTop="@dimen/h3"
+                    android:text="@string/beginday_route"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/colorPrimary"
                     />
 
                 <EditText android:id="@+id/route"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:singleLine="true"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/black"
                     android:layout_toRightOf="@+id/tvroute"
                     />
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvroute"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -50,26 +50,27 @@
                     android:id="@+id/tvSalesManNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Sales Man No :  "
-                    android:textSize="20dp"
+                    android:layout_marginTop="@dimen/h1"
+                    android:text="@string/sales_man_no"
+                    android:textSize="@dimen/label_big"
                     android:layout_below="@id/tvroute"
 
                     android:textColor="@color/colorPrimary"
                     />
+
                 <EditText android:id="@+id/salesManNo"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:singleLine="true"
                     android:layout_below="@id/tvroute"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvSalesManNo"
                     android:textColor="@color/colorPrimary"
                     />
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvSalesManNo"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -77,12 +78,12 @@
 
 
                 <TextView
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:id="@+id/tvSalesManName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Sales Man Name : "
+                    android:layout_marginTop="@dimen/h1"
+                    android:text="@string/sales_man_name"
                     android:layout_below="@+id/tvSalesManNo"
                     android:textColor="@color/colorPrimary"
                     />
@@ -90,8 +91,8 @@
                 <EditText android:id="@+id/salesManName"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:layout_marginTop="10dp"
+                    android:textSize="@dimen/label_big"
+                    android:layout_marginTop="@dimen/h1"
                     android:singleLine="true"
                     android:layout_below="@id/tvSalesManNo"
                     android:layout_toRightOf="@+id/tvSalesManName"
@@ -99,7 +100,7 @@
                     />
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvSalesManName"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -107,12 +108,12 @@
 
 
                 <TextView
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:id="@+id/tvsalesDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Sales Date : "
+                    android:layout_marginTop="@dimen/h1"
+                    android:text="@string/sales_date"
                     android:layout_below="@+id/tvSalesManName"
                     android:textColor="@color/colorPrimary"
                     />
@@ -122,15 +123,15 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h1"
                     android:layout_below="@id/tvSalesManName"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvsalesDate"
                     android:textColor="@color/colorPrimary"
                     />
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvsalesDate"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -141,10 +142,10 @@
                     android:id="@+id/tvtime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/h1"
                     android:layout_below="@+id/tvsalesDate"
-                    android:text="Time : "
-                    android:textSize="20dp"
+                    android:text="@string/time"
+                    android:textSize="@dimen/label_big"
 
                     android:textColor="@color/colorPrimary"
                     />
@@ -153,14 +154,14 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_below="@id/tvsalesDate"
                     android:layout_toRightOf="@+id/tvtime"
                     android:textColor="@color/colorPrimary"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/h3"/>
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvtime"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -170,11 +171,11 @@
                 <TextView
                     android:id="@+id/tvdelieveryDate"
                     android:layout_width="wrap_content"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/h1"
                     android:layout_below="@+id/tvtime"
-                    android:text="Delivery Date : "
+                    android:text="@string/delivery_date"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -182,15 +183,15 @@
                 <EditText android:id="@+id/delieveryDate"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvdelieveryDate"
                     android:singleLine="true"
                     android:layout_below="@id/tvtime"
                     android:textColor="@color/colorPrimary"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/h3"/>
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvdelieveryDate"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -201,9 +202,9 @@
                     android:id="@+id/tvdelieveryRoute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Delivery Route : "
-                    android:textSize="20dp"
+                    android:layout_marginTop="@dimen/h1"
+                    android:text="@string/delivery_route"
+                    android:textSize="@dimen/label_big"
 
                     android:layout_below="@id/tvdelieveryDate"
                     android:textColor="@color/colorPrimary"
@@ -214,13 +215,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
                     android:layout_below="@id/tvdelieveryDate"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvdelieveryRoute"
                     android:singleLine="true"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/h3"/>
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvdelieveryRoute"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -231,10 +232,10 @@
                     android:id="@+id/tvvehicleNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/h1"
                     android:layout_below="@id/tvdelieveryRoute"
-                    android:text="Vehicle No. : "
-                    android:textSize="20dp"
+                    android:text="@string/vehicle_no"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -243,13 +244,13 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:layout_below="@id/tvdelieveryRoute"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvvehicleNo"
                     android:textColor="@color/colorPrimary"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/h3"/>
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvvehicleNo"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -260,10 +261,10 @@
                     android:id="@+id/tvDay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/h1"
                     android:layout_below="@+id/tvvehicleNo"
-                    android:text="Day :  "
-                    android:textSize="20dp"
+                    android:text="@string/day"
+                    android:textSize="@dimen/label_big"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -273,12 +274,12 @@
                     android:singleLine="true"
                     android:textColor="@color/colorPrimary"
                     android:layout_below="@id/tvvehicleNo"
-                    android:textSize="20dp"
+                    android:textSize="@dimen/label_big"
                     android:layout_toRightOf="@+id/tvDay"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="@dimen/h3"/>
 
                 <View
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/h3"
                     android:layout_below="@id/tvDay"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -290,8 +291,8 @@
             <Button android:id="@+id/btnBack"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="START"
+                android:layout_marginTop="@dimen/h3"
+                android:text="@string/start"
                 android:background="@color/buttoncolor"
                 android:textColor="@color/white"
                 />
