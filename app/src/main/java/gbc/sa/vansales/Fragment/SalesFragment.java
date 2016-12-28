@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class SalesFragment extends Fragment {
 
         listSales = (ListView) viewmain.findViewById(R.id.list_sales);
         fab = (FloatingActionButton) viewmain.findViewById(R.id.fab);
-
+        fab.hide();
         new loadItems();
         String strProductname[] = {"A", "B", "c", "D"};
         salesarrayList = new ArrayList<>();
@@ -97,8 +98,8 @@ public class SalesFragment extends Fragment {
                 final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
                 final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
                 final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-                ed_cases_inv.setText("10");
-                ed_pcs_inv.setText("3");
+                ed_cases_inv.setText(sales.getCases());
+                ed_pcs_inv.setText(sales.getPic());
                 ed_cases_inv.setEnabled(false);
                 ed_pcs_inv.setEnabled(false);
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
@@ -121,16 +122,37 @@ public class SalesFragment extends Fragment {
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);
 
-                        sales.setPic(strpcs);
-                        sales.setCases(strCase);
-                        double total = 0;
-                        for (int i = 0; i < salesarrayList.size(); i++) {
-                            Sales sales1 = salesarrayList.get(i);
-                            total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
+                        if(strCase.isEmpty()||strCase==null||strCase.trim().equals("")){
+                            strCase = String.valueOf(0);
                         }
-                        TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
-                        tv.setText(String.valueOf(total));
-                        dialog.dismiss();
+                        if(strpcs.isEmpty()||strpcs==null||strpcs.trim().equals("")){
+                            strpcs = String.valueOf(0);
+                        }
+                        if(strcaseinv.isEmpty()||strcaseinv==null||strcaseinv.trim().equals("")){
+                            strcaseinv = String.valueOf(0);
+                        }
+                        if(strpcsinv.isEmpty()||strpcsinv==null||strpcsinv.trim().equals("")){
+                            strpcsinv = String.valueOf(0);
+                        }
+
+                        if(Float.parseFloat(strCase)>Float.parseFloat(strcaseinv)){
+                            Toast.makeText(getActivity(),getString(R.string.input_larger),Toast.LENGTH_SHORT).show();
+                        }
+                        else if(Float.parseFloat(strpcs)>Float.parseFloat(strpcsinv)&&Float.parseFloat(strCase)>Float.parseFloat(strcaseinv)){
+                            Toast.makeText(getActivity(),getString(R.string.input_larger),Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            double total = 0;
+                            for (int i = 0; i < salesarrayList.size(); i++) {
+                                Sales sales1 = salesarrayList.get(i);
+                                total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
+                            }
+                            TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
+                            tv.setText(String.valueOf(total));
+                            dialog.dismiss();
+                        }
+
+
                     }
                 });
             }

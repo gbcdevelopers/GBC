@@ -1,48 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:id="@+id/ll_top"
+        android:paddingTop="10dp"
+        android:weightSum="2"
         >
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:weightSum="2"
             >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/credit_available"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
+                android:text="@string/credit_available"
                 android:textColor="@color/green"
                 android:textSize="15dp"
                 />
+
             <TextView
+                android:id="@+id/tv_available_limit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_available_limit"
-                android:text="100000"
                 android:layout_gravity="center"
-                android:textSize="20dp"
-                android:textColor="@color/black"
                 android:layout_marginBottom="5dp"
+                android:text="100000"
+                android:textColor="@color/black"
+                android:textSize="20dp"
                 />
 
             <View
@@ -54,30 +57,32 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:weightSum="2"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:weightSum="2"
             >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sales Qty."
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
+                android:text="@string/sales_qty"
                 android:textColor="@color/green"
                 android:textSize="15dp"
                 />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0/0.1"
                 android:layout_gravity="center"
-                android:textSize="20dp"
-                android:textColor="@color/black"
                 android:layout_marginBottom="5dp"
+                android:text="0.0/0.1"
+                android:textColor="@color/black"
+                android:textSize="20dp"
                 />
 
             <View
@@ -88,91 +93,69 @@
         </LinearLayout>
 
     </LinearLayout>
-    
 
 
-        <ListView
-            android:id="@+id/list_sales"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/ll_top"
-            android:layout_above="@+id/rl_bottom"
-
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:scrollbars="none"
-            android:divider="@color/grey"
-            android:dividerHeight="5dp"
-            />
-
-
-
+    <ListView
+        android:id="@+id/list_sales"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/ll_top"
+        android:divider="@color/grey"
+        android:dividerHeight="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scrollbars="none"
+        />
 
 
     <RelativeLayout
+        android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/rl_bottom"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:background="@drawable/custom_border"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/custom_border"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
 
         >
 
 
-
-
         <TextView
-            android:layout_centerHorizontal="true"
+            android:id="@+id/tv_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Amt."
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="5dp"
+            android:text="@string/total_amount"
             android:textColor="@color/green"
-            android:textSize="15dp"
-            android:id="@+id/tv_label" />
+            android:textSize="15dp"/>
 
         <TextView
+            android:id="@+id/tv_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/tv_label"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="0.00"
-            android:textSize="20dp"
             android:textColor="@color/black"
-            android:id="@+id/tv_amt"
+            android:textSize="20dp"
             />
-
-
 
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/colorPrimary"
-            android:src="@drawable/ic_add_black_24dp"
             android:layout_alignParentRight="true"
-            tools:ignore="RelativeOverlap" />
-
+            android:src="@drawable/ic_add_black_24dp"
+            app:backgroundTint="@color/colorPrimary"
+            tools:ignore="RelativeOverlap"/>
 
 
     </RelativeLayout>
-
-
-
-
-
-
-
-
-
-    
-    
-    
 
 
 </RelativeLayout>
