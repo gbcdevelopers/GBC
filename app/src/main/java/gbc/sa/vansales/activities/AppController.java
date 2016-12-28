@@ -23,7 +23,7 @@ public class AppController extends Application
     @Override
     public void onCreate() {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
         mInstance = this;
         System.out.println("On Create");
         Settings.initialize(getApplicationContext());
