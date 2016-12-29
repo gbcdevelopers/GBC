@@ -21,6 +21,7 @@ import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/5/2016.
  */
@@ -52,8 +53,8 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
         if (!(customerHeader == null)) {
             tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
-            tv_customer_address.setText(customerHeader.getAddress());
-            tv_customer_pobox.setText(customerHeader.getPostCode());
+            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
             tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());

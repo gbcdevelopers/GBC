@@ -126,8 +126,6 @@ public class ProductListAdapter extends BaseAdapter  {
 
                         if(ShelfStockActivity.tab_position==0)
                         {
-
-
                             boolean isExists=false;
                             for(int i=0;i<ShelfFragment.arrayList.size();i++)
                             {

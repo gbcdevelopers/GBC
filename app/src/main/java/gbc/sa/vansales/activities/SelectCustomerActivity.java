@@ -46,6 +46,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.SwipeDetector;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -283,7 +284,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
 
                 if(!(customerHeader==null)){
                     customer.setCustomerName(customerHeader.getName1());
-                    customer.setCustomerAddress(customerHeader.getAddress());
+                    customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
                 }
                 else{
                     customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
@@ -317,7 +318,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
 
                 if(!(customerHeader==null)){
                     customer.setCustomerName(customerHeader.getName1());
-                    customer.setCustomerAddress(customerHeader.getAddress());
+                    customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
                 }
                 else{
                     customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));

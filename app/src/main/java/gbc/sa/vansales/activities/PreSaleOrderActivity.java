@@ -25,6 +25,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.PreSaleProceed;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.UrlBuilder;
 public class PreSaleOrderActivity extends AppCompatActivity {
 
     ImageView iv_back;
@@ -58,8 +59,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
         if(!(customerHeader==null)){
             tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
-            tv_customer_address.setText(customerHeader.getAddress());
-            tv_customer_pobox.setText(customerHeader.getPostCode());
+            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         }
         else{

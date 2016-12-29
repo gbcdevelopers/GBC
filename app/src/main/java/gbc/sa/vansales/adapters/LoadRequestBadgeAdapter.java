@@ -33,13 +33,19 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         this.loadRequestList = loadRequests;
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ArrayList<LoadRequest> dataList = this.loadRequestList;
         ViewHolder holder;
         if(convertView==null){
             LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.activity_loadrequest_items,parent,false);
             // get all UI view
-            holder = new ViewHolder(convertView);
+            holder = new ViewHolder();
+            holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
+            holder.itemName = (TextView) convertView.findViewById(R.id.tvItemName);
+            holder.cases = (EditText) convertView.findViewById(R.id.tvCases);
+            holder.units = (EditText) convertView.findViewById(R.id.tvUnit);
+            holder.categoryImage = (ImageView) convertView.findViewById(R.id.categoryImage);
             // set tag for holder
             convertView.setTag(holder);
         }
@@ -48,20 +54,24 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             holder = (ViewHolder) convertView.getTag();
         }
         final LoadRequest loadRequest = getItem(position);
+
         holder.itemName.setText(loadRequest.getItemName());
-        holder.cases.addTextChangedListener(new TextWatcher() {
+        holder.textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                dataList.get(position).setCases(s.toString());
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-                loadRequest.setCases(s.toString());
             }
-        });
-        holder.cases.setText(loadRequest.getCases());
+        };
+        holder.cases.addTextChangedListener(holder.textWatcher);
+        holder.cases.setText(dataList.get(position).getCases());
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
@@ -74,13 +84,15 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         EditText units;
         ImageView categoryImage;
         LinearLayout rl_item;
+        public TextWatcher textWatcher;
 
-        public ViewHolder(View v) {
+        /*public ViewHolder(View v) {
             rl_item = (LinearLayout)v.findViewById(R.id.rl_item);
             itemName = (TextView) v.findViewById(R.id.tvItemName);
             cases = (EditText) v.findViewById(R.id.tvCases);
             units = (EditText) v.findViewById(R.id.tvUnit);
             categoryImage = (ImageView) v.findViewById(R.id.categoryImage);
-        }
+        }*/
     }
+
 }
