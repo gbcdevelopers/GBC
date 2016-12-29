@@ -273,6 +273,7 @@
                             android:text="@string/_12"
                             android:background="@drawable/light_border"
                             android:padding="5dp"
+                            android:enabled="false"
                             />
 
                         <EditText
@@ -282,6 +283,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -292,6 +294,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -302,6 +305,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -312,6 +316,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -322,6 +327,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -332,6 +338,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -342,6 +349,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -376,7 +384,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-
+                            android:enabled="false"
                             android:inputType="number"
                             android:text="@string/_12"
                             android:background="@drawable/light_border"
@@ -388,6 +396,7 @@
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
                             android:inputType="number"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             android:text="@string/_12" />
 
@@ -398,6 +407,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -408,6 +418,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -418,6 +429,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -428,6 +440,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -438,6 +451,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -448,6 +462,7 @@
                             android:padding="@dimen/size_five"
                             android:inputType="number"
                             android:text="@string/_12"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             />
 
@@ -483,7 +498,7 @@
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
 
-
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             android:inputType="number"
                             android:text="@string/_12" />
@@ -493,16 +508,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
-
-                            android:inputType="number"
-                            android:background="@drawable/light_border"
-                            android:text="@string/_12" />
-
-                        <EditText
-                            android:textSize="@dimen/label_min"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/size_five"
+                            android:enabled="false"
                             android:inputType="number"
                             android:background="@drawable/light_border"
                             android:text="@string/_12" />
@@ -513,6 +519,7 @@
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
                             android:inputType="number"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             android:text="@string/_12" />
 
@@ -521,7 +528,17 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
+                            android:inputType="number"
+                            android:enabled="false"
+                            android:background="@drawable/light_border"
+                            android:text="@string/_12" />
 
+                        <EditText
+                            android:textSize="@dimen/label_min"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/size_five"
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             android:text="12" />
 
@@ -530,7 +547,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
-
+                            android:enabled="false"
                             android:background="@drawable/light_border"
                             android:inputType="number"
                             android:text="@string/_12" />
@@ -540,7 +557,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
-
+                            android:enabled="false"
                             android:inputType="number"
                             android:background="@drawable/light_border"
                             android:text="@string/_12" />
@@ -550,7 +567,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
-
+                            android:enabled="false"
                             android:inputType="number"
                             android:background="@drawable/light_border"
                             android:text="@string/_12" />
@@ -560,6 +577,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/size_five"
+                            android:enabled="false"
                             android:gravity="right|center"
                             android:background="@drawable/light_border"
                             android:text="@string/_12100" />

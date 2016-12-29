@@ -48,7 +48,7 @@ public class PaymentDetails extends AppCompatActivity {
 
 
     String from="";
-    String amountdue;
+    String amountdue="0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,12 +109,14 @@ public class PaymentDetails extends AppCompatActivity {
         if(getIntent().getExtras()!=null)
         {
 
-
             from=getIntent().getStringExtra("msg");
             pos=getIntent().getIntExtra("pos",0);
 
-            amountdue = Const.colletionDatas.get(pos).getAmoutDue();
-            tv_due_amt.setText(amountdue);
+            if(Const.colletionDatas.size()>0) {
+                amountdue = Const.colletionDatas.get(pos).getAmoutDue();
+                tv_due_amt.setText(amountdue);
+            }
+
 
         }
 
@@ -284,6 +286,7 @@ public class PaymentDetails extends AppCompatActivity {
 
                                 dialog.dismiss();
                                 Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+
                                 startActivity(intent);
                                 finish();
 

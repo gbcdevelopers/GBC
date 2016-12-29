@@ -206,8 +206,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_TIME_STAMP = "timeStamp";
 
     //Load Request
-    public static final String CASE = "case";
-    public static final String UNIT = "unit";
+    public static final String KEY_CASE = "case";
+    public static final String KEY_UNIT = "unit";
+    public static final String KEY_PRICE = "price";
+    public static final String KEY_IS_POSTED = "isPosted";
+    public static final String KEY_IS_PRINTED = "isPrinted";
 
     private static DatabaseHandler sInstance;
 
@@ -461,6 +464,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ORG_UNITS   + " TEXT,"
                 + KEY_AMOUNT  + " TEXT " + ")";
 
+        String TABLE_LOAD_REQUEST = "CREATE TABLE " + LOAD_REQUEST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP  + " TEXT,"
+                + KEY_TRIP_ID  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_MATERIAL_DESC1  + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_CASE   + " TEXT,"
+                + KEY_UNIT   + " TEXT,"
+                + KEY_UOM   + " TEXT,"
+                + KEY_PRICE   + " TEXT,"
+                + KEY_IS_POSTED   + " TEXT,"
+                + KEY_IS_PRINTED  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -479,6 +497,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_BEGIN_DAY);
         db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
         db.execSQL(TABLE_CAPTURE_SALES_INVOICE);
+        db.execSQL(TABLE_LOAD_REQUEST);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -498,6 +517,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + BEGIN_DAY);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_CUSTOMER_STOCK);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_SALES_INVOICE);
+        db.execSQL("DROP TABLE IF EXISTS " + LOAD_REQUEST);
         onCreate(db);
     }
 

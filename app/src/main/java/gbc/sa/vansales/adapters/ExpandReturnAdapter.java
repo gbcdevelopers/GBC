@@ -1,20 +1,29 @@
 package gbc.sa.vansales.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.BListFragment;
+import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.CustomerData;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
@@ -35,18 +44,23 @@ ItemFilter mFilter = new ItemFilter();
     Spinner spinner;
 
     int tvChangeValue;
+    ArrayList<Integer> spinnerList;
+    boolean expandfirst=true;
+    String from="";
 
-    public ExpandReturnAdapter(Context context, ArrayList<String > arrProductList, ExpandableListView exp_list)
+    public ExpandReturnAdapter(Context context, ArrayList<String > arrProductList, ExpandableListView exp_list,String from)
     {
         this.dataList =arrProductList;
         this.dataListOne =arrProductList;
         this.context=context;
         this.exp_list=exp_list;
+        spinnerList=new ArrayList<>();
+        this.from=from;
     }
 
 
     @Override
-    public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getRealChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
 
 
@@ -88,6 +102,40 @@ ItemFilter mFilter = new ItemFilter();
         iv_btl_minus1=(ImageView)convertView.findViewById(R.id.iv_btl_minus1);
         iv_btl_add=(ImageView)convertView.findViewById(R.id.iv_btl_add);
         iv_btl_add1=(ImageView)convertView.findViewById(R.id.iv_btl_add1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                String item=spinner.getSelectedItem().toString();
+                if(!item.equals(""))
+                {
+                    spinnerList.add(groupPosition);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
 
 
@@ -258,8 +306,61 @@ ItemFilter mFilter = new ItemFilter();
         convertView = inflater.inflate(R.layout.expand_return_groupview, null);
         RelativeLayout rl_expand=(RelativeLayout)convertView.findViewById(R.id.rl_expand);
         ImageView iv_expand=(ImageView)convertView.findViewById(R.id.iv_expand);
-        TextView tv_productname=(TextView)convertView.findViewById(R.id.tv_product_name);
+        final TextView tv_productname=(TextView)convertView.findViewById(R.id.tv_product_name);
+        LinearLayout layout=(LinearLayout)convertView.findViewById(R.id.bottom_wrapper);
+
         tv_productname.setText(dataList.get(groupPosition));
+
+
+
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setCancelable(false);
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setTitle("Delete Product");
+                builder.setTitle("Do you really want to delete");
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if(from.equals("glist"))
+                        {
+                            GListFragment.arrProductList.remove(dataList.get(groupPosition));
+                            notifyDataSetChanged();
+                        }
+                        else if(from.equals("blist"))
+                        {
+                            BListFragment.arrProductList.remove(dataList.get(groupPosition));
+                            notifyDataSetChanged();
+                        }
+                        dialog.cancel();
+
+                    }
+                });
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+
+
+
+
+
+
+
+
+
+
+            }
+        });
 
 
 
@@ -269,42 +370,35 @@ ItemFilter mFilter = new ItemFilter();
             public void onClick(View v) {
 
 
-
-
-
-
                 if (isExpanded) {
 
-                    if(spinner!=null)
-                    {
-                        if(!spinner.getSelectedItem().equals(""))
+
+
+                    if(spinnerList.contains(groupPosition))
                         {
                             exp_list.collapseGroup(groupPosition);
+                            spinnerList.remove((Integer)groupPosition);
+                            expandfirst=true;
+
                         }
-                    }
-                    else {
-                        exp_list.collapseGroup(groupPosition);
-                    }
-
-
 
                 } else {
 
-                    if(spinner!=null)
+                    if(expandfirst)
                     {
+                        exp_list.expandGroup(groupPosition);
+                        expandfirst=false;
+                    }
+                    else {
 
-                        if(!spinner.getSelectedItem().equals(""))
+                        if(spinnerList.contains(groupPosition))
                         {
                             exp_list.expandGroup(groupPosition);
                         }
                     }
-                    else {
-                        exp_list.expandGroup(groupPosition);
-                    }
 
 
                 }
-
 
             }
         });

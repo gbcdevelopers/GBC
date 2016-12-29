@@ -28,6 +28,8 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.ShelfAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.ShelfProduct;
+import gbc.sa.vansales.utils.Settings;
+
 /**
  * Created by eheuristic on 12/5/2016.
  */
@@ -106,7 +108,9 @@ public class ShelfFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShelfStockActivity.tab_position=0;
+
+                Settings.setString("from","shelf");
+//                ShelfStockActivity.tab_position=0;
                 Intent intent = new Intent(getActivity(), CategoryListActivity.class);
 
                 getActivity().startActivity(intent);
