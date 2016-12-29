@@ -46,6 +46,8 @@ import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Muhammad Umair on 02/12/2016.
@@ -84,15 +86,52 @@ public class LoadRequestActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*new postData().execute();*/
                 for(LoadRequest loadRequest:arraylist){
+                    if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                        loadRequest.setCases("0");
+                    }
+                    if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                        loadRequest.setUnits("0");
+                    }
                     HashMap<String,String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                    map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                    map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                    map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                    map.put(db.KEY_CASE,loadRequest.getCases());
+                    map.put(db.KEY_UNIT,loadRequest.getUnits());
+                    map.put(db.KEY_UOM,loadRequest.getUom());
+                    map.put(db.KEY_PRICE,loadRequest.getPrice());
+                    map.put(db.KEY_IS_POSTED,"");
+                    map.put(db.KEY_IS_PRINTED, "");
+
+                    if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                        db.addData(db.LOAD_REQUEST,map);
+                    }
 
                 }
                 setTitle("Print Activity");
-                Dialog dialog = new Dialog(LoadRequestActivity.this);
+                final Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
-                dialog.setCancelable(true);
+                Button print = (Button)dialog.findViewById(R.id.btnPrint);
+                print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                Button donotPrint = (Button)dialog.findViewById(R.id.btnCancel2);
+                donotPrint.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+
+                });
+                dialog.setCancelable(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-              //  dialog.show();
+                dialog.show();
             }
         });
         // Locate the ListView in listview_main.xml
