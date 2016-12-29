@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -81,13 +82,17 @@ public class LoadRequestActivity extends AppCompatActivity {
         processLoadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new postData().execute();
-                /*setTitle("Print Activity");
+                /*new postData().execute();*/
+                for(LoadRequest loadRequest:arraylist){
+                    HashMap<String,String> map = new HashMap<String, String>();
+
+                }
+                setTitle("Print Activity");
                 Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();*/
+              //  dialog.show();
             }
         });
         // Locate the ListView in listview_main.xml
@@ -237,8 +242,8 @@ public class LoadRequestActivity extends AppCompatActivity {
             LoadRequest loadRequest = new LoadRequest();
             loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-            loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
-            loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
+           // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
+           // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
             loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             arraylist.add(loadRequest);
 

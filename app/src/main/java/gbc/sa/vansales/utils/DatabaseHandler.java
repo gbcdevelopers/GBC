@@ -206,8 +206,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_TIME_STAMP = "timeStamp";
 
     //Load Request
-    public static final String KEY_CASE = "case";
-    public static final String KEY_UNIT = "unit";
+    public static final String KEY_CASE = "cases";
+    public static final String KEY_UNIT = "units";
     public static final String KEY_PRICE = "price";
     public static final String KEY_IS_POSTED = "isPosted";
     public static final String KEY_IS_PRINTED = "isPrinted";

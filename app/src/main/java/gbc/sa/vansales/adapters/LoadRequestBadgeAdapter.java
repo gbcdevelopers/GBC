@@ -57,7 +57,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         }
         final LoadRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
-        holder.textWatcher = new TextWatcher() {
+        holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -71,8 +71,24 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             public void afterTextChanged(Editable s) {
             }
         };
-        holder.cases.addTextChangedListener(holder.textWatcher);
+        holder.unitsTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                loadRequestList.get(pos).setUnits(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+        holder.cases.addTextChangedListener(holder.casestextWatcher);
         holder.cases.setText(loadRequestList.get(pos).getCases());
+        holder.units.addTextChangedListener(holder.unitsTextWatcher);
+        holder.units.setText(loadRequestList.get(pos).getUnits());
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
@@ -85,7 +101,8 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         EditText units;
         ImageView categoryImage;
         LinearLayout rl_item;
-        public TextWatcher textWatcher;
+        public TextWatcher casestextWatcher;
+        public TextWatcher unitsTextWatcher;
 
         /*public ViewHolder(View v) {
             rl_item = (LinearLayout)v.findViewById(R.id.rl_item);
