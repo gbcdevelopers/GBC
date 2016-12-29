@@ -1,133 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rel1"
-
-        >
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/ithy"
-            android:layout_above="@+id/btnProcess">
-
-            <EditText
-                android:id="@+id/search"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter category here"
+                android:layout_height="fill_parent">
 
-                android:layout_marginTop="@dimen/h3"
-                android:layout_marginLeft="@dimen/h3"
-                android:layout_marginRight="@dimen/h3"
+				<RelativeLayout
+								android:id="@+id/rel1"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								>
 
+								<RelativeLayout
+												android:layout_width="match_parent"
+												android:layout_height="match_parent"
+												android:layout_above="@+id/btnProcess"
+												android:layout_below="@+id/ithy">
 
-                >
+												<EditText
+																android:id="@+id/search"
+																android:layout_width="fill_parent"
+																android:layout_height="wrap_content"
+																android:layout_marginLeft="@dimen/h3"
+																android:layout_marginRight="@dimen/h3"
+																android:layout_marginTop="@dimen/h3"
+																android:hint="Enter category here">
+												</EditText>
 
-            </EditText>
+												<ListView
+																android:id="@+id/listview"
+																android:layout_width="fill_parent"
+																android:layout_height="wrap_content"
+																android:layout_below="@+id/search"
+																android:layout_marginLeft="@dimen/h3"
+																android:layout_marginRight="@dimen/h3"
+																android:layout_marginTop="@dimen/h3"
+																/>
+								</RelativeLayout>
 
-            <ListView
-                android:id="@+id/listview"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/search"
-                android:layout_marginTop="@dimen/h3"
-                android:layout_marginLeft="@dimen/h3"
-                android:layout_marginRight="@dimen/h3"
-                />
+								<Button
+												android:id="@+id/btnProcess"
+												android:layout_width="fill_parent"
+												android:layout_height="wrap_content"
+												android:layout_alignParentBottom="true"
+												android:layout_marginTop="@dimen/h2"
+												android:background="@color/buttoncolor"
+												android:paddingLeft="@dimen/space"
+												android:paddingRight="@dimen/space"
+												android:text="Process Load Request"
+												android:textColor="@color/white"
+												/>
 
-        </RelativeLayout>
+								<RelativeLayout
+												android:id="@+id/ithy"
+												android:layout_width="match_parent"
+												android:layout_height="50dp"
+												android:layout_alignParentTop="true"
+												>
 
-        <Button
+												<RelativeLayout
+																android:layout_width="match_parent"
+																android:layout_height="match_parent"
+																android:layout_alignRight="@+id/line"
+																android:layout_centerInParent="true">
 
-            android:id="@+id/btnProcess"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Process Load Request"
-            android:layout_marginTop="@dimen/h2"
-            android:layout_alignParentBottom="true"
-            android:background="@color/buttoncolor"
-            android:textColor="@color/white"
+																<TextView
+																				android:id="@+id/tv1"
+																				android:layout_width="wrap_content"
+																				android:layout_height="wrap_content"
+																				android:layout_centerVertical="true"
+																				android:layout_marginLeft="@dimen/h3"
+																				android:text="@string/date"
+																				android:textSize="@dimen/label_small"
+																				/>
 
-            />
+																<ImageButton
+																				android:id="@+id/btnDate"
+																				android:layout_width="@dimen/big"
+																				android:layout_height="@dimen/big"
+																				android:layout_centerVertical="true"
+																				android:layout_toRightOf="@+id/tv1"
+																				android:background="@drawable/calend"
+																				/>
+												</RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:id="@+id/ithy"
-            android:layout_alignParentTop="true"
+												<View
+																android:id="@+id/line"
+																android:layout_width="@dimen/list_space"
+																android:layout_height="match_parent"
+																android:layout_centerHorizontal="true"
+																android:background="@android:color/black"
+																/>
 
-            >
+												<RelativeLayout
+																android:layout_width="match_parent"
+																android:layout_height="match_parent"
+																android:layout_alignLeft="@+id/line"
+																android:layout_centerHorizontal="true"
+																android:layout_centerVertical="true"
+																>
 
-            <RelativeLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:layout_centerInParent="true"
-                android:layout_alignRight="@+id/line">
-                <TextView
-
-                    android:id="@+id/tv1"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:textSize="@dimen/label_small"
-                    android:layout_marginLeft="@dimen/h3"
-                    android:layout_centerVertical="true"
-                    android:text="@string/date"
-                    />
-
-                <ImageButton
-                    android:id="@+id/btnDate"
-                    android:layout_width="@dimen/big"
-                    android:layout_height="@dimen/big"
-                    android:layout_toRightOf="@+id/tv1"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/calend"
-
-
-                    />
-            </RelativeLayout>
-
-
-            <View
-                android:id="@+id/line"
-                android:layout_width="@dimen/list_space"
-                android:layout_centerHorizontal="true"
-                android:layout_height="match_parent"
-                android:background="@android:color/black"
-                />
-
-            <RelativeLayout
-                android:layout_centerVertical="true"
-                android:layout_width="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_height="match_parent"
-                android:layout_alignLeft="@+id/line"
-
-                >
-
-                <CheckBox
-                    android:id="@+id/cb1"
-
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Put On Hold"
-                    />
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-    </RelativeLayout>
-
-
+																<CheckBox
+																				android:id="@+id/cb1"
+																				android:layout_width="wrap_content"
+																				android:layout_height="wrap_content"
+																				android:layout_centerVertical="true"
+																				android:text="Put On Hold"
+																				/>
+												</RelativeLayout>
+								</RelativeLayout>
+				</RelativeLayout>
 </RelativeLayout>
 
 

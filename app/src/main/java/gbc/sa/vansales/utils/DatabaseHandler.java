@@ -443,7 +443,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ORG_UNITS   + " TEXT,"
                 + KEY_AMOUNT  + " TEXT " + ")";
 
-        String TABLE_CAPTURE_SALES_INVOICE = "CREATE TABLE " + CAPTURE_CUSTOMER_STOCK + "("
+        String TABLE_CAPTURE_SALES_INVOICE = "CREATE TABLE " + CAPTURE_SALES_INVOICE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP  + " TEXT,"
                 + KEY_TRIP_ID  + " TEXT,"

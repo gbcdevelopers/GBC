@@ -21,7 +21,7 @@
     <string name="credit">Credit</string>
     <string name="currency">SAR</string>
     <string name="customerid">Customer ID</string>
-    <string name="customer_name">Cust N</string>
+    <string name="customer_name">Customer Name</string>
     <string name="customer_address">Address</string>
     <string name="customeroperation">Customer Operation</string>
     <string name="dashboard">Dashboard</string>
@@ -149,8 +149,6 @@
     <string name="product">Product</string>
     <string name="pcs">Pcs</string>
     <string name="price">Price</string>
-   
-    <string name="total_amount">TOTAL AMOUNT</string>
     <string name="specify_reason">specify Reason:</string>
     <string name="_1177711565">1177711565</string>
     <string name="name">ANSARI</string>

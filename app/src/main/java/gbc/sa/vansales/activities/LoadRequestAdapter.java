@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
@@ -71,7 +72,7 @@ public class LoadRequestAdapter extends BaseAdapter implements Filterable {
         EditText cases;
         EditText units;
         ImageView categoryImage;
-        RelativeLayout rl_item;
+        LinearLayout rl_item;
     }
 
     @Override
@@ -98,9 +99,9 @@ public class LoadRequestAdapter extends BaseAdapter implements Filterable {
             view = inflater.inflate(R.layout.activity_loadrequest_items, null);
             // Locate the TextViews in listview_item.xml
 
-            holder.rl_item = (RelativeLayout) view.findViewById(R.id.rl_item);
+            holder.rl_item = (LinearLayout) view.findViewById(R.id.rl_item);
             holder.itemName = (TextView) view.findViewById(R.id.tvItemName);
-            holder.category = (TextView) view.findViewById(R.id.tvCategory);
+           // holder.category = (TextView) view.findViewById(R.id.tvCategory);
             holder.cases = (EditText) view.findViewById(R.id.tvCases);
             holder.units = (EditText) view.findViewById(R.id.tvUnit);
             // Locate the ImageView in listview_item.xml
@@ -111,7 +112,7 @@ public class LoadRequestAdapter extends BaseAdapter implements Filterable {
         }
         // Set the results into TextViews
         holder.itemName.setText(loadRequestConstants.get(position).getItemName());
-        holder.category.setText(loadRequestConstants.get(position).getCategory());
+       // holder.category.setText(loadRequestConstants.get(position).getCategory());
         holder.cases.setText(loadRequestConstants.get(position)
                 .getCases());
         holder.units.setText(loadRequestConstants.get(position)

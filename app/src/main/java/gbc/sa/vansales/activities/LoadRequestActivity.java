@@ -1,13 +1,14 @@
 package gbc.sa.vansales.activities;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -29,84 +30,53 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
-
+import gbc.sa.vansales.adapters.LoadRequestBadgeAdapter;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.LoadRequest;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Muhammad Umair on 02/12/2016.
  */
-
-
-public class LoadRequestActivity extends AppCompatActivity
-{
-
+public class LoadRequestActivity extends AppCompatActivity {
     Button processLoadRequest;
     ListView list;
-    LoadRequestAdapter adapter;
+    LoadRequestBadgeAdapter adapter;
     EditText editsearch;
-    String[] itemName;
-    String[] category;
-    String[] cases;
-    String[] units;
-    int[] categoryImage;
-
-
     ImageButton datepickerdialogbutton;
     TextView selecteddate;
+    ArrayList<LoadRequest> arraylist = new ArrayList<>();
+    DatabaseHandler db = new DatabaseHandler(this);
+    public ArrayList<ArticleHeader> articles;
 
-    ArrayList<LoadRequestConstants> arraylist = new ArrayList<LoadRequestConstants>();
-
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
-
         setTitle("Load Request");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        datepickerdialogbutton = (ImageButton)findViewById(R.id.btnDate);
-        selecteddate = (TextView)findViewById(R.id.tv1);
-
-
-        processLoadRequest=(Button)findViewById(R.id.btnProcess);
-
-
+        articles = ArticleHeaders.get();
+        new loadItems();
+        datepickerdialogbutton = (ImageButton) findViewById(R.id.btnDate);
+        selecteddate = (TextView) findViewById(R.id.tv1);
+        processLoadRequest = (Button) findViewById(R.id.btnProcess);
         // Generate sample data
-        itemName = new String[] { "Berain_Regular", "Berain_Half_Liter", "Berain_1.5_Liter" };
-
-        category = new String[] { "Regular", "Half Liter", "1.5 Liter"};
-
-        cases = new String[] { "10", "20","30"};
-
-        units = new String[] { "100", "200", "300"};
-
-        categoryImage = new int[] { R.drawable.beraincategory, R.drawable.beraincategory,
-                R.drawable.beraincategory};
-
-
-
         datepickerdialogbutton.setOnClickListener(new View.OnClickListener() {
-
             public void onClick(View v) {
                 // setContentView(R.layout.activity_load_request);
                 DialogFragment dialogfragment = new DatePickerDialogClass();
                 dialogfragment.show(getFragmentManager(), "Please Select Your Date");
             }
         });
-
-
-
-
-
         processLoadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i =new Intent(LoadRequestActivity.this,PrintActivity.class);
-//                startActivity(i);
-
                 setTitle("Print Activity");
-
                 Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
@@ -114,46 +84,25 @@ public class LoadRequestActivity extends AppCompatActivity
                 dialog.show();
             }
         });
-
-
-
-
         // Locate the ListView in listview_main.xml
         list = (ListView) findViewById(R.id.listview);
-
-        for (int i = 0; i < itemName.length; i++)
-        {
-            LoadRequestConstants lrc = new LoadRequestConstants(String.valueOf(i),itemName[i], category[i],
-                    cases[i],units[i], categoryImage[i]);
-            // Binds all strings into an array
-            arraylist.add(lrc);
-        }
-
-        // Pass results to ListViewAdapter Class
-        adapter = new LoadRequestAdapter(this, arraylist,null,"yes");
-
-        // Binds the Adapter to the ListView
+        adapter = new LoadRequestBadgeAdapter(this, arraylist);
         list.setAdapter(adapter);
-
         // Locate the EditText in listview_main.xml
         editsearch = (EditText) findViewById(R.id.search);
-
         // Capture Text in EditText
         editsearch.addTextChangedListener(new TextWatcher() {
-
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                 adapter.getFilter().filter(text);
             }
-
             @Override
             public void beforeTextChanged(CharSequence arg0, int arg1,
                                           int arg2, int arg3) {
                 // TODO Auto-generated method stub
             }
-
             @Override
             public void onTextChanged(CharSequence arg0, int arg1, int arg2,
                                       int arg3) {
@@ -161,31 +110,22 @@ public class LoadRequestActivity extends AppCompatActivity
             }
         });
     }
-
-    public static class DatePickerDialogClass extends DialogFragment implements DatePickerDialog.OnDateSetListener{
-
+    public static class DatePickerDialogClass extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-
             DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
-                    AlertDialog.THEME_DEVICE_DEFAULT_LIGHT,this,year,month,day);
-
+                    AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, this, year, month, day);
             return datepickerdialog;
         }
-
-        public void onDateSet(DatePicker view, int year, int month, int day){
-
-            TextView textview = (TextView)getActivity().findViewById(R.id.tv1);
-
-            textview.setText(day + "/" + (month+1) + "/" + year);
-
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            TextView textview = (TextView) getActivity().findViewById(R.id.tv1);
+            textview.setText(day + "/" + (month + 1) + "/" + year);
         }
     }
-
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -195,5 +135,57 @@ public class LoadRequestActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
     }
+    public class loadItems extends AsyncTask<Void,Void,Void>{
 
+        private loadItems() {
+            execute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_TRIP_ID,"");
+            map.put(db.KEY_MATERIAL_GROUPA_DESC,"");
+            map.put(db.KEY_MATERIAL_GROUPB_DESC,"");
+            map.put(db.KEY_MATERIAL_DESC2,"");
+            map.put(db.KEY_BATCH_MANAGEMENT,"");
+            map.put(db.KEY_PRODUCT_HIERARCHY,"");
+            map.put(db.KEY_VOLUME_UOM,"");
+            map.put(db.KEY_VOLUME,"");
+            map.put(db.KEY_WEIGHT_UOM,"");
+            map.put(db.KEY_NET_WEIGHT,"");
+            map.put(db.KEY_GROSS_WEIGHT,"");
+            map.put(db.KEY_ARTICLE_CATEGORY,"");
+            map.put(db.KEY_ARTICLE_NO,"");
+            map.put(db.KEY_BASE_UOM,"");
+            map.put(db.KEY_MATERIAL_GROUP,"");
+            map.put(db.KEY_MATERIAL_TYPE,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+
+            HashMap<String,String> filter = new HashMap<>();
+            Cursor cursor = db.getData(db.ARTICLE_HEADER,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                setLoadItems(cursor);
+            }
+            return null;
+        }
+    }
+
+    public void setLoadItems(Cursor loadItemsCursor){
+        Cursor cursor = loadItemsCursor;
+
+        do{
+            LoadRequest loadRequest = new LoadRequest();
+            loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+            loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
+            loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
+            loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            arraylist.add(loadRequest);
+        }
+        while (cursor.moveToNext());
+        adapter.notifyDataSetChanged();
+    }
 }
