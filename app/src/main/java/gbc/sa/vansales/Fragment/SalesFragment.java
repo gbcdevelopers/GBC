@@ -74,7 +74,7 @@ public class SalesFragment extends Fragment {
                     map.put(db.KEY_AMOUNT,sale.getPrice());
 
                     db.addData(db.CAPTURE_SALES_INVOICE,map);
-                    
+
                 }
 
             }
@@ -184,6 +184,7 @@ public class SalesFragment extends Fragment {
                                 Sales sales1 = salesarrayList.get(i);
                                 Log.e("Sales1 Cs","" + sales1.getCases());
                                 Log.e("Sales1 Pc","" + sales1.getPic());
+                                sales1.setPrice(String.valueOf((Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25)));
                                 total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
                             }
                             TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
