@@ -26,6 +26,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
  */
 public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
     private ArrayList<LoadRequest> loadRequestList;
+    private int pos;
 
     public LoadRequestBadgeAdapter(Context context, ArrayList<LoadRequest> loadRequests){
 
@@ -35,6 +36,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ArrayList<LoadRequest> dataList = this.loadRequestList;
+        pos = position;
         ViewHolder holder;
         if(convertView==null){
             LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -53,8 +55,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             // if holder created, get tag from view
             holder = (ViewHolder) convertView.getTag();
         }
-        final LoadRequest loadRequest = getItem(position);
-
+        final LoadRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
         holder.textWatcher = new TextWatcher() {
             @Override
@@ -63,7 +64,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                dataList.get(position).setCases(s.toString());
+                loadRequestList.get(pos).setCases(s.toString());
             }
 
             @Override
@@ -71,7 +72,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             }
         };
         holder.cases.addTextChangedListener(holder.textWatcher);
-        holder.cases.setText(dataList.get(position).getCases());
+        holder.cases.setText(loadRequestList.get(pos).getCases());
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);

@@ -241,8 +241,10 @@ public class LoadRequestActivity extends AppCompatActivity {
             loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
             loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             arraylist.add(loadRequest);
+
         }
         while (cursor.moveToNext());
+        
         adapter.notifyDataSetChanged();
     }
 
