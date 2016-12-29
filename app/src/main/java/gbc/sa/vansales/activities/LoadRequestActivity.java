@@ -28,6 +28,9 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,6 +42,8 @@ import gbc.sa.vansales.adapters.LoadRequestBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.LoadRequest;
+import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -76,12 +81,13 @@ public class LoadRequestActivity extends AppCompatActivity {
         processLoadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setTitle("Print Activity");
+                new postData().execute();
+                /*setTitle("Print Activity");
                 Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.activity_print);
                 dialog.setCancelable(true);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+                dialog.show();*/
             }
         });
         // Locate the ListView in listview_main.xml
@@ -109,6 +115,57 @@ public class LoadRequestActivity extends AppCompatActivity {
                 // TODO Auto-generated method stub
             }
         });
+    }
+
+    public void postData(){
+
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put("Function", ConfigStore.LoadRequestFunction);
+            map.put("OrderId", "");
+            map.put("DocumentType", ConfigStore.DocumentType);
+            map.put("DocumentDate", "20161229");
+            map.put("CustomerId", "E200");
+            map.put("SalesOrg", "1000");
+            map.put("DistChannel", "10");
+            map.put("Division", "10");
+            map.put("OrderValue", "100");
+            map.put("Currency", "SAR");
+            map.put("PurchaseNum", "3010500001");
+            JSONArray deepEntity = new JSONArray();
+            JSONObject jo = new JSONObject();
+            jo.put("Item", "0010");
+            jo.put("Material", "000000000014020151");
+            jo.put("Description", "Shrink Pad Berain Krones");
+            jo.put("Plant", "");
+            jo.put("Quantity", "2");
+            jo.put("ItemValue", "23");
+            jo.put("UoM", "CAR");
+            jo.put("Value", "12");
+            jo.put("Storagelocation", "");
+            jo.put("Route", "GBC01");
+            deepEntity.put(jo);
+            JSONObject jo1 = new JSONObject();
+            jo1.put("Item", "0020");
+            jo1.put("Material", "000000000014020077");
+            jo1.put("Description", "CRTON Fayha");
+            jo1.put("Plant", "");
+            jo1.put("Quantity", "2");
+            jo1.put("ItemValue", "24");
+            jo1.put("UoM", "CAR");
+            jo1.put("Value", "12");
+            jo1.put("Storagelocation", "");
+            jo1.put("Route", "GBC01");
+
+            deepEntity.put(jo1);
+
+            IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
     public static class DatePickerDialogClass extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         @Override
@@ -187,5 +244,17 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext());
         adapter.notifyDataSetChanged();
+    }
+
+    public class postData extends AsyncTask<Void, Void, Void>{
+        private ArrayList<String>returnList;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
+            postData();
+            return null;
+        }
+
     }
 }

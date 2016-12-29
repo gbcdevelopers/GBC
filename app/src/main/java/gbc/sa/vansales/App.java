@@ -32,6 +32,9 @@ public class App extends Application {
     public static final String CASE_UOM = "CAR";
     public static final String BOTTLES_UOM = "ZSR";
 
+    public static final String POST_COLLECTION = "SOHeaders";
+    public static final String DEEP_ENTITY = "SOItems";
+
     @Override
     public void onCreate() {
         super.onCreate();

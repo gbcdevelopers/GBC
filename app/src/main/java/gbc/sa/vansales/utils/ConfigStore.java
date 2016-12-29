@@ -32,6 +32,9 @@ public class ConfigStore {
     public static final String CustomerCreditEntity = "ZSFA_DOWNLOAD_SRV.CustomerCredit";
     public static final String CustomerOpenItemEntity = "ZSFA_DOWNLOAD_SRV.CustomerHeader";
 
+    public static final String LoadRequestFunction = "ORDER";
+    public static final String DocumentType = "ZVDL";
+
 
 
 }
