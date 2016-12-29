@@ -42,6 +42,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String BEGIN_DAY = "BEGIN_DAY";
     public static final String CAPTURE_CUSTOMER_STOCK = "CUSTOMER_STOCK";
     public static final String CAPTURE_SALES_INVOICE = "SALES_INVOICE";
+    public static final String LOAD_REQUEST = "LOAD_REQUEST";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -203,6 +204,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_VERIFIED = "isVerified";
     public static final String KEY_IS_SELECTED = "isSelected";
     public static final String KEY_TIME_STAMP = "timeStamp";
+
+    //Load Request
+    public static final String CASE = "case";
+    public static final String UNIT = "unit";
 
     private static DatabaseHandler sInstance;
 

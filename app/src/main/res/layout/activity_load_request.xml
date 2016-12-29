@@ -41,11 +41,15 @@
 												android:layout_width="fill_parent"
 												android:layout_height="wrap_content"
 												android:layout_alignParentBottom="true"
+												android:layout_marginRight="@dimen/space"
+												android:layout_marginLeft="@dimen/space"
+												android:layout_marginBottom="@dimen/space"
 												android:layout_marginTop="@dimen/h2"
 												android:background="@color/buttoncolor"
 												android:paddingLeft="@dimen/space"
 												android:paddingRight="@dimen/space"
-												android:text="Process Load Request"
+												android:textAllCaps="true"
+												android:text="@string/process_load_request"
 												android:textColor="@color/white"
 												/>
 

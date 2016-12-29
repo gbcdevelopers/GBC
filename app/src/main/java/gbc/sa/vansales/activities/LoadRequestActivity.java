@@ -63,7 +63,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
-        setTitle("Load Request");
+        setTitle(getString(R.string.loadrequest));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         articles = ArticleHeaders.get();
         new loadItems();
@@ -244,7 +244,7 @@ public class LoadRequestActivity extends AppCompatActivity {
 
         }
         while (cursor.moveToNext());
-        
+
         adapter.notifyDataSetChanged();
     }
 
