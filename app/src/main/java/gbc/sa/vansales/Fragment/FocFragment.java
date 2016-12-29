@@ -22,8 +22,10 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
+import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.models.Sales;
+import gbc.sa.vansales.utils.Settings;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -128,15 +130,24 @@ public class FocFragment extends Fragment {
                         sales.setCases(strCase);
                         double total=0;
 
+                        int salesTotal=0;
+                        int pcsTotal=0;
+
                         for(int i=0;i<salesarrayList.size();i++)
                         {
                             Sales sales1=salesarrayList.get(i);
                             total =total+(Double.parseDouble(sales1.getCases())*54+ Double.parseDouble(sales1.getPic())*2.25) ;
+                            salesTotal=salesTotal+Integer.parseInt(sales1.getCases());
+                            pcsTotal=pcsTotal+Integer.parseInt(sales1.getPic());
 
 
                         }
                         TextView tv=(TextView)viewmain.findViewById(R.id.tv_amt);
                         tv.setText(String.valueOf(total));
+
+                        TextView tvsales=(TextView)viewmain.findViewById(R.id.tv_sales_qty);
+                        tvsales.setText(salesTotal+"/"+pcsTotal);
+
 
                         dialog.dismiss();
 
@@ -152,6 +163,10 @@ public class FocFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                Settings.setString("from","foc");
+                SalesInvoiceActivity.tab_position=1;
 
                 Intent intent=new Intent(getActivity(), CategoryListActivity.class);
                 getActivity().startActivity(intent);

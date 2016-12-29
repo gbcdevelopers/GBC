@@ -179,6 +179,10 @@ public class SalesFragment extends Fragment {
                         }
                         else{
 
+
+                            int salesTotal=0;
+                            int pcsTotal=0;
+
                             double total = 0;
                             for (int i = 0; i < salesarrayList.size(); i++) {
                                 Sales sales1 = salesarrayList.get(i);
@@ -186,9 +190,19 @@ public class SalesFragment extends Fragment {
                                 Log.e("Sales1 Pc","" + sales1.getPic());
                                 sales1.setPrice(String.valueOf((Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25)));
                                 total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
+
+
+                                salesTotal=salesTotal+Integer.parseInt(sales1.getCases());
+                                pcsTotal=pcsTotal+Integer.parseInt(sales1.getPic());
+
                             }
                             TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
                             tv.setText(String.valueOf(total));
+
+                            TextView tvsales=(TextView)viewmain.findViewById(R.id.tv_sales_qty);
+                            tvsales.setText(salesTotal+"/"+pcsTotal);
+
+
                             dialog.dismiss();
                         }
 

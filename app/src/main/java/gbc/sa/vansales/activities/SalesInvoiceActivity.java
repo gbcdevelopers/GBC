@@ -201,18 +201,18 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         super.onResume();
         switch (tab_position) {
             case 0:
-                if (SalesFragment.salesarrayList != null && SalesFragment.adapter != null) {
-                    ArrayList<Sales> productArrayList = new ArrayList<>();
-                    for (int i = 0; i < Const.addlist.size(); i++) {
-                        Sales product = new Sales();
-                        product.setName(Const.addlist.get(i));
-                        product.setCases("0");
-                        product.setPic("0");
-                        productArrayList.add(product);
-                    }
-                    SalesFragment.salesarrayList.addAll(productArrayList);
-                    SalesFragment.adapter.notifyDataSetChanged();
-                }
+//                if (SalesFragment.salesarrayList != null && SalesFragment.adapter != null) {
+//                    ArrayList<Sales> productArrayList = new ArrayList<>();
+//                    for (int i = 0; i < Const.addlist.size(); i++) {
+//                        Sales product = new Sales();
+//                        product.setName(Const.addlist.get(i));
+//                        product.setCases("0");
+//                        product.setPic("0");
+//                        productArrayList.add(product);
+//                    }
+//                    SalesFragment.salesarrayList.addAll(productArrayList);
+//                    SalesFragment.adapter.notifyDataSetChanged();
+//                }
                 break;
             case 1:
                 if (FocFragment.salesarrayList != null && FocFragment.adapter != null) {

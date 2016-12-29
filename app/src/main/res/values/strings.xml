@@ -71,14 +71,14 @@
     <string name="return_item">Return Item</string>
     <string name="return_reason">Reason</string>
     <string name="returntype">Type of Return</string>
-    <string name="sales_qty">Sales Quantity</string>
+
     <string name="select_item">Select Item</string>
     <string name="select_operation">Select Operation</string>
     <string name="stocktake">Berain-Take Stock</string>
     <string name="shop_status">Select Shop Status</string>
     <string name="spot_sales">Spot Sales</string>
     <string name="submit">Submit Order</string>
-    <string name="total_amount">Total Amount</string>
+
     <string name="total_sales">Total Sales</string>
     <string name="total_receipt">Total Receipt</string>
     <string name="trade_price">Trade Price</string>
@@ -263,6 +263,7 @@
     <string name="am5500_large_swiss_roll_vanila_24x110g">AM5500*LARGE SWISS ROLL VANILA (24X110G)</string>
     <string name="price_54_00_2_25">Price :54.00/2.25</string>
     <string name="no_records">No Records</string>
+    <string name="sales_qty">Sales Qty</string>
 
 
     <string-array name="unloadReasons">

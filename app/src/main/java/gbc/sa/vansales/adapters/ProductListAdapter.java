@@ -14,12 +14,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.Fragment.BListFragment;
+import gbc.sa.vansales.Fragment.FocFragment;
+import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.StoreFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.activities.ShelfStockActivity;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.utils.Settings;
 
 import static gbc.sa.vansales.data.Const.addlist;
 
@@ -124,7 +129,7 @@ public class ProductListAdapter extends BaseAdapter  {
                         Log.e("check",dataList.get(position));
 
 
-                        if(ShelfStockActivity.tab_position==0)
+                        if(Settings.getString("from").equals("shelf"))
                         {
                             boolean isExists=false;
                             for(int i=0;i<ShelfFragment.arrayList.size();i++)
@@ -158,7 +163,7 @@ public class ProductListAdapter extends BaseAdapter  {
                                 holder.chk_product.setChecked(true);
                             }
 
-                        }else {
+                        }else if(Settings.getString("from").equals("store")){
 
 
 
@@ -193,6 +198,125 @@ public class ProductListAdapter extends BaseAdapter  {
                                 addlist.add(dataList.get(position));
                                 holder.chk_product.setChecked(true);
                             }
+
+                        }
+                        else if(Settings.getString("from").equals("foc"))
+                        {
+
+
+
+                            boolean isExists=false;
+                            for(int i = 0; i< FocFragment.salesarrayList.size(); i++)
+                            {
+                                Log.e("check",dataList.get(position)+" "+FocFragment.salesarrayList.get(i).getName()+" "+ SalesInvoiceActivity.tab_position);
+
+                                if(FocFragment.salesarrayList.get(i).getName().equals(dataList.get(position)))
+                                {
+                                    isExists=true;
+                                }
+                            }
+
+                            if(isExists)
+                            {
+                                holder.chk_product.setChecked(false);
+                                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                                builder.setMessage("Product already exists");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                            else {
+                                Log.e("add",dataList.get(position)+" at position "+SalesInvoiceActivity.tab_position);
+                                addlist.add(dataList.get(position));
+                                holder.chk_product.setChecked(true);
+                            }
+
+
+
+                        }
+                        else if(Settings.getString("from").equals("glist"))
+                        {
+
+                            boolean isExists=false;
+                            for(int i = 0; i< GListFragment.arrProductList.size(); i++)
+                            {
+                                Log.e("check",dataList.get(position)+" "+GListFragment.arrProductList.get(i)+" "+ SalesInvoiceActivity.tab_position);
+
+                                if(GListFragment.arrProductList.get(i).equals(dataList.get(position)))
+                                {
+                                    isExists=true;
+                                }
+                            }
+
+                            if(isExists)
+                            {
+                                holder.chk_product.setChecked(false);
+                                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                                builder.setMessage("Product already exists");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                            else {
+                                Log.e("add",dataList.get(position)+" at position "+SalesInvoiceActivity.tab_position);
+                                addlist.add(dataList.get(position));
+                                holder.chk_product.setChecked(true);
+                            }
+
+
+
+                        }
+                        else if(Settings.getString("from").equals("blist"))
+                        {
+
+
+
+                            boolean isExists=false;
+                            for(int i = 0; i< BListFragment.arrProductList.size(); i++)
+                            {
+                                Log.e("check",dataList.get(position)+" "+BListFragment.arrProductList.get(i)+" "+ SalesInvoiceActivity.tab_position);
+
+                                if(BListFragment.arrProductList.get(i).equals(dataList.get(position)))
+                                {
+                                    isExists=true;
+                                }
+                            }
+
+                            if(isExists)
+                            {
+                                holder.chk_product.setChecked(false);
+                                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                                builder.setMessage("Product already exists");
+                                builder.setCancelable(true);
+                                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                                builder.show();
+
+                            }
+                            else {
+                                Log.e("add",dataList.get(position)+" at position "+SalesInvoiceActivity.tab_position);
+                                addlist.add(dataList.get(position));
+                                holder.chk_product.setChecked(true);
+                            }
+
+
+
 
                         }
 

@@ -5,18 +5,31 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.daimajia.swipe.SwipeLayout;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
+import gbc.sa.vansales.activities.PromotionActivity;
+import gbc.sa.vansales.activities.PromotionListActivity;
+import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.adapters.ExpandReturnAdapter;
+import gbc.sa.vansales.adapters.SwipeDetector;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
+import gbc.sa.vansales.utils.OnSwipeTouchListener;
+import gbc.sa.vansales.utils.Settings;
 
 /**
  * Created by eheuristic on 12/5/2016.
@@ -32,6 +45,8 @@ public class BListFragment extends Fragment {
 
     AnimatedExpandableListView exp_list;
     public static RelativeLayout rl_middle;
+
+    private SwipeLayout swipeLayout;
 
 
     @Nullable
@@ -56,13 +71,18 @@ public class BListFragment extends Fragment {
             rl_middle.setVisibility(View.GONE);
         }
 
-        adapter=new ExpandReturnAdapter(getActivity(),arrProductList,exp_list);
+
+
+        adapter=new ExpandReturnAdapter(getActivity(),arrProductList,exp_list,"blist");
         exp_list.setAdapter(adapter);
+        setListView();
 
         btn_float.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                SalesInvoiceActivity.tab_position=3;
+                Settings.setString("from","blist");
                 Intent intent=new Intent(getActivity(), CategoryListActivity.class);
                 getActivity().startActivity(intent);
             }
@@ -71,13 +91,72 @@ public class BListFragment extends Fragment {
         exp_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return false;
+                return true;
             }
         });
 
 
 
 
+
+
+
+
         return view;
+    }
+
+
+
+    private void setListView() {
+        try{
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View header = inflater.inflate(R.layout.expand_return_groupview, exp_list, false);
+            swipeLayout = (SwipeLayout)header.findViewById(R.id.swipe_layout);
+
+
+
+            setSwipeViewFeatures();
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        // listView.addHeaderView(header);
+    }
+
+    private void setSwipeViewFeatures() {
+        //set show mode.
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+
+        //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, getView().findViewById(R.id.bottom_wrapper));
+        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onClose(SwipeLayout layout) {
+                Log.i("adapter", "onClose");
+            }
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                Log.i("adapter", "on swiping");
+            }
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+                Log.i("adapter", "on start open");
+            }
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                Log.i("adapter", "the BottomView totally show");
+            }
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+                Log.i("adapter", "the BottomView totally close");
+            }
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                //when user's hand released.
+            }
+        });
     }
 }
