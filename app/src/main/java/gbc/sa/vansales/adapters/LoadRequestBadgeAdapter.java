@@ -65,6 +65,9 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 loadRequestList.get(pos).setCases(s.toString());
+                int price = 1;
+                price = price*Integer.parseInt(s.toString());
+                loadRequestList.get(pos).setPrice(String.valueOf(price));
             }
 
             @Override
@@ -78,7 +81,10 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int price = loadRequestList.get(pos).getPrice()!=null?Integer.parseInt(loadRequestList.get(pos).getPrice().toString()):1;
+                price = price==1?Integer.parseInt(s.toString())*2:Integer.parseInt(s.toString())*2+price;
                 loadRequestList.get(pos).setUnits(s.toString());
+                loadRequestList.get(pos).setPrice(String.valueOf(price));
             }
 
             @Override

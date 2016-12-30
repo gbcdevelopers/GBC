@@ -34,6 +34,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -62,6 +63,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     ArrayList<LoadRequest> arraylist = new ArrayList<>();
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<ArticleHeader> articles;
+    int orderTotalValue = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,30 +88,34 @@ public class LoadRequestActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*new postData().execute();*/
                 for(LoadRequest loadRequest:arraylist){
-                    if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
-                        loadRequest.setCases("0");
+                    try{
+                        if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                            loadRequest.setCases("0");
+                        }
+                        if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                            loadRequest.setUnits("0");
+                        }
+                        HashMap<String,String> map = new HashMap<String, String>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                        map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                        map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                        map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                        map.put(db.KEY_CASE,loadRequest.getCases());
+                        map.put(db.KEY_UNIT,loadRequest.getUnits());
+                        map.put(db.KEY_UOM,loadRequest.getUom());
+                        map.put(db.KEY_PRICE,loadRequest.getPrice());
+                        map.put(db.KEY_IS_POSTED,"N");
+                        map.put(db.KEY_IS_PRINTED, "");
+                        orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                        if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                            db.addData(db.LOAD_REQUEST,map);
+                        }
                     }
-                    if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
-                        loadRequest.setUnits("0");
+                    catch (Exception e){
+                        e.printStackTrace();
                     }
-                    HashMap<String,String> map = new HashMap<String, String>();
-                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
-                    map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
-                    map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                    map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
-                    map.put(db.KEY_CASE,loadRequest.getCases());
-                    map.put(db.KEY_UNIT,loadRequest.getUnits());
-                    map.put(db.KEY_UOM,loadRequest.getUom());
-                    map.put(db.KEY_PRICE,loadRequest.getPrice());
-                    map.put(db.KEY_IS_POSTED,"");
-                    map.put(db.KEY_IS_PRINTED, "");
-
-                    if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
-                        db.addData(db.LOAD_REQUEST,map);
-                    }
-
                 }
                 setTitle("Print Activity");
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
@@ -168,41 +174,50 @@ public class LoadRequestActivity extends AppCompatActivity {
             map.put("Function", ConfigStore.LoadRequestFunction);
             map.put("OrderId", "");
             map.put("DocumentType", ConfigStore.DocumentType);
-            map.put("DocumentDate", "20161229");
-            map.put("CustomerId", "E200");
-            map.put("SalesOrg", "1000");
-            map.put("DistChannel", "10");
-            map.put("Division", "10");
-            map.put("OrderValue", "100");
+            map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+            map.put("CustomerId", Settings.getString(App.DRIVER));
+            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+            map.put("Division", Settings.getString(App.DIVISION));
+            map.put("OrderValue", String.valueOf(orderTotalValue));
             map.put("Currency", "SAR");
-            map.put("PurchaseNum", "3010500001");
+            map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+
             JSONArray deepEntity = new JSONArray();
-            JSONObject jo = new JSONObject();
-            jo.put("Item", "0010");
-            jo.put("Material", "000000000014020151");
-            jo.put("Description", "Shrink Pad Berain Krones");
-            jo.put("Plant", "");
-            jo.put("Quantity", "2");
-            jo.put("ItemValue", "23");
-            jo.put("UoM", "CAR");
-            jo.put("Value", "12");
-            jo.put("Storagelocation", "");
-            jo.put("Route", "GBC01");
-            deepEntity.put(jo);
-            JSONObject jo1 = new JSONObject();
-            jo1.put("Item", "0020");
-            jo1.put("Material", "000000000014020077");
-            jo1.put("Description", "CRTON Fayha");
-            jo1.put("Plant", "");
-            jo1.put("Quantity", "2");
-            jo1.put("ItemValue", "24");
-            jo1.put("UoM", "CAR");
-            jo1.put("Value", "12");
-            jo1.put("Storagelocation", "");
-            jo1.put("Route", "GBC01");
 
-            deepEntity.put(jo1);
+            HashMap<String, String> itemMap = new HashMap<>();
+            itemMap.put(db.KEY_ITEM_NO,"");
+            itemMap.put(db.KEY_MATERIAL_NO,"");
+            itemMap.put(db.KEY_MATERIAL_DESC1,"");
+            itemMap.put(db.KEY_CASE,"");
+            itemMap.put(db.KEY_UNIT,"");
+            itemMap.put(db.KEY_UOM,"");
+            itemMap.put(db.KEY_PRICE,"");
 
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED,"N");
+
+            Cursor cursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                int itemno = 0010;
+                do{
+                    JSONObject jo = new JSONObject();
+                    jo.put("Item",(("0000" + String.valueOf(itemno)).substring(String.valueOf(itemno).length())));
+                    jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    jo.put("Plant","");
+                    jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                    jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    jo.put("Storagelocation", "");
+                    jo.put("Route", Settings.getString(App.ROUTE));
+                    itemno = itemno+10;
+                    deepEntity.put(jo);
+                }
+                while (cursor.moveToNext());
+            }
             IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
         }
         catch (Exception e){
@@ -301,6 +316,20 @@ public class LoadRequestActivity extends AppCompatActivity {
             postData();
             return null;
         }
+        @Override
+        protected void onPostExecute(Void aVoid) {
 
+            for(LoadRequest loadRequest:arraylist){
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_POSTED,"Y");
+
+                HashMap<String,String> filter = new HashMap<>();
+                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+
+                db.updateData(db.LOAD_REQUEST,map,filter);
+            }
+        }
     }
 }
