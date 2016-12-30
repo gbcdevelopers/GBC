@@ -43,6 +43,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CAPTURE_CUSTOMER_STOCK = "CUSTOMER_STOCK";
     public static final String CAPTURE_SALES_INVOICE = "SALES_INVOICE";
     public static final String LOAD_REQUEST = "LOAD_REQUEST";
+    public static final String PURCHASE_NUMBER_GENERATION = "PURCHASE_NUMBER_GENERATION";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -211,6 +212,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_PRICE = "price";
     public static final String KEY_IS_POSTED = "isPosted";
     public static final String KEY_IS_PRINTED = "isPrinted";
+
+    //Generating Sequential Number for Purchase Number
+    public static final String KEY_DOC_TYPE = "documentType";
+    public static final String KEY_PURCHASE_NUMBER = "purchaseNumber";
 
     private static DatabaseHandler sInstance;
 
@@ -479,6 +484,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED   + " TEXT,"
                 + KEY_IS_PRINTED  + " TEXT " + ")";
 
+        String TABLE_GENERATE_PR_NUMBER = "CREATE TABLE " + PURCHASE_NUMBER_GENERATION + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP  + " TEXT,"
+                + KEY_ROUTE  + " TEXT,"
+                + KEY_DOC_TYPE  + " TEXT,"
+                + KEY_PURCHASE_NUMBER  + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -498,6 +510,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
         db.execSQL(TABLE_CAPTURE_SALES_INVOICE);
         db.execSQL(TABLE_LOAD_REQUEST);
+        db.execSQL(TABLE_GENERATE_PR_NUMBER);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -518,6 +531,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_CUSTOMER_STOCK);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_SALES_INVOICE);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_REQUEST);
+        db.execSQL("DROP TABLE IF EXISTS " + PURCHASE_NUMBER_GENERATION);
         onCreate(db);
     }
 

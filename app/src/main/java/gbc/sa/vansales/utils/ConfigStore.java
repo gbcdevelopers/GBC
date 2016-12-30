@@ -35,6 +35,14 @@ public class ConfigStore {
     public static final String LoadRequestFunction = "ORDER";
     public static final String DocumentType = "ZVDL";
 
+    //DocumentTypes for PR Number Generation
+    public static final String LoadRequest_PR_Type = "LOAD";
+    public static final String LoadRequest_PR = "01";
+    public static final String OrderRequest_PR_Type = "ORDER";
+    public static final String OrderRequest_PR = "02";
+    public static final String InvoiceRequest_PR_Type = "INVOICE";
+    public static final String InvoiceRequest_PR = "03";
+
 
 
 }
