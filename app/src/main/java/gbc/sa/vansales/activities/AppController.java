@@ -2,18 +2,17 @@ package gbc.sa.vansales.activities;
 
 /**
  * Created by Muhammad Umair on 29/11/2016.
- */import android.app.Application;
-        import android.text.TextUtils;
-
-        import com.android.volley.Request;
-        import com.android.volley.RequestQueue;
-        import com.android.volley.toolbox.Volley;
+ */
+import android.app.Application;
+import android.text.TextUtils;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
 import gbc.sa.vansales.utils.Settings;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
-public class AppController extends Application
-{
+public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
@@ -23,12 +22,11 @@ public class AppController extends Application
     @Override
     public void onCreate() {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
         mInstance = this;
         System.out.println("On Create");
         Settings.initialize(getApplicationContext());
     }
-
 
 
     public static synchronized AppController getInstance() {
@@ -51,12 +49,14 @@ public class AppController extends Application
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
+
     }
+
 
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
-    }
 
+    }
 }

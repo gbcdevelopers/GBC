@@ -301,6 +301,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             Log.v("Const.constantsHashMap",""+Const.constantsHashMap.get(position).get(position).getItemName());
 
 
+            tv_date.setText(Const.constantsHashMap.get(position).get(position).getDate());
+
             for (int i = 0; i < constantses.size(); i++)
             {
                 LoadRequestConstants lrc = new LoadRequestConstants(String.valueOf(i),constantses.get(i).getItemName(),constantses.get(i).getCategory(),
@@ -327,7 +329,10 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
+                for(int i=0;i<Const.loadRequestConstantsList.size();i++)
+                {
+                    Const.loadRequestConstantsList.get(i).setDate(tv_date.getText().toString());
+                }
 
 
 
@@ -383,6 +388,14 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
           public void onClick(View v) {
 
 
+
+              for(int i=0;i<Const.loadRequestConstantsList.size();i++)
+              {
+                  Const.loadRequestConstantsList.get(i).setDate(tv_date.getText().toString());
+              }
+
+
+
               Const.constantsHashMap.put(position,Const.loadRequestConstantsList);
 
               Log.v("Const.id ","const id : "+Const.id);
@@ -403,10 +416,6 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
 
-
-
-
-
             }
         });
 
@@ -426,14 +435,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
             String myFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
+            String date=sdf.format(myCalendar.getTime());
+            tv_date.setText(date);
 
-            tv_date.setText(sdf.format(myCalendar.getTime()));
 
 
 
-            PreSaleProceed proceed=new PreSaleProceed();
-            proceed.setDATE(tv_date.getText().toString());
-            Const.proceedArrayList.add(Const.id,proceed);
+
+
+
         }
 
 

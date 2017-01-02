@@ -17,7 +17,7 @@ public class ReviewActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
     String strText[] = {"PROMOTION LIST", "ROUTE BOOK", "PRICE LIST",
-            "NEXT LOAD", "WAREHOUSE STOCK", "TODAYS ORDER", "DATA POUSTIN AUDIT"};
+            "NEXT LOAD", "WAREHOUSE STOCK", "TODAYS ORDER", "DATA POSTING AUDIT"};
     int resarr[] = {R.drawable.info_pramotion_list, R.drawable.info_route_book, R.drawable.info_price_list,
             R.drawable.info_next_load, R.drawable.info_warehouse_stock, R.drawable.info_todays_order,
             R.drawable.info_data_posting_audit};

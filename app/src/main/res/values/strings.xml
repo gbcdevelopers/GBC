@@ -21,7 +21,7 @@
     <string name="credit">Credit</string>
     <string name="currency">SAR</string>
     <string name="customerid">Customer ID</string>
-    <string name="customer_name">Customer Name</string>
+    <string name="customer_name">Cust NM</string>
     <string name="customer_address">Address</string>
     <string name="customeroperation">Customer Operation</string>
     <string name="dashboard">Dashboard</string>
@@ -214,7 +214,7 @@
     <string name="advance_payment">ADVANCE PAYMENT</string>
     <string name="van_stock">VAN STOCK</string>
     <string name="quantity">QUANTITY</string>
-    <string name="cutomer_address">Cust A</string>
+    <string name="cutomer_address">Cust AD</string>
     <string name="customer_1">Customer 1</string>
     <string name="rajkot">Rajkot</string>
     <string name="unload_inventory">Unload Inventory</string>

@@ -46,7 +46,7 @@ public class LoginActivity extends Activity {
         db.getWritableDatabase();
 
         loadingSpinner = new LoadingSpinner(this);
-    }
+}
     public void login(View view){
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();

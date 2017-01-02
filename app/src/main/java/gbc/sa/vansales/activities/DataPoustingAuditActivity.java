@@ -31,7 +31,7 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Data Pousting Audit");
+        tv_top_header.setText("Data Posting Audit");
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

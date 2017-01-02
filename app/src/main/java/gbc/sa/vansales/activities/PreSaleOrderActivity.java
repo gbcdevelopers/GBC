@@ -1,7 +1,6 @@
 package gbc.sa.vansales.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.adapters.DeliveryAdapter;
 import gbc.sa.vansales.adapters.PresaleAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
@@ -34,7 +31,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
     PresaleAdapter presaleAdapterdapter;
     FloatingActionButton flt_presale;
-    ArrayList<Integer> proceedArrayList;
+
+    ArrayList<PreSaleProceed> proceedArrayList1;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -88,10 +86,11 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         list_delivery = (ListView) findViewById(R.id.list_delivery);
 
 
-        proceedArrayList=new ArrayList<>();
+
+        proceedArrayList1=new ArrayList<>();
 
 
-        presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
+        presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList1);
         list_delivery.setAdapter(presaleAdapterdapter);
 
 
@@ -129,8 +128,9 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (proceedArrayList != null) {
-            proceedArrayList.clear();
+        if (proceedArrayList1 != null) {
+
+            proceedArrayList1.clear();
         }
 
 
@@ -138,8 +138,13 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         Log.v("hashmap",Const.constantsHashMap.size()+"");
         for(int i=0;i<Const.constantsHashMap.size();i++)
         {
-            proceedArrayList.add(i);
+
             List<LoadRequestConstants> constantses=Const.constantsHashMap.get(i);
+            PreSaleProceed proceed=new PreSaleProceed();
+
+            proceed.setDATE(Const.constantsHashMap.get(i).get(i).getDate());
+
+            proceedArrayList1.add(proceed);
             for(int j=0;j<constantses.size();j++)
             {
                 Log.v("itemname",constantses.get(j).getItemName());
@@ -157,7 +162,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 //        }
         if(Const.constantsHashMap.size()>0)
         {
-            presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
+            presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery,proceedArrayList1);
             list_delivery.setAdapter(presaleAdapterdapter);
         }
 
