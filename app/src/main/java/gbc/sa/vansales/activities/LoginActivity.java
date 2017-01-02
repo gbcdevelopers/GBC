@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerHeaders;
@@ -25,7 +26,9 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 public class LoginActivity extends Activity {
     private LoadingSpinner loadingSpinner;
@@ -250,6 +253,15 @@ public class LoginActivity extends Activity {
 
     public void downloadData(final String tripId){
         Log.e("Inside chain",""+ tripId);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_IS_BEGIN_DAY, "false");
+        map.put(db.KEY_IS_LOAD_VERIFIED, "false");
+        map.put(db.KEY_IS_END_DAY,"false");
+
+        db.addData(db.LOCK_FLAGS, map);
+
+
         Chain chain = new Chain(new Chain.Link(){
             @Override
             public void run() {

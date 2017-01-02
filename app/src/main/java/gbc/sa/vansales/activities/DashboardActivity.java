@@ -63,6 +63,7 @@ public class DashboardActivity extends AppCompatActivity
     ImageView iv_drawer;
     DrawerLayout drawer;
     Button btn_message;
+    Button btn_settings;
     private DrawerLayout mDrawerLayout;
     ExpanableListAdapterActivity mMenuAdapter;
     ExpandableListView expandableList;
@@ -86,6 +87,13 @@ public class DashboardActivity extends AppCompatActivity
                 Intent intent = new Intent(DashboardActivity.this, CustomerMessageListActivity.class);
                 intent.putExtra("from", "dash");
                 startActivity(intent);
+            }
+        });
+        btn_settings = (Button)findViewById(R.id.btn_settings);
+        btn_settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         //Load all Articles
@@ -166,9 +174,16 @@ public class DashboardActivity extends AppCompatActivity
                 map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 map.put(db.KEY_DATE,new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
-                map.put(db.KEY_IS_SELECTED,"true");
+                map.put(db.KEY_IS_SELECTED, "true");
 
-                db.addData(db.BEGIN_DAY,map);
+                db.addData(db.BEGIN_DAY, map);
+
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_BEGIN_DAY, "true");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_BEGIN_DAY,"false");
+
+                db.updateData(db.LOCK_FLAGS,altMap,filter);
 
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
@@ -196,8 +211,8 @@ public class DashboardActivity extends AppCompatActivity
     }
     private void setBeginDayVisibility() {
         HashMap<String,String> map = new HashMap<>();
-        map.put(db.KEY_IS_SELECTED, "true");
-        if(db.checkData(db.BEGIN_DAY,map)){
+        map.put(db.KEY_IS_BEGIN_DAY, "true");
+        if(db.checkData(db.LOCK_FLAGS,map)){
             btnBDay.setEnabled(false);
             btnBDay.setAlpha(.5f);
            // btnBDay.setVisibility(View.INVISIBLE);

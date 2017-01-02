@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -38,6 +39,7 @@ import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
 import android.net.NetworkInfo;
+import org.apache.commons.lang3.StringUtils;
 /**
  * Created by Rakshit on 17-Dec-16.
  */
@@ -116,4 +118,71 @@ public class Helpers {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+    public static String generateNumber(DatabaseHandler db, String documentType){
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_ROUTE,"");
+
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+
+        Cursor routeCursor = db.getData(db.TRIP_HEADER, map, filter);
+        if(routeCursor.getCount()>0){
+            routeCursor.moveToFirst();
+        }
+        String route = routeCursor.getString(routeCursor.getColumnIndex(db.KEY_ROUTE));
+       // int routeId = Integer.parseInt(route);
+        int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
+        int numRange = 00000;
+
+        HashMap<String, String> search = new HashMap<>();
+        search.put(db.KEY_DOC_TYPE,documentType);
+        boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION,search);
+        if(checkPRNo){
+            HashMap<String, String> prData = new HashMap<>();
+            prData.put(db.KEY_PURCHASE_NUMBER,"");
+
+            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION,prData,search);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                numRange = numRange + 1;
+            }
+        }
+
+        return route+String.valueOf(docTypeId)+String.valueOf(numRange);
+    }
+
+    public static String getDocumentTypeNo(String documentType){
+        String docTypeNo = "";
+        switch (documentType){
+            case ConfigStore.LoadRequest_PR_Type:{
+                docTypeNo = ConfigStore.LoadRequest_PR;
+                break;
+            }
+            case ConfigStore.OrderRequest_PR_Type:{
+                docTypeNo = ConfigStore.OrderRequest_PR;
+                break;
+            }
+            case ConfigStore.InvoiceRequest_PR_Type:{
+                docTypeNo = ConfigStore.InvoiceRequest_PR;
+                break;
+            }
+
+        }
+        return docTypeNo;
+    }
+
+    public static String getMaskedValue(String value, int length){
+        /*StringBuilder sb = new StringBuilder();
+        for(int i=0;i<length-value.length();i++){
+            sb.append("0");
+        }
+        sb.append(value);
+        Log.e("Item no","" + sb.toString());
+        return sb.toString();*/
+
+        return StringUtils.leftPad(value, length, "0");
+    }
+
 }

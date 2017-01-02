@@ -76,6 +76,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
         filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
         db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
 
+     //   addItemstoVan(dataNew);
+
         if(!checkIfLoadExists()){
             if(createDataForPost(dataNew,dataOld)){
                 Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
@@ -116,6 +118,22 @@ public class LoadVerifyActivity extends AppCompatActivity {
             return false;
         }
 
+    }
+
+    private void addItemstoVan(ArrayList<LoadSummary>dataNew){
+        for(int i=0;i<dataNew.size();i++){
+
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
+            map.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
+            map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+            map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());
+            map.put(db.KEY_MATERIAL_DESC1, dataNew.get(i).getItemDescription().toString());
+
+            //Logic to read Customer Delivery Item and block material quantity based on UOM
+
+            db.addData(db.VAN_STOCK_ITEMS,map);
+        }
     }
 
     private boolean createDataForPost(ArrayList<LoadSummary>dataNew,ArrayList<LoadSummary>dataOld){

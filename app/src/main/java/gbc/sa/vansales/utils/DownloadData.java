@@ -66,7 +66,9 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
                     headerParams.put(db.KEY_VISITLISTID  ,headerObj.get("Vlid").toString());
                     headerParams.put(db.KEY_ROUTE ,headerObj.get("Route").toString());
-                    headerParams.put(db.KEY_DRIVER,headerObj.get("Driver1").toString());
+                    Settings.setString(App.ROUTE, headerObj.get("Route").toString());
+                    headerParams.put(db.KEY_DRIVER, headerObj.get("Driver1").toString());
+                    Settings.setString(App.DRIVER,headerObj.get("Driver1").toString());
                     headerParams.put(db.KEY_TRUCK, headerObj.get("Truck").toString());
                     headerParams.put(db.KEY_PS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Psdate").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_AS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Asdate").toString()), App.DATE_FORMAT));
@@ -89,8 +91,11 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_START_DATE, Helpers.formatDate(Helpers.formatDate(object.get("PstartDate").toString()), App.DATE_FORMAT));
                         params.put(db.KEY_START_TIME  ,object.get("PstartTime").toString());
                         params.put(db.KEY_SALES_ORG  ,object.get("SalesOrg").toString());
-                        params.put(db.KEY_DIST_CHANNEL  ,object.get("DistChannel").toString());
-                        params.put(db.KEY_DIVISION  ,object.get("Division").toString());
+                        Settings.setString(App.SALES_ORG, object.getString("SalesOrg").toString());
+                        params.put(db.KEY_DIST_CHANNEL, object.get("DistChannel").toString());
+                        Settings.setString(App.DIST_CHANNEL, object.getString("DistChannel").toString());
+                        params.put(db.KEY_DIVISION, object.get("Division").toString());
+                        Settings.setString(App.DIVISION, object.getString("Division").toString());
 
                         db.addData(db.TRIP_SALES_AREA,params);
                     }
