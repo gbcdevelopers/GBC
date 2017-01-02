@@ -80,6 +80,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "button");
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
         });

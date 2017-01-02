@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +21,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,10 +37,14 @@ import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadRequestBadgeAdapter;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.PreSaleProceed;
+import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class PreSaleOrderProceedActivity extends AppCompatActivity {
@@ -51,7 +60,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     EditText et_search;
     ListView list;
     LoadRequestBadgeAdapter adapter;
-
+    Customer object;
+    LoadingSpinner loadingSpinner;
     public static String from = "";
     LinearLayout ll_bottom;
     FloatingActionButton fb_print;
@@ -79,12 +89,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("PreSale Order");
+        loadingSpinner = new LoadingSpinner(this);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
         }
@@ -186,6 +199,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("Array List size","" + arraylist.size());
                 for(LoadRequest loadRequest:arraylist){
                     try{
                         if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
@@ -339,9 +353,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
         String orderId = "";
         @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
-            postData();
+            this.orderId = postData();
             return null;
         }
         @Override
@@ -357,12 +375,78 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
 
-                db.updateData(db.ORDER_REQUEST,map,filter);
+                db.updateData(db.ORDER_REQUEST, map, filter);
             }
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            if(this.orderId.isEmpty()||this.orderId.equals("")||this.orderId==null){
+                Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Request " + this.orderId + " has been created",Toast.LENGTH_SHORT ).show();
+            }
+
         }
     }
 
-    private void postData(){
+    private String postData(){
+        String orderID = "";
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put("Function", ConfigStore.LoadRequestFunction);
+            map.put("OrderId", "");
+            map.put("DocumentType", ConfigStore.DocumentType);
+            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+            // map.put("DocumentDate", null);
+            map.put("CustomerId", object.getCustomerID());
+            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+            map.put("Division", Settings.getString(App.DIVISION));
+            map.put("OrderValue", String.valueOf(orderTotalValue));
+            map.put("Currency", "SAR");
+            map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
 
+            JSONArray deepEntity = new JSONArray();
+
+            HashMap<String, String> itemMap = new HashMap<>();
+            itemMap.put(db.KEY_ITEM_NO,"");
+            itemMap.put(db.KEY_MATERIAL_NO,"");
+            itemMap.put(db.KEY_MATERIAL_DESC1,"");
+            itemMap.put(db.KEY_CASE,"");
+            itemMap.put(db.KEY_UNIT,"");
+            itemMap.put(db.KEY_UOM,"");
+            itemMap.put(db.KEY_PRICE,"");
+
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED,"N");
+
+            Cursor cursor = db.getData(db.ORDER_REQUEST,itemMap,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                int itemno = 10;
+                do{
+                    JSONObject jo = new JSONObject();
+                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                    jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    jo.put("Plant","");
+                    jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                    jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                    jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                    jo.put("Storagelocation", "");
+                    jo.put("Route", Settings.getString(App.ROUTE));
+                    itemno = itemno+10;
+                    deepEntity.put(jo);
+                }
+                while (cursor.moveToNext());
+            }
+            orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return orderID;
     }
 }

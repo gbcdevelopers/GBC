@@ -15,6 +15,7 @@ import com.daimajia.swipe.SwipeLayout;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.LoadVerifyActivity;
@@ -57,6 +58,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         }
         final LoadRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
+
         holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -99,6 +101,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         holder.cases.setText(loadRequestList.get(pos).getCases());
         holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
+
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
