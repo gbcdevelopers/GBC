@@ -15,6 +15,7 @@ public class App extends Application {
     public static final boolean IS_HTTPS = false;
     public static final String SERVER_DOMAIN = "default";
     public static final String URL = "/sap/opu/odata/sap/ZSFA_DOWNLOAD_SRV/";
+    public static final String POST_URL = "/sap/opu/odata/sap/ZSFA_CUSTOMER_ORDER_SRV/";
 
     public static final String SERVICE_USER = "ecs";
     public static final String SERVICE_PASSWORD = "sap123";

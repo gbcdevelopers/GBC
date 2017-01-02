@@ -44,6 +44,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CAPTURE_SALES_INVOICE = "SALES_INVOICE";
     public static final String LOAD_REQUEST = "LOAD_REQUEST";
     public static final String PURCHASE_NUMBER_GENERATION = "PURCHASE_NUMBER_GENERATION";
+    public static final String LOCK_FLAGS = "FLAGS_FOR_USER_OPERATIONS";
+    public static final String VAN_STOCK_ITEMS = "VAN_STOCK_ITEMS";
+    public static final String CUSTOMER_DELIVERY_HEADER = "CUSTOMER_DELIVERY_HEADER";
+    public static final String CUSTOMER_DELIVERY_ITEMS = "CUSTOMER_DELIVERY_ITEMS";
+    public static final String ORDER_REQUEST = "ORDER_REQUEST";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -213,9 +218,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_POSTED = "isPosted";
     public static final String KEY_IS_PRINTED = "isPrinted";
 
+    //Order Request
+    public static final String KEY_ORDER_ID = "order_id";
+
     //Generating Sequential Number for Purchase Number
     public static final String KEY_DOC_TYPE = "documentType";
     public static final String KEY_PURCHASE_NUMBER = "purchaseNumber";
+
+    //User Flags
+    public static final String KEY_IS_BEGIN_DAY = "isBeginDay";
+    public static final String KEY_IS_LOAD_VERIFIED = "isLoadVerified";
+    public static final String KEY_IS_END_DAY = "isEndDay";
+
+    //Vanstock Table
+    public static final String KEY_RESERVED_QTY = "reservedQty";
 
     private static DatabaseHandler sInstance;
 
@@ -424,6 +440,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DIVISION   + " TEXT,"
                 + KEY_IS_VERIFIED  + " TEXT " + ")";
 
+
+        String TABLE_VAN_STOCK_ITEMS = "CREATE TABLE " + VAN_STOCK_ITEMS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_ITEM_CATEGORY  + " TEXT,"
+                + KEY_CREATED_BY  + " TEXT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_DATE   + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_DESC1   + " TEXT,"
+                + KEY_MATERIAL_ENTERED   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_PLANT   + " TEXT,"
+                + KEY_STORAGE_LOCATION   + " TEXT,"
+                + KEY_BATCH   + " TEXT,"
+                + KEY_ACTUAL_QTY  + " TEXT,"
+                + KEY_RESERVED_QTY + " TEXT,"
+                + KEY_REMAINING_QTY  + " TEXT,"
+                + KEY_UOM  + " TEXT,"
+                + KEY_DIST_CHANNEL   + " TEXT,"
+                + KEY_DIVISION   + " TEXT,"
+                + KEY_IS_VERIFIED  + " TEXT " + ")";
+
         String TABLE_LOAD_DELIVERY_ITEMS_POST = "CREATE TABLE " + LOAD_DELIVERY_ITEMS_POST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ENTRY_TIME  + " TEXT,"
@@ -484,12 +524,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED   + " TEXT,"
                 + KEY_IS_PRINTED  + " TEXT " + ")";
 
+        String TABLE_ORDER_REQUEST = "CREATE TABLE " + ORDER_REQUEST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP  + " TEXT,"
+                + KEY_TRIP_ID  + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_MATERIAL_DESC1  + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_CASE   + " TEXT,"
+                + KEY_UNIT   + " TEXT,"
+                + KEY_UOM   + " TEXT,"
+                + KEY_PRICE   + " TEXT,"
+                + KEY_IS_POSTED   + " TEXT,"
+                + KEY_IS_PRINTED  + " TEXT " + ")";
+
         String TABLE_GENERATE_PR_NUMBER = "CREATE TABLE " + PURCHASE_NUMBER_GENERATION + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP  + " TEXT,"
                 + KEY_ROUTE  + " TEXT,"
                 + KEY_DOC_TYPE  + " TEXT,"
                 + KEY_PURCHASE_NUMBER  + " TEXT " + ")";
+
+
+        String TABLE_USER_FLAGS = "CREATE TABLE " + LOCK_FLAGS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_IS_BEGIN_DAY + " TEXT,"
+                + KEY_IS_LOAD_VERIFIED + " TEXT,"
+                + KEY_IS_END_DAY + " TEXT " + ")";
 
 
         //Execute to create tables
@@ -510,7 +573,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
         db.execSQL(TABLE_CAPTURE_SALES_INVOICE);
         db.execSQL(TABLE_LOAD_REQUEST);
+        db.execSQL(TABLE_ORDER_REQUEST);
         db.execSQL(TABLE_GENERATE_PR_NUMBER);
+        db.execSQL(TABLE_USER_FLAGS);
+        db.execSQL(TABLE_VAN_STOCK_ITEMS);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -532,6 +598,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_SALES_INVOICE);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_REQUEST);
         db.execSQL("DROP TABLE IF EXISTS " + PURCHASE_NUMBER_GENERATION);
+        db.execSQL("DROP TABLE IF EXISTS " + LOCK_FLAGS);
+        db.execSQL("DROP TABLE IF EXISTS " + ORDER_REQUEST);
         onCreate(db);
     }
 

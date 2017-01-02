@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
 import android.net.NetworkInfo;
+import org.apache.commons.lang3.StringUtils;
 /**
  * Created by Rakshit on 17-Dec-16.
  */
@@ -130,7 +131,7 @@ public class Helpers {
             routeCursor.moveToFirst();
         }
         String route = routeCursor.getString(routeCursor.getColumnIndex(db.KEY_ROUTE));
-        int routeId = Integer.parseInt(route);
+       // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 00000;
 
@@ -170,6 +171,18 @@ public class Helpers {
 
         }
         return docTypeNo;
+    }
+
+    public static String getMaskedValue(String value, int length){
+        /*StringBuilder sb = new StringBuilder();
+        for(int i=0;i<length-value.length();i++){
+            sb.append("0");
+        }
+        sb.append(value);
+        Log.e("Item no","" + sb.toString());
+        return sb.toString();*/
+
+        return StringUtils.leftPad(value, length, "0");
     }
 
 }

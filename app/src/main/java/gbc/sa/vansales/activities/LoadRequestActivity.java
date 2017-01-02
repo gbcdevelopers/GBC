@@ -48,6 +48,7 @@ import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -64,7 +65,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<ArticleHeader> articles;
     int orderTotalValue = 0;
-
+    LoadingSpinner loadingSpinner = new LoadingSpinner(this);
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
@@ -124,6 +125,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        new postData().execute();
                         dialog.dismiss();
                     }
                 });
@@ -167,14 +169,15 @@ public class LoadRequestActivity extends AppCompatActivity {
         });
     }
 
-    public void postData(){
-
+    public String postData(){
+        String orderID = "";
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadRequestFunction);
             map.put("OrderId", "");
             map.put("DocumentType", ConfigStore.DocumentType);
-            map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+           // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+           // map.put("DocumentDate", null);
             map.put("CustomerId", Settings.getString(App.DRIVER));
             map.put("SalesOrg", Settings.getString(App.SALES_ORG));
             map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
@@ -200,17 +203,17 @@ public class LoadRequestActivity extends AppCompatActivity {
             Cursor cursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
-                int itemno = 0010;
+                int itemno = 10;
                 do{
                     JSONObject jo = new JSONObject();
-                    jo.put("Item",(("0000" + String.valueOf(itemno)).substring(String.valueOf(itemno).length())));
+                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                     jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                     jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
                     jo.put("Plant","");
                     jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
-                    jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                     jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-                    jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                     jo.put("Storagelocation", "");
                     jo.put("Route", Settings.getString(App.ROUTE));
                     itemno = itemno+10;
@@ -218,12 +221,12 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 while (cursor.moveToNext());
             }
-            IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
+            orderID = IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
         }
         catch (Exception e){
             e.printStackTrace();
         }
-
+        return orderID;
 
     }
     public static class DatePickerDialogClass extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -281,6 +284,7 @@ public class LoadRequestActivity extends AppCompatActivity {
 
             HashMap<String,String> filter = new HashMap<>();
             Cursor cursor = db.getData(db.ARTICLE_HEADER,map,filter);
+
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
                 setLoadItems(cursor);
@@ -309,16 +313,21 @@ public class LoadRequestActivity extends AppCompatActivity {
 
     public class postData extends AsyncTask<Void, Void, Void>{
         private ArrayList<String>returnList;
-
+        private String orderID = "";
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
         @Override
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
-            postData();
+            this.orderID = postData();
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
 
+            Log.e("Order ID", "" + this.orderID);
             for(LoadRequest loadRequest:arraylist){
                 HashMap<String,String> map = new HashMap<String, String>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -327,9 +336,18 @@ public class LoadRequestActivity extends AppCompatActivity {
                 HashMap<String,String> filter = new HashMap<>();
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-
-                db.updateData(db.LOAD_REQUEST,map,filter);
+                db.updateData(db.LOAD_REQUEST, map, filter);
             }
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
+                Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Request " + this.orderID + "has been created",Toast.LENGTH_SHORT ).show();
+            }
+
         }
     }
 }

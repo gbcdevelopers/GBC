@@ -125,8 +125,9 @@ public class IntegrationService extends IntentService {
         builder.append(App.HOST);
         builder.append(":");
         builder.append(App.PORT);
-        builder.append(App.URL);
+        builder.append(App.POST_URL);
         builder.append(collectionname);
+        Log.e("Builder is","" + builder.toString());
         return builder.toString();
     }
 
@@ -243,10 +244,24 @@ public class IntegrationService extends IntentService {
         return null;
     }
 
-    public static void postData(Context context, String collection, HashMap<String, String> map,JSONArray deepEntity){
+    private static AuthScope getAuthScope(String var) {
+        return new AuthScope(App.HOST, App.PORT);
+    }
+
+    private static UsernamePasswordCredentials getCredentials(String username,String password){
+        return new UsernamePasswordCredentials(username, password);
+    }
+
+    public static String postData(Context context, String collection, HashMap<String, String> map,JSONArray deepEntity){
+        String orderId = "";
         try{
             DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
             HttpPost post = new HttpPost(postUrl(collection));
+            String authString = "ecs" + ":" + "sap123";
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            post.addHeader("Authorization","Basic " + new String(authEncBytes));
+
             post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
             post.addHeader(ACCEPT,APPLICATION_JSON);
             post.addHeader(X_REQUESTED_WITH_KEY,X_REQUESTED_WITH_VAL);
@@ -258,6 +273,12 @@ public class IntegrationService extends IntentService {
 
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                JSONObject jsonObj = new JSONObject(jsonString);
+                jsonObj = jsonObj.getJSONObject("d");
+                orderId = jsonObj.getString("OrderId");
+                Log.e("Posting","" + jsonObj);
+                return orderId;
             }
             else{
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
@@ -268,6 +289,7 @@ public class IntegrationService extends IntentService {
         catch (Exception e){
             e.printStackTrace();
         }
+        return orderId;
     }
 
     public static ArrayList<String> RequestToken(Context context){
@@ -308,7 +330,7 @@ public class IntegrationService extends IntentService {
 
             if(deepEntity.length()>0){
                 body.append(",");
-                body.append(App.DEEP_ENTITY + ":[");
+                body.append("\"" + App.DEEP_ENTITY + "\":[");
                 for(int i=0;i<deepEntity.length();i++){
                     body.append("{");
                     body.append(bodyBuilder(convertToMap(deepEntity.getJSONObject(i))));
