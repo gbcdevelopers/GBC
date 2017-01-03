@@ -33,10 +33,6 @@ public class MessageFragment extends Fragment {
         lv_message=(ListView)view.findViewById(R.id.lv_messages);
         iv_round=(RoundedImageView)view.findViewById(R.id.roundedImageView);
 
-
-
-
-
         adapter=new MessageListAdapter(getActivity().getBaseContext(),arr);
         lv_message.setAdapter(adapter);
 
@@ -44,4 +40,6 @@ public class MessageFragment extends Fragment {
         return view;
 
     }
+
+
 }

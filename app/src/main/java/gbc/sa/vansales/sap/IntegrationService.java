@@ -282,7 +282,6 @@ public class IntegrationService extends IntentService {
             }
             else{
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
-
             }
 
         }

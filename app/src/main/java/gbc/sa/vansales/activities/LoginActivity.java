@@ -16,6 +16,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.LoadDelivery;
+import gbc.sa.vansales.data.Messages;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.sap.IntegrationService;
@@ -37,6 +38,7 @@ public class LoginActivity extends Activity {
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
     private static final String TRIP_ID = "ITripId";
+    public String username = "";
 
     DatabaseHandler db = new DatabaseHandler(this);
 
@@ -66,6 +68,7 @@ public class LoginActivity extends Activity {
             //For development purpose hardcoding credentials
             //new LoginUser("E2000", "PASSWORD");
             if(Helpers.isNetworkAvailable(LoginActivity.this)){
+                this.username = id;
                 new LoginUser(id, password);
 
                 /*loadingSpinner.hide();
@@ -252,7 +255,7 @@ public class LoginActivity extends Activity {
     }
 
     public void downloadData(final String tripId){
-        Log.e("Inside chain",""+ tripId);
+        Log.e("Inside chain", "" + tripId);
 
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "false");
@@ -286,6 +289,7 @@ public class LoginActivity extends Activity {
                 CustomerHeaders.load(LoginActivity.this, tripId, db);
                 ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());
+                Messages.load(LoginActivity.this,username,db);
             }
         });
 

@@ -65,13 +65,14 @@ public class LoadRequestActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<ArticleHeader> articles;
     int orderTotalValue = 0;
-    LoadingSpinner loadingSpinner = new LoadingSpinner(this);
+    LoadingSpinner loadingSpinner;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
         setTitle(getString(R.string.loadrequest));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         articles = ArticleHeaders.get();
+        loadingSpinner = new LoadingSpinner(LoadRequestActivity.this);
         new loadItems();
         datepickerdialogbutton = (ImageButton) findViewById(R.id.btnDate);
         selecteddate = (TextView) findViewById(R.id.tv1);
@@ -205,19 +206,36 @@ public class LoadRequestActivity extends AppCompatActivity {
                 cursor.moveToFirst();
                 int itemno = 10;
                 do{
-                    JSONObject jo = new JSONObject();
-                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                    jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                    jo.put("Plant","");
-                    jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
-                    jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-                    jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("Storagelocation", "");
-                    jo.put("Route", Settings.getString(App.ROUTE));
-                    itemno = itemno+10;
-                    deepEntity.put(jo);
+                    if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        JSONObject jo = new JSONObject();
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                        jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant","");
+                        jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("Storagelocation", "");
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno+10;
+                        deepEntity.put(jo);
+                    }
+                    if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        JSONObject jo = new JSONObject();
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                        jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant","");
+                        jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("Storagelocation", "");
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno+10;
+                        deepEntity.put(jo);
+                    }
                 }
                 while (cursor.moveToNext());
             }
@@ -302,6 +320,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
            // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
            // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
+            loadRequest.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
             loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             arraylist.add(loadRequest);
 
@@ -345,7 +364,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
             }
             else{
-                Toast.makeText(getApplicationContext(),"Request " + this.orderID + "has been created",Toast.LENGTH_SHORT ).show();
+                Toast.makeText(getApplicationContext(),"Request " + this.orderID + " has been created",Toast.LENGTH_SHORT ).show();
             }
 
         }

@@ -62,6 +62,7 @@
     <string name="orderbook">Berain-Order Book</string>
     <string name="ordersummary">Order Summary</string>
     <string name="presales">Pre Sales</string>
+    <string name="presalesorder">Pre-Sales Order</string>
     <string name="process_load_request">Process Load Request</string>
     <string name="printorder">Print Order</string>
     <string name="printload">Print Load</string>

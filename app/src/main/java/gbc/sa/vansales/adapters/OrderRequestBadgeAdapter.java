@@ -2,6 +2,7 @@ package gbc.sa.vansales.adapters;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,24 +22,25 @@ import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.LoadVerifyActivity;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.LoadSummary;
+import gbc.sa.vansales.models.OrderRequest;
 import gbc.sa.vansales.utils.DatabaseHandler;
 /**
  * Created by Rakshit on 29-Dec-16.
  */
-public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
-    private ArrayList<LoadRequest> loadRequestList;
+public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
+    private ArrayList<OrderRequest> loadRequestList;
     private int pos;
-
-    public LoadRequestBadgeAdapter(Context context, ArrayList<LoadRequest> loadRequests){
+    private int lastFocussedPosition = -1;
+    public OrderRequestBadgeAdapter(Context context, ArrayList<OrderRequest> loadRequests){
 
         super(context, R.layout.activity_loadrequest_items, loadRequests);
         this.loadRequestList = loadRequests;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final ArrayList<LoadRequest> dataList = this.loadRequestList;
+        final ArrayList<OrderRequest> dataList = this.loadRequestList;
         pos = position;
-        ViewHolder holder;
+        final ViewHolder holder;
         if(convertView==null){
             LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.activity_loadrequest_items,parent,false);
@@ -56,8 +58,9 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             // if holder created, get tag from view
             holder = (ViewHolder) convertView.getTag();
         }
-        final LoadRequest loadRequest = loadRequestList.get(pos);
+        final OrderRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
+
 
         holder.casestextWatcher = new TextWatcher() {
             @Override
@@ -102,7 +105,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
 
-       // holder.units.setText(loadRequest.getUnits());
+        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
         return convertView;

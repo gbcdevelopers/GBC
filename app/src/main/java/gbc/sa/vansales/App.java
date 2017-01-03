@@ -35,6 +35,7 @@ public class App extends Application {
 
     public static final String DATE_TIME_FORMAT = "yyyy.MM.dd.HH:mm:ss";
     public static final String DATE_FORMAT = "yyyy.MM.dd";
+    public static final String DATE_PICKER_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WO_SPACE = "yyyyMMdd";
     public static final String TIME_FORMAT = "HH:mm:ss";
 
