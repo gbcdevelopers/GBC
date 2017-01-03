@@ -373,15 +373,17 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
 
+            Log.e("Order id","" + this.orderId);
             for(OrderRequest loadRequest:arraylist){
                 HashMap<String,String> map = new HashMap<String, String>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_ORDER_ID,orderId);
+                map.put(db.KEY_ORDER_ID,this.orderId);
                 map.put(db.KEY_IS_POSTED,"Y");
 
                 HashMap<String,String> filter = new HashMap<>();
-                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+               // filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                filter.put(db.KEY_IS_POSTED,"N");
 
                 db.updateData(db.ORDER_REQUEST, map, filter);
             }

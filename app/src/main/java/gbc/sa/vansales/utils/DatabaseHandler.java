@@ -680,6 +680,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             filterValues = paramsBuilder(filters, true);
             filterArray = paramsBuilder(filters,true).split(",");
         }
+        Log.e("Filters in update","" + filterKeys);
         int records = db.update(tablename,values,filterKeys,filterArray);
         Log.e("Records updated", "" + records);
         db.setTransactionSuccessful();

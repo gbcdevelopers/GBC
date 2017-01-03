@@ -167,6 +167,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -174,11 +175,12 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         ArrayList<String> temp=new ArrayList<String>();
         temp.clear();
         arrayList.clear();
+        Log.e("Cursor","" + cursor.getCount());
         for(int i=0;i<cursor.getCount();i++){
             OrderList orderList = new OrderList();
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-
+            Log.e("ORDER","" + orderList.getOrderId());
             if(!temp.contains(orderList.getOrderId())){
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
@@ -186,17 +188,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
         }
        // arrayList = unique(arrayList);
-        adapter.notifyDataSetChanged();
+
     }
 
-    private ArrayList<OrderList> unique(ArrayList<OrderList> list) {
-        ArrayList<OrderList> uniqueList = new ArrayList<>();
-        Set<OrderList> uniqueSet = new HashSet<>();
-        for (OrderList obj : list) {
-            if (uniqueSet.add(obj)) {
-                uniqueList.add(obj);
-            }
-        }
-        return uniqueList;
-    }
 }

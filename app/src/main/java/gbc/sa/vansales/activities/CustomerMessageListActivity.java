@@ -1,5 +1,4 @@
 package gbc.sa.vansales.activities;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,49 +16,29 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryAdapter;
 import gbc.sa.vansales.adapters.MessageListAdapter;
 import gbc.sa.vansales.utils.RoundedImageView;
-
 /**
  * Created by eheuristic on 12/10/2016.
  */
-
 public class CustomerMessageListActivity extends AppCompatActivity {
-
-
-
     ImageView iv_back;
     TextView tv_top_header;
-
     ListView lv_message;
     RoundedImageView iv_round;
     MessageListAdapter adapter;
-    String arr[]={"Silent Meeting","Order Confirmed"};
+    String arr[] = {"Silent Meeting", "Order Confirmed"};
     LinearLayout ll_common;
     ImageView img_refresh;
     ImageView iv_refresh;
-
-
-
     SwipeRefreshLayout refreshLayout;
-
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_message_list);
-
-        iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
-        tv_top_header=(TextView)findViewById(R.id.tv_top_header);
-        ll_common=(LinearLayout)findViewById(R.id.ll_common);
-        img_refresh=(ImageView)findViewById(R.id.img_refresh);
-        iv_refresh=(ImageView)findViewById(R.id.iv_refresh);
-
-
-
-
-
-
+        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+        ll_common = (LinearLayout) findViewById(R.id.ll_common);
+        img_refresh = (ImageView) findViewById(R.id.img_refresh);
+        iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Message List");
@@ -69,86 +48,59 @@ public class CustomerMessageListActivity extends AppCompatActivity {
                 finish();
             }
         });
-        lv_message=(ListView)findViewById(R.id.lv_messages);
-
-
-
-        if(getIntent().getExtras()!=null)
-        {
-            String from=getIntent().getStringExtra("from");
-            if(from.equals("dash"))
-            {
+        lv_message = (ListView) findViewById(R.id.lv_messages);
+        if (getIntent().getExtras() != null) {
+            String from = getIntent().getStringExtra("from");
+            if (from.equals("dash")) {
                 ll_common.setVisibility(View.GONE);
                 img_refresh.setVisibility(View.GONE);
                 iv_refresh.setVisibility(View.VISIBLE);
-
             }
-        }
-        else {
+        } else {
             ll_common.setVisibility(View.VISIBLE);
         }
-
-
-
-        adapter=new MessageListAdapter(CustomerMessageListActivity.this,arr);
+        adapter = new MessageListAdapter(CustomerMessageListActivity.this, arr);
         lv_message.setAdapter(adapter);
-
-
-        refreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Handler handler=new Handler();
+                Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-                        if(refreshLayout.isRefreshing())
-                        {
+                        if (refreshLayout.isRefreshing()) {
                             refreshLayout.setRefreshing(false);
                             adapter.notifyDataSetChanged();
                         }
-
                     }
-                },2000);
+                }, 2000);
             }
         });
-
         iv_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchRefresh();
             }
         });
-
         img_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dispatchRefresh();
             }
         });
-
-
     }
-
-
-    public void dispatchRefresh()
-    {
-
+    public void dispatchRefresh() {
         refreshLayout.setRefreshing(true);
-        Handler handler=new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-                if(refreshLayout.isRefreshing())
-                {
+                if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
                     adapter.notifyDataSetChanged();
                 }
-
             }
-        },2000);
+        }, 2000);
     }
-
 }
