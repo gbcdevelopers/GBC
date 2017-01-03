@@ -8,6 +8,8 @@ public class Sales {
     String item_code;
     String item_category;
     String material_no;
+    String material_description;
+    String uom;
     String name;
     String price;
     String pic;
@@ -15,7 +17,18 @@ public class Sales {
     String inv_cases;
     String inv_piece;
 
-
+    public String getMaterial_description() {
+        return material_description;
+    }
+    public void setMaterial_description(String material_description) {
+        this.material_description = material_description;
+    }
+    public String getUom() {
+        return uom;
+    }
+    public void setUom(String uom) {
+        this.uom = uom;
+    }
     public String getItem_category() {
         return item_category;
     }

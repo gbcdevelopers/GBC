@@ -16,6 +16,7 @@
     <string name="credit_days">Credit Days</string>
     <string name="credit_limit">Credit Limit</string>
     <string name="collection">Collection</string>
+    <string name="complete_invoice">Complete Invoice</string>
     <string name="confirmload">Confirm Load</string>
     <string name="confirmreturn">Confirm Returns</string>
     <string name="credit">Credit</string>
@@ -41,6 +42,7 @@
     <string name="item_code">Item Code</string>
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
+    <string name="invoice_summary">Invoice Summary</string>
     <string name="load">Load</string>
     <string name="load_title">Select Load</string>
     <string name="load_summary_title">Load Summary</string>

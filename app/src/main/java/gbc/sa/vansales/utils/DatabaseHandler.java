@@ -523,10 +523,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ITEM_NO  + " TEXT,"
                 + KEY_ITEM_CATEGORY  + " TEXT,"
                 + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_DESC1   + " TEXT,"
                 + KEY_MATERIAL_GROUP   + " TEXT,"
                 + KEY_ORG_CASE   + " TEXT,"
                 + KEY_ORG_UNITS   + " TEXT,"
-                + KEY_AMOUNT  + " TEXT " + ")";
+                + KEY_AMOUNT   + " TEXT,"
+                + KEY_UOM   + " TEXT,"
+                + KEY_IS_POSTED   + " TEXT,"
+                + KEY_IS_PRINTED  + " TEXT " + ")";
 
         String TABLE_LOAD_REQUEST = "CREATE TABLE " + LOAD_REQUEST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"

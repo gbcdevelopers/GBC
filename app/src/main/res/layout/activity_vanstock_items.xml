@@ -13,95 +13,106 @@
         card_view:cardCornerRadius="@dimen/h3"
         card_view:contentPadding="@dimen/h1">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+        <LinearLayout
+            android:weightSum="5"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tvItems"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/item_code"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimary"
-                />
-
-            <TextView
-                android:id="@+id/item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_toRightOf="@+id/tvItems"
-                />
-
-            <TextView
-                android:id="@+id/tvCases"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvItems"
-
-                android:textColor="@color/colorPrimary"
-                android:text="@string/caseLabel"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/cases"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/item"
-
-                android:textColor="@color/black"
-                android:layout_toRightOf="@+id/tvCases"
-                />
-
-            <TextView
-                android:id="@+id/tvDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvCases"
-                android:text="@string/description"
-
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cases"
-
-                android:textColor="@color/black"
-                android:layout_toRightOf="@+id/tvDescription"
-
-                />
-
-
-            <TextView
-                android:id="@+id/tvUnits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
-                android:text="@string/unitLabel"
-
-                android:textColor="@color/colorPrimary"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/units"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
-
-                android:textColor="@color/black"
-                android:layout_toRightOf="@+id/tvUnits"
-
-                />
-
-        </RelativeLayout>
-
+            <LinearLayout
+                android:layout_weight="1"
+                android:weightSum="5"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/tvItems"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_code"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
+                    />
+                <TextView
+                    android:id="@+id/item"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_toRightOf="@+id/tvItems"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="2"
+                android:weightSum="5"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/description"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:weightSum="5"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/tvCases"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:text="@string/cases"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/cases"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_weight="1"
+                android:weightSum="5"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <TextView
+                    android:id="@+id/tvUnits"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/units"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/units"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    />
+            </LinearLayout>
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
