@@ -49,6 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CUSTOMER_DELIVERY_HEADER = "CUSTOMER_DELIVERY_HEADER";
     public static final String CUSTOMER_DELIVERY_ITEMS = "CUSTOMER_DELIVERY_ITEMS";
     public static final String ORDER_REQUEST = "ORDER_REQUEST";
+    public static final String MESSAGES = "MESSAGES";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -229,6 +230,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_BEGIN_DAY = "isBeginDay";
     public static final String KEY_IS_LOAD_VERIFIED = "isLoadVerified";
     public static final String KEY_IS_END_DAY = "isEndDay";
+
+    //Messages
+    public static final String KEY_STRUCTURE = "structure";
+    public static final String KEY_MESSAGE = "message";
+
 
     //Vanstock Table
     public static final String KEY_RESERVED_QTY = "reservedQty";
@@ -528,6 +534,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP  + " TEXT,"
                 + KEY_TRIP_ID  + " TEXT,"
+                + KEY_DATE + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
                 + KEY_ITEM_NO  + " TEXT,"
                 + KEY_MATERIAL_DESC1  + " TEXT,"
@@ -554,6 +561,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_LOAD_VERIFIED + " TEXT,"
                 + KEY_IS_END_DAY + " TEXT " + ")";
 
+        String TABLE_MESSAGES = "CREATE TABLE " + MESSAGES + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_USERNAME + " TEXT,"
+                + KEY_STRUCTURE + " TEXT,"
+                + KEY_MESSAGE + " TEXT,"
+                + KEY_DRIVER + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -577,6 +591,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_GENERATE_PR_NUMBER);
         db.execSQL(TABLE_USER_FLAGS);
         db.execSQL(TABLE_VAN_STOCK_ITEMS);
+        db.execSQL(TABLE_MESSAGES);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -600,6 +615,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PURCHASE_NUMBER_GENERATION);
         db.execSQL("DROP TABLE IF EXISTS " + LOCK_FLAGS);
         db.execSQL("DROP TABLE IF EXISTS " + ORDER_REQUEST);
+        db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
         onCreate(db);
     }
 

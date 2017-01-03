@@ -1,468 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="gbc.sa.vansales"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-
-
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="gbc.sa.vansales.activities.AppController"
-        >
-
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB1kGfUFdnC-bFd7KDrfuX8qTCsAuPlbPE" />
-
-        <!--<activity
-            android:name=".activities.SplashScreen"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateUnchanged"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
-
-        <activity
-            android:name=".activities.LoginActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateUnchanged"
-
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-
-        <!--<activity
-            android:name=".activities.LoginActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />-->
-
-
-        <activity android:name=".activities.OdometerPopupActivity"
-            android:label="Single Item"/>
-
-
-
-        <activity
-            android:name=".activities.DashboardActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.CategoryListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait" />
-
-
-
-        <activity
-            android:name=".activities.CustomerDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.SalesInvoiceOptionActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.RecyclerViewExample"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-
-
-
-
-        <activity
-            android:name=".activities.SalesInvoiceActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.ShelfStockActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.InvoiceSummaryActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.MerchandizingActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.PromotionActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.CaptureImageActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-
-
-        <activity
-            android:name=".activities.LoadRequestActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.LoadActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait"/>
-
-
-
-
-        <activity
-            android:name=".activities.UnloadActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.VanStockActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-
-
-
-
-
-
-
-
-
-        <activity
-            android:name=".activities.PromotionListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.ManageInventory"
-            android:theme="@style/AppTheme"
-            android:label="@string/dashboard"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.BeginTripActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity android:name=".activities.InvoiceSummeryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
-
-        <activity
-            android:name=".activities.SelectCustomerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.CustomerMessageListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.ProductListActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.PreSaleOrderActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
-
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.EndTripActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.PrinterReportsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.DeliveryActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.DeliveryOrderActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.PreSaleOrderProceedActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.CollectionsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.PaymentDetails"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden"
-
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.MyCalendarActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"
-
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".activities.CustomerOperationsActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.DashboardActivity"
-            android:launchMode="singleTop"
-            android:label="@string/customeroperation"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.ShopStatusActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.CustomerOperationsActivity"
-            android:launchMode="singleTop"
-            android:label="@string/shop_status"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.SelectOperationActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.ShopStatusActivity"
-            android:launchMode="singleTop"
-            android:label="@string/select_operation"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.StockTakeActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.SelectOperationActivity"
-            android:launchMode="singleTop"
-            android:label="@string/stocktake"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.OrderActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.StockTakeActivity"
-            android:launchMode="singleTop"
-            android:label="@string/orderbook"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.OrderSummaryActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.OrderActivity"
-            android:launchMode="singleTop"
-            android:label="@string/ordersummary"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-        <activity
-            android:name=".activities.LoadSummaryActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.LoadActivity"
-            android:launchMode="singleTop"
-            android:label="@string/load_verify_title"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-
-
-
-
-
-        <activity
-            android:name=".activities.LoadVerifyActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.LoadSummaryActivity"
-            android:launchMode="singleTop"
-            android:label="@string/load_summary_title"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.ReturnsActivity"
-            android:theme="@style/AppTheme.ActionBar"
-            android:parentActivityName=".activities.SelectOperationActivity"
-            android:launchMode="singleTop"
-            android:label="@string/returns"
-            android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.CustomerOperationsMapActivity"
-            android:label="@string/map"
-            android:parentActivityName=".activities.CustomerOperationsActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.InformationsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.ReviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.TodaysSummaryActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.CustomerListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.TodaysUnservicedActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.TodaysScheduleActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.AllRouteCustomerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.ItemListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.PriceListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.TodaysOrderActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".activities.DataPoustingAuditActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28" />
-    </application>
-
-
-
+<manifest
+				package="gbc.sa.vansales"
+				xmlns:android="http://schemas.android.com/apk/res/android">
+
+				<uses-permission android:name="android.permission.INTERNET"/>
+				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+				<application
+								android:name="gbc.sa.vansales.activities.AppController"
+								android:allowBackup="true"
+								android:icon="@mipmap/ic_launcher"
+								android:label="@string/app_name"
+								android:supportsRtl="true"
+								android:theme="@style/AppTheme"
+								>
+								<meta-data
+												android:name="com.google.android.geo.API_KEY"
+												android:value="AIzaSyB1kGfUFdnC-bFd7KDrfuX8qTCsAuPlbPE"/>
+								<!--<activity
+												android:name=".activities.SplashScreen"
+												android:label="@string/app_name"
+												android:windowSoftInputMode="stateUnchanged"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme" >
+												<intent-filter>
+																<action android:name="android.intent.action.MAIN" />
+
+																<category android:name="android.intent.category.LAUNCHER" />
+												</intent-filter>
+								</activity>-->
+								<activity
+												android:name=".activities.LoginActivity"
+												android:label="@string/app_name"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateUnchanged">
+												<intent-filter>
+																<action android:name="android.intent.action.MAIN"/>
+																<category android:name="android.intent.category.LAUNCHER"/>
+												</intent-filter>
+								</activity>
+								<!--<activity
+												android:name=".activities.LoginActivity"
+												android:theme="@style/AppTheme"
+												android:label="@string/dashboard"
+												android:windowSoftInputMode="stateHidden"
+												android:screenOrientation="portrait" />-->
+								<activity
+												android:name=".activities.OdometerPopupActivity"
+												android:label="Single Item"/>
+								<activity
+												android:name=".activities.DashboardActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CategoryListActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.CustomerDetailActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.SalesInvoiceOptionActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.RecyclerViewExample"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.SalesInvoiceActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.ShelfStockActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.InvoiceSummaryActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.MerchandizingActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PromotionActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CaptureImageActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.LoadRequestActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.LoadActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.UnloadActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.VanStockActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PromotionListActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ManageInventory"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.BeginTripActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.InvoiceSummeryActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.SelectCustomerActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerMessageListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ProductListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PreSaleOrderActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+								<activity
+												android:name=".activities.EndTripActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PrinterReportsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.DeliveryActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.DeliveryOrderActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+								<activity
+												android:name=".activities.PreSaleOrderProceedActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CollectionsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PaymentDetails"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.MyCalendarActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerOperationsActivity"
+												android:label="@string/customeroperation"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.DashboardActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ShopStatusActivity"
+												android:label="@string/shop_status"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.CustomerOperationsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.SelectOperationActivity"
+												android:label="@string/select_operation"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.ShopStatusActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.StockTakeActivity"
+												android:label="@string/stocktake"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.SelectOperationActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.OrderActivity"
+												android:label="@string/orderbook"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.StockTakeActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.OrderSummaryActivity"
+												android:label="@string/ordersummary"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.OrderActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.LoadSummaryActivity"
+												android:label="@string/load_verify_title"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.LoadActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.LoadVerifyActivity"
+												android:label="@string/load_summary_title"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.LoadSummaryActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ReturnsActivity"
+												android:label="@string/returns"
+												android:launchMode="singleTop"
+												android:parentActivityName=".activities.SelectOperationActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.ActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerOperationsMapActivity"
+												android:label="@string/map"
+												android:parentActivityName=".activities.CustomerOperationsActivity"
+												android:screenOrientation="portrait"/>
+								<activity
+												android:name=".activities.InformationsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ReviewActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.TodaysSummaryActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.TodaysUnservicedActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.TodaysScheduleActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.AllRouteCustomerActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.ItemListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PriceListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.TodaysOrderActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.DataPoustingAuditActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+					App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+								<meta-data
+												android:name="com.google.android.gms.version"
+												android:value="@integer/google_play_services_version"/>
+								<meta-data
+												android:name="io.fabric.ApiKey"
+												android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28"/>
+				</application>
 </manifest>

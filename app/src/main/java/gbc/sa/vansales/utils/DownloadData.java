@@ -325,6 +325,27 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
                 }
                 break;
+
+            case ConfigStore.MessageEntity:{
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_USERNAME,object.get("Tdname").toString());
+                        params.put(db.KEY_STRUCTURE, object.get("Tdkeystruc").toString());
+                        params.put(db.KEY_MESSAGE, object.get("Message").toString());
+                        params.put(db.KEY_DRIVER,object.get("Driver").toString());
+
+                        db.addData(db.MESSAGES, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+                break;
+            }
         }
     }
 }
