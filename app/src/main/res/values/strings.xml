@@ -41,7 +41,6 @@
     <string name="item_code">Item Code</string>
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
-    <string name="no">No</string>
     <string name="load">Load</string>
     <string name="load_title">Select Load</string>
     <string name="load_summary_title">Load Summary</string>
@@ -49,6 +48,8 @@
     <string name="loadrequest">Load Request</string>
     <string name="loaddate">Loading Date</string>
     <string name="loading">Loading…</string>
+    <string name="load_verify_title_alert">Load Verified</string>
+    <string name="load_verify_title_alert_msg">Have you verified the load on the vehicle</string>
     <string name="map">Map</string>
     <string name="manageinventory">Manage Inventory</string>
     <string name="methodofPayment">Method of Payment</string>
@@ -58,6 +59,7 @@
     <string name="merchandizing">Merchandizing</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="no">No</string>
     <string name="nextload">Next Load to Process</string>
     <string name="orderbook">Berain-Order Book</string>
     <string name="ordersummary">Order Summary</string>

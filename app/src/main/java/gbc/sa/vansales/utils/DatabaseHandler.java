@@ -239,6 +239,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Vanstock Table
     public static final String KEY_RESERVED_QTY = "reservedQty";
 
+    public static final String KEY_ACTUAL_QTY_CASE = "actualQtyCase";
+    public static final String KEY_ACTUAL_QTY_UNIT = "actualQtyUnit";
+    public static final String KEY_RESERVED_QTY_CASE = "reservedQtyCase";
+    public static final String KEY_RESERVED_QTY_UNIT = "reservedQtyUnit";
+    public static final String KEY_REMAINING_QTY_CASE = "remainingQtyCase";
+    public static final String KEY_REMAINING_QTY_UNIT = "remainingQtyUnit";
+    public static final String KEY_UOM_CASE = "uomCase";
+    public static final String KEY_UOM_UNIT = "uomUnit";
+
     private static DatabaseHandler sInstance;
 
     public DatabaseHandler(Context context) {
@@ -462,10 +471,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PLANT   + " TEXT,"
                 + KEY_STORAGE_LOCATION   + " TEXT,"
                 + KEY_BATCH   + " TEXT,"
-                + KEY_ACTUAL_QTY  + " TEXT,"
-                + KEY_RESERVED_QTY + " TEXT,"
-                + KEY_REMAINING_QTY  + " TEXT,"
-                + KEY_UOM  + " TEXT,"
+                + KEY_ACTUAL_QTY_CASE  + " TEXT,"
+                + KEY_ACTUAL_QTY_UNIT  + " TEXT,"
+                + KEY_RESERVED_QTY_CASE + " TEXT,"
+                + KEY_RESERVED_QTY_UNIT + " TEXT,"
+                + KEY_REMAINING_QTY_CASE  + " TEXT,"
+                + KEY_REMAINING_QTY_UNIT  + " TEXT,"
+                + KEY_UOM_CASE  + " TEXT,"
+                + KEY_UOM_UNIT  + " TEXT,"
                 + KEY_DIST_CHANNEL   + " TEXT,"
                 + KEY_DIVISION   + " TEXT,"
                 + KEY_IS_VERIFIED  + " TEXT " + ")";
@@ -702,7 +715,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         Log.e("Parameter", "" + parameters);
-        Log.e("Filters","" + filterKeys);
+        Log.e("Filters in DB","" + filterKeys);
+
         Cursor cursor = db.query(tablename, paramArray, filterKeys, filterArray, null, null, null);
         if(cursor!=null)
         {

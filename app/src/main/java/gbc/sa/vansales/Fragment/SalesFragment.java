@@ -242,14 +242,17 @@ public class SalesFragment extends Fragment {
                 map.put(db.KEY_ITEM_NO,"");
                 map.put(db.KEY_ITEM_CATEGORY,"");
                 map.put(db.KEY_MATERIAL_NO,"");
-                map.put(db.KEY_ACTUAL_QTY,"");
-                map.put(db.KEY_UOM,"");
+                map.put(db.KEY_ACTUAL_QTY_CASE,"");
+                map.put(db.KEY_REMAINING_QTY_CASE,"");
+                map.put(db.KEY_ACTUAL_QTY_UNIT,"");
+                map.put(db.KEY_REMAINING_QTY_UNIT,"");
+                map.put(db.KEY_UOM_CASE,"");
+                map.put(db.KEY_UOM_UNIT,"");
                 map.put(db.KEY_IS_VERIFIED, "");
 
                 HashMap<String, String> filter = new HashMap<>();
 
-                Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS,map,filter);
-                Log.e("Fooo", "" + cursor.getCount());
+                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,map,filter);
                 if(cursor.getCount()>0){
                     setLoadItems(cursor);
                 }
@@ -286,8 +289,10 @@ public class SalesFragment extends Fragment {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                     product.setName(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
-                product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
-                product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
+
+
+                product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)) : "0");
+                product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)) : "0");
                 product.setCases("0");
                 product.setPic("0");
                 salesarrayList.add(product);

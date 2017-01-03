@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -366,15 +368,24 @@ public class LoadSummaryActivity extends AppCompatActivity {
         while (cursor.moveToNext());
         adapter.notifyDataSetChanged();
     }
+
+
+    public void hideKeyboard(View v){
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(),
+                InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    }
+
     public void updateAdapter(ArrayList<LoadSummary>data) {
         adapter.notifyDataSetChanged();//update adapter
         if(adapter.getCount()==0&&loadSummaryCount!=0){
             //Log.e("1",""+loadSummaryList.size());
             final ArrayList<LoadSummary>loadSummaryData = data;
             AlertDialog.Builder builder = new AlertDialog.Builder(LoadSummaryActivity.this);
-            builder.setTitle("Load Verified");
-            builder.setMessage("Have you verified the load on the vehicle");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setTitle(getString(R.string.load_verify_title_alert));
+            builder.setCancelable(false);
+            builder.setMessage(getString(R.string.load_verify_title_alert_msg));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     loadSummaryUnmodList = loadDataOld();
@@ -388,7 +399,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
 //                    startActivity(i);
                 }
             })
-            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+            .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
