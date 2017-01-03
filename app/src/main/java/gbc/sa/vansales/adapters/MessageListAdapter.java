@@ -72,6 +72,7 @@ public class MessageListAdapter extends BaseAdapter {
     public class ItemRowHolder {
         RoundedImageView iv_round;
         TextView tv_message;
+        TextView tv_message_title;
 
     }
 }

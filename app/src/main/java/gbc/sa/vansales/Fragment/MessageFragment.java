@@ -1,7 +1,9 @@
 package gbc.sa.vansales.Fragment;
-
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,37 +11,109 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.MessageBadgeAdapter;
 import gbc.sa.vansales.adapters.MessageListAdapter;
+import gbc.sa.vansales.models.Message;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.RoundedImageView;
-
+import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
  */
-
 public class MessageFragment extends Fragment {
-
     ListView lv_message;
     RoundedImageView iv_round;
-  public static   MessageListAdapter adapter;
+    //public static MessageListAdapter adapter;
+    public static MessageBadgeAdapter adapter;
     View view;
-
-    String arr[]={"silent meeting","silent meeting"};
+    LoadingSpinner loadingSpinner;
+    DatabaseHandler db;
+    String arr[] = {"silent meeting", "silent meeting"};
+    ArrayList<Message> arrayList;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        view =inflater.inflate(R.layout.message_fragment, container, false);
-        lv_message=(ListView)view.findViewById(R.id.lv_messages);
-        iv_round=(RoundedImageView)view.findViewById(R.id.roundedImageView);
-
-        adapter=new MessageListAdapter(getActivity().getBaseContext(),arr);
+        view = inflater.inflate(R.layout.message_fragment, container, false);
+        loadingSpinner = new LoadingSpinner(getActivity());
+        db = new DatabaseHandler(getActivity());
+        lv_message = (ListView) view.findViewById(R.id.lv_messages);
+        iv_round = (RoundedImageView) view.findViewById(R.id.roundedImageView);
+        arrayList = new ArrayList<>();
+        adapter = new MessageBadgeAdapter(getActivity(),arrayList);
+       // adapter = new MessageListAdapter(getActivity().getBaseContext(), arr);
         lv_message.setAdapter(adapter);
-
-
+        bindData();
         return view;
-
     }
 
+    public void bindData()
+    {
+        new loadMessages(Settings.getString(App.DRIVER));
+    }
 
+    public class loadMessages extends AsyncTask<Void,Void,Void> {
+        String from = "";
+        String filter = "";
+        private loadMessages(String from) {
+            this.from = from;
+            execute();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_USERNAME,"");
+            map.put(db.KEY_STRUCTURE,"");
+            map.put(db.KEY_MESSAGE,"");
+            map.put(db.KEY_DRIVER, "");
+
+            if(from.equals("dash")){
+                filter = Settings.getString(App.DRIVER);
+            }
+            else{
+                filter = from;
+            }
+
+            HashMap<String,String> filterMap = new HashMap<>();
+            filterMap.put(db.KEY_USERNAME,filter);
+
+            Cursor cursor = db.getData(db.MESSAGES,map,filterMap);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                setMessages(cursor);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setMessages(Cursor cursor){
+
+        do{
+            Message message = new Message();
+            message.setId(cursor.getString(cursor.getColumnIndex(db.KEY_USERNAME)));
+            message.setDriver(cursor.getString(cursor.getColumnIndex(db.KEY_DRIVER)));
+            message.setStructure(cursor.getString(cursor.getColumnIndex(db.KEY_STRUCTURE)));
+            message.setMessage(cursor.getString(cursor.getColumnIndex(db.KEY_MESSAGE)));
+            Log.e("Message","" + UrlBuilder.decodeString(message.getStructure()) +  message.getMessage());
+            arrayList.add(message);
+        }
+        while (cursor.moveToNext());
+    }
 }

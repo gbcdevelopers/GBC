@@ -176,7 +176,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         temp.clear();
         arrayList.clear();
         Log.e("Cursor","" + cursor.getCount());
-        for(int i=0;i<cursor.getCount();i++){
+        do{
             OrderList orderList = new OrderList();
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
@@ -185,9 +185,9 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }
-
         }
-       // arrayList = unique(arrayList);
+        while (cursor.moveToNext());
+
 
     }
 
