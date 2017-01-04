@@ -30,6 +30,8 @@
     <string name="description">Description</string>
     <string name="delete">Delete</string>
     <string name="delivery">Delivery</string>
+    <string name="delivery_list">Delivery List</string>
+    <string name="delivery_order">Delivery Order</string>
     <string name="desiredload">Desired Load</string>
     <string name="discount">Discount</string>
     <string name="dismiss">Dismiss</string>

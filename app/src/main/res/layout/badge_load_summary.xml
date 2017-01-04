@@ -2,7 +2,7 @@
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <!-- Bottom View Start-->
     <LinearLayout
@@ -50,7 +50,7 @@
         android:background="@color/white"
         android:padding="@dimen/margin_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
         <LinearLayout
             android:layout_weight="1"
@@ -67,6 +67,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/item_code"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -85,6 +86,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/cases"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -111,6 +113,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/description"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -129,6 +132,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/units"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>

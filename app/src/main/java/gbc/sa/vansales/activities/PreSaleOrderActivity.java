@@ -103,9 +103,11 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderList orderList = arrayList.get(position);
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "list");
                 intent.putExtra("pos", position);
+                intent.putExtra("orderList",orderList);
                 startActivity(intent);
             }
         });

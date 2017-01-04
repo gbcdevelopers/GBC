@@ -29,6 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_id"
             android:text="@string/tv_cust_detail"
             android:textSize="@dimen/label_big"
             android:textColor="@color/white"
@@ -37,6 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_address"
             android:text="@string/tv_cust_detail1"
             android:textSize="@dimen/label_medium"
             android:textColor="@color/white"
@@ -45,6 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_pobox"
             android:text="@string/tv_cust_detail2"
             android:textSize="@dimen/label_small"
             android:textColor="@color/white"
@@ -53,6 +56,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_contact"
             android:text="@string/tv_cust_detail4"
             android:textSize="@dimen/label_min"
             android:textColor="@color/white"
@@ -92,7 +96,7 @@
                     android:layout_centerVertical="true"
                     android:text="@string/delivery_date"
                     android:textSize="@dimen/label_big"
-                    android:textStyle="bold" />
+                     />
 
                 <TextView
                     android:id="@+id/tv_date"
@@ -100,7 +104,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/iv_calander_presale_proced"
-                    android:text="@string/date"
                     android:textSize="@dimen/label_big" />
 
                 <ImageView
@@ -190,17 +193,16 @@
 
                 </LinearLayout>
 
-                <ScrollView
+                <ListView
+                    android:background="@color/white"
+                    android:id="@+id/list_delivery_items"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/ll_presale_proceed_main"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" />
-
-                </ScrollView>
+                    android:layout_height="wrap_content"
+                    android:divider="@color/grey"
+                    android:dividerHeight="@dimen/space"
+                    android:layout_below="@+id/frame"
+                    android:drawSelectorOnTop="true"
+                    />
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
@@ -214,28 +216,22 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btn_confirm_delivery"
         android:layout_marginRight="@dimen/activity_vertical_margin"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_add_black_24dp"
+        android:src="@drawable/btn_select_all"
         app:backgroundTint="@color/colorPrimary"
         android:layout_marginTop="@dimen/h3"
-
         android:visibility="invisible"
         />
-
-
-
-
     <RelativeLayout
         android:id="@+id/btn_confirm_delivery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:textColor="@color/white"
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
         android:background="@color/green"
         android:layout_alignParentBottom="true"
-
         android:layout_marginTop="@dimen/h3"
 
         >

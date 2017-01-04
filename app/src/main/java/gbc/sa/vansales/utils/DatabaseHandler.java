@@ -48,6 +48,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String VAN_STOCK_ITEMS = "VAN_STOCK_ITEMS";
     public static final String CUSTOMER_DELIVERY_HEADER = "CUSTOMER_DELIVERY_HEADER";
     public static final String CUSTOMER_DELIVERY_ITEMS = "CUSTOMER_DELIVERY_ITEMS";
+    public static final String CUSTOMER_DELIVERY_ITEMS_POST = "CUSTOMER_DELIVERY_ITEMS_POST";
     public static final String ORDER_REQUEST = "ORDER_REQUEST";
     public static final String MESSAGES = "MESSAGES";
 
@@ -209,6 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public static final String KEY_IS_VERIFIED = "isVerified";
+    public static final String KEY_IS_DELIVERED = "isDelivered";
     public static final String KEY_IS_SELECTED = "isSelected";
     public static final String KEY_TIME_STAMP = "timeStamp";
 
@@ -456,6 +458,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_VERIFIED  + " TEXT " + ")";
 
 
+        String TABLE_CUSTOMER_DELIVERY_HEADER = "CREATE TABLE " + CUSTOMER_DELIVERY_HEADER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_CREATED_BY  + " TEXT,"
+                + KEY_CREATED_TIME  + " TEXT,"
+                + KEY_DATE  + " TEXT,"
+                + KEY_SALES_DIST  + " TEXT,"
+                + KEY_SHIPPING_PT   + " TEXT,"
+                + KEY_SALES_ORG   + " TEXT,"
+                + KEY_DELIVERY_TYPE   + " TEXT,"
+                + KEY_DELIVERY_DEFN   + " TEXT,"
+                + KEY_ORDER_COMB   + " TEXT,"
+                + KEY_GOODS_MOVEMENT_DATE   + " TEXT,"
+                + KEY_LOADING_DATE   + " TEXT,"
+                + KEY_TRANSPLANT_DATE  + " TEXT,"
+                + KEY_DELIVERY_DATE  + " TEXT,"
+                + KEY_PICKING_DATE   + " TEXT,"
+                + KEY_UNLOAD_POINT   + " TEXT,"
+                + KEY_IS_DELIVERED  + " TEXT " + ")";
+
+        String TABLE_CUSTOMER_DELIVERY_ITEMS = "CREATE TABLE " + CUSTOMER_DELIVERY_ITEMS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_ITEM_CATEGORY  + " TEXT,"
+                + KEY_CREATED_BY  + " TEXT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_DATE   + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_ENTERED   + " TEXT,"
+                + KEY_MATERIAL_GROUP   + " TEXT,"
+                + KEY_PLANT   + " TEXT,"
+                + KEY_STORAGE_LOCATION   + " TEXT,"
+                + KEY_BATCH   + " TEXT,"
+                + KEY_ACTUAL_QTY  + " TEXT,"
+                + KEY_REMAINING_QTY  + " TEXT,"
+                + KEY_UOM  + " TEXT,"
+                + KEY_DIST_CHANNEL   + " TEXT,"
+                + KEY_DIVISION   + " TEXT,"
+                + KEY_IS_DELIVERED  + " TEXT " + ")";
+
+
         String TABLE_VAN_STOCK_ITEMS = "CREATE TABLE " + VAN_STOCK_ITEMS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_DELIVERY_NO  + " TEXT,"
@@ -494,6 +539,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ORG_UNITS   + " TEXT,"
                 + KEY_VAR_CASE   + " TEXT,"
                 + KEY_VAR_UNITS  + " TEXT " + ")";
+
+        String TABLE_CUSTOMER_DELIVERY_ITEMS_POST = "CREATE TABLE " + CUSTOMER_DELIVERY_ITEMS_POST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_ENTRY_TIME  + " TEXT,"
+                + KEY_DELIVERY_NO  + " TEXT,"
+                + KEY_ITEM_NO  + " TEXT,"
+                + KEY_MATERIAL_NO   + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_CASE   + " TEXT,"
+                + KEY_UNIT   + " TEXT,"
+                + KEY_AMOUNT  + " TEXT " + ")";
 
         String TABLE_BEGIN_DAY = "CREATE TABLE " + BEGIN_DAY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -600,6 +656,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_LOAD_DELIVERY_HEADER);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS);
         db.execSQL(TABLE_LOAD_DELIVERY_ITEMS_POST);
+        db.execSQL(TABLE_CUSTOMER_DELIVERY_HEADER);
+        db.execSQL(TABLE_CUSTOMER_DELIVERY_ITEMS);
+        db.execSQL(TABLE_CUSTOMER_DELIVERY_ITEMS_POST);
         db.execSQL(TABLE_BEGIN_DAY);
         db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
         db.execSQL(TABLE_CAPTURE_SALES_INVOICE);
@@ -625,6 +684,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_DELIVERY_ITEMS_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_HEADER);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_ITEMS_POST);
         db.execSQL("DROP TABLE IF EXISTS " + BEGIN_DAY);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_CUSTOMER_STOCK);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_SALES_INVOICE);
@@ -752,6 +814,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.endTransaction();
         db.close();
         return exists;
+    }
+
+    public void deleteData(String tablename,HashMap<String, String>filters ){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        String filterKeys = null;
+        String filterValues = null;
+        String [] filterArray = null;
+        if(!filters.isEmpty()){
+            filterKeys = filterBuilder(filters,false);
+            filterValues = paramsBuilder(filters, true);
+            filterArray = paramsBuilder(filters,true).split(",");
+        }
+
+        db.delete(tablename,filterKeys,filterArray);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+
     }
 
     public static String paramsBuilder(HashMap<String, String> hashMap,boolean isValue) {

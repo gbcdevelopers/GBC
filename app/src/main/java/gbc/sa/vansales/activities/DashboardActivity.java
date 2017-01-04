@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,8 +74,9 @@ public class DashboardActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        ArticleHeaders.loadData(getApplicationContext());
-        CustomerHeaders.loadData(getApplicationContext());
+        /*ArticleHeaders.loadData(getApplicationContext());
+        CustomerHeaders.loadData(getApplicationContext());*/
+        Helpers.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
@@ -259,6 +261,7 @@ public class DashboardActivity extends AppCompatActivity
         // pieChart.setUsePercentValues(true);
         pieChart.animateY(3000);
     }
+
     private void prepareListData() {
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();

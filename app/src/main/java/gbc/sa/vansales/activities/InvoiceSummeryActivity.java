@@ -193,7 +193,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         String orderID = "";
         try{
             HashMap<String, String> map = new HashMap<>();
-            map.put("Function", ConfigStore.LoadRequestFunction);
+            map.put("Function", ConfigStore.InvoiceRequestFunction);
             map.put("OrderId", "");
             map.put("DocumentType", ConfigStore.DocumentType);
             // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
