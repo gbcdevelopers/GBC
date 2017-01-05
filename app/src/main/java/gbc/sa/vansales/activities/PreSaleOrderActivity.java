@@ -103,9 +103,11 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderList orderList = arrayList.get(position);
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "list");
                 intent.putExtra("pos", position);
+                intent.putExtra("orderList",orderList);
                 startActivity(intent);
             }
         });
@@ -176,7 +178,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         temp.clear();
         arrayList.clear();
         Log.e("Cursor","" + cursor.getCount());
-        for(int i=0;i<cursor.getCount();i++){
+        do{
             OrderList orderList = new OrderList();
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
@@ -185,9 +187,9 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }
-
         }
-       // arrayList = unique(arrayList);
+        while (cursor.moveToNext());
+
 
     }
 

@@ -150,6 +150,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerDetailActivity.this, CustomerMessageListActivity.class);
+                intent.putExtra("from",object.getCustomerID());
                 startActivity(intent);
             }
         });

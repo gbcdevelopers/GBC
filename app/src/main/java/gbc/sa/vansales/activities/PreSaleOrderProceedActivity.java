@@ -43,6 +43,7 @@ import gbc.sa.vansales.adapters.OrderRequestBadgeAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadRequest;
+import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.OrderRequest;
 import gbc.sa.vansales.models.PreSaleProceed;
 import gbc.sa.vansales.sap.IntegrationService;
@@ -76,6 +77,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     HashMap<Integer, List<LoadRequestConstants>> constantsHashMap = new HashMap<>();
     DatabaseHandler db = new DatabaseHandler(this);
     ArrayList<OrderRequest> arraylist = new ArrayList<>();
+    OrderList orderList;
     int orderTotalValue = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,74 +105,23 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         });*/
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+        orderList = (OrderList)i.getParcelableExtra("orderList");
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
         }
+
         list = (ListView) findViewById(R.id.listview);
-        adapter = new OrderRequestBadgeAdapter(this, arraylist);
+        adapter = new OrderRequestBadgeAdapter(this, arraylist,from);
         list.setAdapter(adapter);
         setTitle(getString(R.string.presalesorder));
       //  list.setItemsCanFocus(true);
+        if(from.equalsIgnoreCase("button")){
+            new loadItems();
+        } else if(from.equalsIgnoreCase("list")){
+            new loadItemsOrder(orderList.getOrderId());
+        }
 
-        new loadItems();
-        /*toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        if (toolbar_iv_back != null) {
-            toolbar_iv_back.setVisibility(View.GONE);
-        }
-        iv_search = (ImageView) findViewById(R.id.iv_search);
-        if (iv_search != null) {
-            iv_search.setVisibility(View.GONE);
-        }
-        iv_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iv_search.setVisibility(View.GONE);
-                et_search.setVisibility(View.VISIBLE);
-                toolbar_iv_back.setVisibility(View.GONE);
-                tv_top_header.setVisibility(View.GONE);
-            }
-        });*/
-        /*et_search = (EditText) findViewById(R.id.et_search_customer);
-        et_search.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-                        et_search.setVisibility(View.GONE);
-                        iv_search.setVisibility(View.VISIBLE);
-                        toolbar_iv_back.setVisibility(View.VISIBLE);
-                        tv_top_header.setVisibility(View.VISIBLE);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        toolbar_iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("addtext", "change");
-//                    adapter.getFilter().filter(s.toString());
-                //planBadgeAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });*/
+
         myCalendar = Calendar.getInstance();
         iv_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -332,22 +283,60 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             Cursor cursor = db.getData(db.ARTICLE_HEADER,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
-                setLoadItems(cursor);
+                setLoadItems(cursor,false);
             }
             return null;
         }
     }
 
-    public void setLoadItems(Cursor loadItemsCursor){
+    public class loadItemsOrder extends AsyncTask<Void,Void,Void> {
+
+        private String orderId;
+        private loadItemsOrder(String orderId) {
+            this.orderId = orderId;
+            execute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_MATERIAL_NO ,"");
+            map.put(db.KEY_MATERIAL_GROUP ,"");
+            map.put(db.KEY_CASE ,"");
+            map.put(db.KEY_UNIT ,"");
+            map.put(db.KEY_UOM ,"");
+            map.put(db.KEY_PRICE ,"");
+
+            HashMap<String,String> filter = new HashMap<>();
+            filter.put(db.KEY_ORDER_ID,this.orderId);
+            Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                setLoadItems(cursor,true);
+            }
+            return null;
+        }
+    }
+
+    public void setLoadItems(Cursor loadItemsCursor,Boolean isPosted){
         Cursor cursor = loadItemsCursor;
 
         do{
+
             OrderRequest loadRequest = new OrderRequest();
             loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-            // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
-            // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
-            loadRequest.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
+            if(isPosted){
+                loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_CASE)) : "0");
+                loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)): "0");
+            }
+            else{
+                // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
+                // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
+                loadRequest.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
+            }
             loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             arraylist.add(loadRequest);
 
@@ -373,7 +362,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            Log.e("Order id","" + this.orderId);
+            Log.e("Order id", "" + this.orderId);
             for(OrderRequest loadRequest:arraylist){
                 HashMap<String,String> map = new HashMap<String, String>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -420,7 +409,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         String orderID = "";
         try{
             HashMap<String, String> map = new HashMap<>();
-            map.put("Function", ConfigStore.LoadRequestFunction);
+            map.put("Function", ConfigStore.CustomerOrderRequestFunction);
             map.put("OrderId", "");
             map.put("DocumentType", ConfigStore.DocumentType);
             // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));

@@ -16,6 +16,7 @@
     <string name="credit_days">Credit Days</string>
     <string name="credit_limit">Credit Limit</string>
     <string name="collection">Collection</string>
+    <string name="complete_invoice">Complete Invoice</string>
     <string name="confirmload">Confirm Load</string>
     <string name="confirmreturn">Confirm Returns</string>
     <string name="credit">Credit</string>
@@ -29,6 +30,8 @@
     <string name="description">Description</string>
     <string name="delete">Delete</string>
     <string name="delivery">Delivery</string>
+    <string name="delivery_list">Delivery List</string>
+    <string name="delivery_order">Delivery Order</string>
     <string name="desiredload">Desired Load</string>
     <string name="discount">Discount</string>
     <string name="dismiss">Dismiss</string>
@@ -41,7 +44,7 @@
     <string name="item_code">Item Code</string>
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
-    <string name="no">No</string>
+    <string name="invoice_summary">Invoice Summary</string>
     <string name="load">Load</string>
     <string name="load_title">Select Load</string>
     <string name="load_summary_title">Load Summary</string>
@@ -49,6 +52,8 @@
     <string name="loadrequest">Load Request</string>
     <string name="loaddate">Loading Date</string>
     <string name="loading">Loading…</string>
+    <string name="load_verify_title_alert">Load Verified</string>
+    <string name="load_verify_title_alert_msg">Have you verified the load on the vehicle</string>
     <string name="map">Map</string>
     <string name="manageinventory">Manage Inventory</string>
     <string name="methodofPayment">Method of Payment</string>
@@ -58,6 +63,7 @@
     <string name="merchandizing">Merchandizing</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="no">No</string>
     <string name="nextload">Next Load to Process</string>
     <string name="orderbook">Berain-Order Book</string>
     <string name="ordersummary">Order Summary</string>

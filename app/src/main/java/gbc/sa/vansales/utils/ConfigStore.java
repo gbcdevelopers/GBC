@@ -31,11 +31,18 @@ public class ConfigStore {
     public static final String CustomerSalesAreaEntity = "ZSFA_DOWNLOAD_SRV.CustomerSalesArea";
     public static final String CustomerCreditEntity = "ZSFA_DOWNLOAD_SRV.CustomerCredit";
     public static final String CustomerOpenItemEntity = "ZSFA_DOWNLOAD_SRV.CustomerHeader";
+    public static final String CustomerDeliverHeaderEntity = "ZSFA_DOWNLOAD_SRV.CustomerDelHD";
+    public static final String CustomerDeliveryItemEntity = "ZSFA_DOWNLOAD_SRV.CustomerDelItm";
     public static final String MessageEntity = "ZSFA_DOWNLOAD_SRV.Messages";
 
     //Functions for Posting
-    public static final String LoadRequestFunction = "ORDER";
+    public static final String LoadRequestFunction = "ORDERREQ";
+    public static final String CustomerOrderRequestFunction = "ORDERREQ";
+    public static final String LoadConfirmationFunction = "LCON";
+    public static final String InvoiceRequestFunction = "HHTIV";
+    public static final String CustomerDeliveryRequestFunction = "CUSTDEL";
     public static final String DocumentType = "ZVDL";
+    public static final String DeliveryDocumentType = "ZVAN";
 
     //DocumentTypes for PR Number Generation
     public static final String LoadRequest_PR_Type = "LOAD";
@@ -44,6 +51,8 @@ public class ConfigStore {
     public static final String OrderRequest_PR = "02";
     public static final String InvoiceRequest_PR_Type = "INVOICE";
     public static final String InvoiceRequest_PR = "03";
+    public static final String CustomerDeliveryRequest_PR_Type = "DELIVERY";
+    public static final String CustomerDeliveryRequest_PR = "04";
 
 
 

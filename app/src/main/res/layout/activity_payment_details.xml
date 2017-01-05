@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/h3"
                 android:layout_marginTop="@dimen/size_five"
+                android:id="@+id/tv_cust_detail"
                 android:text="@string/tv_cust_detail"
                 android:textColor="@color/white" />
 

@@ -119,6 +119,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
+                        intent2.putExtra("headerObj", object);
                         startActivity(intent2);
                         break;
                     case 3:

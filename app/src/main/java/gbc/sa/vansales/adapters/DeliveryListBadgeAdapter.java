@@ -18,10 +18,10 @@ import gbc.sa.vansales.models.OrderList;
 /**
  * Created by Rakshit on 03-Jan-17.
  */
-public class OrderListBadgeAdapter extends ArrayAdapter<OrderList> {
+public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
     private ArrayList<OrderList> orders;
 
-    public OrderListBadgeAdapter(Context context, ArrayList<OrderList> orders){
+    public DeliveryListBadgeAdapter(Context context, ArrayList<OrderList> orders){
 
         super(context, R.layout.custom_delivery, orders);
         this.orders = orders;
@@ -46,8 +46,8 @@ public class OrderListBadgeAdapter extends ArrayAdapter<OrderList> {
 
         OrderList order = getItem(position);
 
-        holder.order_id.setText("Order No : " + order.getOrderId());
-        holder.order_date.setText("Order Date : " + order.getOrderDate());
+        holder.order_id.setText("Delivery No : " + order.getOrderId());
+        holder.order_date.setText("Delivery Date : " + order.getOrderDate());
 
         return convertView;
     }

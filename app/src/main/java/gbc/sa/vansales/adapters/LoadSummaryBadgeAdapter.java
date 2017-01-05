@@ -144,7 +144,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
             public void onClick(View v) {
                 loadSummaryList.get(position).setQuantityCases(et_quantity_case.getText().toString().trim());
                 loadSummaryList.get(position).setQuantityUnits(et_quantity_unit.getText().toString().trim());
-
+                activity.hideKeyboard(v);
                 activity.updateAdapter(tempList);
                 holder.swipeLayout.close();
                 dialog.dismiss();
@@ -156,6 +156,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
             public void onClick(View v) {
                 holder.swipeLayout.close();
                 dialog.dismiss();
+                activity.hideKeyboard(v);
             }
         });
 

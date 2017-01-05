@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
+import gbc.sa.vansales.utils.UrlBuilder;
 import gbc.sa.vansales.views.TextViewWithLabel;
 
 /**
@@ -94,7 +95,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
 
         Customer customer = dataList.get(i);
         holder.customer_id.setText(customer.getCustomerID());
-        holder.customer_name.setText(customer.getCustomerName());
+        holder.customer_name.setText(UrlBuilder.decodeString(customer.getCustomerName()));
         holder.customer_address.setText(customer.getCustomerAddress());
 
         if(customer.getPaymentMethod().equals("Credit")){

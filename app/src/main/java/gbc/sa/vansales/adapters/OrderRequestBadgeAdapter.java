@@ -29,12 +29,14 @@ import gbc.sa.vansales.utils.DatabaseHandler;
  */
 public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
     private ArrayList<OrderRequest> loadRequestList;
+    private String origin;
     private int pos;
     private int lastFocussedPosition = -1;
-    public OrderRequestBadgeAdapter(Context context, ArrayList<OrderRequest> loadRequests){
+    public OrderRequestBadgeAdapter(Context context, ArrayList<OrderRequest> loadRequests,String origin){
 
         super(context, R.layout.activity_loadrequest_items, loadRequests);
         this.loadRequestList = loadRequests;
+        this.origin = origin;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -100,6 +102,10 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
             public void afterTextChanged(Editable s) {
             }
         };
+        if(this.origin.equalsIgnoreCase("list")){
+            holder.cases.setEnabled(false);
+            holder.units.setEnabled(false);
+        }
         holder.cases.addTextChangedListener(holder.casestextWatcher);
         holder.cases.setText(loadRequestList.get(pos).getCases());
         holder.units.addTextChangedListener(holder.unitsTextWatcher);

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.Messages;
@@ -285,11 +286,26 @@ public class LoginActivity extends Activity {
                 TripHeader.load(LoginActivity.this,tripId, db);
                 LoadDelivery.load(LoginActivity.this,tripId, db);
                 ArticleHeaders.load(LoginActivity.this, tripId, db);
-                VisitList.load(LoginActivity.this,tripId, db);
                 CustomerHeaders.load(LoginActivity.this, tripId, db);
+                VisitList.load(LoginActivity.this, tripId, db);
+                Messages.load(LoginActivity.this, username, db);
+                CustomerDelivery.load(LoginActivity.this,tripId,db);
+                /*ArticleHeaders.loadData(getApplicationContext());
+                CustomerHeaders.loadData(getApplicationContext());*/
+            }
+        });
+
+        chain.add(new Chain.Link(){
+            @Override
+            public void run() {
+                /*TripHeader.load(LoginActivity.this,tripId, db);
+                LoadDelivery.load(LoginActivity.this,tripId, db);
+                ArticleHeaders.load(LoginActivity.this, tripId, db);
+                CustomerHeaders.load(LoginActivity.this, tripId, db);
+                VisitList.load(LoginActivity.this,tripId, db);
+                Messages.load(LoginActivity.this,username,db);*/
                 ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());
-                Messages.load(LoginActivity.this,username,db);
             }
         });
 

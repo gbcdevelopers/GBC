@@ -38,6 +38,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.CustomerHeaders;
+
 import android.net.NetworkInfo;
 import org.apache.commons.lang3.StringUtils;
 /**
@@ -168,21 +171,23 @@ public class Helpers {
                 docTypeNo = ConfigStore.InvoiceRequest_PR;
                 break;
             }
+            case ConfigStore.CustomerDeliveryRequest_PR_Type:{
+                docTypeNo = ConfigStore.CustomerDeliveryRequest_PR;
+                break;
+            }
 
         }
         return docTypeNo;
     }
 
     public static String getMaskedValue(String value, int length){
-        /*StringBuilder sb = new StringBuilder();
-        for(int i=0;i<length-value.length();i++){
-            sb.append("0");
-        }
-        sb.append(value);
-        Log.e("Item no","" + sb.toString());
-        return sb.toString();*/
-
         return StringUtils.leftPad(value, length, "0");
+    }
+
+    public static void loadData(Context context){
+        Log.e("Helper Load","Load Data");
+        ArticleHeaders.loadData(context);
+        CustomerHeaders.loadData(context);
     }
 
 }
