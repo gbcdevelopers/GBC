@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.PromotionAdapter;
+import gbc.sa.vansales.adapters.PromotionInfoAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
 
@@ -26,6 +27,7 @@ public class PromotionListActivity extends AppCompatActivity {
 
     ListView list_promotion;
     PromotionAdapter adapter;
+    PromotionInfoAdapter adapter1;
 
 
     ImageView iv_back;
@@ -93,7 +95,7 @@ public class PromotionListActivity extends AppCompatActivity {
 //                builder.show();
 
 
-                Intent intent=new Intent(PromotionListActivity.this,PromotionActivity.class);
+                Intent intent=new Intent(PromotionListActivity.this,PromotioninfoActivity.class);
                 intent.putExtra("msg","Final Invoice");
                 startActivity(intent);
 
@@ -101,9 +103,18 @@ public class PromotionListActivity extends AppCompatActivity {
         });
 
 
+        if(from.equals("review"))
+        {
+            adapter1 = new PromotionInfoAdapter(PromotionListActivity.this,3, R.layout.custom_promotion_info_list);
+            list_promotion.setAdapter(adapter1);
+        }
+        else {
+            adapter = new PromotionAdapter(PromotionListActivity.this,3, R.layout.custom_promotionlist);
+            list_promotion.setAdapter(adapter);
+        }
 
-        adapter = new PromotionAdapter(PromotionListActivity.this,3, R.layout.custom_promotionlist);
-        list_promotion.setAdapter(adapter);
+
+
 
       /*  list_promotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -128,7 +139,7 @@ public class PromotionListActivity extends AppCompatActivity {
 //                        String str_promotion_message = tv.getText().toString();
 
 
-                        Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
+                        Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
                         intent.putExtra("msg", arrayList.get(position));
                         intent.putExtra("pos",position);
                         startActivity(intent);

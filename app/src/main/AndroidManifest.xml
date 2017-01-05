@@ -50,12 +50,28 @@
 								<activity
 												android:name=".activities.OdometerPopupActivity"
 												android:label="Single Item"/>
+
+								<activity
+									android:name=".activities.PromotioninfoActivity"
+									android:theme="@style/AppTheme.NoActionBar"
+									android:label="Single Item"/>
+
+
 								<activity
 												android:name=".activities.DashboardActivity"
 												android:label="@string/dashboard"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>
+
+
+					<activity
+						android:name=".activities.PrintDocumentActivity"
+
+						android:screenOrientation="portrait"
+						android:theme="@style/AppTheme.NoActionBar"
+						android:windowSoftInputMode="stateHidden"/>
+
 								<activity
 												android:name=".activities.CategoryListActivity"
 												android:label="@string/dashboard"

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
+import gbc.sa.vansales.adapters.PrintDocumentAdapter;
 
 public class InformationsActivity extends AppCompatActivity {
 
@@ -78,12 +79,14 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(review);
                         break;
                     case 6:
+                        Intent printdoc= new Intent(InformationsActivity.this,PrintDocumentActivity.class);
+                        startActivity(printdoc);
+
+                        break;
+                    case 7:
                         Intent print = new Intent(InformationsActivity.this,PrinterReportsActivity.class);
                         print.putExtra("from","info");
                         startActivity(print);
-                        break;
-                    case 7:
-
 
                         break;
                     default:

@@ -19,13 +19,14 @@ import gbc.sa.vansales.models.DataPoustingAudit;
  * Created by ehs on 22/12/16.
  */
 
-public class DataPoustingAuditAdapter extends BaseAdapter {
+public class
+PrintDocumentAdapter extends BaseAdapter {
 
     ArrayList<DataPoustingAudit> arrayList;
     Activity activity;
     boolean isChecked=false;
 
-    public DataPoustingAuditAdapter(Activity activity, ArrayList<DataPoustingAudit> arrayList,boolean isChecked)
+    public PrintDocumentAdapter(Activity activity, ArrayList<DataPoustingAudit> arrayList, boolean isChecked)
     {
         this.activity = activity;
         this.arrayList = arrayList;
@@ -53,7 +54,7 @@ public class DataPoustingAuditAdapter extends BaseAdapter {
         if(view == null)
         {
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-            view = inflater.inflate(R.layout.item_data_pousting_audit,viewGroup,false);
+            view = inflater.inflate(R.layout.item_print_document,viewGroup,false);
 
         }
 

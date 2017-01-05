@@ -1,7 +1,7 @@
 package gbc.sa.vansales.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -13,9 +13,10 @@ import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DataPoustingAuditAdapter;
+import gbc.sa.vansales.adapters.PrintDocumentAdapter;
 import gbc.sa.vansales.models.DataPoustingAudit;
 
-public class DataPoustingAuditActivity extends AppCompatActivity {
+public class PrintDocumentActivity extends AppCompatActivity {
 
     ImageView iv_back;
     TextView tv_top_header;
@@ -25,17 +26,17 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
 
     ArrayList<DataPoustingAudit> arrayList = new ArrayList<>();
     ListView listView;
-    DataPoustingAuditAdapter adapter;
+    PrintDocumentAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_data_pousting_audit);
+        setContentView(R.layout.activity_print_document);
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Data Posting Audit");
+        tv_top_header.setText("Print Document");
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,7 +52,7 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                adapter = new DataPoustingAuditAdapter(DataPoustingAuditActivity.this,arrayList,isChecked);
+                adapter = new PrintDocumentAdapter(PrintDocumentActivity.this,arrayList,isChecked);
                 listView.setAdapter(adapter);
 
             }
@@ -76,7 +77,7 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
             arrayList.add(model);
         }
 
-        adapter = new DataPoustingAuditAdapter(DataPoustingAuditActivity.this,arrayList,false
+        adapter = new PrintDocumentAdapter(PrintDocumentActivity.this,arrayList,false
         );
         listView.setAdapter(adapter);
 

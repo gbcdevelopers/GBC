@@ -68,7 +68,8 @@
 								android:layout_height="wrap_content"
 								android:layout_marginBottom="60dp"
 								android:orientation="vertical"
-								android:layout_marginTop="60dp">
+								android:layout_below="@+id/inc_common_header"
+					>
 
 								<android.support.v7.widget.CardView
 												android:layout_width="match_parent"
@@ -91,7 +92,7 @@
 																				android:layout_width="wrap_content"
 																				android:layout_height="wrap_content"
 																				android:layout_centerVertical="true"
-																				android:text="@string/order_date"
+																				android:text="@string/deliverydate"
 																				android:textSize="@dimen/label_big"
 																				android:textStyle="bold"/>
 

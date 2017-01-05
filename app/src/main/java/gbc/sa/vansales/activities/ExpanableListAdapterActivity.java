@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -81,7 +83,7 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         ExpandedMenuModel headerTitle = (ExpandedMenuModel) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
@@ -99,6 +101,35 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle.getIconName());
         headerIcon.setImageResource(headerTitle.getIconImg());
+        LinearLayout ll_main=(LinearLayout)convertView.findViewById(R.id.ll_main);
+
+        ll_main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("position",groupPosition+"");
+                if (groupPosition == 0) {
+                    Intent i = new Intent(mContext, BeginTripActivity.class);
+                    mContext.startActivity(i);
+                } else if (groupPosition == 1) {
+                    Intent i = new Intent(mContext, ManageInventory.class);
+                    mContext.startActivity(i);
+                } else if (groupPosition == 2) {
+
+
+                    Intent i = new Intent(mContext, MyCalendarActivity.class);
+                    mContext.startActivity(i);
+                } else if (groupPosition == 3) {
+                    Intent i = new Intent(mContext, EndTripActivity.class);
+                    mContext.startActivity(i);
+                } else if (groupPosition == 4) {
+                    Intent i = new Intent(mContext, InformationsActivity.class);
+                    mContext.startActivity(i);
+                }
+
+
+
+            }
+        });
 
 
 

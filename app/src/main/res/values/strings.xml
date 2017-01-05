@@ -185,8 +185,8 @@
     <string name="abn_amro">ABN AMRO</string>
     <string name="proceed">Proceed</string>
     <string name="order_date">Order Date</string>
-    <string name="product_description">Product description</string>
-    <string name="product_number">Product number</string>
+    <string name="product_description">Desc</string>
+    <string name="product_number">Product no</string>
     <string name="print">Print</string>
     <string name="do_not_print">Do Not Print</string>
     <string name="deposit_report">DEPOSIT REPORT</string>
@@ -259,10 +259,10 @@
    
     <string name="_0_0_0_1">0.0/0.1</string>
     <string name="customer_decs">Customer decs</string>
-    <string name="item_number">Item number</string>
-    <string name="item_description">Item description</string>
-    <string name="case_price">case price</string>
-    <string name="unit_price">unit price</string>
+    <string name="item_number">Item no</string>
+    <string name="item_description">Desc</string>
+    <string name="case_price">Cases</string>
+    <string name="unit_price">Pcs</string>
     <string name="upc">UPC</string>
     <string name="route_code_101">Route Code: 101</string>
     <string name="welcome_john_doe_1000002445">Welcome John Doe:1000002445</string>
@@ -272,6 +272,12 @@
     <string name="price_54_00_2_25">Price :54.00/2.25</string>
     <string name="no_records">No Records</string>
     <string name="sales_qty">Sales Qty</string>
+    <string name="cust_id">Cust ID</string>
+    <string name="cname">Name</string>
+    <string name="item_no">Item No</string>
+    <string name="descri">Description</string>
+    <string name="cust_ID">Cust ID</string>
+    <string name="deliverydate">Delivery Date</string>
 
 
     <string-array name="unloadReasons">

@@ -158,6 +158,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerDetailActivity.this, PromotionListActivity.class);
+                intent.putExtra("from","review");
                 startActivity(intent);
             }
         });

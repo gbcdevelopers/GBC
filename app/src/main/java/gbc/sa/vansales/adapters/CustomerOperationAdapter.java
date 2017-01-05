@@ -12,6 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.Const;
@@ -61,8 +62,17 @@ public class CustomerOperationAdapter extends BaseAdapter {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
+            if(from.equals("InformationsActivity"))
+            {
+                convertView = inflater.inflate(R.layout.information_grid, null);
 
-            convertView = inflater.inflate(R.layout.custom_grid, null);
+            }
+            else
+            {
+                convertView = inflater.inflate(R.layout.custom_grid, null);
+            }
+
+
 
         }
 
@@ -75,11 +85,9 @@ public class CustomerOperationAdapter extends BaseAdapter {
 
         if (from.equals("CustomerDetailActivity")) {
 
-            if (position == 0 ) {
-                layout.setBackgroundResource(R.drawable.filled_gray_back);
-            } else {
+           
                 layout.setBackgroundColor(Color.WHITE);
-            }
+
         } else if (from.equals("SalesInvoiceOptionActivity")) {
 
         }

@@ -43,7 +43,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="@string/product_number"
+                        android:text="@string/item_no"
                         android:textAllCaps="true"
                         android:textStyle="bold"
                         />
@@ -63,7 +63,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="@string/product_description"
+                        android:text="@string/descri"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 

@@ -26,10 +26,10 @@ public class PresaleAdapter extends BaseAdapter {
     Context context;
     int resource;
 
-    List<PreSaleProceed> item;
+    int item;
 
 
-    public PresaleAdapter(Context context, int resource,List<PreSaleProceed> item)
+    public PresaleAdapter(Context context, int resource,int item)
     {
         Log.v("called","adapter");
         this.context=context;
@@ -44,7 +44,7 @@ public class PresaleAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return item.size();
+        return item;
     }
 
     @Override
@@ -65,9 +65,9 @@ public class PresaleAdapter extends BaseAdapter {
             convertView = inflater.inflate(resource, null);
             TextView tv=(TextView)convertView.findViewById(R.id.tv_delivery);
             TextView tv1=(TextView)convertView.findViewById(R.id.tv_del_date);
-            if(item.size()>0) {
+            if(item>0) {
                 tv.setText("Order#"+position);
-                tv1.setText("Order date :"+ item.get(position).getDATE());
+                tv1.setText("Order date : 2/1/2017");
             }
 
             return convertView;

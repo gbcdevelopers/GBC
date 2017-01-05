@@ -138,24 +138,28 @@ public class DashboardActivity extends AppCompatActivity
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
-                Object item = parent.getExpandableListAdapter().getGroupId(groupPosition);
-                String position = item.toString();
-                if (position == "0") {
-                    Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
-                    startActivity(i);
-                } else if (position == "1") {
-                    Intent i = new Intent(DashboardActivity.this, ManageInventory.class);
-                    startActivity(i);
-                } else if (position == "2") {
-                    Intent i = new Intent(DashboardActivity.this, MyCalendarActivity.class);
-                    startActivity(i);
-                } else if (position == "3") {
-                    Intent i = new Intent(DashboardActivity.this, EndTripActivity.class);
-                    startActivity(i);
-                } else if (position == "4") {
-                    Intent i = new Intent(DashboardActivity.this, InformationsActivity.class);
-                    startActivity(i);
-                }
+
+                Log.v("Group","click");
+//                Object item = parent.getExpandableListAdapter().getGroupId(groupPosition);
+//                String position = item.toString();
+//                if (position == "0") {
+//                    Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
+//                    startActivity(i);
+//                } else if (position == "1") {
+//                    Intent i = new Intent(DashboardActivity.this, ManageInventory.class);
+//                    startActivity(i);
+//                } else if (position == "2") {
+//
+//
+//                    Intent i = new Intent(DashboardActivity.this, MyCalendarActivity.class);
+//                    startActivity(i);
+//                } else if (position == "3") {
+//                    Intent i = new Intent(DashboardActivity.this, EndTripActivity.class);
+//                    startActivity(i);
+//                } else if (position == "4") {
+//                    Intent i = new Intent(DashboardActivity.this, InformationsActivity.class);
+//                    startActivity(i);
+//                }
                 return false;
             }
         });
