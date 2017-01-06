@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -184,13 +185,6 @@ public class DashboardActivity extends AppCompatActivity
 
                 db.addData(db.BEGIN_DAY, map);
 
-                HashMap<String, String> altMap = new HashMap<>();
-                altMap.put(db.KEY_IS_BEGIN_DAY, "true");
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_IS_BEGIN_DAY,"false");
-
-                db.updateData(db.LOCK_FLAGS,altMap,filter);
-
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -267,35 +261,58 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void prepareListData() {
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_IS_BEGIN_DAY, "");
+        map.put(db.KEY_IS_LOAD_VERIFIED,"");
+        map.put(db.KEY_IS_END_DAY,"");
+        HashMap<String,String> filter = new HashMap<>();
+        Cursor cursor = db.getData(db.LOCK_FLAGS,map,filter);
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+        }
+        boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
+        boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
+        boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
+
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
-        beginTrip.setIconName("Begin Trip");
+        beginTrip.setIconName(getString(R.string.begintrip));
         beginTrip.setIconImg(R.drawable.ic_begintrip);
-        // Adding data header
+        beginTrip.setIsEnabled(!isBeginTripEnabled);
         listDataHeader.add(beginTrip);
+
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
-        manageInventory.setIconName("Manage Inventory");
+        manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
+        manageInventory.setIsEnabled(isBeginTripEnabled);
         listDataHeader.add(manageInventory);
+
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
-        customerOperations.setIconName("Customer Operations");
+        customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
+        customerOperations.setIsEnabled(isloadVerifiedEnabled);
         listDataHeader.add(customerOperations);
+
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
-        endTrip.setIconName("End Trip");
+        endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
+        endTrip.setIsEnabled(isBeginTripEnabled);
         listDataHeader.add(endTrip);
+
         ExpandedMenuModel information = new ExpandedMenuModel();
-        information.setIconName("Information");
+        information.setIconName(getString(R.string.information));
         information.setIconImg(R.drawable.ic_info);
+        information.setIsEnabled(true);
         listDataHeader.add(information);
         // Adding child data
         List<String> manageInventoryItems = new ArrayList<String>();
-        manageInventoryItems.add("Load");
-        manageInventoryItems.add("Load Request");
-        manageInventoryItems.add("VanStock");
-        manageInventoryItems.add("Unload");
+        manageInventoryItems.add(getString(R.string.load));
+        manageInventoryItems.add(getString(R.string.loadrequest));
+        manageInventoryItems.add(getString(R.string.vanstock));
+        manageInventoryItems.add(getString(R.string.unload));
         listDataChild.put(listDataHeader.get(1), manageInventoryItems);
     }
     /*void createLineChart() {

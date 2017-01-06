@@ -51,6 +51,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CUSTOMER_DELIVERY_ITEMS_POST = "CUSTOMER_DELIVERY_ITEMS_POST";
     public static final String ORDER_REQUEST = "ORDER_REQUEST";
     public static final String MESSAGES = "MESSAGES";
+    public static final String ODOMETER = "ODOMETER";
 
     //Properties for Table(Based on Entity Sets)
 
@@ -249,6 +250,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_REMAINING_QTY_UNIT = "remainingQtyUnit";
     public static final String KEY_UOM_CASE = "uomCase";
     public static final String KEY_UOM_UNIT = "uomUnit";
+
+    //Odometer
+    public static final String KEY_ODOMETER_VALUE = "odometerValue";
 
     private static DatabaseHandler sInstance;
 
@@ -642,6 +646,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_MESSAGE + " TEXT,"
                 + KEY_DRIVER + " TEXT " + ")";
 
+        String TABLE_ODOMETER_VALUE = "CREATE TABLE " + ODOMETER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_ODOMETER_VALUE + " TEXT " + ")";
+
 
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
@@ -669,6 +678,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_USER_FLAGS);
         db.execSQL(TABLE_VAN_STOCK_ITEMS);
         db.execSQL(TABLE_MESSAGES);
+        db.execSQL(TABLE_ODOMETER_VALUE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -696,6 +706,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOCK_FLAGS);
         db.execSQL("DROP TABLE IF EXISTS " + ORDER_REQUEST);
         db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
+        db.execSQL("DROP TABLE IF EXISTS " + ODOMETER);
         onCreate(db);
     }
 

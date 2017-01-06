@@ -272,8 +272,7 @@
     <string name="price_54_00_2_25">Price :54.00/2.25</string>
     <string name="no_records">No Records</string>
     <string name="sales_qty">Sales Qty</string>
-
-
+    <string name="odometer_reading">Last Odometer Reading</string>
     <string-array name="unloadReasons">
 
 
