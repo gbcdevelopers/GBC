@@ -81,6 +81,13 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
         if(!checkIfLoadExists()){
             if(createDataForPost(dataNew,dataOld)){
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_LOAD_VERIFIED, "true");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_LOAD_VERIFIED,"false");
+
+                db.updateData(db.LOCK_FLAGS,altMap,filter);
+
                 Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);
             }

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -34,7 +37,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.BeginDay;
 import gbc.sa.vansales.activities.DashboardActivity;
@@ -45,10 +50,14 @@ import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static gbc.sa.vansales.R.id.currentMonth;
 import static gbc.sa.vansales.R.id.day;
 import static gbc.sa.vansales.R.id.editTextDialogUserInput;
+import static gbc.sa.vansales.R.id.thing_proto;
 /**
  * Created by eheuristic on 12/2/2016.
  */
@@ -69,10 +78,14 @@ public class BeginDayFragment extends Fragment {
     String stringDeliveryDate = "";
     String stringTime = "";
     private static final String DATE_FORMAT = "dd.MM.yy";
-    DatabaseHandler db = new DatabaseHandler(getActivity());
+    DatabaseHandler db;
+    LoadingSpinner loadingSpinner;
+    float lastValue = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_begin_day, container, false);
+        db = new DatabaseHandler(getActivity());
+        loadingSpinner = new LoadingSpinner(getActivity());
         salesDate = (TextView) view.findViewById(R.id.salesDate);
         time = (TextView) view.findViewById(R.id.time);
         delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
@@ -105,11 +118,8 @@ public class BeginDayFragment extends Fragment {
             }
         });
         salesDate.setEnabled(false);
-
         return view;
     }
-
-
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -125,6 +135,29 @@ public class BeginDayFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
         alertDialogBuilder.setView(promptsView);
+
+        //Reading last save odometer
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_ODOMETER_VALUE,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+
+        final TextView lastOdometer = (TextView) promptsView
+                .findViewById(R.id.last_odometer);
+
+
+        if(db.checkData(db.ODOMETER,filter)){
+            Cursor cursor = db.getData(db.ODOMETER,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                lastOdometer.setText(getString(R.string.odometer_reading) + " : " + cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
+                lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
+            }
+        }
+        else{
+            lastOdometer.setText(getString(R.string.odometer_reading) + " : " + "0");
+        }
+
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
         // set dialog message
@@ -136,18 +169,13 @@ public class BeginDayFragment extends Fragment {
                                 String input = userInput.getText().toString();
                                 if (input.equals("")) {
                                     dialog.cancel();
-                                    Toast.makeText(getContext(),getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
                                 } else {
-
-                                    HashMap<String, String> altMap = new HashMap<>();
-                                    altMap.put(db.KEY_IS_BEGIN_DAY, "true");
-                                    HashMap<String, String> filter = new HashMap<>();
-                                    filter.put(db.KEY_IS_BEGIN_DAY,"false");
-
-                                    db.updateData(db.LOCK_FLAGS,altMap,filter);
-
-                                    Intent i = new Intent(getActivity(), LoadActivity.class);
-                                    startActivity(i);
+                                    if (Float.parseFloat(input) > lastValue) {
+                                        postOdometer(input);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.value_greater), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                         })
@@ -164,24 +192,84 @@ public class BeginDayFragment extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-    DatePickerDialog.OnDateSetListener dateSales = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            stringSalesDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-            salesDate.setText(stringSalesDate);
-            Log.d(TAG, "---" + stringSalesDate);
+
+    public void postOdometer(String value){
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_ODOMETER_VALUE,value);
+
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+        if(db.checkData(db.ODOMETER,filter)){
+            db.updateData(db.ODOMETER,map,filter);
         }
-    };
-    DatePickerDialog.OnDateSetListener dateDelivery = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            stringDeliveryDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-            delieveryDate.setText(stringDeliveryDate);
-            Log.d(TAG, "---" + stringDeliveryDate);
+        else{
+            db.addData(db.ODOMETER,map);
         }
-    };
+        new postData(value);
+    }
+
+    public class postData extends AsyncTask<Void,Void,Void>{
+
+        String flag = "";
+        String value = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingSpinner.show();
+        }
+
+        private postData(String value) {
+            this.value = value;
+            execute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put("TripID", Settings.getString(App.TRIP_ID));
+            map.put("Value",this.value);
+            JSONArray deepEntity = new JSONArray();
+
+            this.flag = IntegrationService.postOdometer(getActivity(),App.POST_ODOMETER_SET,map,deepEntity);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            if(this.flag.equals("Y")){
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_BEGIN_DAY, "true");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_BEGIN_DAY, "false");
+                db.updateData(db.LOCK_FLAGS, altMap, filter);
+                Intent i = new Intent(getActivity(), LoadActivity.class);
+                startActivity(i);
+            }
+            else{
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setTitle(R.string.error_title)
+                        .setMessage(R.string.error_message)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(loadingSpinner.isShowing()){
+                                    loadingSpinner.hide();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+            }
+
+        }
+    }
+
 }

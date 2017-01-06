@@ -38,6 +38,8 @@
 				<string name="endtrip">End Trip</string>
 				<string name="enter_employee_id">Please enter employee ID</string>
 				<string name="enter_password">Please enter password</string>
+				<string name="error_title">Error</string>
+				<string name="error_message">An error occured. Please try again</string>
 				<string name="good">Good</string>
 				<string name="information">Informations</string>
 				<string name="item_code">Item Code</string>
@@ -52,6 +54,7 @@
 				<string name="loaddate">Loading Date</string>
 				<string name="loading">Loading…</string>
 				<string name="load_verify_title_alert">Load Verified</string>
+				<string name="odometer">Last Odometer Reading</string>
 				<string name="load_verify_title_alert_msg">Have you verified the load on the vehicle</string>
 				<string name="map">Map</string>
 				<string name="manageinventory">Manage Inventory</string>
@@ -97,6 +100,7 @@
 				<string name="loadselection">Load Selection</string>
 				<string name="variance_load">Load Variance</string>
 				<string name="valid_value">Please enter some valid value</string>
+				<string name="value_greater">Value should be greater than last saved reading</string>
 				<string name="yes">Yes</string>
 				<string name="manage_inventory">Manage Inventory </string>
 
@@ -269,6 +273,7 @@
 				<string name="descri">Description</string>
 				<string name="cust_ID">Cust ID</string>
 				<string name="deliverydate">Delivery Date</string>
+				<string name="odometer_reading">Last Odometer Reading</string>
 				<string-array name="unloadReasons">
 								<item>---Please Select---</item>
 								<item>Expiry</item>

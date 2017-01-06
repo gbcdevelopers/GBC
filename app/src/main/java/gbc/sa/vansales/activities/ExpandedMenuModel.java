@@ -7,7 +7,13 @@ public class ExpandedMenuModel {
 
     String iconName = "";
     int iconImg = -1; // menu icon resource id
-
+    boolean isEnabled = false;
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+    public void setIsEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+    }
     public String getIconName() {
         return iconName;
     }

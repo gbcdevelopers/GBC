@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -260,28 +261,51 @@ public class DashboardActivity extends AppCompatActivity
     }
 
     private void prepareListData() {
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_IS_BEGIN_DAY, "");
+        map.put(db.KEY_IS_LOAD_VERIFIED,"");
+        map.put(db.KEY_IS_END_DAY,"");
+        HashMap<String,String> filter = new HashMap<>();
+        Cursor cursor = db.getData(db.LOCK_FLAGS,map,filter);
+
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+        }
+        boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
+        boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
+        boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
+
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
         beginTrip.setIconName(getString(R.string.begintrip));
         beginTrip.setIconImg(R.drawable.ic_begintrip);
-        // Adding data header
+        beginTrip.setIsEnabled(!isBeginTripEnabled);
         listDataHeader.add(beginTrip);
+
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
         manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
+        manageInventory.setIsEnabled(isBeginTripEnabled);
         listDataHeader.add(manageInventory);
+
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
         customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
+        customerOperations.setIsEnabled(isloadVerifiedEnabled);
         listDataHeader.add(customerOperations);
+
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
+        endTrip.setIsEnabled(isBeginTripEnabled);
         listDataHeader.add(endTrip);
+
         ExpandedMenuModel information = new ExpandedMenuModel();
         information.setIconName(getString(R.string.information));
         information.setIconImg(R.drawable.ic_info);
+        information.setIsEnabled(true);
         listDataHeader.add(information);
         // Adding child data
         List<String> manageInventoryItems = new ArrayList<String>();

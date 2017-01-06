@@ -70,8 +70,8 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
         return false;
     }
     @Override
-    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        ExpandedMenuModel headerTitle = (ExpandedMenuModel) getGroup(groupPosition);
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, final ViewGroup parent) {
+        final ExpandedMenuModel headerTitle = (ExpandedMenuModel) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -84,28 +84,49 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                 .findViewById(R.id.submenu);
         ImageView headerIcon = (ImageView) convertView.findViewById(R.id.iconimage);
         lblListHeader.setTypeface(null, Typeface.BOLD);
+        if(!headerTitle.isEnabled()){
+            lblListHeader.setAlpha(.5f);
+        }
         lblListHeader.setText(headerTitle.getIconName());
+
         headerIcon.setImageResource(headerTitle.getIconImg());
         LinearLayout ll_main = (LinearLayout) convertView.findViewById(R.id.ll_main);
+        Log.e("Header Title","" + headerTitle.isEnabled() + headerTitle.getIconName());
+
         ll_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("position", groupPosition + "");
+                Log.e("position", groupPosition + "");
                 if (groupPosition == 0) {
-                    Intent i = new Intent(mContext, BeginTripActivity.class);
-                    mContext.startActivity(i);
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, BeginTripActivity.class);
+                        mContext.startActivity(i);
+                    }
+
                 } else if (groupPosition == 1) {
-                    Intent i = new Intent(mContext, ManageInventory.class);
-                    mContext.startActivity(i);
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, ManageInventory.class);
+                        mContext.startActivity(i);
+                    }
+
                 } else if (groupPosition == 2) {
-                    Intent i = new Intent(mContext, MyCalendarActivity.class);
-                    mContext.startActivity(i);
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, MyCalendarActivity.class);
+                        mContext.startActivity(i);
+                    }
+
                 } else if (groupPosition == 3) {
-                    Intent i = new Intent(mContext, EndTripActivity.class);
-                    mContext.startActivity(i);
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, EndTripActivity.class);
+                        mContext.startActivity(i);
+                    }
+
                 } else if (groupPosition == 4) {
-                    Intent i = new Intent(mContext, InformationsActivity.class);
-                    mContext.startActivity(i);
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, InformationsActivity.class);
+                        mContext.startActivity(i);
+                    }
+
                 }
             }
         });

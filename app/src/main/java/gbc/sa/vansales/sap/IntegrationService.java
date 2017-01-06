@@ -127,6 +127,24 @@ public class IntegrationService extends IntentService {
         builder.append(App.PORT);
         builder.append(App.POST_URL);
         builder.append(collectionname);
+        Log.e("Builder is", "" + builder.toString());
+        return builder.toString();
+    }
+
+    private static String postUrlOdometer(String collectionname){
+        StringBuilder builder = new StringBuilder();
+
+        if (App.IS_HTTPS) {
+            builder.append("https://");
+        } else {
+            builder.append("http://");
+        }
+
+        builder.append(App.HOST);
+        builder.append(":");
+        builder.append(App.PORT);
+        builder.append(App.POST_ODOMETER_URL);
+        builder.append(collectionname);
         Log.e("Builder is","" + builder.toString());
         return builder.toString();
     }
@@ -289,6 +307,45 @@ public class IntegrationService extends IntentService {
             e.printStackTrace();
         }
         return orderId;
+    }
+
+    public static String postOdometer(Context context, String collection, HashMap<String, String> map,JSONArray deepEntity){
+        String flag = "";
+        try{
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
+            HttpPost post = new HttpPost(postUrlOdometer(collection));
+            String authString = "ecs" + ":" + "sap123";
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            post.addHeader("Authorization","Basic " + new String(authEncBytes));
+
+            post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
+            post.addHeader(ACCEPT,APPLICATION_JSON);
+            post.addHeader(X_REQUESTED_WITH_KEY,X_REQUESTED_WITH_VAL);
+            //   post.addHeader(X_CSRF_TOKEN_KEY,token);
+            post.setEntity(getPayload(map, deepEntity));
+            HttpResponse response = client.execute(post);
+
+            if (response.getStatusLine().getStatusCode() == 201) {
+
+                Header[] headers = response.getAllHeaders();
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                JSONObject jsonObj = new JSONObject(jsonString);
+                jsonObj = jsonObj.getJSONObject("d");
+                flag = jsonObj.getString("Flag");
+                Log.e("Posting","" + jsonObj);
+                return flag;
+            }
+            else{
+                Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
     }
 
     public static ArrayList<String> RequestToken(Context context){

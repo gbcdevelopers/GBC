@@ -16,6 +16,7 @@ public class App extends Application {
     public static final String SERVER_DOMAIN = "default";
     public static final String URL = "/sap/opu/odata/sap/ZSFA_DOWNLOAD_SRV/";
     public static final String POST_URL = "/sap/opu/odata/sap/ZSFA_CUSTOMER_ORDER_SRV/";
+    public static final String POST_ODOMETER_URL = "/sap/opu/odata/sap/ZSFA_UPLOAD_SRV/";
 
     public static final String SERVICE_USER = "ecs";
     public static final String SERVICE_PASSWORD = "sap123";
@@ -45,6 +46,7 @@ public class App extends Application {
 
     public static final String POST_COLLECTION = "SOHeaders";
     public static final String DEEP_ENTITY = "SOItems";
+    public static final String POST_ODOMETER_SET = "OdometerSet";
 
     @Override
     public void onCreate() {
