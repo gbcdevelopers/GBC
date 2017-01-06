@@ -184,13 +184,6 @@ public class DashboardActivity extends AppCompatActivity
 
                 db.addData(db.BEGIN_DAY, map);
 
-                HashMap<String, String> altMap = new HashMap<>();
-                altMap.put(db.KEY_IS_BEGIN_DAY, "true");
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_IS_BEGIN_DAY,"false");
-
-                db.updateData(db.LOCK_FLAGS,altMap,filter);
-
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -270,32 +263,32 @@ public class DashboardActivity extends AppCompatActivity
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
-        beginTrip.setIconName("Begin Trip");
+        beginTrip.setIconName(getString(R.string.begintrip));
         beginTrip.setIconImg(R.drawable.ic_begintrip);
         // Adding data header
         listDataHeader.add(beginTrip);
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
-        manageInventory.setIconName("Manage Inventory");
+        manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
         listDataHeader.add(manageInventory);
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
-        customerOperations.setIconName("Customer Operations");
+        customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
         listDataHeader.add(customerOperations);
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
-        endTrip.setIconName("End Trip");
+        endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
         listDataHeader.add(endTrip);
         ExpandedMenuModel information = new ExpandedMenuModel();
-        information.setIconName("Information");
+        information.setIconName(getString(R.string.information));
         information.setIconImg(R.drawable.ic_info);
         listDataHeader.add(information);
         // Adding child data
         List<String> manageInventoryItems = new ArrayList<String>();
-        manageInventoryItems.add("Load");
-        manageInventoryItems.add("Load Request");
-        manageInventoryItems.add("VanStock");
-        manageInventoryItems.add("Unload");
+        manageInventoryItems.add(getString(R.string.load));
+        manageInventoryItems.add(getString(R.string.loadrequest));
+        manageInventoryItems.add(getString(R.string.vanstock));
+        manageInventoryItems.add(getString(R.string.unload));
         listDataChild.put(listDataHeader.get(1), manageInventoryItems);
     }
     /*void createLineChart() {
