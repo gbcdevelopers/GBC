@@ -38,16 +38,24 @@ public class CustomerDetailActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     View view1;
-    LinearLayout ll_updown, ll_message, ll_promotion;
+    LinearLayout ll_updown, ll_message, ll_promotion,ll_pricelist,ll_balance;
     ImageView iv_updown;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
+
+
+
     //    LinearLayout tv_order;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
+
+
+
+
+
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
         customers = CustomerHeaders.get();
@@ -125,6 +133,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        ll_pricelist=(LinearLayout) findViewById(R.id.ll_pricelist);
+        ll_balance=(LinearLayout)findViewById(R.id.ll_balance);
 //        tv_order.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -134,6 +145,33 @@ public class CustomerDetailActivity extends AppCompatActivity {
 //
 //            }
 //        });
+
+
+        ll_pricelist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CustomerDetailActivity.this,PriceListCustomerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        ll_balance=(LinearLayout) findViewById(R.id.ll_balance);
+
+
+        ll_balance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent=new Intent(CustomerDetailActivity.this,BalanceActivity.class);
+                startActivity(intent);
+
+
+            }
+        });
+
+
         iv_updown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -197,9 +235,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         startActivity(intent4);
                         break;
                     case 5:
-                        Intent intent5 = new Intent(CustomerDetailActivity.this, PrinterReportsActivity.class);
-                        intent5.putExtra("headerObj", object);
-                        intent5.putExtra("from", "customer");
+                        Intent intent5 = new Intent(CustomerDetailActivity.this, PrintCustomerActivity.class);
+//                        intent5.putExtra("headerObj", object);
+//                        intent5.putExtra("from", "customer");
                         startActivity(intent5);
                         break;
                     default:

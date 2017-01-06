@@ -65,7 +65,7 @@
                     android:textSize="@dimen/label_big"
                     android:textColor="@color/green"
                     android:id="@+id/tv_cheque"
-                    android:background="@drawable/text_line"
+
                     />
 
 
@@ -102,7 +102,7 @@
                     android:paddingRight="@dimen/h3"
                     android:textSize="@dimen/label_big"
                     android:textColor="@color/green"
-                    android:background="@drawable/text_line"
+
 
                     />
 

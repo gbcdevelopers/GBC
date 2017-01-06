@@ -64,6 +64,10 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
         holder.itemName.setText(loadRequest.getItemName());
 
 
+
+
+
+
         holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -106,10 +110,54 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
             holder.cases.setEnabled(false);
             holder.units.setEnabled(false);
         }
-        holder.cases.addTextChangedListener(holder.casestextWatcher);
+//        holder.cases.addTextChangedListener(holder.casestextWatcher);
         holder.cases.setText(loadRequestList.get(pos).getCases());
-        holder.units.addTextChangedListener(holder.unitsTextWatcher);
+//        holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
+
+
+
+        holder.cases.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus)
+                {
+
+                    EditText edt=(EditText)v.findViewById(R.id.tvCases);
+                    String s=edt.getText().toString();
+                    loadRequestList.get(pos).setCases(s);
+                    int price = 1;
+                    if(!(s.isEmpty()||s==null||s.equals(""))){
+                        price = price*Integer.parseInt(s);
+                    }
+                    loadRequestList.get(pos).setPrice(String.valueOf(price));
+                }
+
+
+            }
+        });
+
+        holder.units.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus)
+                {
+
+                    EditText edt=(EditText)v.findViewById(R.id.tvUnit);
+                    String s=edt.getText().toString();
+                    int price = loadRequestList.get(pos).getPrice()!=null?Integer.parseInt(loadRequestList.get(pos).getPrice().toString()):1;
+                    if(!(s.isEmpty()||s==null||s.equals(""))){
+                        price = price==1?Integer.parseInt(s)*2:Integer.parseInt(s)*2+price;
+                    }
+                    loadRequestList.get(pos).setUnits(s);
+                    loadRequestList.get(pos).setPrice(String.valueOf(price));
+                }
+            }
+        });
+
+
+
 
         // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView

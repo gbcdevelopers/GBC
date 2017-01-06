@@ -221,8 +221,8 @@
 								<activity
 												android:name=".activities.PreSaleOrderProceedActivity"
 												android:screenOrientation="portrait"
-												android:theme="@style/AppTheme"
-												android:windowSoftInputMode="stateHidden"/>
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="adjustPan"/>
 								<activity
 												android:name=".activities.CollectionsActivity"
 												android:screenOrientation="portrait"
@@ -302,6 +302,25 @@
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.ActionBar"
 												android:windowSoftInputMode="stateHidden"/>
+
+					<activity
+						android:name=".activities.BalanceActivity"
+
+						android:launchMode="singleTop"
+						android:parentActivityName=".activities.LoadSummaryActivity"
+						android:screenOrientation="portrait"
+						android:theme="@style/AppTheme.NoActionBar"
+						android:windowSoftInputMode="stateHidden"/>
+
+					<activity
+						android:name=".activities.PriceListCustomerActivity"
+
+						android:launchMode="singleTop"
+						android:parentActivityName=".activities.LoadSummaryActivity"
+						android:screenOrientation="portrait"
+						android:theme="@style/AppTheme.NoActionBar"
+						android:windowSoftInputMode="stateHidden"/>
+
 								<activity
 												android:name=".activities.ReturnsActivity"
 												android:label="@string/returns"
@@ -310,6 +329,14 @@
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.ActionBar"
 												android:windowSoftInputMode="stateHidden"/>
+					<activity
+						android:name=".activities.PrintCustomerActivity"
+
+						android:launchMode="singleTop"
+						android:parentActivityName=".activities.SelectOperationActivity"
+						android:screenOrientation="portrait"
+						android:theme="@style/AppTheme.NoActionBar"
+						android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.CustomerOperationsMapActivity"
 												android:label="@string/map"

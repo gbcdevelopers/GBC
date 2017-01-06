@@ -278,6 +278,13 @@
     <string name="descri">Description</string>
     <string name="cust_ID">Cust ID</string>
     <string name="deliverydate">Delivery Date</string>
+    <string name="material">Material</string>
+    <string name="invoice_no">Inv No.</string>
+    <string name="due_date">Due Date</string>
+    <string name="inv_date">Inv Date</string>
+    <string name="s_l_no">S.L. No</string>
+    <string name="reference_no">Reference No</string>
+    <string name="type">Type</string>
 
 
     <string-array name="unloadReasons">

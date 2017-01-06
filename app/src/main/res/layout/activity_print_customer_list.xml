@@ -2,19 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_data_pousting_audit"
+    android:id="@+id/activity_price_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="gbc.sa.vansales.activities.DataPoustingAuditActivity">
+    tools:context="gbc.sa.vansales.activities.PriceListActivity">
 
     <include
-        android:id="@+id/inc_comman_header_poustind_audit"
+        android:id="@+id/inc_comman_price_list"
         layout="@layout/common_header" />
 
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/inc_comman_header_poustind_audit"
+        android:layout_below="@+id/inc_comman_price_list"
         card_view:cardCornerRadius="@dimen/list_space"
         card_view:cardElevation="@dimen/size_four"
         card_view:cardUseCompatPadding="true">
@@ -29,35 +29,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:weightSum="4">
+                android:weightSum="3">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-
-                    <CheckBox
-                        android:id="@+id/checkBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="70dp"
-                        android:layout_gravity="center"
-
-                        android:gravity="center"
-                        android:padding="@dimen/size_four"
-                        android:textAllCaps="true"
-                        android:textStyle="bold" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.3"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
 
@@ -66,29 +43,10 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="@string/cust_ID"
+                        android:text="@string/s_l_no"
                         android:textAllCaps="true"
-                        android:textStyle="bold" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.3"
-                    android:orientation="vertical">
-
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:gravity="center"
-                        android:padding="@dimen/size_four"
-                        android:text="Transaction"
-                        android:textAllCaps="true"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        />
 
 
                 </LinearLayout>
@@ -105,7 +63,27 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="Type"
+                        android:text="@string/reference_no"
+                        android:textAllCaps="true"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:gravity="center"
+                        android:padding="@dimen/size_four"
+                        android:text="@string/type"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 
@@ -116,17 +94,14 @@
             </LinearLayout>
 
             <ListView
-                android:id="@+id/print_document_list"
+                android:id="@+id/list_price_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:divider="@null"
-                android:drawSelectorOnTop="true"
-                />
+                android:divider="@null" />
 
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-
 
 </RelativeLayout>

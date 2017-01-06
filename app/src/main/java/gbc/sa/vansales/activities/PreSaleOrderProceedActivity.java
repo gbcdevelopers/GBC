@@ -2,6 +2,7 @@ package gbc.sa.vansales.activities;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -79,13 +80,19 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     ArrayList<OrderRequest> arraylist = new ArrayList<>();
     OrderList orderList;
     int orderTotalValue = 0;
+    TextView tv_header;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_sale_order_proceed);
 
         View v = (View)findViewById(R.id.inc_common_header);
-        v.setVisibility(View.INVISIBLE);
+        tv_header=(TextView)findViewById(R.id.tv_top_header);
+        tv_header.setVisibility(View.VISIBLE);
+        tv_header.setText("Pre-Sales Order");
+
+
+//        v.setVisibility(View.INVISIBLE);
         tv_date = (TextView) findViewById(R.id.tv_date);
         tv_date.setText(Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
         iv_calendar = (ImageView) findViewById(R.id.iv_calander);
@@ -111,12 +118,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         }
 
         list = (ListView) findViewById(R.id.listview);
+        list.setItemsCanFocus(true);
         adapter = new OrderRequestBadgeAdapter(this, arraylist,from);
         list.setAdapter(adapter);
         setTitle(getString(R.string.presalesorder));
       //  list.setItemsCanFocus(true);
         if(from.equalsIgnoreCase("button")){
-            new loadItems();
+            new loadItems().execute();
         } else if(from.equalsIgnoreCase("list")){
             new loadItemsOrder(orderList.getOrderId());
         }
@@ -253,8 +261,29 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
     public class loadItems extends AsyncTask<Void,Void,Void> {
 
-        private loadItems() {
-            execute();
+//        private loadItems() {
+//            execute();
+//        }
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+
+            try {
+
+                pd = new ProgressDialog(PreSaleOrderProceedActivity.this);
+                pd.setMessage("Please Wait..");
+                pd.setCancelable(false);
+                pd.show();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                pd.cancel();
+            }
+
+
         }
 
         @Override
@@ -286,6 +315,19 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 setLoadItems(cursor,false);
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            if(pd!=null && pd.isShowing())
+            {
+                pd.cancel();
+                adapter.notifyDataSetChanged();
+
+            }
+
+
         }
     }
 
@@ -342,7 +384,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
         }
         while (cursor.moveToNext());
-        adapter.notifyDataSetChanged();
+
     }
 
     public class postData extends AsyncTask<Void, Void, Void>{

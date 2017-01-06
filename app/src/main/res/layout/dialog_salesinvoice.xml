@@ -175,13 +175,47 @@
             </LinearLayout>
 
         </LinearLayout>
+
+
+
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_main"
+        android:id="@+id/rl_specify_reason"
+        android:layout_marginBottom="10dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/specify_reason"
+            android:textColor="@color/black"
+            android:textSize="@dimen/h1"
+            android:layout_marginRight="10dp"
+            android:id="@+id/lbl_specify"
+            />
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spin"
+            android:entries="@array/returnReasons"
+            android:layout_toRightOf="@+id/lbl_specify"
+            >
+
+
+        </Spinner>
+
+    </RelativeLayout>
+
 
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_main"
+        android:layout_below="@id/rl_specify_reason"
         android:background="@color/green"
         android:text="@string/save"
         android:textColor="@color/white" />

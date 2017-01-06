@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -86,6 +87,8 @@ public class FocFragment extends Fragment {
                     final EditText ed_cases_inv=(EditText)dialog.findViewById(R.id.ed_cases_inv);
                     final EditText ed_pcs_inv=(EditText)dialog.findViewById(R.id.ed_pcs_inv);
 
+                RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
+                rl_specify.setVisibility(View.GONE);
 
                         ed_cases_inv.setText("10");
                         ed_pcs_inv.setText("3");

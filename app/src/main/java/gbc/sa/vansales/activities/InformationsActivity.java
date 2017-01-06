@@ -76,6 +76,7 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 5:
                         Intent review = new Intent(InformationsActivity.this,ReviewActivity.class);
+
                         startActivity(review);
                         break;
                     case 6:

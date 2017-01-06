@@ -62,10 +62,9 @@ public class CustomerOperationAdapter extends BaseAdapter {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
-            if(from.equals("InformationsActivity"))
+            if(from.equals("InformationsActivity") || from.equals("ReviewActivity"))
             {
                 convertView = inflater.inflate(R.layout.information_grid, null);
-
             }
             else
             {

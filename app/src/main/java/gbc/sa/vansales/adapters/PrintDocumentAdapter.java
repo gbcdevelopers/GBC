@@ -19,8 +19,7 @@ import gbc.sa.vansales.models.DataPoustingAudit;
  * Created by ehs on 22/12/16.
  */
 
-public class
-PrintDocumentAdapter extends BaseAdapter {
+public class PrintDocumentAdapter extends BaseAdapter {
 
     ArrayList<DataPoustingAudit> arrayList;
     Activity activity;

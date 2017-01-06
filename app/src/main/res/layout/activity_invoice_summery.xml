@@ -126,6 +126,7 @@
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
+																									android:visibility="gone"
 																												/>
 
 																								<EditText
@@ -191,6 +192,7 @@
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
+																									android:visibility="gone"
 																												/>
 
 																								<EditText
@@ -217,6 +219,7 @@
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
+																									android:visibility="gone"
 																												/>
 
 																								<EditText
@@ -308,38 +311,11 @@
 																												android:textSize="@dimen/label_min"
 																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
+
+
+
 																				</LinearLayout>
 
 																				<LinearLayout
@@ -417,38 +393,10 @@
 																												android:textSize="@dimen/label_min"
 																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
+
+
 																				</LinearLayout>
 
 																				<LinearLayout
@@ -521,35 +469,11 @@
 																												android:text="12"
 																												android:textSize="@dimen/label_min"/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
 
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
+
+
+
 
 																								<TextView
 																												android:layout_width="match_parent"
@@ -582,7 +506,9 @@
 																android:text="@string/complete_invoice"
 																android:textColor="@color/white"
 																android:layout_width="match_parent"
-																android:layout_height="wrap_content"/>
+																android:layout_height="wrap_content"
+													android:visibility="gone"
+													/>
 
 								</LinearLayout>
 				</LinearLayout>

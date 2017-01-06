@@ -10,14 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.FocFragment;
@@ -230,28 +237,77 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                 break;
             case 2:
                 if (GListFragment.arrProductList != null && GListFragment.adapter != null) {
-                    GListFragment.arrProductList.addAll(Const.addlist);
-                    GListFragment.adapter.notifyDataSetChanged();
-                    if (GListFragment.arrProductList.size() == 0) {
-                        GListFragment.rl_middle.setVisibility(View.VISIBLE);
-                    } else {
-                        GListFragment.rl_middle.setVisibility(View.GONE);
+                    ArrayList<Sales> productArrayList = new ArrayList<>();
+                    for (int i = 0; i < Const.addlist.size(); i++) {
+                        Sales sales = new Sales();
+                        sales.setName(Const.addlist.get(i));
+                        sales.setCases("0");
+                        sales.setPic("0");
+                        productArrayList.add(sales);
                     }
+                    GListFragment.arrProductList.addAll(productArrayList);
+                    GListFragment.adapter.notifyDataSetChanged();
+
                 }
                 break;
             case 3:
                 if (BListFragment.arrProductList != null && BListFragment.adapter != null) {
-                    BListFragment.arrProductList.addAll(Const.addlist);
-                    BListFragment.adapter.notifyDataSetChanged();
-                    if (BListFragment.arrProductList.size() == 0) {
-                        BListFragment.rl_middle.setVisibility(View.VISIBLE);
-                    } else {
-                        BListFragment.rl_middle.setVisibility(View.GONE);
+                    ArrayList<Sales> productArrayList = new ArrayList<>();
+                    for (int i = 0; i < Const.addlist.size(); i++) {
+                        Sales sales = new Sales();
+                        sales.setName(Const.addlist.get(i));
+                        sales.setCases("0");
+                        sales.setPic("0");
+                        productArrayList.add(sales);
                     }
+                    BListFragment.arrProductList.addAll(productArrayList);
+                    BListFragment.adapter.notifyDataSetChanged();
+
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.list_sales) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()) {
+            case R.id.remove:
+                // add stuff here
+
+
+                if(SalesInvoiceActivity.tab_position==2)
+                {
+                    GListFragment.arrProductList.remove(info.position);
+                    GListFragment.adapter.notifyDataSetChanged();
+                }
+                else if(SalesInvoiceActivity.tab_position==3)
+                {
+                    BListFragment.arrProductList.remove(info.position);
+                    BListFragment.adapter.notifyDataSetChanged();
+                }
+
+
+
+                return true;
+            case R.id.cancel:
+                // edit stuff here
+
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 }

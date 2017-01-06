@@ -1,6 +1,8 @@
 package gbc.sa.vansales.Fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,10 +12,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +32,8 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
 import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.adapters.ExpandReturnAdapter;
+import gbc.sa.vansales.adapters.SalesAdapter;
+import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
 import gbc.sa.vansales.utils.OnSwipeTouchListener;
 import gbc.sa.vansales.utils.Settings;
@@ -36,122 +45,175 @@ import gbc.sa.vansales.utils.Settings;
 public class GListFragment extends Fragment {
 
 
-    public static ExpandReturnAdapter adapter;
-    public static ArrayList<String> arrProductList;
-    View view;
-    FloatingActionButton btn_float;
-
-    AnimatedExpandableListView exp_list;
-   public static RelativeLayout rl_middle;
-
-    private SwipeLayout swipeLayout;
-
-
+    View viewmain;
+    ListView listSales;
+    public static  SalesAdapter adapter;
+    public static ArrayList<Sales> arrProductList;
+    FloatingActionButton fab;
+    LinearLayout ll_top;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view=inflater.inflate(R.layout.activity_gnbreturn,container,false);
-        btn_float=(FloatingActionButton)view.findViewById(R.id.fab);
-        exp_list=(AnimatedExpandableListView)view.findViewById(R.id.exp_product);
-        rl_middle=(RelativeLayout)view.findViewById(R.id.rl_middle);
+        viewmain =inflater.inflate(R.layout.fragment_salesinvoice,container,false);
+        listSales=(ListView) viewmain.findViewById(R.id.list_sales);
+        ll_top=(LinearLayout)viewmain.findViewById(R.id.ll_top);
+        ll_top.setVisibility(View.GONE);
 
-        arrProductList=new ArrayList<>();
+        fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
+
+        String strProductname[]={"A","B","c","D"};
+        arrProductList = new ArrayList<>();
 
 
-        if(arrProductList.size()==0)
+        for(int i=0;i<4;i++)
         {
-            rl_middle.setVisibility(View.VISIBLE);
-        }else {
-            rl_middle.setVisibility(View.GONE);
+            Sales product=new Sales();
+            product.setName(strProductname[i]);
+            product.setCases("0");
+            product.setPic("0");
+
+            arrProductList.add(product);
         }
 
-        adapter=new ExpandReturnAdapter(getActivity(),arrProductList,exp_list,"glist");
-        exp_list.setAdapter(adapter);
-        setListView();
+
+
+        adapter=new SalesAdapter(getActivity(),arrProductList);
+        listSales.setAdapter(adapter);
+        registerForContextMenu(listSales);
+        listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent,final View view,final int position, long id) {
+
+
+
+                final Dialog dialog=new Dialog(getActivity());
+                dialog.setContentView(R.layout.dialog_with_crossbutton);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawable( new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                ImageView iv_cancle=(ImageView)dialog.findViewById(R.id.imageView_close);
+
+                RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
+                rl_specify.setVisibility(View.VISIBLE);
+               final Spinner spin=(Spinner)dialog.findViewById(R.id.spin);
+
+
+                Button btn_save=(Button)dialog.findViewById(R.id.btn_save);
+                final EditText ed_cases=(EditText)dialog.findViewById(R.id.ed_cases);
+                final EditText ed_pcs=(EditText)dialog.findViewById(R.id.ed_pcs);
+
+                final EditText ed_cases_inv=(EditText)dialog.findViewById(R.id.ed_cases_inv);
+                final EditText ed_pcs_inv=(EditText)dialog.findViewById(R.id.ed_pcs_inv);
+
+
+                ed_cases_inv.setText("10");
+                ed_pcs_inv.setText("3");
+                ed_cases_inv.setEnabled(false);
+                ed_pcs_inv.setEnabled(false);
 
 
 
 
+                LinearLayout ll_1=(LinearLayout)dialog.findViewById(R.id.ll_1);
 
-        btn_float.setOnClickListener(new View.OnClickListener() {
+
+                iv_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+
+
+                btn_save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        if(spin.getSelectedItem().toString().equals(""))
+                        {
+                            dialog.dismiss();
+
+                        }
+                        else {
+
+
+                            String strCase = ed_cases.getText().toString();
+                            String strpcs = ed_pcs.getText().toString();
+                            String strcaseinv = ed_cases_inv.getText().toString();
+                            String strpcsinv = ed_pcs_inv.getText().toString();
+
+
+                            if(strCase.equals(""))
+                            {
+                                strCase="0";
+
+                            }
+                            if(strpcs.equals(""))
+                            {
+                                strpcs="0";
+                            }
+
+
+                            TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
+                            TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
+
+
+                            tv_cases.setText(strCase);
+                            tv_pcs.setText(strpcs);
+
+
+                            Sales sales = arrProductList.get(position);
+                            sales.setPic(strpcs);
+                            sales.setCases(strCase);
+                            double total = 0;
+
+                            int salesTotal = 0;
+                            int pcsTotal = 0;
+
+                            for (int i = 0; i < arrProductList.size(); i++) {
+                                Sales sales1 = arrProductList.get(i);
+                                total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
+                                salesTotal = salesTotal + Integer.parseInt(sales1.getCases());
+                                pcsTotal = pcsTotal + Integer.parseInt(sales1.getPic());
+
+
+                            }
+                            TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
+                            tv.setText(String.valueOf(total));
+
+                            TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
+                            tvsales.setText(salesTotal + "/" + pcsTotal);
+
+
+                            dialog.dismiss();
+
+                        }
+                    }
+                });
+
+
+
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SalesInvoiceActivity.tab_position=2;
+
                 Settings.setString("from","glist");
+                SalesInvoiceActivity.tab_position=2;
+
                 Intent intent=new Intent(getActivity(), CategoryListActivity.class);
                 getActivity().startActivity(intent);
+
+
             }
         });
 
-       exp_list.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-           @Override
-           public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-               return true;
-           }
-       });
-
-
-
-
-
-
-
-        return view;
-    }
-
-    private void setListView() {
-        try{
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View header = inflater.inflate(R.layout.expand_return_groupview, exp_list, false);
-            swipeLayout = (SwipeLayout)header.findViewById(R.id.swipe_layout);
-
-
-
-            setSwipeViewFeatures();
-
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-        // listView.addHeaderView(header);
-    }
-
-    private void setSwipeViewFeatures() {
-        //set show mode.
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-
-        //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, getView().findViewById(R.id.bottom_wrapper));
-        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onClose(SwipeLayout layout) {
-                Log.i("adapter", "onClose");
-            }
-            @Override
-            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-                Log.i("adapter", "on swiping");
-            }
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-                Log.i("adapter", "on start open");
-            }
-            @Override
-            public void onOpen(SwipeLayout layout) {
-                Log.i("adapter", "the BottomView totally show");
-            }
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-                Log.i("adapter", "the BottomView totally close");
-            }
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                //when user's hand released.
-            }
-        });
+        return viewmain;
     }
 }

@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.DataPoustingAuditActivity;
 import gbc.sa.vansales.models.DataPoustingAudit;
 
 /**
@@ -64,6 +66,13 @@ public class DataPoustingAuditAdapter extends BaseAdapter {
         TextView txt_print_doc_customer_type = (TextView)view.findViewById(R.id.txt_print_doc_customer_type);
         ImageView ImageView = (ImageView)view.findViewById(R.id.img_item_data_pousting);
         CheckBox checkbox_print_doc=(CheckBox)view.findViewById(R.id.checkbox_print_doc);
+        LinearLayout ll=(LinearLayout)view.findViewById(R.id.ll);
+
+
+
+        ll.setOnTouchListener(DataPoustingAuditActivity.swipeDetector);
+//        ll.setOnClickListener();
+
 
 
         if(isChecked)

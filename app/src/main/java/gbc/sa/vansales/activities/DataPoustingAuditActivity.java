@@ -1,18 +1,22 @@
 package gbc.sa.vansales.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DataPoustingAuditAdapter;
+import gbc.sa.vansales.adapters.SwipeDetector;
 import gbc.sa.vansales.models.DataPoustingAudit;
 
 public class DataPoustingAuditActivity extends AppCompatActivity {
@@ -20,7 +24,7 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     View view1;
-
+    public static   SwipeDetector swipeDetector;
     CheckBox checkBox;
 
     ArrayList<DataPoustingAudit> arrayList = new ArrayList<>();
@@ -59,6 +63,46 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.print_document_list);
 
+
+
+        swipeDetector = new SwipeDetector();
+
+
+        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View view, int position,
+                                    long arg3) {
+                if (swipeDetector.swipeDetected()) {
+
+                    if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
+
+
+                        Toast.makeText(getApplicationContext(),"swipe",Toast.LENGTH_SHORT).show();
+                            arrayList.remove(position);
+                            adapter.notifyDataSetChanged();
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(),"other",Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+                else
+                {
+
+                    Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+
+        };
+
+
+        listView.setOnTouchListener(swipeDetector);
+        listView.setOnItemClickListener(listener);
+
+
         getData();
 
     }
@@ -76,9 +120,11 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
             arrayList.add(model);
         }
 
-        adapter = new DataPoustingAuditAdapter(DataPoustingAuditActivity.this,arrayList,false
-        );
+        adapter = new DataPoustingAuditAdapter(DataPoustingAuditActivity.this,arrayList,false);
         listView.setAdapter(adapter);
 
     }
+
+
+
 }

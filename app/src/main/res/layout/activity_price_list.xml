@@ -43,7 +43,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="@string/item_no"
+                        android:text="@string/cust_ID"
                         android:textAllCaps="true"
                         android:textStyle="bold"
                         />

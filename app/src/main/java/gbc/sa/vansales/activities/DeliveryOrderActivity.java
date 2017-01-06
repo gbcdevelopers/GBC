@@ -212,57 +212,57 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         //tv_date.setText(sdf.format(myCalendar.getTime()));
     }
-    private void setLayout() {
-        double totalamt = 0;
-        LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        if (options_layout != null) {
-            options_layout.removeAllViews();
-        }
-        Log.d("size", "-->" + preSaleProceeds.size());
-        for (int i = 0; i < preSaleProceeds.size(); i++) {
-            Log.d("i", "-->" + i);
-            View to_add = inflater.inflate(R.layout.presale_proceed_list_item,
-                    options_layout, false);
-            PreSaleProceed saleProceed = preSaleProceeds.get(i);
-            EditText text = (EditText) to_add.findViewById(R.id.tv_sku_pre_proceed);
-            final EditText text1 = (EditText) to_add.findViewById(R.id.tv_ctn_pre_proceed);
-            EditText text2 = (EditText) to_add.findViewById(R.id.tv_btl_pre_proceed);
-            TextView text3 = (TextView) to_add.findViewById(R.id.tv_price);
-            text3.setVisibility(View.GONE);
-            text.setText(saleProceed.getPRODUCT_NAME());
-            text1.setText(saleProceed.getCTN());
-            text2.setText(saleProceed.getBTL());
-            text3.setText(saleProceed.getPRICE());
-            totalamt = totalamt + (Double.parseDouble(saleProceed.getCTN()) * 54 + Double.parseDouble(saleProceed.getBTL()) * 2.25);
-            EditText ed[] = {text1, text2};
-            editTextArrayList.add(ed);
-//            text.setTypeface(FontSelector.getBold(getActivity()));
-            options_layout.addView(to_add);
-            text1.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (!text1.getText().toString().equals("")) {
-                        double totalamt = 0;
-                        for (int i = 0; i < editTextArrayList.size(); i++) {
-                            EditText ed[] = editTextArrayList.get(i);
-                            EditText text1 = ed[0];
-                            EditText text2 = ed[1];
-                            totalamt = totalamt + (Double.parseDouble(text1.getText().toString()) * 54 + Double.parseDouble(text2.getText().toString()) * 2.25);
-                        }
-                        tv_amt.setText(String.valueOf(totalamt));
-                    }
-                }
-            });
-        }
-        tv_amt.setText(String.valueOf(totalamt));
-    }
+//    private void setLayout() {
+//        double totalamt = 0;
+//        LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
+//        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+//        if (options_layout != null) {
+//            options_layout.removeAllViews();
+//        }
+//        Log.d("size", "-->" + preSaleProceeds.size());
+//        for (int i = 0; i < preSaleProceeds.size(); i++) {
+//            Log.d("i", "-->" + i);
+//            View to_add = inflater.inflate(R.layout.presale_proceed_list_item,
+//                    options_layout, false);
+//            PreSaleProceed saleProceed = preSaleProceeds.get(i);
+//            EditText text = (EditText) to_add.findViewById(R.id.tv_sku_pre_proceed);
+//            final EditText text1 = (EditText) to_add.findViewById(R.id.tv_ctn_pre_proceed);
+//            EditText text2 = (EditText) to_add.findViewById(R.id.tv_btl_pre_proceed);
+//            TextView text3 = (TextView) to_add.findViewById(R.id.tv_price);
+//            text3.setVisibility(View.GONE);
+//            text.setText(saleProceed.getPRODUCT_NAME());
+//            text1.setText(saleProceed.getCTN());
+//            text2.setText(saleProceed.getBTL());
+//            text3.setText(saleProceed.getPRICE());
+//            totalamt = totalamt + (Double.parseDouble(saleProceed.getCTN()) * 54 + Double.parseDouble(saleProceed.getBTL()) * 2.25);
+//            EditText ed[] = {text1, text2};
+//            editTextArrayList.add(ed);
+////            text.setTypeface(FontSelector.getBold(getActivity()));
+//            options_layout.addView(to_add);
+//            text1.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                }
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                    if (!text1.getText().toString().equals("")) {
+//                        double totalamt = 0;
+//                        for (int i = 0; i < editTextArrayList.size(); i++) {
+//                            EditText ed[] = editTextArrayList.get(i);
+//                            EditText text1 = ed[0];
+//                            EditText text2 = ed[1];
+//                            totalamt = totalamt + (Double.parseDouble(text1.getText().toString()) * 54 + Double.parseDouble(text2.getText().toString()) * 2.25);
+//                        }
+//                        tv_amt.setText(String.valueOf(totalamt));
+//                    }
+//                }
+//            });
+//        }
+//        tv_amt.setText(String.valueOf(totalamt));
+//    }
 
     public void calculatePrice() {
         double totalamt = 0;
