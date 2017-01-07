@@ -28,6 +28,7 @@ import io.fabric.sdk.android.Fabric;
 public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
     private RequestQueue mRequestQueue;
+    String lang;
 
     private static AppController mInstance;
 
@@ -38,11 +39,21 @@ public class AppController extends Application {
         mInstance = this;
         System.out.println("On Create");
         Settings.initialize(getApplicationContext());
-        String lang = Settings.getString(App.LANGUAGE);
-        if(!(lang.isEmpty()||lang==null||lang.equalsIgnoreCase(""))){
+        lang = "";
+        try{
+            lang = Settings.getString(App.LANGUAGE);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(lang==null){
+            changeLanguage(getBaseContext(),"en");
+        }
+        else if(!(lang.isEmpty()||lang==null||lang.equalsIgnoreCase(""))){
             changeLanguage(getBaseContext(), lang);
         }
-        else{
+        else {
             changeLanguage(getBaseContext(),"en");
         }
 
