@@ -1,8 +1,14 @@
 package gbc.sa.vansales.activities;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -52,6 +58,7 @@ import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 
 import static gbc.sa.vansales.R.drawable.ic_begintrip;
@@ -72,11 +79,13 @@ public class DashboardActivity extends AppCompatActivity
     List<ExpandedMenuModel> listDataHeader;
     HashMap<ExpandedMenuModel, List<String>> listDataChild;
     DatabaseHandler db = new DatabaseHandler(this);
+    LoadingSpinner loadingSpinner;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         /*ArticleHeaders.loadData(getApplicationContext());
         CustomerHeaders.loadData(getApplicationContext());*/
+        loadingSpinner = new LoadingSpinner(this,getString(R.string.changinglanguage));
         Helpers.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
@@ -96,7 +105,53 @@ public class DashboardActivity extends AppCompatActivity
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                alertDialogBuilder.setTitle(getString(R.string.select_lang_title))
+                        .setMessage(getString(R.string.select_lang_msg))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.arabic), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Settings.setString(App.LANGUAGE, "ar");
+                                AppController.changeLanguage(getBaseContext(), "ar");
+                                Handler handler = new Handler();
+                                loadingSpinner.show();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(loadingSpinner.isShowing()){
+                                            loadingSpinner.hide();
+                                        }
+                                        AppController.restartApp(getBaseContext());
+                                    }
+                                }, 2000);
 
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.english), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Settings.setString(App.LANGUAGE,"en");
+                                AppController.changeLanguage(getBaseContext(), "en");
+                                loadingSpinner.show();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(loadingSpinner.isShowing()){
+                                            loadingSpinner.hide();
+                                        }
+                                        AppController.restartApp(getBaseContext());
+                                    }
+                                }, 2000);
+                                dialog.dismiss();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
             }
         });
         //Load all Articles
@@ -219,6 +274,7 @@ public class DashboardActivity extends AppCompatActivity
         }
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();

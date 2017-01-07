@@ -1,6 +1,7 @@
 <resources>
 				<string name="app_name">Vansales</string>
 				<string name="add">Add</string>
+				<string name="arabic">Arabic</string>
 				<string name="availableload">Available Load</string>
 				<string name="_icon">icon</string>
 				<string name="bad">Bad</string>
@@ -9,6 +10,7 @@
 				<string name="cases">Cases</string>
 				<string name="cash">Cash</string>
 				<string name="changingstatus">Changing Status?</string>
+				<string name="changinglanguage">Changing Language</string>
 				<string name="close">Close</string>
 				<string name="changingstatustext">Your current location does not match with Customer Location.Do you want to continue?</string>
 				<string name="credit_available">Available Limit</string>
@@ -36,6 +38,7 @@
 				<string name="dismiss">Dismiss</string>
 				<string name="edit">Edit</string>
 				<string name="endtrip">End Trip</string>
+				<string name="english">English</string>
 				<string name="enter_employee_id">Please enter employee ID</string>
 				<string name="enter_password">Please enter password</string>
 				<string name="error_title">Error</string>
@@ -82,6 +85,8 @@
 				<string name="return_reason">Reason</string>
 				<string name="returntype">Type of Return</string>
 				<string name="select_item">Select Item</string>
+				<string name="select_lang_title">Select Language</string>
+				<string name="select_lang_msg">Please select your preferred language</string>
 				<string name="select_operation">Select Operation</string>
 				<string name="stocktake">Berain-Take Stock</string>
 				<string name="shop_status">Select Shop Status</string>
@@ -118,7 +123,7 @@
 								<item name="android:shadowRadius">1</item>
 				</style>
 
-
+<!--
     <string name="itemNameLabel">"Item Name : "</string>
     <string name="categoryLabel">"Category : "</string>
     <string name="caseLabel">"Cases : "</string>
@@ -253,7 +258,7 @@
     <string name="q_btl">Q/BTL</string>
     <string name="_250_ml_qty">250 ML QTY</string>
     <string name="avail_limit">Avail. Limit</string>
-   
+
     <string name="_0_0_0_1">0.0/0.1</string>
     <string name="customer_decs">Customer decs</string>
     <string name="item_number">Item no</string>
@@ -274,7 +279,7 @@
     <string name="item_no">Item No</string>
     <string name="descri">Description</string>
     <string name="cust_ID">Cust ID</string>
-    <string name="deliverydate">Delivery Date</string>
+    <string name="deliverydate">Delivery Date</string>-->
     <string name="material">Material</string>
     <string name="invoice_no">Inv No.</string>
     <string name="due_date">Due Date</string>
@@ -284,23 +289,23 @@
     <string name="type">Type</string>
 
 
-    <string-array name="unloadReasons">
+    <!--<string-array name="unloadReasons">
 
 
-        <item>---Please Select---</item>
+        <item>-&#45;&#45;Please Select-&#45;&#45;</item>
         <item>Expiry</item>
         <item>Damage</item>
         <item>Past Expiry</item>
-    </string-array>
+    </string-array>-->
 
-    <string-array name="returnReasons">
+    <!--<string-array name="returnReasons">
         <item></item>
         <item>reason one</item>
         <item>reason two</item>
         <item>reason three</item>
-    </string-array>
+    </string-array>-->
 
-    <string-array name="deliveryorder">
+    <!--<string-array name="deliveryorder">
         <item>partial delivery</item>
         <item>full delivery</item>
 
@@ -309,7 +314,7 @@
         <item>ABN AMRO</item>
         <item>ACN AMRO</item>
 
-    </string-array>
+    </string-array>-->
 
 				<string name="itemNameLabel">"Item Name : "</string>
 				<string name="categoryLabel">"Category : "</string>

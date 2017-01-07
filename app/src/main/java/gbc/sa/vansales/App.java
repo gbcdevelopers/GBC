@@ -48,6 +48,8 @@ public class App extends Application {
     public static final String DEEP_ENTITY = "SOItems";
     public static final String POST_ODOMETER_SET = "OdometerSet";
 
+    public static final String LANGUAGE = "lang";
+
     @Override
     public void onCreate() {
         super.onCreate();

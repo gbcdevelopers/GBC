@@ -87,7 +87,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 filter.put(db.KEY_IS_LOAD_VERIFIED,"false");
 
                 db.updateData(db.LOCK_FLAGS,altMap,filter);
-
                 Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);
             }
@@ -276,7 +275,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
             }
         }
     }
-
     private boolean createDataForPost(ArrayList<LoadSummary>dataNew,ArrayList<LoadSummary>dataOld){
         for(int i=0;i<dataNew.size();i++){
 
@@ -299,7 +297,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         return true;
     }
-
     public ArrayList<LoadSummary> generateData(ArrayList<LoadSummary>dataNew,ArrayList<LoadSummary>dataOld){
 
             for(int i=0;i<dataNew.size();i++){
