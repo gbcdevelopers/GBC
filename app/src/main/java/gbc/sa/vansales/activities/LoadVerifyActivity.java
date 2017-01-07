@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,10 +12,14 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
@@ -22,8 +27,11 @@ import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.LoadVerifyBadgeAdapter;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
+import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 /**
  * Created by Rakshit on 19-Nov-16.
@@ -37,13 +45,14 @@ public class LoadVerifyActivity extends AppCompatActivity {
     private static final String TRIP_ID = "ITripId";
     ArrayList<LoadSummary> dataNew;
     ArrayList<LoadSummary> dataOld;
+    LoadingSpinner loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_verify);
         db = new DatabaseHandler(LoadVerifyActivity.this);
-
+        loadingSpinner = new LoadingSpinner(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,9 +95,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 HashMap<String, String> filter = new HashMap<>();
                 filter.put(db.KEY_IS_LOAD_VERIFIED,"false");
 
-                db.updateData(db.LOCK_FLAGS,altMap,filter);
-                Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
-                startActivity(intent);
+                db.updateData(db.LOCK_FLAGS, altMap, filter);
+                new postData().execute();
+                /*Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
+                startActivity(intent);*/
             }
         }
         else{
@@ -98,13 +108,11 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
 
     }
-
     public void cancel(View v){
         Intent intent = new Intent(LoadVerifyActivity.this,LoadSummaryActivity.class);
         intent.putExtra("headerObj", object);
         startActivity(intent);
     }
-
     private boolean checkIfLoadExists(){
 
         HashMap<String, String> map = new HashMap<>();
@@ -126,7 +134,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
-
     private boolean checkMaterialExists(String materialno,String uom){
 
         HashMap<String, String> map = new HashMap<>();
@@ -160,7 +167,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
-
     private void addItemstoVan(ArrayList<LoadSummary>dataNew){
         for(int i=0;i<dataNew.size();i++){
 
@@ -319,4 +325,45 @@ public class LoadVerifyActivity extends AppCompatActivity {
         return loadSummaryList;
     }
 
+    private  String postData(){
+        String orderID = "";
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put("Function", ConfigStore.LoadConfirmationFunction);
+            map.put("OrderId", object.getDeliveryNo());
+            map.put("CustomerId", Settings.getString(App.DRIVER));
+            JSONArray deepEntity = new JSONArray();
+            JSONObject obj = new JSONObject();
+            deepEntity.put(obj);
+            orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return orderID;
+    }
+
+    public class postData extends AsyncTask<Void, Void, Void>{
+        String orderID = "";
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            this.orderID = postData();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            if(this.orderID!=null){
+                Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
 }
