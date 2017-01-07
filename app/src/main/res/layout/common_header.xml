@@ -28,7 +28,7 @@
         android:id="@+id/tv_dashboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dashboard"
+        android:text="@string/dashboard"
         android:textSize="@dimen/label_x__big"
         android:textColor="@color/white"
         android:layout_alignParentLeft="true"
