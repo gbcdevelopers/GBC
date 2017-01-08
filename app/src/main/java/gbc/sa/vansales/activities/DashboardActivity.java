@@ -73,6 +73,7 @@ public class DashboardActivity extends AppCompatActivity
     DrawerLayout drawer;
     Button btn_message;
     Button btn_settings;
+    Button btn_logout;
     private DrawerLayout mDrawerLayout;
     ExpanableListAdapterActivity mMenuAdapter;
     ExpandableListView expandableList;
@@ -107,53 +108,37 @@ public class DashboardActivity extends AppCompatActivity
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
                 startActivity(intent);
-                /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
-                alertDialogBuilder.setTitle(getString(R.string.select_lang_title))
-                        .setMessage(getString(R.string.select_lang_msg))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.arabic), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Settings.setString(App.LANGUAGE, "ar");
-                                AppController.changeLanguage(getBaseContext(), "ar");
-                                Handler handler = new Handler();
-                                loadingSpinner.show();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(loadingSpinner.isShowing()){
-                                            loadingSpinner.hide();
-                                        }
-                                        AppController.restartApp(getBaseContext());
-                                    }
-                                }, 2000);
+            }
+        });
+        btn_logout = (Button)findViewById(R.id.btn_logout);
+        btn_logout.setOnClickListener(new View.OnClickListener() {
 
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.english), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Settings.setString(App.LANGUAGE,"en");
-                                AppController.changeLanguage(getBaseContext(), "en");
-                                loadingSpinner.show();
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(loadingSpinner.isShowing()){
-                                            loadingSpinner.hide();
-                                        }
-                                        AppController.restartApp(getBaseContext());
-                                    }
-                                }, 2000);
-                                dialog.dismiss();
-                            }
-                        });
-                // create alert dialog
+            @Override
+            public void onClick(View v) {
+                mDrawerLayout.closeDrawers();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                alertDialogBuilder.setTitle(getString(R.string.log_out))
+                .setMessage(getString(R.string.log_out_msg))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
-                alertDialog.show();*/
+                alertDialog.show();
+
+
             }
         });
         //Load all Articles

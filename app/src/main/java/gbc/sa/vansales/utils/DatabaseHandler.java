@@ -272,7 +272,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_USERNAME + " TEXT,"
                 + KEY_PASSWORD + " TEXT,"
                 + KEY_SYM + " TEXT,"
-                + KEY_IV + " TEXT " + ")";
+                + KEY_IV + " TEXT,"
+                + KEY_DATE + " TEXT " + ")";
 
         String TABLE_VISIT_LIST = "CREATE TABLE " + VISIT_LIST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -712,8 +713,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     //Storing Secured Credentials
-    public void addLoginCredentials(String username, String password){
+    public void addLoginCredentials(String username, String password,String date){
         SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
         ContentValues values = new ContentValues();
 
         byte[] sym = SecureStore.validateKey(SecureStore.generateKey(32));
@@ -725,7 +727,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_IV, new String(iv));
         values.put(KEY_USERNAME, username);
         values.put(KEY_PASSWORD, encryptedPassword);
-
+        values.put(KEY_DATE,date);
+        db.insert(LOGIN_CREDENTIALS, null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
     }
 
     //Storing Data inside Database Table

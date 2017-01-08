@@ -35,7 +35,7 @@ public class LoadActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
-        setTitle("Load");
+        setTitle(getString(R.string.load));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadDeliveryHeaders = new ArrayList<>();
         // searchResults= GetSearchResults();
@@ -55,7 +55,7 @@ public class LoadActivity extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(getApplicationContext(), "Load Checked!", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getApplicationContext(), "Load Checked!", Toast.LENGTH_SHORT).show();
         lv.setAdapter(new LoadDeliveryHeaderAdapter(LoadActivity.this, loadDeliveryHeaders));
     }
     public boolean onOptionsItemSelected(MenuItem item) {

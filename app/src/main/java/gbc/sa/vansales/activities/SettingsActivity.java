@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
@@ -19,11 +21,31 @@ public class SettingsActivity extends AppCompatActivity {
     String lang;
     Switch languageSwitch;
     LoadingSpinner loadingSpinner;
+    ImageView iv_back;
+    TextView tv_top_header;
+    ImageView iv_refresh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         loadingSpinner = new LoadingSpinner(this,getString(R.string.changinglanguage));
         setContentView(R.layout.activity_settings);
+        iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
+        tv_top_header=(TextView)findViewById(R.id.tv_top_header);
+        iv_refresh=(ImageView) findViewById(R.id.iv_refresh);
+
+
+        iv_back.setVisibility(View.VISIBLE);
+        tv_top_header.setVisibility(View.VISIBLE);
+        tv_top_header.setText(getString(R.string.settings));
+        iv_refresh.setVisibility(View.INVISIBLE);
+
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         lang = "";
         try{
             lang = Settings.getString(App.LANGUAGE);

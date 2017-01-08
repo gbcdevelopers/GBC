@@ -132,6 +132,7 @@
 				<string name="due_date">Due Date</string>
 				<string name="e2000">E2000</string>
 				<string name="edit">Edit</string>
+				<string name="enableautosync">Enable Auto Sync</string>
 				<string name="endtrip">End Trip</string>
 				<string name="english">English</string>
 				<string name="enter_cash_amount">ENTER CASH AMOUNT:</string>
@@ -173,6 +174,7 @@
 				<string name="loadrequest">Load Request</string>
 				<string name="loadselection">Load Selection</string>
 				<string name="log_out">Log Out</string>
+				<string name="log_out_msg">You will be logged out of the application. Please log in again today if you have data for posting else you may loose the data saved.</string>
 				<string name="login">Login</string>
 				<string name="m1">M1:</string>
 				<string name="manage_inventory">Manage Inventory </string>

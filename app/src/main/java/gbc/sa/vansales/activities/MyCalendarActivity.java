@@ -85,6 +85,8 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         iv_back.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(MyCalendarActivity.this,DashboardActivity.class);
+                startActivity(intent);
                 finish();
             }
         });

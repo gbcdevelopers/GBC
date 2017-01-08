@@ -152,6 +152,7 @@ public class LoginActivity extends Activity {
                                       //  downloadData("GBC012000000003");
                                 if(!checkTripID("GBC012000000004")){
                                     Settings.setString(TRIP_ID, "GBC012000000004");
+                                    db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
                                     downloadData("GBC012000000004");
                                 }
                                 else{
@@ -209,7 +210,7 @@ public class LoginActivity extends Activity {
                         if(!checkTripID){
                             Settings.setString(TRIP_ID, this.returnList.get(2));
                             downloadData(this.returnList.get(2));
-                            db.addLoginCredentials("E2000", "PASSWORD");
+                            db.addLoginCredentials("E2000", "PASSWORD",Helpers.formatDate(new Date(),App.DATE_FORMAT));
                         }
                         else{
                             Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
