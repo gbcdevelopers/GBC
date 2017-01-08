@@ -103,6 +103,7 @@
 				<string name="update">Update</string>
 				<string name="vanstock">Van Stock</string>
 				<string name="loadselection">Load Selection</string>
+				<string name="updatingdata">Updating Data</string>
 				<string name="variance_load">Load Variance</string>
 				<string name="valid_value">Please enter some valid value</string>
 				<string name="value_greater">Value should be greater than last saved reading</string>

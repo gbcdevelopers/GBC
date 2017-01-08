@@ -466,6 +466,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_CUSTOMER_DELIVERY_HEADER = "CREATE TABLE " + CUSTOMER_DELIVERY_HEADER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_DELIVERY_NO  + " TEXT,"
                 + KEY_CREATED_BY  + " TEXT,"
                 + KEY_CREATED_TIME  + " TEXT,"

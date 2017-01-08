@@ -180,6 +180,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_DELIVERY_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("DelvDate").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_PICKING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("PickingDae").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_UNLOAD_POINT   ,headerObj.get("UnloadPt").toString());
+                    headerParams.put(db.KEY_CUSTOMER_NO, headerObj.get("CustNo").toString());
                     headerParams.put(db.KEY_IS_DELIVERED, "false");
                     db.addData(db.CUSTOMER_DELIVERY_HEADER, headerParams);
 

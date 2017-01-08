@@ -360,10 +360,134 @@ public class LoadVerifyActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
-            if(this.orderID!=null){
-                Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
-                startActivity(intent);
+
+            if(this.orderID!=null&&!(this.orderID.equalsIgnoreCase(""))){
+                new updateStockforCustomer().execute();
+               /* Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
+                startActivity(intent);*/
+            }
+            else{
+                new updateStockforCustomer().execute();
             }
         }
+    }
+
+    public class updateStockforCustomer extends AsyncTask<Void,Void,Void>{
+        LoadingSpinner updateSpinner = new LoadingSpinner(LoadVerifyActivity.this,getString(R.string.updatingdata));
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            updateSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            calculateStock();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(updateSpinner.isShowing()){
+                updateSpinner.hide();
+            }
+            Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    void calculateStock(){
+
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_DELIVERY_NO,"");
+        map.put(db.KEY_ITEM_NO,"");
+        map.put(db.KEY_ITEM_CATEGORY,"");
+        map.put(db.KEY_CREATED_BY,"");
+        map.put(db.KEY_ENTRY_TIME,"");
+        map.put(db.KEY_DATE ,"");
+        map.put(db.KEY_MATERIAL_NO ,"");
+        map.put(db.KEY_MATERIAL_ENTERED ,"");
+        map.put(db.KEY_MATERIAL_GROUP ,"");
+        map.put(db.KEY_PLANT ,"");
+        map.put(db.KEY_STORAGE_LOCATION ,"");
+        map.put(db.KEY_BATCH ,"");
+        map.put(db.KEY_ACTUAL_QTY,"");
+        map.put(db.KEY_REMAINING_QTY,"");
+        map.put(db.KEY_UOM,"");
+        map.put(db.KEY_DIST_CHANNEL ,"");
+        map.put(db.KEY_DIVISION ,"");
+        map.put(db.KEY_IS_DELIVERED,"");
+        HashMap<String,String> filter = new HashMap<>();
+        Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS,map,filter);
+        do{
+
+            HashMap<String,String>mapVanStock = new HashMap<>();
+            mapVanStock.put(db.KEY_DELIVERY_NO,"");
+            mapVanStock.put(db.KEY_ITEM_NO,"");
+            mapVanStock.put(db.KEY_ITEM_CATEGORY,"");
+            mapVanStock.put(db.KEY_CREATED_BY,"");
+            mapVanStock.put(db.KEY_ENTRY_TIME,"");
+            mapVanStock.put(db.KEY_DATE ,"");
+            mapVanStock.put(db.KEY_MATERIAL_NO ,"");
+            mapVanStock.put(db.KEY_MATERIAL_DESC1 ,"");
+            mapVanStock.put(db.KEY_MATERIAL_ENTERED ,"");
+            mapVanStock.put(db.KEY_MATERIAL_GROUP ,"");
+            mapVanStock.put(db.KEY_PLANT ,"");
+            mapVanStock.put(db.KEY_STORAGE_LOCATION ,"");
+            mapVanStock.put(db.KEY_BATCH ,"");
+            mapVanStock.put(db.KEY_ACTUAL_QTY_CASE,"");
+            mapVanStock.put(db.KEY_ACTUAL_QTY_UNIT,"");
+            mapVanStock.put(db.KEY_RESERVED_QTY_CASE,"");
+            mapVanStock.put(db.KEY_RESERVED_QTY_UNIT,"");
+            mapVanStock.put(db.KEY_REMAINING_QTY_CASE,"");
+            mapVanStock.put(db.KEY_REMAINING_QTY_UNIT,"");
+            mapVanStock.put(db.KEY_UOM_CASE,"");
+            mapVanStock.put(db.KEY_UOM_UNIT,"");
+            mapVanStock.put(db.KEY_DIST_CHANNEL ,"");
+            mapVanStock.put(db.KEY_DIVISION ,"");
+            mapVanStock.put(db.KEY_IS_VERIFIED,"");
+            HashMap<String,String> filterVanStock = new HashMap<>();
+            Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS,mapVanStock,filterVanStock);
+
+            do{
+               if(vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))){
+                    if(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)){
+                        String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                        String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
+                        String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
+                        String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
+
+                        HashMap<String,String> updateMap = new HashMap<>();
+                        updateMap.put(db.KEY_ACTUAL_QTY_CASE,actualCase);
+                        updateMap.put(db.KEY_RESERVED_QTY_CASE,String.valueOf(Float.parseFloat(reservedCase)+Float.parseFloat(deliveryCase)));
+                        updateMap.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(remainingCase) - Float.parseFloat(deliveryCase)));
+
+                        HashMap<String,String>updateFilter = new HashMap<>();
+                        updateFilter.put(db.KEY_MATERIAL_NO,vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        Log.e("Update Map C/S","" + updateMap);
+                        db.updateData(db.VAN_STOCK_ITEMS,updateMap,updateFilter);
+                    }
+                    else if(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                        String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
+                        String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));
+                        String remainingUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT));
+
+                        HashMap<String,String> updateMap = new HashMap<>();
+                        updateMap.put(db.KEY_ACTUAL_QTY_UNIT,actualUnits);
+                        updateMap.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf(Float.parseFloat(reservedUnits)+Float.parseFloat(deliveryUnits)));
+                        updateMap.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(remainingUnits)-Float.parseFloat(deliveryUnits)));
+
+                        Log.e("Update Map B/T", "" + updateMap);
+                        HashMap<String,String>updateFilter = new HashMap<>();
+                        updateFilter.put(db.KEY_MATERIAL_NO,vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                        db.updateData(db.VAN_STOCK_ITEMS,updateMap,updateFilter);
+                    }
+                    break;
+                }
+            }
+            while (vanStockCursor.moveToNext());
+        }
+        while (deliveryCursor.moveToNext());
     }
 }
