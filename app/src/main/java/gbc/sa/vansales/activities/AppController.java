@@ -48,6 +48,7 @@ public class AppController extends Application {
         }
 
         if(lang==null){
+            Settings.setString(App.LANGUAGE,"en");
             changeLanguage(getBaseContext(),"en");
         }
         else if(!(lang.isEmpty()||lang==null||lang.equalsIgnoreCase(""))){

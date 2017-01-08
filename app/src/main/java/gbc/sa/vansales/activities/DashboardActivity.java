@@ -105,7 +105,9 @@ public class DashboardActivity extends AppCompatActivity
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
+                Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                /*AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.select_lang_title))
                         .setMessage(getString(R.string.select_lang_msg))
                         .setCancelable(false)
@@ -151,7 +153,7 @@ public class DashboardActivity extends AppCompatActivity
                 // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
-                alertDialog.show();
+                alertDialog.show();*/
             }
         });
         //Load all Articles

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/activity_informations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                tools:context="gbc.sa.vansales.activities.SettingsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/common_header" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
+        android:weightSum="3"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_weight="1.5"
+            android:textSize="@dimen/label_medium"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/preferred_lang"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <LinearLayout
+            android:layout_weight="1.5"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:layout_marginTop="@dimen/space"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:layout_weight="2"
+                android:textSize="@dimen/label_small"
+                android:textColor="@color/monsoon"
+                android:text="@string/english"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"/>
+
+            <Switch
+                android:layout_weight="1.5"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center"
+                android:id="@+id/languageButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                />
+
+            <TextView
+                android:layout_weight="2"
+                android:textSize="@dimen/label_small"
+                android:textColor="@color/monsoon"
+                android:text="@string/arabic"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"/>
+
+
+        </LinearLayout>
+        <View
+            android:layout_marginTop="@dimen/h3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_clear_data"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/h"
+            android:layout_marginBottom="@dimen/size_four"
+            android:padding="@dimen/h3"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:onClick="clearData"
+            android:text="@string/clear_data"/>
+
+        <Button
+            android:id="@+id/btn_reload_data"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_four"
+            android:layout_marginBottom="@dimen/h"
+            android:padding="@dimen/h3"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:onClick="clearData"
+            android:text="@string/reload_data"/>
+
+    </LinearLayout>
+</RelativeLayout>

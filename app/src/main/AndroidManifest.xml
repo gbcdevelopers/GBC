@@ -189,6 +189,11 @@
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
+												android:name=".activities.SettingsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
 												android:name=".activities.ProductListActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
