@@ -37,4 +37,10 @@ public class Settings {
         editor.putString(key,value);
         editor.apply();
     }
+
+    public static void clearPreferenceStore(){
+        SharedPreferences.Editor editor = getEditor();
+        editor.clear();
+        editor.commit();
+    }
 }

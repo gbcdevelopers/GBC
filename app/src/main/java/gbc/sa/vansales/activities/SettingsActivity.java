@@ -1,4 +1,7 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -102,6 +105,28 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void clearData(View view){
-
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
+        alertDialogBuilder.setTitle(getString(R.string.alert))
+                .setMessage(getString(R.string.data_loss_msg))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Settings.clearPreferenceStore();
+                        SettingsActivity.this.deleteDatabase("gbc.db");
+                        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
     }
 }

@@ -40,6 +40,7 @@
 				<string name="abn_amro">ABN AMRO</string>
 				<string name="add">Add</string>
 				<string name="advance_payment">ADVANCE PAYMENT</string>
+				<string name="alert">Alert</string>
 				<string name="all_route_customer">All Route Customer</string>
 				<string name="am502_large_swiss_strawberry">AM502 Large Swiss Strawberry</string>
 				<string name="am5500_large_swiss_roll_vanila_24x110g">AM5500*LARGE SWISS ROLL VANILA (24X110G)</string>
@@ -106,6 +107,7 @@
 				<string name="cutomer_address">Cust AD</string>
 				<string name="damage_expiry_report">DAMAGE/EXPIRY REPORT</string>
 				<string name="dashboard">Dashboard</string>
+				<string name="data_loss_msg">All your data will be deleted. Do you want to continue?</string>
 				<string name="date">16/01/2017</string>
 				<string name="day">Day </string>
 				<string name="days">Days</string>
