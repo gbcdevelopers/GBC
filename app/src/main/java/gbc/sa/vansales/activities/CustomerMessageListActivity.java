@@ -24,6 +24,7 @@ import gbc.sa.vansales.adapters.DeliveryAdapter;
 import gbc.sa.vansales.adapters.MessageBadgeAdapter;
 import gbc.sa.vansales.adapters.MessageListAdapter;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.Messages;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Message;
@@ -153,10 +154,15 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             public void run() {
                 if (refreshLayout.isRefreshing()) {
                     refreshLayout.setRefreshing(false);
-                    adapter.notifyDataSetChanged();
+                    HashMap<String,String> filter = new HashMap<String, String>();
+                    filter.put(db.KEY_STRUCTURE,App.DRIVER_MESSAGE_KEY);
+                    db.deleteData(db.MESSAGES,filter);
+                    Messages.load(CustomerMessageListActivity.this, Settings.getString(App.DRIVER), db);
+                    new loadMessages(getIntent().getStringExtra("from"));
+                   // adapter.notifyDataSetChanged();
                 }
             }
-        }, 2000);
+        }, 4000);
     }
 
     public class loadMessages extends AsyncTask<Void,Void,Void>{
@@ -209,7 +215,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
     }
 
     private void setMessages(Cursor cursor){
-
+        arrayList.clear();
         do{
             Message message = new Message();
             message.setId(cursor.getString(cursor.getColumnIndex(db.KEY_USERNAME)));
