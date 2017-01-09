@@ -92,6 +92,8 @@ public class LoadRequestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*new postData().execute();*/
+                String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                Log.e("Purchase Num PR","" + purchaseNum);
                 for(LoadRequest loadRequest:arraylist){
                     try{
                         if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
@@ -113,6 +115,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                         map.put(db.KEY_PRICE,loadRequest.getPrice());
                         map.put(db.KEY_IS_POSTED,"N");
                         map.put(db.KEY_IS_PRINTED, "");
+                        map.put(db.KEY_ORDER_ID,purchaseNum);
                         orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
                         if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
                             db.addData(db.LOAD_REQUEST,map);
@@ -175,6 +178,7 @@ public class LoadRequestActivity extends AppCompatActivity {
 
     public String postData(){
         String orderID = "";
+        String purchaseNumber = "";
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadRequestFunction);
@@ -182,13 +186,14 @@ public class LoadRequestActivity extends AppCompatActivity {
             map.put("DocumentType", ConfigStore.DocumentType);
            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
            // map.put("DocumentDate", null);
+           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+            purchaseNumber = map.get("PurchaseNum");*/
             map.put("CustomerId", Settings.getString(App.DRIVER));
             map.put("SalesOrg", Settings.getString(App.SALES_ORG));
             map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
             map.put("Division", Settings.getString(App.DIVISION));
             map.put("OrderValue", String.valueOf(orderTotalValue));
             map.put("Currency", "SAR");
-            map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
 
             JSONArray deepEntity = new JSONArray();
 
@@ -200,13 +205,15 @@ public class LoadRequestActivity extends AppCompatActivity {
             itemMap.put(db.KEY_UNIT,"");
             itemMap.put(db.KEY_UOM,"");
             itemMap.put(db.KEY_PRICE,"");
-
+            itemMap.put(db.KEY_ORDER_ID,"");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_IS_POSTED,"N");
 
             Cursor cursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
+                map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do{
                     if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
@@ -247,7 +254,7 @@ public class LoadRequestActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-        return orderID;
+        return orderID + "," + purchaseNumber;
 
     }
     public static class DatePickerDialogClass extends DialogFragment implements DatePickerDialog.OnDateSetListener {
@@ -348,6 +355,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     public class postData extends AsyncTask<Void, Void, Void>{
         private ArrayList<String>returnList;
         private String orderID = "";
+        private String[] tokens = new String[2];
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
@@ -356,37 +364,34 @@ public class LoadRequestActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
             this.orderID = postData();
+            this.tokens = orderID.split(",");
+
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
 
             Log.e("Order ID", "" + this.orderID);
-            for(LoadRequest loadRequest:arraylist){
-                HashMap<String,String> map = new HashMap<String, String>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_POSTED,"Y");
+            if(this.tokens[0].toString().equals(this.tokens[1].toString())){
+                for(LoadRequest loadRequest:arraylist){
+                    HashMap<String,String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED,"M");
+                    map.put(db.KEY_ORDER_ID,tokens[0].toString());
 
-                HashMap<String,String> filter = new HashMap<>();
-                map.put(db.KEY_IS_POSTED,"N");
-
-                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                db.updateData(db.LOAD_REQUEST, map, filter);
-            }
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
-            }
-            if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
-                Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
-            }
-            else if(this.orderID.contains("Error")){
-                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
-            }
-            else{
+                    HashMap<String,String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,"N");
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    db.updateData(db.LOAD_REQUEST, map, filter);
+                }
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request " + this.orderID + " has been created")
+                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
@@ -400,6 +405,48 @@ public class LoadRequestActivity extends AppCompatActivity {
                 // show it
                 alertDialog.show();
             }
+            else{
+                for(LoadRequest loadRequest:arraylist){
+                    HashMap<String,String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED,"Y");
+                    map.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String,String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,"N");
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    db.updateData(db.LOAD_REQUEST, map, filter);
+                }
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
+                    Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
+                }
+                else if(this.orderID.contains("Error")){
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
+                    alertDialogBuilder.setTitle("Message")
+                            .setMessage("Request " + tokens[0].toString() + " has been created")
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
+            }
+
 
         }
     }

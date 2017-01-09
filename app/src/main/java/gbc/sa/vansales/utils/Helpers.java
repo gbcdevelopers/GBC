@@ -149,8 +149,14 @@ public class Helpers {
             Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION,prData,search);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
+
                 numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                Log.e("Num Range Inside","" + numRange);
                 numRange = numRange + 1;
+
+                HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
+                db.updateData(db.PURCHASE_NUMBER_GENERATION, valueMap, search);
             }
         }
         else{
@@ -162,6 +168,7 @@ public class Helpers {
             db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
         }
         Log.e("Num Range","" + numRange);
+        numRange = numRange==0?numRange+1:numRange;
         Log.e("Left Pad","" + StringUtils.leftPad(String.valueOf(numRange),length,"0"));
         return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }

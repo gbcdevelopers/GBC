@@ -215,6 +215,7 @@
 				<string name="pcs">Pcs</string>
 				<string name="pcs_100">PCS : 100</string>
 				<string name="please_enter_odometer">Please enter Odometer :</string>
+				<string name="posting">Posting Data</string>
 				<string name="preferred_lang">Preferred Language</string>
 				<string name="presales">Pre Sales</string>
 				<string name="presalesorder">Pre-Sales Order</string>
@@ -280,6 +281,7 @@
 				<string name="start">START</string>
 				<string name="stocktake">Berain-Take Stock</string>
 				<string name="submit">Submit Order</string>
+				<string name="synchronize">Synchronize Data</string>
 				<string name="targetachieved">Achieved/Target</string>
 				<string name="tc_sales">TC SALES</string>
 				<string name="thermal_print">Thermal Print</string>

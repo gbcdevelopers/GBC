@@ -249,6 +249,9 @@ public class BeginDayFragment extends Fragment {
                 Intent i = new Intent(getActivity(), LoadActivity.class);
                 startActivity(i);
             }
+            else if(this.flag.contains("Error")){
+                Toast.makeText(getActivity(),this.flag.replaceAll("Error","").trim(),Toast.LENGTH_SHORT).show();
+            }
             else{
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle(R.string.error_title)

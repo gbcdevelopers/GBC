@@ -125,10 +125,22 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/btn_clear_data"
+            android:id="@+id/btn_synchronize"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/h"
+            android:layout_marginBottom="@dimen/size_four"
+            android:padding="@dimen/h3"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:onClick="syncData"
+            android:text="@string/synchronize"/>
+
+        <Button
+            android:id="@+id/btn_clear_data"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_four"
             android:layout_marginBottom="@dimen/size_four"
             android:padding="@dimen/h3"
             android:background="@color/colorPrimary"

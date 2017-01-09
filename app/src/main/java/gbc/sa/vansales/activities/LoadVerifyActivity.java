@@ -330,6 +330,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadConfirmationFunction);
+           // map.put("OrderId", "0000000022");  //For testing purpose
             map.put("OrderId", object.getDeliveryNo());
             map.put("CustomerId", Settings.getString(App.DRIVER));
             JSONArray deepEntity = new JSONArray();

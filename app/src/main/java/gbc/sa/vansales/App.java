@@ -45,6 +45,7 @@ public class App extends Application {
     public static final String BOTTLES_UOM = "ZSR";
 
     public static final String POST_COLLECTION = "SOHeaders";
+    public static final String POST_BATCH = "$batch";
     public static final String DEEP_ENTITY = "SOItems";
     public static final String POST_ODOMETER_SET = "OdometerSet";
 
@@ -56,6 +57,11 @@ public class App extends Application {
     public static final String PRINT_MESSAGE_KEY2 = "PRINT MESSAGE KEY2";
     public static final String DISPLAY_MESSAGE_KEY1 = "DISPLAY MESSAGE KEY1";
     public static final String DISPLAY_MESSAGE_KEY2 = "DISPLAY MESSAGE KEY2";
+
+    //Post Flags
+    public static final String DATA_IS_POSTED = "Y";
+    public static final String DATA_MARKED_FOR_POST = "M";
+    public static final String DATA_NOT_POSTED = "N";
 
     public static final String LANGUAGE = "lang";
 
