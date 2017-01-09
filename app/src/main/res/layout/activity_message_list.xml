@@ -27,6 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_id"
             android:text="@string/tv_cust_detail"
             android:textSize="@dimen/label_big"
             android:textColor="@color/white"
@@ -35,6 +36,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_address"
             android:text="@string/tv_cust_detail1"
             android:textSize="@dimen/label_medium"
             android:textColor="@color/white"
@@ -43,6 +45,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_pobox"
             android:text="@string/tv_cust_detail2"
             android:textSize="@dimen/label_small"
             android:textColor="@color/white"
@@ -51,6 +54,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tv_customer_contact"
             android:text="@string/tv_cust_detail4"
             android:textSize="@dimen/label_min"
             android:textColor="@color/white"

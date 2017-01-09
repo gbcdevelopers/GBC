@@ -23,6 +23,9 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryAdapter;
 import gbc.sa.vansales.adapters.MessageBadgeAdapter;
 import gbc.sa.vansales.adapters.MessageListAdapter;
+import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.models.Customer;
+import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Message;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -47,10 +50,19 @@ public class CustomerMessageListActivity extends AppCompatActivity {
     LoadingSpinner loadingSpinner;
     DatabaseHandler db = new DatabaseHandler(this);
     ArrayList<Message> arrayList;
+    Customer object;
+    ArrayList<CustomerHeader> customers;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_list);
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
+        customers = CustomerHeaders.get();
+        CustomerHeader customerHeader = null;
+        if(object!=null){
+            customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
+        }
         loadingSpinner = new LoadingSpinner(this);
         arrayList = new ArrayList<>();
         adapter = new MessageBadgeAdapter(this,arrayList);
@@ -61,7 +73,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
         iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Message List");
+        tv_top_header.setText(getString(R.string.message_list));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +81,12 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             }
         });
         lv_message = (ListView) findViewById(R.id.lv_messages);
+
+        TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_id);
+        TextView tv_customer_address = (TextView)findViewById(R.id.tv_customer_address);
+        TextView tv_customer_pobox = (TextView)findViewById(R.id.tv_customer_pobox);
+        TextView tv_customer_contact = (TextView)findViewById(R.id.tv_customer_contact);
+
         if (getIntent().getExtras() != null) {
             String from = getIntent().getStringExtra("from");
             if (from.equals("dash")) {
@@ -78,6 +96,19 @@ public class CustomerMessageListActivity extends AppCompatActivity {
                 new loadMessages(getIntent().getStringExtra("from"));
             }
             else{
+
+                if(!(customerHeader==null)){
+                    tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
+                    tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_contact.setText(customerHeader.getPhone());
+                }
+                else{
+                    tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
+                    tv_customer_address.setText(object.getCustomerAddress().toString());
+                    tv_customer_pobox.setText("");
+                    tv_customer_contact.setText("");
+                }
                 new loadMessages(getIntent().getStringExtra("from"));
             }
         } else {
@@ -154,7 +185,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             else{
                 filter = from;
             }
-            Log.e("From is","" + from);
+            Log.e("From is", "" + from);
 
             HashMap<String,String> filterMap = new HashMap<>();
             filterMap.put(db.KEY_USERNAME,filter);

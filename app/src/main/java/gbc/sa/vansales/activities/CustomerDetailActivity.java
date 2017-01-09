@@ -71,13 +71,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
         TextView tv_available_limit = (TextView)findViewById(R.id.tv_digits2);
 
         if(!(customerHeader==null)){
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         }
         else{
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(object.getCustomerID().toString() + " " +  UrlBuilder.decodeString(object.getCustomerName().toString()));
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -189,6 +189,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerDetailActivity.this, CustomerMessageListActivity.class);
                 intent.putExtra("from",object.getCustomerID());
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
         });
