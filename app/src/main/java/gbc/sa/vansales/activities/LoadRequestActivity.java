@@ -368,6 +368,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_POSTED,"Y");
 
                 HashMap<String,String> filter = new HashMap<>();
+                map.put(db.KEY_IS_POSTED,"N");
+
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
                 db.updateData(db.LOAD_REQUEST, map, filter);

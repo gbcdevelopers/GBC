@@ -48,7 +48,7 @@ public class MessageBadgeAdapter extends ArrayAdapter<Message> {
 
         Message message = getItem(position);
 
-        holder.tv_message_title.setText(UrlBuilder.decodeString(message.getStructure()).substring(0,1).toUpperCase() + UrlBuilder.decodeString(message.getStructure()).substring(1).toLowerCase());
+      //  holder.tv_message_title.setText(UrlBuilder.decodeString(message.getStructure()).substring(0,1).toUpperCase() + UrlBuilder.decodeString(message.getStructure()).substring(1).toLowerCase());
         holder.iv_round = (RoundedImageView) convertView.findViewById(R.id.roundedImageView);
         holder.tv_message.setText(UrlBuilder.decodeString(message.getMessage()).substring(0,1).toUpperCase() + UrlBuilder.decodeString(message.getMessage()).substring(1).toLowerCase());
         return convertView;
@@ -60,13 +60,13 @@ public class MessageBadgeAdapter extends ArrayAdapter<Message> {
     private class ViewHolder{
         RoundedImageView iv_round;
         TextView tv_message;
-        TextView tv_message_title;
+      //  TextView tv_message_title;
 
         public ViewHolder(View v) {
 
             tv_message = (TextView) v.findViewById(R.id.tv_message);
             iv_round = (RoundedImageView) v.findViewById(R.id.roundedImageView);
-            tv_message_title = (TextView) v.findViewById(R.id.tv_message_title);
+         //   tv_message_title = (TextView) v.findViewById(R.id.tv_message_title);
         }
     }
 }

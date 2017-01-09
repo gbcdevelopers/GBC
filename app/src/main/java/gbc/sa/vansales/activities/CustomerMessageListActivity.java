@@ -158,6 +158,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
 
             HashMap<String,String> filterMap = new HashMap<>();
             filterMap.put(db.KEY_USERNAME,filter);
+            filterMap.put(db.KEY_STRUCTURE,App.DRIVER_MESSAGE_KEY);
 
             Cursor cursor = db.getData(db.MESSAGES,map,filterMap);
             if(cursor.getCount()>0){

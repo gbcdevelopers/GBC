@@ -48,6 +48,15 @@ public class App extends Application {
     public static final String DEEP_ENTITY = "SOItems";
     public static final String POST_ODOMETER_SET = "OdometerSet";
 
+    //Message Reading KEYS
+    public static final String DRIVER_MESSAGE_KEY = "DRIVER MESSAGE KEY";
+    public static final String INVOICE_HEADER_KEY = "INVOICE HEADER MESSAGE KEY";
+    public static final String INVOICE_FOOTER_KEY = "INVOICE TRAILER MESSAGE KEY";
+    public static final String PRINT_MESSAGE_KEY1 = "PRINT MESSAGE KEY1";
+    public static final String PRINT_MESSAGE_KEY2 = "PRINT MESSAGE KEY2";
+    public static final String DISPLAY_MESSAGE_KEY1 = "DISPLAY MESSAGE KEY1";
+    public static final String DISPLAY_MESSAGE_KEY2 = "DISPLAY MESSAGE KEY2";
+
     public static final String LANGUAGE = "lang";
 
     @Override
