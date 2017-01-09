@@ -32,7 +32,7 @@
 																android:layout_below="@+id/search"
 																android:layout_marginLeft="@dimen/h3"
 																android:layout_marginRight="@dimen/h3"
-																android:layout_marginTop="@dimen/h3"
+																android:layout_marginTop="@dimen/h1"
 																/>
 								</RelativeLayout>
 

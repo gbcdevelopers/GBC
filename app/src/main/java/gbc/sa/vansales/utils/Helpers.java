@@ -137,8 +137,8 @@ public class Helpers {
         String route = routeCursor.getString(routeCursor.getColumnIndex(db.KEY_ROUTE));
        // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
-        int numRange = 00000;
-
+        int numRange = 0;
+        int length =5;
         HashMap<String, String> search = new HashMap<>();
         search.put(db.KEY_DOC_TYPE,documentType);
         boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION,search);
@@ -153,8 +153,17 @@ public class Helpers {
                 numRange = numRange + 1;
             }
         }
-
-        return route+String.valueOf(docTypeId)+String.valueOf(numRange);
+        else{
+            HashMap<String, String> valueMap = new HashMap<>();
+            valueMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+            valueMap.put(db.KEY_ROUTE,Settings.getString(App.ROUTE));
+            valueMap.put(db.KEY_DOC_TYPE,documentType);
+            valueMap.put(db.KEY_PURCHASE_NUMBER,numRange==0?String.valueOf(numRange+1):String.valueOf(numRange));
+            db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
+        }
+        Log.e("Num Range","" + numRange);
+        Log.e("Left Pad","" + StringUtils.leftPad(String.valueOf(numRange),length,"0"));
+        return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
 
     public static String getDocumentTypeNo(String documentType){

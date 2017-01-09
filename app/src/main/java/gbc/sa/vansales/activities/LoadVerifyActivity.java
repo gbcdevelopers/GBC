@@ -361,7 +361,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 loadingSpinner.hide();
             }
 
-            if(this.orderID!=null&&!(this.orderID.equalsIgnoreCase(""))){
+            if(this.orderID.contains("Error")){
+                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
+            }
+            else if(this.orderID!=null&&!(this.orderID.equalsIgnoreCase(""))){
                 new updateStockforCustomer().execute();
                /* Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);*/

@@ -2,6 +2,7 @@ package gbc.sa.vansales.adapters;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,11 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         final LoadRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
 
+        /*else if(loadRequestList.get(pos).getUom().equals(App.BOTTLES_UOM)){
+            holder.cases.setEnabled(false);
+        }*/
+
+
         holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -101,7 +107,6 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
         holder.cases.setText(loadRequestList.get(pos).getCases());
         holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
-
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);

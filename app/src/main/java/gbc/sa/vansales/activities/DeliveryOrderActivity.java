@@ -301,7 +301,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 map.put(db.KEY_CASE ,item.getItemCase());
                 map.put(db.KEY_UNIT ,item.getItemUnits());
                 map.put(db.KEY_AMOUNT, String.valueOf(totalamt));
-                if(Integer.parseInt(item.getItemCase())>0 || Integer.parseInt(item.getItemUnits())>0){
+                if(Float.parseFloat(item.getItemCase())>0 || Float.parseFloat(item.getItemUnits())>0){
                     db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST,map);
                 }
             }

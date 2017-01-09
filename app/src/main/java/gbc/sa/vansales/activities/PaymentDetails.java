@@ -422,10 +422,12 @@ public class PaymentDetails extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
-                Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+            }
+            else if(this.orderID.contains("Error")){
+                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
             }
             else{
-
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PaymentDetails.this);
                 alertDialogBuilder.setTitle("Message")
                         .setMessage("Request " + this.orderID + " has been created")

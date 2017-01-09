@@ -1,9 +1,11 @@
 package gbc.sa.vansales.sap;
+import android.app.AlertDialog;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.iid.InstanceID;
 
@@ -300,6 +302,13 @@ public class IntegrationService extends IntentService {
             }
             else{
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+                Log.e("Message","Message" + response);
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                JSONObject jsonObj = new JSONObject(jsonString);
+                jsonObj = jsonObj.getJSONObject("error").getJSONObject("message");
+                Log.e("Entity", "" + jsonObj);
+                orderId = "Error" + jsonObj.getString("value");
             }
 
         }

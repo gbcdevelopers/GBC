@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -71,6 +73,7 @@ public class LoadRequestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_request);
         setTitle(getString(R.string.loadrequest));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(LoadRequestActivity.this);
         new loadItems();
@@ -321,6 +324,18 @@ public class LoadRequestActivity extends AppCompatActivity {
            // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
            // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
             loadRequest.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
+            if(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM_NEW)){
+                loadRequest.setIsCaseEnabled(true);
+                loadRequest.setIsUnitEnabled(false);
+            }
+            else if(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM)){
+                loadRequest.setIsCaseEnabled(false);
+                loadRequest.setIsUnitEnabled(true);
+            }
+            else{
+                loadRequest.setIsCaseEnabled(true);
+                loadRequest.setIsUnitEnabled(true);
+            }
             loadRequest.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             arraylist.add(loadRequest);
 
@@ -363,8 +378,25 @@ public class LoadRequestActivity extends AppCompatActivity {
             if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
                 Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
             }
+            else if(this.orderID.contains("Error")){
+                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
+            }
             else{
-                Toast.makeText(getApplicationContext(),"Request " + this.orderID + " has been created",Toast.LENGTH_SHORT ).show();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
+                alertDialogBuilder.setTitle("Message")
+                        .setMessage("Request " + this.orderID + " has been created")
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
             }
 
         }
