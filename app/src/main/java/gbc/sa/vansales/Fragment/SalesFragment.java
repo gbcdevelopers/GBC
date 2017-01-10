@@ -39,6 +39,7 @@ import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Sales;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -61,6 +62,7 @@ public class SalesFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) {
             if (workStarted) {
+                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
                 for (Sales sale : salesarrayList) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -74,11 +76,30 @@ public class SalesFragment extends Fragment {
                     map.put(db.KEY_UOM,sale.getUom());
                     map.put(db.KEY_ORG_UNITS, sale.getPic());
                     map.put(db.KEY_AMOUNT, sale.getPrice());
-                    map.put(db.KEY_IS_POSTED,"N");
-                    map.put(db.KEY_IS_PRINTED,"N");
+                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    map.put(db.KEY_ORDER_ID,purchaseNumber);
                     db.addData(db.CAPTURE_SALES_INVOICE, map);
                 }
+                Const.salesarrayList = salesarrayList;
             }
+        }
+        else{
+            if (workStarted) {
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_ORDER_ID,"");
+                    Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+                    if(cursor.getCount()>0){
+                        cursor.moveToFirst();
+                        new loadItems(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                    }
+                }
+            }
+
         }
     }
     @Nullable
@@ -97,7 +118,7 @@ public class SalesFragment extends Fragment {
         listSales = (ListView) viewmain.findViewById(R.id.list_sales);
         fab = (FloatingActionButton) viewmain.findViewById(R.id.fab);
         fab.hide();
-        new loadItems();
+        new loadItems("");
         String strProductname[] = {"A", "B", "c", "D"};
         salesarrayList = new ArrayList<>();
         /*for (int i = 0; i < 4; i++) {
@@ -209,7 +230,9 @@ public class SalesFragment extends Fragment {
         return viewmain;
     }
     private class loadItems extends AsyncTask<Void, Void, Void> {
-        private loadItems() {
+        private String orderID;
+        private loadItems(String orderID) {
+            this.orderID = orderID;
             execute();
         }
         @Override
@@ -219,29 +242,40 @@ public class SalesFragment extends Fragment {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_DELIVERY_NO, "");
-                map.put(db.KEY_ITEM_NO, "");
-                map.put(db.KEY_ITEM_CATEGORY, "");
-                map.put(db.KEY_MATERIAL_NO, "");
-                map.put(db.KEY_MATERIAL_DESC1,"");
-                map.put(db.KEY_ACTUAL_QTY_CASE, "");
-                map.put(db.KEY_REMAINING_QTY_CASE, "");
-                map.put(db.KEY_ACTUAL_QTY_UNIT, "");
-                map.put(db.KEY_REMAINING_QTY_UNIT, "");
-                map.put(db.KEY_UOM_CASE, "");
-                map.put(db.KEY_UOM_UNIT, "");
-                map.put(db.KEY_IS_VERIFIED, "");
-                HashMap<String, String> filter = new HashMap<>();
-                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-                if (cursor.getCount() > 0) {
-                    setLoadItems(cursor);
+            if(this.orderID.equals("")||this.orderID==null){
+                try {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_DELIVERY_NO, "");
+                    map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_ITEM_CATEGORY, "");
+                    map.put(db.KEY_MATERIAL_NO, "");
+                    map.put(db.KEY_MATERIAL_DESC1,"");
+                    map.put(db.KEY_ACTUAL_QTY_CASE, "");
+                    map.put(db.KEY_REMAINING_QTY_CASE, "");
+                    map.put(db.KEY_ACTUAL_QTY_UNIT, "");
+                    map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                    map.put(db.KEY_UOM_CASE, "");
+                    map.put(db.KEY_UOM_UNIT, "");
+                    map.put(db.KEY_IS_VERIFIED, "");
+                    HashMap<String, String> filter = new HashMap<>();
+                    Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                    if (cursor.getCount() > 0) {
+                        setLoadItems(cursor);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            else{
+                Log.e("Sales Array","" + salesarrayList);
+                salesarrayList = Const.salesarrayList;
+            }
+
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            adapter.notifyDataSetChanged();
         }
     }
     private void setLoadItems(Cursor loadItems) {
