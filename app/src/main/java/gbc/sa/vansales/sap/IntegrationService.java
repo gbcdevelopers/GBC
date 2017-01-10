@@ -36,6 +36,7 @@ import java.util.Map;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.models.OfflinePost;
+import gbc.sa.vansales.models.OfflineResponse;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -501,8 +502,6 @@ public class IntegrationService extends IntentService {
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
                 JSONObject jsonObj = new JSONObject(jsonString);
-
-
             }
 
         } catch (Exception e) {
@@ -517,7 +516,8 @@ public class IntegrationService extends IntentService {
 
         JSONArray data = new JSONArray();
         JSONObject d = new JSONObject();
-
+        ArrayList<OfflineResponse> arrayList = new ArrayList<>();
+        OfflineResponse offlineResponse = new OfflineResponse();
         try{
             for(int i=0;i<lines.length;i++){
                 if(lines[i].contains(boundary)){
@@ -537,7 +537,12 @@ public class IntegrationService extends IntentService {
                 }
                 else{
                     String dataStr = lines[i];
-                    if(dataStr.startsWith("{")){
+                    if(dataStr.startsWith("HTTP")){
+                        dataStr = dataStr.replaceAll("HTTP/1.1","").trim();
+                        dataStr = dataStr.substring(0,3);
+                        Log.e("Response Code","" + dataStr);
+                    }
+                    else if(dataStr.startsWith("{")){
                         Object json = new JSONTokener(dataStr).nextValue();
                         if(json instanceof JSONObject){
                             data.put(json);

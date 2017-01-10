@@ -50,7 +50,7 @@ public class OfflinePost implements Parcelable{
     }
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeMap(this.map);
+       // parcel.writeMap(this.map);
 
     }
 }

@@ -44,6 +44,8 @@ public class App extends Application {
     public static final String CASE_UOM_NEW = "KAR";
     public static final String BOTTLES_UOM = "ZSR";
 
+    public static final String CURRENCY = "SAR";
+
     public static final String POST_COLLECTION = "SOHeaders";
     public static final String POST_BATCH = "$batch";
     public static final String DEEP_ENTITY = "SOItems";

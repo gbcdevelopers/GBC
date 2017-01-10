@@ -625,6 +625,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_UNIT   + " TEXT,"
                 + KEY_UOM   + " TEXT,"
                 + KEY_PRICE   + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_IS_POSTED   + " TEXT,"
                 + KEY_IS_PRINTED  + " TEXT " + ")";
 

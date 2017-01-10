@@ -1,5 +1,9 @@
 package gbc.sa.vansales.adapters;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Set;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.DeliveryActivity;
 import gbc.sa.vansales.activities.PreSaleOrderActivity;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
+import gbc.sa.vansales.utils.Settings;
 /**
  * Created by Rakshit on 03-Jan-17.
  */
@@ -45,10 +52,11 @@ public class OrderListBadgeAdapter extends ArrayAdapter<OrderList> {
         }
 
         OrderList order = getItem(position);
-
-        holder.order_id.setText("Order No : " + order.getOrderId());
+        SpannableString asterisk = new SpannableString(" * ");
+        asterisk.setSpan(new ForegroundColorSpan(Color.RED),0, 2, 0);
+        holder.order_id.setText(order.getOrderId().contains(Settings.getString(App.ROUTE))?"Order No : " + order.getOrderId() + asterisk: order.getOrderId());
+        //holder.order_id.setText("Order No : " + order.getOrderId());
         holder.order_date.setText("Order Date : " + order.getOrderDate());
-
         return convertView;
     }
 

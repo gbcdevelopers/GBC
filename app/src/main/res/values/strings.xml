@@ -83,6 +83,7 @@
 				<string name="collection">Collection</string>
 				<string name="complete_invoice">Complete Invoice</string>
 				<string name="confirmload">Confirm Load</string>
+				<string name="confirmorder">Confirm Order</string>
 				<string name="confirmreturn">Confirm Returns</string>
 				<string name="cradit_sales">CRADIT SALES</string>
 				<string name="credit">Credit</string>
@@ -184,6 +185,7 @@
 				<string name="map">Map</string>
 				<string name="material">Material</string>
 				<string name="merchandizing">Merchandizing</string>
+				<string name="message">Message</string>
 				<string name="messages">messages</string>
 				<string name="message_list">Message List</string>
 				<string name="methodofPayment">Method of Payment</string>

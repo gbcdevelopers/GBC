@@ -113,7 +113,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                         map.put(db.KEY_UNIT,loadRequest.getUnits());
                         map.put(db.KEY_UOM,loadRequest.getUom());
                         map.put(db.KEY_PRICE,loadRequest.getPrice());
-                        map.put(db.KEY_IS_POSTED,"N");
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                         map.put(db.KEY_IS_PRINTED, "");
                         map.put(db.KEY_ORDER_ID,purchaseNum);
                         orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
@@ -207,7 +207,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             itemMap.put(db.KEY_PRICE,"");
             itemMap.put(db.KEY_ORDER_ID,"");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED,"N");
+            filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
 
             Cursor cursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
             if(cursor.getCount()>0){
@@ -376,11 +376,11 @@ public class LoadRequestActivity extends AppCompatActivity {
                 for(LoadRequest loadRequest:arraylist){
                     HashMap<String,String> map = new HashMap<String, String>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_IS_POSTED,"M");
+                    map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                     map.put(db.KEY_ORDER_ID,tokens[0].toString());
 
                     HashMap<String,String> filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED,"N");
+                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
                     filter.put(db.KEY_ORDER_ID,tokens[1].toString());
@@ -409,11 +409,11 @@ public class LoadRequestActivity extends AppCompatActivity {
                 for(LoadRequest loadRequest:arraylist){
                     HashMap<String,String> map = new HashMap<String, String>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_IS_POSTED,"Y");
+                    map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
                     map.put(db.KEY_ORDER_ID,tokens[0].toString());
 
                     HashMap<String,String> filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED,"N");
+                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
                     filter.put(db.KEY_ORDER_ID,tokens[1].toString());

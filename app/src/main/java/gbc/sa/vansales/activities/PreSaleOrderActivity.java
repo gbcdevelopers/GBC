@@ -54,6 +54,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         loadingSpinner = new LoadingSpinner(this);
         arrayList = new ArrayList<>();
         new loadOrders().execute();
+        new loadOrdersLocal().execute();
         adapter = new OrderListBadgeAdapter(this,arrayList);
         Const.constantsHashMap.clear();
         Intent i = this.getIntent();
@@ -116,6 +117,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         new loadOrders().execute();
+        new loadOrdersLocal().execute();
         if (proceedArrayList != null) {
             proceedArrayList.clear();
         }
@@ -154,7 +156,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             map.put(db.KEY_DATE,"");
 
             HashMap<String,String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED,"Y");
+            filter.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
 
             Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
             if(cursor.getCount()>0){
@@ -172,11 +174,63 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
+    public class loadOrdersLocal extends AsyncTask<Void,Void,Void>{
+
+
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_DATE,"");
+
+            HashMap<String,String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+            Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                setOrdersLocal(cursor);
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     private void setOrders(Cursor cursor){
         ArrayList<String> temp=new ArrayList<String>();
         temp.clear();
         arrayList.clear();
+        Log.e("Cursor","" + cursor.getCount());
+        do{
+            OrderList orderList = new OrderList();
+            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
+            Log.e("ORDER","" + orderList.getOrderId());
+            if(!temp.contains(orderList.getOrderId())){
+                temp.add(orderList.getOrderId());
+                arrayList.add(orderList);
+            }
+        }
+        while (cursor.moveToNext());
+
+
+    }
+    private void setOrdersLocal(Cursor cursor){
+        ArrayList<String> temp=new ArrayList<String>();
+        temp.clear();
+        //arrayList.clear();
         Log.e("Cursor","" + cursor.getCount());
         do{
             OrderList orderList = new OrderList();

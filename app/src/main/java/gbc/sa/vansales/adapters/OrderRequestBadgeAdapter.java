@@ -32,8 +32,7 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
     private String origin;
     private int pos;
     private int lastFocussedPosition = -1;
-    public OrderRequestBadgeAdapter(Context context, ArrayList<OrderRequest> loadRequests,String origin){
-
+    public OrderRequestBadgeAdapter(Context context, ArrayList<OrderRequest> loadRequests, String origin) {
         super(context, R.layout.activity_loadrequest_items, loadRequests);
         this.loadRequestList = loadRequests;
         this.origin = origin;
@@ -43,46 +42,38 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
         final ArrayList<OrderRequest> dataList = this.loadRequestList;
         pos = position;
         final ViewHolder holder;
-        if(convertView==null){
-            LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_loadrequest_items,parent,false);
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.activity_loadrequest_items, parent, false);
             // get all UI view
             holder = new ViewHolder();
-            holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
+            holder.rl_item = (LinearLayout) convertView.findViewById(R.id.rl_item);
             holder.itemName = (TextView) convertView.findViewById(R.id.tvItemName);
             holder.cases = (EditText) convertView.findViewById(R.id.tvCases);
             holder.units = (EditText) convertView.findViewById(R.id.tvUnit);
             holder.categoryImage = (ImageView) convertView.findViewById(R.id.categoryImage);
             // set tag for holder
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             // if holder created, get tag from view
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderRequest loadRequest = loadRequestList.get(pos);
         holder.itemName.setText(loadRequest.getItemName());
-
-
-
-
-
-
         holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 loadRequestList.get(pos).setCases(s.toString());
                 int price = 1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price*Integer.parseInt(s.toString());
+                if (!(s.toString().isEmpty() || s.toString() == null || s.toString().equals(""))) {
+                    price = price * Integer.parseInt(s.toString());
                 }
+                Log.e("Position","" + pos + s.toString());
                 loadRequestList.get(pos).setPrice(String.valueOf(price));
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -91,80 +82,62 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int price = loadRequestList.get(pos).getPrice()!=null?Integer.parseInt(loadRequestList.get(pos).getPrice().toString()):1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price==1?Integer.parseInt(s.toString())*2:Integer.parseInt(s.toString())*2+price;
+                int price = loadRequestList.get(pos).getPrice() != null ? Integer.parseInt(loadRequestList.get(pos).getPrice().toString()) : 1;
+                if (!(s.toString().isEmpty() || s.toString() == null || s.toString().equals(""))) {
+                    price = price == 1 ? Integer.parseInt(s.toString()) * 2 : Integer.parseInt(s.toString()) * 2 + price;
                 }
                 loadRequestList.get(pos).setUnits(s.toString());
                 loadRequestList.get(pos).setPrice(String.valueOf(price));
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
         };
-        if(this.origin.equalsIgnoreCase("list")){
+        if (this.origin.equalsIgnoreCase("list")) {
             holder.cases.setEnabled(false);
             holder.units.setEnabled(false);
         }
-//        holder.cases.addTextChangedListener(holder.casestextWatcher);
+        holder.cases.addTextChangedListener(holder.casestextWatcher);
         holder.cases.setText(loadRequestList.get(pos).getCases());
-//        holder.units.addTextChangedListener(holder.unitsTextWatcher);
+        holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
-
-
-
-        holder.cases.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        /*holder.cases.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-
-                if(!hasFocus)
-                {
-
-                    EditText edt=(EditText)v.findViewById(R.id.tvCases);
-                    String s=edt.getText().toString();
+                if (!hasFocus) {
+                    EditText edt = (EditText) v.findViewById(R.id.tvCases);
+                    String s = edt.getText().toString();
                     loadRequestList.get(pos).setCases(s);
                     int price = 1;
-                    if(!(s.isEmpty()||s==null||s.equals(""))){
-                        price = price*Integer.parseInt(s);
+                    if (!(s.isEmpty() || s == null || s.equals(""))) {
+                        price = price * Integer.parseInt(s);
                     }
                     loadRequestList.get(pos).setPrice(String.valueOf(price));
                 }
-
-
             }
         });
-
         holder.units.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(!hasFocus)
-                {
-
-                    EditText edt=(EditText)v.findViewById(R.id.tvUnit);
-                    String s=edt.getText().toString();
-                    int price = loadRequestList.get(pos).getPrice()!=null?Integer.parseInt(loadRequestList.get(pos).getPrice().toString()):1;
-                    if(!(s.isEmpty()||s==null||s.equals(""))){
-                        price = price==1?Integer.parseInt(s)*2:Integer.parseInt(s)*2+price;
+                if (!hasFocus) {
+                    EditText edt = (EditText) v.findViewById(R.id.tvUnit);
+                    String s = edt.getText().toString();
+                    int price = loadRequestList.get(pos).getPrice() != null ? Integer.parseInt(loadRequestList.get(pos).getPrice().toString()) : 1;
+                    if (!(s.isEmpty() || s == null || s.equals(""))) {
+                        price = price == 1 ? Integer.parseInt(s) * 2 : Integer.parseInt(s) * 2 + price;
                     }
                     loadRequestList.get(pos).setUnits(s);
                     loadRequestList.get(pos).setPrice(String.valueOf(price));
                 }
             }
-        });
-
-
-
-
+        });*/
         // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
         return convertView;
     }
-
     public class ViewHolder {
         TextView itemName;
         EditText cases;
@@ -182,5 +155,4 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
             categoryImage = (ImageView) v.findViewById(R.id.categoryImage);
         }*/
     }
-
 }

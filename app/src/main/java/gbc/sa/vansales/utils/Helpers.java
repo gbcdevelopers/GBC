@@ -124,17 +124,8 @@ public class Helpers {
     }
 
     public static String generateNumber(DatabaseHandler db, String documentType){
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_ROUTE,"");
 
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
-
-        Cursor routeCursor = db.getData(db.TRIP_HEADER, map, filter);
-        if(routeCursor.getCount()>0){
-            routeCursor.moveToFirst();
-        }
-        String route = routeCursor.getString(routeCursor.getColumnIndex(db.KEY_ROUTE));
+        String route = Settings.getString(App.ROUTE);
        // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 0;
@@ -151,7 +142,7 @@ public class Helpers {
                 cursor.moveToFirst();
 
                 numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-                Log.e("Num Range Inside","" + numRange);
+                Log.e("Num Range From DB","" + numRange);
                 numRange = numRange + 1;
 
                 HashMap<String, String> valueMap = new HashMap<>();
@@ -160,16 +151,19 @@ public class Helpers {
             }
         }
         else{
+            numRange = numRange<=0?numRange+1:numRange;
             HashMap<String, String> valueMap = new HashMap<>();
             valueMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
             valueMap.put(db.KEY_ROUTE,Settings.getString(App.ROUTE));
-            valueMap.put(db.KEY_DOC_TYPE,documentType);
-            valueMap.put(db.KEY_PURCHASE_NUMBER,numRange==0?String.valueOf(numRange+1):String.valueOf(numRange));
+            valueMap.put(db.KEY_DOC_TYPE, documentType);
+            valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
+            Log.e("Adding Data Num Range","" + valueMap);
             db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
         }
-        Log.e("Num Range","" + numRange);
-        numRange = numRange==0?numRange+1:numRange;
+        Log.e("Num Range PO","" + numRange);
+
         Log.e("Left Pad","" + StringUtils.leftPad(String.valueOf(numRange),length,"0"));
+        Log.e("Return Number","" + route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0"));
         return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
 
@@ -243,6 +237,26 @@ public class Helpers {
         Log.e("Helper Load","Load Data");
         ArticleHeaders.loadData(context);
         CustomerHeaders.loadData(context);
+    }
+
+    public static HashMap<String,String> buildHeaderMap(String function, String orderId, String documentType,String customerId,
+                                                        String orderValue,String purchaseNumber){
+        HashMap<String,String> map = new HashMap<>();
+        map.put("Function", function);
+        map.put("OrderId", orderId.equals("")?"":orderId);
+        map.put("DocumentType", documentType);
+        // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+        // map.put("DocumentDate", null);
+           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+            purchaseNumber = map.get("PurchaseNum");*/
+        map.put("CustomerId", customerId);
+        map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+        map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+        map.put("Division", Settings.getString(App.DIVISION));
+        map.put("OrderValue", orderValue.equals("")?"2000":orderValue);
+        map.put("Currency", App.CURRENCY);
+        map.put("PurchaseNum", purchaseNumber);
+        return map;
     }
 
 }

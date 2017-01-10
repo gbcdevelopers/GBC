@@ -138,7 +138,8 @@ public class SettingsActivity extends AppCompatActivity {
         btn_sync_data.setText(getString(R.string.synchronize) + "(" + String.valueOf(syncCount) + ")");
     }
     public void syncData(View view){
-        generateBatch();
+        generateBatch(ConfigStore.LoadRequestFunction);
+        generateBatch(ConfigStore.CustomerOrderRequestFunction+"O");
         new syncData().execute();
 
     }
@@ -176,6 +177,9 @@ public class SettingsActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
+            for (OfflinePost offlinePost:arrayList){
+                Log.e("Payload Batch","" + offlinePost.getMap());
+            }
             this.data = IntegrationService.batchRequest(SettingsActivity.this, App.POST_COLLECTION, arrayList);
             return null;
         }
@@ -207,95 +211,244 @@ public class SettingsActivity extends AppCompatActivity {
         object.setMap(map);
         object.setDeepEntity(deepEntity);
         arrayList.add(object);
+        for (OfflinePost offlinePost:arrayList){
+            Log.e("Payload Batch","" + offlinePost.getMap());
+        }
+        for(int i=0;i<arrayList.size();i++){
+            OfflinePost obj = arrayList.get(i);
+            Log.e("Payload 2","" + obj.getMap());
+
+        }
     }
 
-    private void generateBatch() {
+    private void generateBatch(String request) {
+
         String purchaseNumber = "";
-        try{
+        String tempPurchaseNumber = "";
+        String customerNumber = "";
+        String tempCustomerNumber = "";
 
-        HashMap<String, String> map = new HashMap<>();
-        map.put("Function", ConfigStore.LoadRequestFunction);
-        map.put("OrderId", "");
-        map.put("DocumentType", ConfigStore.DocumentType);
-        // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
-        // map.put("DocumentDate", null);
-           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
-            purchaseNumber = map.get("PurchaseNum");*/
-        map.put("CustomerId", Settings.getString(App.DRIVER));
-        map.put("SalesOrg", Settings.getString(App.SALES_ORG));
-        map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
-        map.put("Division", Settings.getString(App.DIVISION));
-        map.put("OrderValue", "2000");
-        map.put("Currency", "SAR");
+        switch (request){
+            case ConfigStore.LoadRequestFunction:{
+                try{
 
-        JSONArray deepEntity = new JSONArray();
-        HashMap<String, String> itemMap = new HashMap<>();
-        itemMap.put(db.KEY_ITEM_NO,"");
-        itemMap.put(db.KEY_MATERIAL_NO,"");
-        itemMap.put(db.KEY_MATERIAL_DESC1,"");
-        itemMap.put(db.KEY_CASE,"");
-        itemMap.put(db.KEY_UNIT,"");
-        itemMap.put(db.KEY_UOM,"");
-        itemMap.put(db.KEY_PRICE,"");
-        itemMap.put(db.KEY_ORDER_ID,"");
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_IS_POSTED,"M");
+                    JSONArray deepEntity = new JSONArray();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_ITEM_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                    itemMap.put(db.KEY_CASE,"");
+                    itemMap.put(db.KEY_UNIT,"");
+                    itemMap.put(db.KEY_UOM,"");
+                    itemMap.put(db.KEY_PRICE,"");
+                    itemMap.put(db.KEY_ORDER_ID,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
 
-        Cursor pendingLoadRequestCursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
-        if(pendingLoadRequestCursor.getCount()>0){
-            pendingLoadRequestCursor.moveToFirst();
-           // purchaseNumber = map.get("PurchaseNum");
-            int itemno = 10;
-            do{
-                map.put("PurchaseNum", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_ORDER_ID)));
-                if(purchaseNumber.equals("")){
-                    purchaseNumber = map.get("PurchaseNum");
-                }
-                else if(purchaseNumber.equals(map.get("PurchaseNum"))){
+                    Cursor pendingLoadRequestCursor = db.getData(db.LOAD_REQUEST,itemMap,filter);
+                    if(pendingLoadRequestCursor.getCount()>0){
+                        pendingLoadRequestCursor.moveToFirst();
+                        int itemno = 10;
+                        do{
+                            tempPurchaseNumber = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_ORDER_ID));
+                            if(purchaseNumber.equals("")){
+                                purchaseNumber = tempPurchaseNumber;
+                            }
+                            else if(purchaseNumber.equals(tempPurchaseNumber)){
+
+                            }
+                            else{
+                                OfflinePost object = new OfflinePost();
+                                object.setCollectionName(App.POST_COLLECTION);
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction,"",ConfigStore.DocumentType,Settings.getString(App.DRIVER),"",purchaseNumber));
+                                object.setDeepEntity(deepEntity);
+                                arrayList.add(object);
+                                purchaseNumber = tempPurchaseNumber;
+                                deepEntity = new JSONArray();
+                            }
+
+                            if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_CASE)));
+                                jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UNIT)));
+                                jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            //Check if cursor is at last position
+                            if(pendingLoadRequestCursor.getPosition()==pendingLoadRequestCursor.getCount()-1){
+                                OfflinePost object = new OfflinePost();
+                                object.setCollectionName(App.POST_COLLECTION);
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, Settings.getString(App.DRIVER), "", purchaseNumber));
+                                object.setDeepEntity(deepEntity);
+                                arrayList.add(object);
+                                deepEntity = new JSONArray();
+                            }
+
+                        }
+                        while (pendingLoadRequestCursor.moveToNext());
+                    }
 
                 }
-                else{
-                    createBatch(App.POST_COLLECTION,map,deepEntity);
-                    deepEntity = new JSONArray();
+                catch (Exception e){
+                    e.printStackTrace();
                 }
-                if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                    JSONObject jo = new JSONObject();
-                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                    jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    jo.put("Description",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                    jo.put("Plant","");
-                    jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_CASE)));
-                    jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("UoM", App.CASE_UOM);
-                    jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("Storagelocation", "");
-                    jo.put("Route", Settings.getString(App.ROUTE));
-                    itemno = itemno+10;
-                    deepEntity.put(jo);
-                }
-                if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
-                    JSONObject jo = new JSONObject();
-                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                    jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    jo.put("Description",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                    jo.put("Plant","");
-                    jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UNIT)));
-                    jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("UoM", App.BOTTLES_UOM);
-                    jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                    jo.put("Storagelocation", "");
-                    jo.put("Route", Settings.getString(App.ROUTE));
-                    itemno = itemno+10;
-                    deepEntity.put(jo);
-                }
+                break;
             }
-            while (pendingLoadRequestCursor.moveToNext());
+            case ConfigStore.CustomerOrderRequestFunction+"O":{
+                try{
+
+                    JSONArray deepEntity = new JSONArray();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_ITEM_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                    itemMap.put(db.KEY_CASE,"");
+                    itemMap.put(db.KEY_UNIT,"");
+                    itemMap.put(db.KEY_UOM,"");
+                    itemMap.put(db.KEY_PRICE,"");
+                    itemMap.put(db.KEY_ORDER_ID,"");
+                    itemMap.put(db.KEY_CUSTOMER_NO,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+                    Cursor pendingOrderRequestCursor = db.getData(db.ORDER_REQUEST,itemMap,filter);
+                    if(pendingOrderRequestCursor.getCount()>0){
+                        pendingOrderRequestCursor.moveToFirst();
+                        int itemno = 10;
+                        do{
+                            tempPurchaseNumber = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_ORDER_ID));
+                            tempCustomerNumber = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_CUSTOMER_NO));
+                            if(customerNumber.equals("")){
+                                customerNumber = tempCustomerNumber;
+                            }
+                            if(purchaseNumber.equals("")){
+                                purchaseNumber = tempPurchaseNumber;
+                            }
+                            else if(purchaseNumber.equals(tempPurchaseNumber)){
+
+                            }
+                            else{
+                                if(customerNumber.equals(tempCustomerNumber)){
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    deepEntity = new JSONArray();
+                                }
+                                else{
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    customerNumber = tempCustomerNumber;
+                                    deepEntity = new JSONArray();
+                                }
+
+                            }
+
+                            if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_CASE)));
+                                jo.put("ItemValue", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("Value", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UNIT)));
+                                jo.put("ItemValue", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("Value", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            //Check if cursor is at last position
+                            if(pendingOrderRequestCursor.getPosition()==pendingOrderRequestCursor.getCount()-1){
+
+                                if(customerNumber.equals(tempCustomerNumber)){
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    deepEntity = new JSONArray();
+                                }
+                                else{
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    customerNumber = tempCustomerNumber;
+                                    deepEntity = new JSONArray();
+                                }
+
+                                /*OfflinePost object = new OfflinePost();
+                                object.setCollectionName(App.POST_COLLECTION);
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, "0000205005", "", purchaseNumber));
+                                object.setDeepEntity(deepEntity);
+                                arrayList.add(object);
+                                deepEntity = new JSONArray();*/
+                            }
+
+                        }
+                        while (pendingOrderRequestCursor.moveToNext());
+                    }
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case ConfigStore.InvoiceRequestFunction:{
+
+            }
         }
 
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 }
