@@ -63,8 +63,8 @@ public class BeginTripActivity extends AppCompatActivity  {
 
         viewPager=(ViewPager)findViewById(R.id.pager);
         tabLayout=(TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("BEGIN DAY"));
-        tabLayout.addTab(tabLayout.newTab().setText("MESSAGE"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.beginDay).toUpperCase()));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.message).toUpperCase()));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         loadingSpinner = new LoadingSpinner(this);

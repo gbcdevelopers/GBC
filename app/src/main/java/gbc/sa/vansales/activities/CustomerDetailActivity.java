@@ -33,7 +33,7 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class CustomerDetailActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = {"Order request", "Collections", "Sales", "Merchandizing", "Delivery", "Print"};
+    String strText[] = new String[6];
     int resarr[] = {R.drawable.ic_order_request, R.drawable.ic_collection, R.drawable.ic_sales, R.drawable.ic_merchandising, R.drawable.ic_distribution, R.drawable.ic_print};
     ImageView iv_back;
     TextView tv_top_header;
@@ -54,7 +54,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
 
 
-
+        strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
 
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");

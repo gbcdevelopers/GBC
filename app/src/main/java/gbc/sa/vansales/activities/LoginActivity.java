@@ -140,10 +140,10 @@ public class LoginActivity extends Activity {
                 if(this.returnList.size()>0){
                     if(this.returnList.get(2).contains("Trip")){
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-                        alertDialogBuilder.setTitle("Message")
+                        alertDialogBuilder.setTitle(getString(R.string.message))
                                 .setMessage(this.returnList.get(2))
                                 .setCancelable(false)
-                                .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getString(R.string.Continue_text), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         loadingSpinner.show();
@@ -168,7 +168,7 @@ public class LoginActivity extends Activity {
                                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
                                     }
                                 })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.cancel();

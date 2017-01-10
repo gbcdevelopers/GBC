@@ -81,7 +81,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         flt_presale = (FloatingActionButton) findViewById(R.id.flt_presale);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Order Request");
+        tv_top_header.setText(getString(R.string.order_request));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

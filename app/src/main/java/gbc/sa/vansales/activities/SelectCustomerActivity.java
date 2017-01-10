@@ -86,7 +86,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         floatButton = (FloatingActionButton) findViewById(R.id.float_map);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Select Customer");
+        tv_top_header.setText(getString(R.string.select_customer));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +98,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         if (tv_top_header != null) {
             tv_top_header.setVisibility(View.VISIBLE);
-            tv_top_header.setText("Select Customer");
+            tv_top_header.setText(getString(R.string.select_customer));
         }
         toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         if (toolbar_iv_back != null) {
@@ -198,8 +198,8 @@ public class SelectCustomerActivity extends AppCompatActivity {
     public void setTabs(){
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Sequence"));
-        tabLayout.addTab(tabLayout.newTab().setText("All"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sequence).toUpperCase()));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.all).toUpperCase()));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final PagerAdapter adapter = new PagerAdapter

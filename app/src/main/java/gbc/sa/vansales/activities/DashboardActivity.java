@@ -247,8 +247,8 @@ public class DashboardActivity extends AppCompatActivity
         TextView lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
         TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         TextView lbl_targetachieved = (TextView) findViewById(R.id.lbl_targetachieved);
-        lbl_totalsales.setText("0.00 SAR");
-        lbl_totalreceipt.setText("0.00 SAR");
+        lbl_totalsales.setText("0.00" + getString(R.string.currency));
+        lbl_totalreceipt.setText("0.00 " + getString(R.string.currency));
         lbl_targetachieved.setText("594.00/75000.00");
     }
     private void setBeginDayVisibility() {
@@ -281,8 +281,8 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
         ArrayList<String> labels = new ArrayList<String>();
-        labels.add("Cash");
-        labels.add("Credit");
+        labels.add(getString(R.string.cash));
+        labels.add(getString(R.string.credit));
         labels.add("TC");
         PieData data = new PieData(labels, dataset);
 
@@ -433,9 +433,9 @@ public class DashboardActivity extends AppCompatActivity
         dataset.setColors(colorCodes);
 
         ArrayList<String> labels = new ArrayList<String>();
-        labels.add("Sales");
-        labels.add("Good Return");
-        labels.add("Bad Return");
+        labels.add(getString(R.string.sales));
+        labels.add(getString(R.string.good_returns));
+        labels.add(getString(R.string.bad_return));
 
         BarData data = new BarData(labels, dataset);
         barChart.setData(data);

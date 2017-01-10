@@ -81,7 +81,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         tv_top_header.setVisibility(View.VISIBLE);
         iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Calendar");
+        tv_top_header.setText(getString(R.string.calendar));
         iv_back.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -412,12 +412,12 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
             selectedDayMonthYearButton.setText("Selected: " + date_month_year);
             Log.e("Selected date", date_month_year);
             try {
-                Date parsedDate = dateFormatter.parse(date_month_year);
-                Log.d(tag, "Parsed Date: " + parsedDate.toString());
+               /* Date parsedDate = dateFormatter.parse(date_month_year);
+                Log.d(tag, "Parsed Date: " + parsedDate.toString());*/
                 CustomerHeaders.loadData(MyCalendarActivity.this);
                 Intent intent = new Intent(MyCalendarActivity.this, SelectCustomerActivity.class);
                 startActivity(intent);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -60,8 +60,8 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             holder = (ViewHolder) convertView.getTag();
         }
         LoadDeliveryHeader load = getItem(position);
-        holder.deliveryNo.setText("Load No : " + load.getDeliveryNo());
-        holder.loadingDate.setText("Delivery Date : " + load.getLoadingDate());
+        holder.deliveryNo.setText(getContext().getString(R.string.loadno) + " : " + load.getDeliveryNo());
+        holder.loadingDate.setText(getContext().getString(R.string.delivery_date) + " : " + load.getLoadingDate());
 
         if(load.isLoadVerified()){
             holder.loadAvailable.setVisibility(View.VISIBLE);

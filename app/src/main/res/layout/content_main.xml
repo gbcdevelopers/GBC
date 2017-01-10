@@ -155,7 +155,7 @@
             android:layout_below="@+id/idd"
             android:layout_gravity="center"
             android:id="@+id/btnBeginDay"
-            android:text="Begin Day"
+            android:text="@string/beginDay"
             android:background="@color/buttoncolor"
             android:textColor="@color/white"
             android:layout_marginTop="@dimen/h3"

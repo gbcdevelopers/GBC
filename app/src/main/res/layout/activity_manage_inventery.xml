@@ -20,7 +20,7 @@
 												android:drawablePadding="1dp"
 												android:drawableTop="@drawable/load"
 												android:padding="@dimen/h1"
-												android:text="Load"
+												android:text="@string/load"
 												/>
 
 								<Button
@@ -33,7 +33,7 @@
 												android:drawablePadding="1dp"
 												android:drawableTop="@drawable/loaqrequest"
 												android:padding="@dimen/h1"
-												android:text="Request"
+												android:text="@string/loadrequest"
 												/>
 				</LinearLayout>
 
@@ -53,7 +53,7 @@
 												android:drawablePadding="1dp"
 												android:drawableTop="@drawable/vanstock"
 												android:padding="@dimen/h1"
-												android:text="VanStock"
+												android:text="@string/vanstock"
 												/>
 
 								<Button
@@ -65,7 +65,7 @@
 												android:drawablePadding="1dp"
 												android:drawableTop="@drawable/unload"
 												android:padding="@dimen/h1"
-												android:text="UnLoad"
+												android:text="@string/unload"
 												/>
 				</LinearLayout>
 </LinearLayout>

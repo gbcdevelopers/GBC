@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-				<string name="Continue_text">Continue</string>
+				<string name="Continue_text">استمر</string>
 
 				<style name="DefaultButtonText">
 								<item name="android:layout_width">fill_parent</item>
@@ -36,6 +36,7 @@
 				<string name="add">إضافة</string>
 				<string name="advance_payment">دفعة مقدمة</string>
 				<string name="alert">Alert</string>
+				<string name="all">جميع</string>
 				<string name="all_route_customer">كل عملاء خط السير</string>
 				<string name="am502_large_swiss_strawberry">AM502 Large Swiss Strawberry</string>
 				<string name="am5500_large_swiss_roll_vanila_24x110g">AM5500*LARGE SWISS ROLL VANILA (24X110G)</string>
@@ -58,6 +59,7 @@
 				<string name="beginday_route">خط سير</string>
 				<string name="begintrip">بداية الرحلة</string>
 				<string name="buyback_free">إعادة شراء مجانية</string>
+				<string name="calendar">تقويم</string>
 				<string name="cancel">إلغاء</string>
 				<string name="caseLabel">"حالات"</string>
 				<string name="case_price">case price</string>
@@ -130,9 +132,9 @@
 				<string name="due_date">تاريخ الاستحقاق</string>
 				<string name="e2000">E2000</string>
 				<string name="edit">تعديل</string>
-				<string name="enableautosync">Enable Auto Sync</string>
+				<string name="enableautosync">تمكين المزامنة التلقائية</string>
 				<string name="endtrip">نهاية الرحلة</string>
-				<string name="english">الإنجليزية</string>
+				<string name="english">English</string>
 				<string name="enter_cash_amount">ادخل المبلغ النقدي</string>
 				<string name="enter_employee_id">الرجاء إدخال كود الموظف</string>
 				<string name="enter_password">الرجاء إدخال كلمة مرور</string>
@@ -162,6 +164,7 @@
 				<string name="item_number">كود الصنف</string>
 				<string name="item_sales_details">تفاصيل الصنف </string>
 				<string name="load">حمولة</string>
+				<string name="loadno">Load No</string>
 				<string name="load_summary_title">ملخص الحمولة</string>
 				<string name="load_title">إختار الحمولة</string>
 				<string name="load_verify_title">تحقق من الحمولة</string>
@@ -266,11 +269,13 @@
 				<string name="sales_qty">كمية المبيعات</string>
 				<string name="sales_summary">ملخص المبيعات</string>
 				<string name="save">حفظ</string>
+				<string name="select_customer">حدد العملاء</string>
 				<string name="select_item">اختار صنف</string>
 				<string name="select_lang_msg">الرجاء اختيار لغتك المفضلة</string>
 				<string name="select_lang_title">اختر اللغة</string>
 				<string name="select_operation">حدد عملية</string>
 				<string name="selseman_code">كود المندوب</string>
+				<string name="sequence">تسلسل</string>
 				<string name="settings">إعدادات</string>
 				<string name="shop_status">اختار حالة المتجر</string>
 				<string name="specify_reason">تحديد السبب:</string>
