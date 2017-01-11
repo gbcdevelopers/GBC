@@ -24,6 +24,7 @@ import java.util.HashMap;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.OfflinePost;
+import gbc.sa.vansales.models.OfflineResponse;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -129,11 +130,16 @@ public class SettingsActivity extends AppCompatActivity {
         map.put(db.KEY_TIME_STAMP, "");
 
         HashMap<String,String> filter = new HashMap<>();
-        filter.put(db.KEY_IS_POSTED,"M");
+        filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
         Cursor loadRequest = db.getData(db.LOAD_REQUEST,map,filter);
+        Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
         if(loadRequest.getCount()>0){
             syncCount += loadRequest.getCount();
         }
+        if(orderRequest.getCount()>0){
+            syncCount += orderRequest.getCount();
+        }
+
 
         btn_sync_data.setText(getString(R.string.synchronize) + "(" + String.valueOf(syncCount) + ")");
     }
@@ -170,7 +176,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public class syncData extends AsyncTask<Void,Void,Void>{
-        JSONArray data = new JSONArray();
+        ArrayList<OfflineResponse> data = new ArrayList<>();
         @Override
         protected void onPreExecute() {
             loadingSpinnerPost.show();
@@ -186,18 +192,60 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinnerPost.isShowing()){
-                loadingSpinnerPost.hide();
-            }
+
             try{
-                for(int i=0;i<data.length();i++){
-                    JSONObject obj = data.getJSONObject(i);
-                    obj = obj.getJSONObject("d");
-                    Log.e("POST Data","" + obj.getString("OrderId") + obj.getString("PurchaseNum"));
+                for(OfflineResponse response:this.data){
+                    switch (response.getFunction()){
+                        case ConfigStore.LoadRequestFunction:{
+
+                            HashMap<String,String>map = new HashMap<>();
+                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                            HashMap<String,String> filter = new HashMap<>();
+                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                            db.updateData(db.LOAD_REQUEST, map, filter);
+                            break;
+                        }
+                        case ConfigStore.CustomerOrderRequestFunction+"O":{
+
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                            HashMap<String, String> filter = new HashMap<>();
+                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                            db.updateData(db.ORDER_REQUEST, map, filter);
+                            break;
+                        }
+                        case ConfigStore.LoadConfirmationFunction:{
+
+                            break;
+                        }
+                        case ConfigStore.InvoiceRequestFunction:{
+                            break;
+                        }
+                        case ConfigStore.CustomerDeliveryRequestFunction:{
+
+                            break;
+                        }
+                    }
                 }
             }
             catch (Exception e){
                 e.printStackTrace();
+            }
+
+            if(loadingSpinnerPost.isShowing()){
+                setSyncCount();
+                loadingSpinnerPost.hide();
             }
 
         }

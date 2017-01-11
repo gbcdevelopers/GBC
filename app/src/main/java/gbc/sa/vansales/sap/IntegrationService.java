@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import gbc.sa.vansales.App;
@@ -39,6 +40,7 @@ import gbc.sa.vansales.models.OfflinePost;
 import gbc.sa.vansales.models.OfflineResponse;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 14-Dec-16.
@@ -474,8 +476,8 @@ public class IntegrationService extends IntentService {
         }
         return TextUtils.join(",", list);
     }
-    public static JSONArray batchRequest(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
-        JSONArray data = new JSONArray();
+    public static ArrayList<OfflineResponse> batchRequest(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
+        ArrayList<OfflineResponse> data = new ArrayList<>();
         try {
             DefaultHttpClient client = new DefaultHttpClient();
             client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
@@ -493,7 +495,7 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
-                data = unpack(jsonString);
+                data = unpack(jsonString,response);
                // JSONObject jsonObj = new JSONObject(jsonString);
                 Log.e("JSON Obj","" + jsonString);
             } else {
@@ -510,7 +512,8 @@ public class IntegrationService extends IntentService {
         return data;
     }
 
-    public static JSONArray unpack(String response){
+    public static ArrayList<OfflineResponse> unpack(String response,HttpResponse httpResponse){
+
         String lines[] = response.split("\\r?\\n");
         String boundary = lines[0];
 
@@ -536,15 +539,31 @@ public class IntegrationService extends IntentService {
 
                 }
                 else{
+
                     String dataStr = lines[i];
                     if(dataStr.startsWith("HTTP")){
                         dataStr = dataStr.replaceAll("HTTP/1.1","").trim();
-                        dataStr = dataStr.substring(0,3);
-                        Log.e("Response Code","" + dataStr);
+                        dataStr = dataStr.substring(0, 3);
+                        offlineResponse.setResponse_code(dataStr);
                     }
                     else if(dataStr.startsWith("{")){
                         Object json = new JSONTokener(dataStr).nextValue();
                         if(json instanceof JSONObject){
+                            JSONObject jsonObject = ((JSONObject) json).getJSONObject("d");
+                            if(jsonObject.getString("Function").equals(ConfigStore.LoadRequestFunction)){
+                                if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
+                                    offlineResponse.setFunction(jsonObject.getString("Function"));
+                                }
+                                else{
+                                    offlineResponse.setFunction(jsonObject.getString("Function")+"O");
+                                }
+                            }
+                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                            arrayList.add(offlineResponse);
+                            offlineResponse = new OfflineResponse();
                             data.put(json);
                         }
                         else if(json instanceof JSONArray){
@@ -559,6 +578,6 @@ public class IntegrationService extends IntentService {
             e.printStackTrace();
         }
 
-        return data;
+        return arrayList;
     }
 }

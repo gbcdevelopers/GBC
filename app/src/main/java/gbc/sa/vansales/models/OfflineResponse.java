@@ -10,7 +10,14 @@ public class OfflineResponse implements Parcelable{
     private String orderID;
     private String purchaseNumber;
     private String function;
+    private String customerID;
 
+    public String getCustomerID() {
+        return customerID;
+    }
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+    }
     public String getResponse_message() {
         return response_message;
     }
@@ -51,7 +58,7 @@ public class OfflineResponse implements Parcelable{
             response.orderID = source.readString();
             response.purchaseNumber = source.readString();
             response.function = source.readString();
-
+            response.customerID = source.readString();
             return response;
         }
 
@@ -71,5 +78,6 @@ public class OfflineResponse implements Parcelable{
         parcel.writeString(orderID);
         parcel.writeString(purchaseNumber);
         parcel.writeString(function);
+        parcel.writeString(customerID);
     }
 }

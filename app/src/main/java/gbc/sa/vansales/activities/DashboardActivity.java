@@ -434,7 +434,7 @@ public class DashboardActivity extends AppCompatActivity
 
         ArrayList<String> labels = new ArrayList<String>();
         labels.add(getString(R.string.sales));
-        labels.add(getString(R.string.good_returns));
+        labels.add(getString(R.string.good_return));
         labels.add(getString(R.string.bad_return));
 
         BarData data = new BarData(labels, dataset);

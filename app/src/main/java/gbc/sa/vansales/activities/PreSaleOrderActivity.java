@@ -66,12 +66,12 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -157,6 +157,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
             HashMap<String,String> filter = new HashMap<>();
             filter.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
 
             Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
             if(cursor.getCount()>0){
@@ -190,6 +191,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
             HashMap<String,String> filter = new HashMap<>();
             filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
 
             Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
             if(cursor.getCount()>0){
