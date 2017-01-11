@@ -392,12 +392,14 @@ public class IntegrationService extends IntentService {
     private static HttpEntity getPayloadBatch(ArrayList<OfflinePost>arrayList) throws IOException {
 
         HashMap<String, String> map = new HashMap<>();
-
+        Log.e("ArrayList Length","" + arrayList.size());
         String data = "";
         try {
             StringBuilder body = new StringBuilder();
             int index=1;
             for (OfflinePost offlinePost:arrayList){
+                Log.e("Map","" + offlinePost.getMap());
+                Log.e("Deep","" + offlinePost.getDeepEntity());
                 body.append("--batch");
                 body.append("\n");
                 body.append("Content-Type: multipart/mixed; boundary=changeset" + index);
@@ -552,16 +554,26 @@ public class IntegrationService extends IntentService {
                             if(jsonObject.getString("Function").equals(ConfigStore.LoadRequestFunction)){
                                 if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
                                     offlineResponse.setFunction(jsonObject.getString("Function"));
+                                    offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                    offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                    Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                    offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                    arrayList.add(offlineResponse);
                                 }
                                 else{
                                     offlineResponse.setFunction(jsonObject.getString("Function")+"O");
+                                    offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                    offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                    Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                    offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                    arrayList.add(offlineResponse);
                                 }
                             }
-                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                            /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                             Log.e("Response Order","" + jsonObject.getString("OrderId"));
                             offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
-                            arrayList.add(offlineResponse);
+                            arrayList.add(offlineResponse);*/
                             offlineResponse = new OfflineResponse();
                             data.put(json);
                         }
@@ -577,6 +589,7 @@ public class IntegrationService extends IntentService {
             e.printStackTrace();
         }
 
+        Log.e("JSON Array","" + data);
         return arrayList;
     }
 }

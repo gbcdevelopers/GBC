@@ -298,6 +298,7 @@ public class SyncData extends IntentService {
             Log.e("REturn data","" + this.data.size());
             try{
                 for(OfflineResponse response:this.data){
+                    Log.e("Resp Fun","" + response.getFunction());
                     switch (response.getFunction()){
                         case ConfigStore.LoadRequestFunction:{
 
@@ -314,7 +315,7 @@ public class SyncData extends IntentService {
                             break;
                         }
                         case ConfigStore.CustomerOrderRequestFunction+"O":{
-
+                            Log.e("OK","OK");
                             HashMap<String, String> map = new HashMap<String, String>();
                             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                             map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
