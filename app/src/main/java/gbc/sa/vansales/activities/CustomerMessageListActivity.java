@@ -222,7 +222,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             message.setDriver(cursor.getString(cursor.getColumnIndex(db.KEY_DRIVER)));
             message.setStructure(cursor.getString(cursor.getColumnIndex(db.KEY_STRUCTURE)));
             message.setMessage(cursor.getString(cursor.getColumnIndex(db.KEY_MESSAGE)));
-            Log.e("Message","" + UrlBuilder.decodeString(message.getStructure()) +  message.getMessage());
+          //  Log.e("Message","" + UrlBuilder.decodeString(message.getStructure()) +  message.getMessage());
             arrayList.add(message);
         }
         while (cursor.moveToNext());

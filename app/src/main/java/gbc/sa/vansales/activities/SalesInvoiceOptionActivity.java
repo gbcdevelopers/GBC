@@ -54,12 +54,12 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
         TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -140,6 +140,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
+                        intent3.putExtra("headerObj", object);
                         startActivity(intent3);
                         break;
                     default:

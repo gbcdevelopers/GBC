@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 public class InvoiceSummeryActivity extends AppCompatActivity {
 
 
@@ -46,6 +48,13 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     int orderTotalValue = 0;
     ArrayList<Sales> arraylist = new ArrayList<>();
+
+    EditText et_sales_cases;
+    EditText et_sales_units;
+    EditText et_sales_amount;
+    TextView tv_total_amount;
+    float totalamnt = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +65,6 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText(getString(R.string.invoice_summary));
@@ -71,8 +79,21 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_name);
 
         tv_customer_id.setText(object.getCustomerID());
-        tv_customer_name.setText(object.getCustomerName());
+        tv_customer_name.setText(UrlBuilder.decodeString(object.getCustomerName()));
 
+        et_sales_cases = (EditText)findViewById(R.id.et_sales_cases);
+        et_sales_units = (EditText)findViewById(R.id.et_sales_units);
+        et_sales_amount = (EditText)findViewById(R.id.et_sales_amount);
+        tv_total_amount = (TextView)findViewById(R.id.tv_total_amount);
+
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+
+        if(db.checkData(db.CAPTURE_SALES_INVOICE,map)){
+            new loadData().execute();
+        }
         Button btn_complete_invoice = (Button)findViewById(R.id.btn_complete_invoice);
         btn_complete_invoice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +123,53 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         });
 
     }
+
+    public class loadData extends AsyncTask<Void,Void,Void>{
+        float case_sale = 0;
+        float unit_sale = 0;
+        float amount = 0;
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            map.put(db.KEY_ORG_CASE, "");
+            map.put(db.KEY_ORG_UNITS, "");
+            map.put(db.KEY_AMOUNT, "");
+
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+
+            Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+            }
+
+            do{
+                case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                totalamnt += amount;
+            }
+            while (cursor.moveToNext());
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            et_sales_cases.setText(String.valueOf(case_sale));
+            et_sales_units.setText(String.valueOf(unit_sale));
+            et_sales_amount.setText(String.valueOf(amount));
+            tv_total_amount.setText(String.valueOf(totalamnt));
+        }
+    }
+
 
     public class postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> returnList;

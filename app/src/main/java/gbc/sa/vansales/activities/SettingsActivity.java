@@ -20,12 +20,21 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.CustomerDelivery;
+import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.LoadDelivery;
+import gbc.sa.vansales.data.Messages;
+import gbc.sa.vansales.data.TripHeader;
+import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.models.OfflinePost;
 import gbc.sa.vansales.models.OfflineResponse;
 import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
@@ -45,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     ArrayList<OfflinePost> arrayList = new ArrayList<>();
     LoadingSpinner loadingSpinnerPost;
+    LoginActivity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +200,109 @@ public class SettingsActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         // show it
         alertDialog.show();
+    }
+
+    public void reloadData(View view){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
+        alertDialogBuilder.setTitle(getString(R.string.alert))
+                .setMessage(getString(R.string.data_loss_msg))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String tripID = Settings.getString(App.TRIP_ID);
+                        String username = Settings.getString(App.DRIVER);
+                        Settings.clearPreferenceStore();
+                        SettingsActivity.this.deleteDatabase("gbc.db");
+                        Settings.initialize(getApplicationContext());
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.getWritableDatabase();
+                        downloadData(tripID,username);
+
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
+    }
+
+    public void downloadData(final String tripId, final String username){
+        Log.e("Inside chain", "" + tripId);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_IS_BEGIN_DAY, "false");
+        map.put(db.KEY_IS_LOAD_VERIFIED, "false");
+        map.put(db.KEY_IS_END_DAY,"false");
+
+        db.addData(db.LOCK_FLAGS, map);
+
+
+        Chain chain = new Chain(new Chain.Link(){
+            @Override
+            public void run() {
+                go();
+            }
+        });
+
+        chain.setFail(new Chain.Link() {
+            @Override
+            public void run() throws Exception {
+                fail();
+            }
+        });
+
+        chain.add(new Chain.Link() {
+            @Override
+            public void run() {
+                TripHeader.load(SettingsActivity.this, tripId, db);
+                LoadDelivery.load(SettingsActivity.this, tripId, db);
+                ArticleHeaders.load(SettingsActivity.this, tripId, db);
+                CustomerHeaders.load(SettingsActivity.this, tripId, db);
+                VisitList.load(SettingsActivity.this, tripId, db);
+                Messages.load(SettingsActivity.this, username, db);
+                CustomerDelivery.load(SettingsActivity.this, tripId, db);
+                /*ArticleHeaders.loadData(getApplicationContext());
+                CustomerHeaders.loadData(getApplicationContext());*/
+            }
+        });
+
+        chain.add(new Chain.Link(){
+            @Override
+            public void run() {
+                /*TripHeader.load(LoginActivity.this,tripId, db);
+                LoadDelivery.load(LoginActivity.this,tripId, db);
+                ArticleHeaders.load(LoginActivity.this, tripId, db);
+                CustomerHeaders.load(LoginActivity.this, tripId, db);
+                VisitList.load(LoginActivity.this,tripId, db);
+                Messages.load(LoginActivity.this,username,db);*/
+                ArticleHeaders.loadData(getApplicationContext());
+                CustomerHeaders.loadData(getApplicationContext());
+            }
+        });
+
+        chain.start();
+
+    }
+
+    private void go() {
+        loadingSpinner.hide();
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void fail() {
+
+        if(loadingSpinner.isShowing()){
+            loadingSpinner.hide();
+            finish();
+        }
     }
 
     public class syncData extends AsyncTask<Void,Void,Void>{

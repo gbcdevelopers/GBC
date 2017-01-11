@@ -240,8 +240,8 @@ public class DashboardActivity extends AppCompatActivity
         HashMap<String,String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "true");
         if(db.checkData(db.LOCK_FLAGS,map)){
-            btnBDay.setEnabled(false);
-            btnBDay.setAlpha(.5f);
+            /*btnBDay.setEnabled(false);
+            btnBDay.setAlpha(.5f);*/
            // btnBDay.setVisibility(View.INVISIBLE);
         }
 
@@ -309,7 +309,7 @@ public class DashboardActivity extends AppCompatActivity
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
         beginTrip.setIconName(getString(R.string.begintrip));
         beginTrip.setIconImg(R.drawable.ic_begintrip);
-        beginTrip.setIsEnabled(!isBeginTripEnabled);
+        beginTrip.setIsEnabled(true);
         listDataHeader.add(beginTrip);
 
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();

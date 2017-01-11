@@ -157,7 +157,7 @@
             android:padding="@dimen/h3"
             android:background="@color/colorPrimary"
             android:textColor="@color/white"
-            android:onClick="clearData"
+            android:onClick="reloadData"
             android:text="@string/reload_data"/>
 
     </LinearLayout>

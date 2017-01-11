@@ -41,6 +41,10 @@ public class Chain {
 
     private class BladeRunner extends AsyncTask<Link, Void, Boolean> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
         protected Boolean doInBackground(Link... params) {
             for (Link link : params) {
                 try {

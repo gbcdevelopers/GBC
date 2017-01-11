@@ -72,6 +72,9 @@ public class App extends Application {
     public static final String LANGUAGE = "lang";
     public static final String IS_DATA_SYNCING = "isDataSync";
 
+    public static final String IS_LOGGED_ID = "isLoggedIn";
+    public static final String LOGIN_DATE = "loginDate";
+
     @Override
     public void onCreate() {
         super.onCreate();

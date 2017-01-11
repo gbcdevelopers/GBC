@@ -62,7 +62,7 @@ public class SalesFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) {
             if (workStarted) {
-                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+                /*String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
                 for (Sales sale : salesarrayList) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -80,7 +80,7 @@ public class SalesFragment extends Fragment {
                     map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                     map.put(db.KEY_ORDER_ID,purchaseNumber);
                     db.addData(db.CAPTURE_SALES_INVOICE, map);
-                }
+                }*/
                 Const.salesarrayList = salesarrayList;
             }
         }
@@ -117,7 +117,7 @@ public class SalesFragment extends Fragment {
         articles = ArticleHeaders.get();
         listSales = (ListView) viewmain.findViewById(R.id.list_sales);
         fab = (FloatingActionButton) viewmain.findViewById(R.id.fab);
-        fab.hide();
+        //fab.hide();
         new loadItems("");
         String strProductname[] = {"A", "B", "c", "D"};
         salesarrayList = new ArrayList<>();
@@ -154,6 +154,12 @@ public class SalesFragment extends Fragment {
                 ed_pcs_inv.setText(sales.getInv_piece());
                 ed_cases_inv.setEnabled(false);
                 ed_pcs_inv.setEnabled(false);
+                if(sales.getUom().equals(App.BOTTLES_UOM)){
+                    ed_cases.setEnabled(false);
+                }
+                else if(sales.getUom().equals(App.CASE_UOM)||sales.getUom().equals(App.CASE_UOM_NEW)){
+                    ed_pcs.setEnabled(false);
+                }
                 ed_cases.setText(sales.getCases());
                 ed_pcs.setText(sales.getPic());
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
@@ -193,7 +199,7 @@ public class SalesFragment extends Fragment {
                             Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                             strCase = "0";
                             sales.setCases(strCase);
-                        } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv) && Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
+                        } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
                             Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                             strpcs = "0";
                             sales.setPic(strpcs);
@@ -223,8 +229,28 @@ public class SalesFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CategoryListActivity.class);
-                getActivity().startActivity(intent);
+                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+                for (Sales sale : salesarrayList) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                    map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                    map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    map.put(db.KEY_MATERIAL_GROUP, "");
+                    map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                    map.put(db.KEY_ORG_CASE, sale.getCases());
+                    map.put(db.KEY_UOM,sale.getUom());
+                    map.put(db.KEY_ORG_UNITS, sale.getPic());
+                    map.put(db.KEY_AMOUNT, sale.getPrice());
+                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    map.put(db.KEY_ORDER_ID,purchaseNumber);
+                    db.addData(db.CAPTURE_SALES_INVOICE, map);
+                }
+                Const.salesarrayList = salesarrayList;
+
+                getActivity().finish();
             }
         });
         return viewmain;

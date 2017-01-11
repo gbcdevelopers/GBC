@@ -10,7 +10,7 @@
         android:background="@color/white"
         android:padding="@dimen/margin_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp">
 
         <LinearLayout
             android:layout_weight="1"
@@ -27,6 +27,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/item_code"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -45,6 +46,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/cases"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -58,6 +60,7 @@
         <LinearLayout
             android:layout_weight="1"
             android:weightSum="2"
+            android:layout_marginTop="@dimen/list_space"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp">
@@ -70,6 +73,7 @@
 
                 <TextView
                     android:layout_weight="1"
+                    android:textStyle="bold"
                     android:text="@string/description"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
@@ -89,6 +93,7 @@
                 <TextView
                     android:layout_weight="1"
                     android:text="@string/units"
+                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"/>
                 <TextView

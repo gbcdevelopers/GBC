@@ -90,13 +90,15 @@
 
 																<LinearLayout
 																				android:layout_width="match_parent"
+																				android:weightSum="5"
 																				android:layout_height="wrap_content"
 																				android:orientation="horizontal"
 																				android:padding="@dimen/h3"
 																				>
 
 																				<LinearLayout
-																								android:layout_width="wrap_content"
+																								android:layout_weight="2"
+																								android:layout_width="0dp"
 																								android:layout_height="wrap_content"
 																								android:orientation="vertical"
 																								>
@@ -136,6 +138,7 @@
 																												android:enabled="false"
 																												android:gravity="center|left"
 																												android:padding="@dimen/size_five"
+																												android:textAllCaps="true"
 																												android:text="@string/sales"
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
@@ -237,13 +240,14 @@
 																				</LinearLayout>
 
 																				<LinearLayout
-																								android:layout_width="wrap_content"
+																								android:layout_weight="1"
+																								android:layout_width="0dp"
 																								android:layout_height="wrap_content"
 																								android:orientation="vertical">
 
 																								<EditText
 																												android:id="@+id/editText2"
-																												android:layout_width="wrap_content"
+																												android:layout_width="match_parent"
 																												android:layout_height="wrap_content"
 																												android:background="@drawable/light_border"
 																												android:ellipsize="end"
@@ -254,9 +258,10 @@
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
-																												/>
+																												android:capitalize="none"/>
 
 																								<EditText
+																												android:id="@+id/et_sales_cases"
 																												android:layout_width="match_parent"
 																												android:layout_height="wrap_content"
 																												android:background="@drawable/light_border"
@@ -319,14 +324,15 @@
 																				</LinearLayout>
 
 																				<LinearLayout
-																								android:layout_width="wrap_content"
+																								android:layout_weight="1"
+																								android:layout_width="0dp"
 																								android:layout_height="wrap_content"
 																								android:orientation="vertical"
 																								>
 
 																								<EditText
 																												android:id="@+id/editText4"
-																												android:layout_width="wrap_content"
+																												android:layout_width="match_parent"
 																												android:layout_height="wrap_content"
 																												android:background="@drawable/light_border"
 																												android:ellipsize="end"
@@ -348,7 +354,7 @@
 																												android:padding="5dp"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
-																												/>
+																												android:id="@+id/et_sales_units"/>
 
 																								<EditText
 																												android:layout_width="match_parent"
@@ -400,7 +406,8 @@
 																				</LinearLayout>
 
 																				<LinearLayout
-																								android:layout_width="wrap_content"
+																								android:layout_weight="1"
+																								android:layout_width="0dp"
 																								android:layout_height="wrap_content"
 																								android:orientation="vertical"
 																								>
@@ -428,7 +435,8 @@
 																												android:inputType="number"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_sales_amount"/>
 
 																								<EditText
 																												android:layout_width="match_parent"
@@ -466,7 +474,7 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:padding="@dimen/size_five"
-																												android:text="12"
+																												android:text="0"
 																												android:textSize="@dimen/label_min"/>
 
 
@@ -483,8 +491,10 @@
 																												android:gravity="right|center"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12100"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/tv_total_amount"/>
 																				</LinearLayout>
+
 																</LinearLayout>
 												</android.support.v7.widget.CardView>
 								</ScrollView>

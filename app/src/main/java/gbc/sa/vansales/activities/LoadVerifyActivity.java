@@ -186,7 +186,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     //Getting old data
                     HashMap<String, String> oldData = new HashMap<>();
                     oldData.put(db.KEY_MATERIAL_NO, "");
-                    oldData.put(db.KEY_UOM,"");
+                    oldData.put(db.KEY_UOM_CASE,"");
                     oldData.put(db.KEY_ACTUAL_QTY_CASE,"");
                     oldData.put(db.KEY_RESERVED_QTY_CASE,"");
                     oldData.put(db.KEY_REMAINING_QTY_CASE,"");
@@ -209,7 +209,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     map.put(db.KEY_RESERVED_QTY_CASE,String.valueOf(reservedQtyCase));
                     map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(remainingQtyCase));
                     map.put(db.KEY_UOM_CASE, App.CASE_UOM);
-
                     //db.updateData(db.VAN_STOCK_ITEMS,map,filterOldData);
                 }
                 else{
@@ -234,7 +233,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     //Getting old data
                     HashMap<String, String> oldData = new HashMap<>();
                     oldData.put(db.KEY_MATERIAL_NO, "");
-                    oldData.put(db.KEY_UOM,"");
+                    oldData.put(db.KEY_UOM_UNIT,"");
                     oldData.put(db.KEY_ACTUAL_QTY_UNIT,"");
                     oldData.put(db.KEY_RESERVED_QTY_UNIT,"");
                     oldData.put(db.KEY_REMAINING_QTY_UNIT,"");

@@ -50,7 +50,8 @@ public class LoginActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         db = new DatabaseHandler(this);
         db.getWritableDatabase();
-
+        Settings.setString(App.IS_LOGGED_ID, "false");
+        Settings.setString(App.LOGIN_DATE, "");
         loadingSpinner = new LoadingSpinner(this);
 }
     public void login(View view){
@@ -64,18 +65,12 @@ public class LoginActivity extends Activity {
             Toast.makeText(this, R.string.enter_password, Toast.LENGTH_SHORT).show();
         } else {
             loadingSpinner.show();
-
             //Logic to Login the user
             //For development purpose hardcoding credentials
             //new LoginUser("E2000", "PASSWORD");
             if(Helpers.isNetworkAvailable(LoginActivity.this)){
                 this.username = id;
                 new LoginUser(id, password);
-
-                /*loadingSpinner.hide();
-                Intent intent = new Intent(this, DashboardActivity.class);
-                startActivity(intent);
-                finish();*/
             }
             else{
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
@@ -153,6 +148,8 @@ public class LoginActivity extends Activity {
                                 if(!checkTripID("GBC012000000004")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
                                     Settings.setString(TRIP_ID, "GBC012000000004");
+                                    Settings.setString(App.IS_LOGGED_ID,"true");
+                                    Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
                                     downloadData("GBC012000000004");
                                 }
@@ -211,6 +208,8 @@ public class LoginActivity extends Activity {
                         if(!checkTripID){
                             Settings.setString(App.IS_DATA_SYNCING,"false");
                             Settings.setString(TRIP_ID, this.returnList.get(2));
+                            Settings.setString(App.IS_LOGGED_ID,"true");
+                            Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
                             downloadData(this.returnList.get(2));
                             db.addLoginCredentials("E2000", "PASSWORD",Helpers.formatDate(new Date(),App.DATE_FORMAT));
                         }

@@ -81,10 +81,13 @@ public class BeginDayFragment extends Fragment {
     DatabaseHandler db;
     LoadingSpinner loadingSpinner;
     float lastValue = 0;
+    Button btn_continue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.activity_begin_day, container, false);
         db = new DatabaseHandler(getActivity());
+
         loadingSpinner = new LoadingSpinner(getActivity());
         salesDate = (TextView) view.findViewById(R.id.salesDate);
         time = (TextView) view.findViewById(R.id.time);
@@ -110,7 +113,8 @@ public class BeginDayFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Button btn_continue = (Button) view.findViewById(R.id.btnBack);
+        btn_continue = (Button) view.findViewById(R.id.btnBack);
+        setBeginDayVisibility();
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +124,18 @@ public class BeginDayFragment extends Fragment {
         salesDate.setEnabled(false);
         return view;
     }
+
+    private void setBeginDayVisibility() {
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_IS_BEGIN_DAY, "true");
+        if(db.checkData(db.LOCK_FLAGS,map)){
+            btn_continue.setEnabled(false);
+            btn_continue.setAlpha(.5f);
+            // btnBDay.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -142,20 +158,14 @@ public class BeginDayFragment extends Fragment {
         HashMap<String,String>filter = new HashMap<>();
         filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
 
-        final TextView lastOdometer = (TextView) promptsView
-                .findViewById(R.id.last_odometer);
-
-
         if(db.checkData(db.ODOMETER,filter)){
             Cursor cursor = db.getData(db.ODOMETER,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
-                lastOdometer.setText(getString(R.string.odometer_reading) + " : " + cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
                 lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
             }
         }
         else{
-            lastOdometer.setText(getString(R.string.odometer_reading) + " : " + "0");
         }
 
         final EditText userInput = (EditText) promptsView
@@ -240,6 +250,7 @@ public class BeginDayFragment extends Fragment {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
+            hideKeyboard();
             if(this.flag.equals("Y")){
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_BEGIN_DAY, "true");
