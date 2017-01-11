@@ -7,6 +7,10 @@ import gbc.sa.vansales.utils.Settings;
  */
 public class App extends Application {
 
+    public static final String AUTHORITY = "gbc.sa.vansales.provider";
+    public static final String ACCOUNT_TYPE = "gbc.sa.vansales";
+    public static final String ACCOUNT = "GBC";
+
     public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
     public static final int PORT = 8047;
@@ -66,6 +70,7 @@ public class App extends Application {
     public static final String DATA_NOT_POSTED = "N";
 
     public static final String LANGUAGE = "lang";
+    public static final String IS_DATA_SYNCING = "isDataSync";
 
     @Override
     public void onCreate() {

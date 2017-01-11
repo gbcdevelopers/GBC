@@ -497,7 +497,6 @@ public class IntegrationService extends IntentService {
                 String jsonString = getJSONString(r_entity);
                 data = unpack(jsonString,response);
                // JSONObject jsonObj = new JSONObject(jsonString);
-                Log.e("JSON Obj","" + jsonString);
             } else {
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
                 Log.e("Message", "Message" + response);

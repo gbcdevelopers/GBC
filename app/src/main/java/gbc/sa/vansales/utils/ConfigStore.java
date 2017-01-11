@@ -55,5 +55,11 @@ public class ConfigStore {
     public static final String CustomerDeliveryRequest_PR = "04";
 
 
+    //Connectivity Messages
+    public static final String WIFI_CONNECTED = "Wifi Enabled";
+    public static final String MOBILE_DATA_CONNECTED = "Mobile Data Enabled";
+    public static final String NO_CONNECTION = "Not connected to Internet";
+
+
 
 }
