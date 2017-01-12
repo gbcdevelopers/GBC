@@ -66,10 +66,10 @@ public class JourneyPlanBadgeAdapter extends BaseAdapter implements Filterable {
         TextViewWithLabel customer_id = (TextViewWithLabel)convertView.findViewById(R.id.customer_id);
         TextViewWithLabel customer_name = (TextViewWithLabel)convertView.findViewById(R.id.customer_name);
         TextViewWithLabel customer_address = (TextViewWithLabel)convertView.findViewById(R.id.customer_address);
-        ImageView saleflag = (ImageView)convertView.findViewById(R.id.img_sale);
+        ImageView saleflag = (ImageView)convertView.findViewById(R.id.img_sales);
         ImageView deliveryflag = (ImageView)convertView.findViewById(R.id.img_delivery);
         ImageView collectionflag = (ImageView)convertView.findViewById(R.id.img_collection);
-        ImageView returnsflag = (ImageView)convertView.findViewById(R.id.img_returns);
+        ImageView returnsflag = (ImageView)convertView.findViewById(R.id.img_merchandize);
 
         customer_id.setText(customer.getCustomerID());
         customer_name.setText(customer.getCustomerName());
@@ -99,7 +99,7 @@ public class JourneyPlanBadgeAdapter extends BaseAdapter implements Filterable {
             collectionflag.setVisibility(View.INVISIBLE);
         }
 
-        if(customer.isReturns()){
+        if(customer.isMerchandize()){
             returnsflag.setVisibility(View.VISIBLE);
             returnsflag.setImageResource(R.drawable.return_icon);
         }

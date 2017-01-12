@@ -212,14 +212,14 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String tripID = Settings.getString(App.TRIP_ID);
+                       /* String tripID = Settings.getString(App.TRIP_ID);
                         String username = Settings.getString(App.DRIVER);
                         Settings.clearPreferenceStore();
                         SettingsActivity.this.deleteDatabase("gbc.db");
                         Settings.initialize(getApplicationContext());
                         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                         db.getWritableDatabase();
-                        downloadData(tripID,username);
+                        downloadData(tripID,username);*/
 
                     }
                 })
@@ -293,10 +293,20 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void go() {
-        loadingSpinner.hide();
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        finish();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                    Intent intent = new Intent(SettingsActivity.this, DashboardActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        }, 5000);
+
     }
 
     private void fail() {

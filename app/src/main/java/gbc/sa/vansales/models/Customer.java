@@ -12,10 +12,11 @@ public class Customer implements Parcelable{
     private String credit_limit;
     private String credit_days;
     private String credit_available;
+    private boolean order;
     private boolean sale;
     private boolean delivery;
     private boolean collection;
-    private boolean returns;
+    private boolean merchandize;
 
     private boolean isCredit;
 
@@ -94,11 +95,18 @@ public class Customer implements Parcelable{
         this.collection = collection;
     }
 
-    public boolean isReturns(){
-        return returns;
+    public boolean isMerchandize(){
+        return merchandize;
     }
-    public void setReturns(boolean returns){
-        this.returns = returns;
+    public void setMerchandize(boolean merchandize){
+        this.merchandize = merchandize;
+    }
+
+    public boolean isOrder(){
+        return order;
+    }
+    public void setOrder(boolean order){
+        this.order = order;
     }
 
 
@@ -117,7 +125,8 @@ public class Customer implements Parcelable{
             customer.sale = source.readByte() !=0;
             customer.delivery = source.readByte()!=0;
             customer.collection = source.readByte()!=0;
-            customer.returns = source.readByte()!=0;
+            customer.merchandize = source.readByte()!=0;
+            customer.order = source.readByte()!=0;
 
             return customer;
         }
@@ -142,6 +151,7 @@ public class Customer implements Parcelable{
         parcel.writeByte((byte) (sale ? 1 : 0));
         parcel.writeByte((byte)(delivery ? 1:0));
         parcel.writeByte((byte)(collection ? 1:0));
-        parcel.writeByte((byte)(returns ? 1:0));
+        parcel.writeByte((byte)(merchandize ? 1:0));
+        parcel.writeByte((byte)(order ? 1:0));
     }
 }

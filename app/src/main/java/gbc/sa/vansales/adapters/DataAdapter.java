@@ -70,22 +70,12 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             holder.customer_id = (TextViewWithLabel) view.findViewById(R.id.customer_id);
             holder.customer_name = (TextViewWithLabel) view.findViewById(R.id.customer_name);
             holder.customer_address = (TextViewWithLabel) view.findViewById(R.id.customer_address);
-            holder.saleflag = (ImageView) view.findViewById(R.id.img_sale);
+            holder.saleflag = (ImageView) view.findViewById(R.id.img_sales);
             holder.deliveryflag = (ImageView) view.findViewById(R.id.img_delivery);
             holder.collectionflag = (ImageView) view.findViewById(R.id.img_collection);
-            holder.returnsflag = (ImageView) view.findViewById(R.id.img_returns);
-//            holder.ll_item = (LinearLayout) view.findViewById(R.id.ll_item);
-//            holder.check_selected = (CheckBox) view.findViewById(R.id.check_selected);
+            holder.merchandizeFlag = (ImageView) view.findViewById(R.id.img_merchandize);
+            holder.orderFlag = (ImageView) view.findViewById(R.id.img_order);
 
-
-
-//            TextViewWithLabel customer_id = (TextViewWithLabel)convertView.findViewById(R.id.customer_id);
-//            TextViewWithLabel customer_name = (TextViewWithLabel)convertView.findViewById(R.id.customer_name);
-//            TextViewWithLabel customer_address = (TextViewWithLabel)convertView.findViewById(R.id.customer_address);
-//            ImageView saleflag = (ImageView)convertView.findViewById(R.id.img_sale);
-//            ImageView deliveryflag = (ImageView)convertView.findViewById(R.id.img_delivery);
-//            ImageView collectionflag = (ImageView)convertView.findViewById(R.id.img_collection);
-//            ImageView returnsflag = (ImageView)convertView.findViewById(R.id.img_returns);
 
 
             view.setTag(holder);
@@ -104,16 +94,21 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         else{
             holder.horizontal_view.setBackgroundColor(Color.BLUE);
         }
-        /*if(i==2 || i==5)
-        {
-            holder.horizontal_view.setBackgroundColor(Color.RED);
+        if(!customer.isOrder()){
+            holder.orderFlag.setAlpha(.5f);
         }
-        else {
-            holder.horizontal_view.setBackgroundColor(Color.BLUE);
-        }*/
-
-
-
+        if(!customer.isSale()){
+            holder.saleflag.setAlpha(.5f);
+        }
+        if(!customer.isCollection()){
+            holder.collectionflag.setAlpha(.5f);
+        }
+        if(!customer.isDelivery()){
+            holder.deliveryflag.setAlpha(.5f);
+        }
+        if(!customer.isMerchandize()){
+            holder.merchandizeFlag.setAlpha(.5f);
+        }
 
         return view;
     }
@@ -175,7 +170,8 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         ImageView saleflag;
         ImageView deliveryflag;
         ImageView collectionflag;
-        ImageView returnsflag;
+        ImageView merchandizeFlag;
+        ImageView orderFlag;
         TextViewWithLabel customer_id;
         TextViewWithLabel customer_name;
         TextViewWithLabel customer_address;

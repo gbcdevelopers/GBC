@@ -53,6 +53,7 @@ public class BeginTripActivity extends AppCompatActivity  {
     ImageView iv_refresh;
 
     FloatingActionButton floatingActionButton;
+    FloatingActionButton addCustomer;
     int tabPosition;
     DatabaseHandler db = new DatabaseHandler(this);
 
@@ -70,7 +71,9 @@ public class BeginTripActivity extends AppCompatActivity  {
         loadingSpinner = new LoadingSpinner(this);
         new LoadTripActivityData();
         floatingActionButton=(FloatingActionButton)findViewById(R.id.float_map);
+        addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
         floatingActionButton.setVisibility(View.GONE);
+        addCustomer.setVisibility(View.GONE);
 
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);

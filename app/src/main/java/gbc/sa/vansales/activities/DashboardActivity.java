@@ -91,6 +91,8 @@ public class DashboardActivity extends AppCompatActivity
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDrawerLayout.closeDrawers();
+                drawer.closeDrawers();
                 Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }

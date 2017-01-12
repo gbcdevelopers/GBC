@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.utils.DatabaseHandler;
 public class ManageInventory extends AppCompatActivity {
@@ -81,6 +82,7 @@ public class ManageInventory extends AppCompatActivity {
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "");
         map.put(db.KEY_IS_LOAD_VERIFIED, "");
+        map.put(db.KEY_IS_UNLOAD,"");
         map.put(db.KEY_IS_END_DAY, "");
         HashMap<String, String> filter = new HashMap<>();
         Cursor cursor = db.getData(db.LOCK_FLAGS, map, filter);
@@ -90,6 +92,7 @@ public class ManageInventory extends AppCompatActivity {
         boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
         boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
         boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
+        boolean isUnloadenabled = setUnloadVisibility();
         if(isBeginTripEnabled){
             if (!isloadVerifiedEnabled) {
                 loadRequest.setEnabled(false);
@@ -97,11 +100,23 @@ public class ManageInventory extends AppCompatActivity {
                 vanStock.setEnabled(false);
                 vanStock.setAlpha(.5f);
             }
-            if (!isEndDayEnabled) {
+            if(!isUnloadenabled){
                 unload.setEnabled(false);
                 unload.setAlpha(.5f);
             }
         }
 
+    }
+    private boolean setUnloadVisibility(){
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_ORDER_ID,"");
+        map.put(db.KEY_PURCHASE_NUMBER,"");
+        HashMap<String,String>filter = new HashMap<>();
+
+        Cursor preSaleCount = db.getData(db.ORDER_REQUEST,map,filter);
+        Cursor saleCount = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+
+        boolean canActivate = preSaleCount.getCount()>0||saleCount.getCount()>0?true:false;
+        return canActivate;
     }
 }

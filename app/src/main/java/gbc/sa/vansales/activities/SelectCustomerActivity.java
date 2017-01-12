@@ -300,7 +300,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     customer.setCustomerAddress("");
                 }
                 HashMap<String,String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(db.checkData(db.CUSTOMER_CREDIT,map)){
                     Log.e("Credit Exist","Credit Exist");
                     customer.setPaymentMethod("Credit");
@@ -308,6 +308,12 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 else{
                     customer.setPaymentMethod("Cash");
                 }
+                customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
+                customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
+                customer.setCollection(false);
+                customer.setMerchandize(false);
+                customer.setDelivery(false);
+
                 data.add(customer);
             }
             while (cursor.moveToNext());
@@ -318,10 +324,9 @@ public class SelectCustomerActivity extends AppCompatActivity {
         else{
             dataArrayList.clear();
             ArrayList<Customer> data = new ArrayList<>();
-
             do {
                 Customer customer = new Customer();
-                Log.e("Cursor count","" + cursor.getCount());
+                Log.e("Cursor count", "" + cursor.getCount());
                 customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
@@ -339,9 +344,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     Log.e("Credit Exist", "Credit Exist");
                     customer.setPaymentMethod("Credit");
                 }
-                else{
-                     customer.setPaymentMethod("Cash");
+                else {
+                    customer.setPaymentMethod("Cash");
                 }
+                customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
+                customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE,map));
+                customer.setCollection(false);
+                customer.setMerchandize(false);
+                customer.setDelivery(false);
                 data.add(customer);
             }
             while (cursor.moveToNext());
@@ -368,6 +378,17 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 map.put(db.KEY_EXEC_DATE, "");
                 map.put(db.KEY_DRIVER, "");
                 map.put(db.KEY_VP_TYPE, "");
+                map.put(db.KEY_IS_ORDER_CAPTURED, "");
+                map.put(db.KEY_IS_DELIVERY_CAPTURED, "");
+                map.put(db.KEY_IS_SALES_CAPTURED, "");
+                map.put(db.KEY_IS_COLLECTION_CAPTURED, "");
+                map.put(db.KEY_IS_MERCHANDIZE_CAPTURED, "");
+                map.put(db.KEY_IS_ORDER_POSTED, "");
+                map.put(db.KEY_IS_DELIVERY_POSTED, "");
+                map.put(db.KEY_IS_SALES_POSTED, "");
+                map.put(db.KEY_IS_COLLECTION_POSTED, "");
+                map.put(db.KEY_IS_MERCHANDIZE_POSTED, "");
+                map.put(db.KEY_IS_VISITED, "");
                 HashMap<String, String> filters = new HashMap<>();
                 filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 // filters.put(db.KEY_IS_VERIFIED,"false");
