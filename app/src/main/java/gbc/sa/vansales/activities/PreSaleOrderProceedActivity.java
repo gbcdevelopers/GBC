@@ -89,9 +89,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         View v = (View)findViewById(R.id.inc_common_header);
         tv_header=(TextView)findViewById(R.id.tv_top_header);
         tv_header.setVisibility(View.VISIBLE);
-        tv_header.setText("Pre-Sales Order");
-
-
+        tv_header.setText(getString(R.string.presalesorder));
 //        v.setVisibility(View.INVISIBLE);
         tv_date = (TextView) findViewById(R.id.tv_date);
         tv_date.setText(Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
@@ -184,7 +182,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Array List size Foo", "" + arraylist.size());
+                String purchaseNum = Helpers.generateNumber(db, ConfigStore.OrderRequest_PR_Type);
                 for(OrderRequest loadRequest:arraylist){
                     try{
                         if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
@@ -205,14 +203,16 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         map.put(db.KEY_UNIT,loadRequest.getUnits());
                         map.put(db.KEY_UOM,loadRequest.getUom());
                         map.put(db.KEY_PRICE,loadRequest.getPrice());
-                        map.put(db.KEY_IS_POSTED,"N");
+                        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                         map.put(db.KEY_IS_PRINTED, "");
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_ORDER_ID,purchaseNum);
+                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
                         orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
                         if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
                             db.addData(db.ORDER_REQUEST,map);
                         }
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -236,10 +236,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        dialog.dismiss();
                     }
                 });
 
@@ -418,7 +415,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             map.put(db.KEY_PRICE ,"");
 
             HashMap<String,String> filter = new HashMap<>();
-            filter.put(db.KEY_ORDER_ID,this.orderId);
+           // filter.put(db.KEY_ORDER_ID, this.orderId);
+            filter.put(db.KEY_PURCHASE_NUMBER, this.orderId);
             Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
@@ -455,8 +453,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
 
     public class postData extends AsyncTask<Void, Void, Void>{
         private ArrayList<String>returnList;
-
-        String orderId = "";
+        private String orderId = "";
+        private String[] tokens = new String[2];
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
@@ -465,36 +463,35 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
             this.orderId = postData();
+            this.tokens = orderId.split(",");
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
 
             Log.e("Order id", "" + this.orderId);
+            if(this.tokens[0].toString().equals(this.tokens[1].toString())){
             for(OrderRequest loadRequest:arraylist){
                 HashMap<String,String> map = new HashMap<String, String>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_ORDER_ID,this.orderId);
-                map.put(db.KEY_IS_POSTED,"Y");
+                    map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    map.put(db.KEY_ORDER_ID,tokens[0].toString());
 
                 HashMap<String,String> filter = new HashMap<>();
-               // filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                filter.put(db.KEY_IS_POSTED,"N");
-
+                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                 db.updateData(db.ORDER_REQUEST, map, filter);
             }
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
-            }
-            if(this.orderId.isEmpty()||this.orderId.equals("")||this.orderId==null){
-                Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
-            }
-            else{
-                //Logic to go Back
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
-                alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request " + this.orderId + " has been created")
+                alertDialogBuilder.setTitle(getString(R.string.message))
+                        .setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                       // .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
@@ -507,20 +504,58 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
                 alertDialog.show();
-               // Toast.makeText(getApplicationContext(),"Request " + this.orderId + " has been created",Toast.LENGTH_SHORT ).show();
             }
+            else{
+                for (OrderRequest loadRequest : arraylist) {
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                    map.put(db.KEY_ORDER_ID,tokens[0].toString());
 
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
 
-            Intent intent=new Intent(PreSaleOrderProceedActivity.this,PreSaleOrderActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+                    db.updateData(db.ORDER_REQUEST, map, filter);
+                }
 
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            if(this.orderId.isEmpty()||this.orderId.equals("")||this.orderId==null){
+                Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+            }
+                else if(this.orderId.contains("Error")){
+                    Toast.makeText(getApplicationContext(), this.orderId.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
+                }
+            else{
+                //Logic to go Back
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
+                alertDialogBuilder.setTitle("Message")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                            //.setMessage("Request " + tokens[0].toString() + " has been created")
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+                }
+            }
         }
     }
-
     private String postData(){
         String orderID = "";
+        String purchaseNumber = "";
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.CustomerOrderRequestFunction);
@@ -534,8 +569,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             map.put("Division", Settings.getString(App.DIVISION));
             map.put("OrderValue", String.valueOf(orderTotalValue));
             map.put("Currency", "SAR");
-            map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
-
+           // map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.LoadRequest_PR_Type));
             JSONArray deepEntity = new JSONArray();
 
             HashMap<String, String> itemMap = new HashMap<>();
@@ -546,14 +580,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             itemMap.put(db.KEY_UNIT,"");
             itemMap.put(db.KEY_UOM,"");
             itemMap.put(db.KEY_PRICE,"");
-
+            itemMap.put(db.KEY_ORDER_ID,"");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED,"N");
-
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             Cursor cursor = db.getData(db.ORDER_REQUEST,itemMap,filter);
             Log.e("Cursor count","" + cursor.getCount());
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
+                map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do{
                     if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
@@ -591,10 +626,9 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 while (cursor.moveToNext());
             }
             orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderID;
+        return orderID + "," + purchaseNumber;
     }
 }

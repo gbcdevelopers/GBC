@@ -48,6 +48,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             // get all UI view
             holder = new ViewHolder();
             holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
+            holder.itemCode = (TextView)convertView.findViewById(R.id.tv_item);
             holder.itemName = (TextView) convertView.findViewById(R.id.tvItemName);
             holder.cases = (EditText) convertView.findViewById(R.id.tvCases);
             holder.units = (EditText) convertView.findViewById(R.id.tvUnit);
@@ -60,7 +61,8 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             holder = (ViewHolder) convertView.getTag();
         }
         final LoadRequest loadRequest = loadRequestList.get(pos);
-        holder.itemName.setText(StringUtils.stripStart(loadRequest.getMaterialNo(), "0") + " - " + loadRequest.getItemName());
+        holder.itemCode.setText(StringUtils.stripStart(loadRequest.getMaterialNo(), "0"));
+        holder.itemName.setText(loadRequest.getItemName());
 
         /*else if(loadRequestList.get(pos).getUom().equals(App.BOTTLES_UOM)){
             holder.cases.setEnabled(false);
@@ -116,6 +118,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
     }
 
     public class ViewHolder {
+        TextView itemCode;
         TextView itemName;
         EditText cases;
         EditText units;
