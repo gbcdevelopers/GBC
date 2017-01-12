@@ -133,7 +133,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         final EditText et_quantity_case = (EditText)dialog.findViewById(R.id.et_quantitycs_alert_variance);
         final EditText et_quantity_unit = (EditText)dialog.findViewById(R.id.et_quantitybt_alert_variance);
 
-        tv_item_code.setText(loadSummaryList.get(position).getItemCode());
+        tv_item_code.setText(StringUtils.stripStart(loadSummaryList.get(position).getMaterialNo(), "0"));
         tv_item_description.setText(loadSummaryList.get(position).getItemDescription());
         et_quantity_case.setText(loadSummaryList.get(position).getQuantityCases());
         et_quantity_unit.setText(loadSummaryList.get(position).getQuantityUnits());

@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.App;
@@ -59,7 +61,7 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
             holder = (ViewHolder) convertView.getTag();
         }
         final OrderRequest loadRequest = loadRequestList.get(pos);
-        holder.itemName.setText(loadRequest.getItemName());
+        holder.itemName.setText(StringUtils.stripStart(loadRequest.getMaterialNo(), "0") + " - " + loadRequest.getItemName());
         holder.casestextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

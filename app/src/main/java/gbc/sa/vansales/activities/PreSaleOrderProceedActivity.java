@@ -101,6 +101,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         fb_edit = (FloatingActionButton) findViewById(R.id.fab_edit);
         loadingSpinner = new LoadingSpinner(this);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+        iv_back.setVisibility(View.VISIBLE);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,6 +182,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         map.put(db.KEY_IS_PRINTED, "");
                         map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                         map.put(db.KEY_ORDER_ID,purchaseNum);
+                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
                         orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
                         if (Integer.parseInt(loadRequest.getCases()) > 0 || Integer.parseInt(loadRequest.getUnits()) > 0) {
                             db.addData(db.ORDER_REQUEST, map);
@@ -319,7 +321,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             map.put(db.KEY_UOM, "");
             map.put(db.KEY_PRICE, "");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_ORDER_ID, this.orderId);
+           // filter.put(db.KEY_ORDER_ID, this.orderId);
+            filter.put(db.KEY_PURCHASE_NUMBER, this.orderId);
             Cursor cursor = db.getData(db.ORDER_REQUEST, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -376,7 +379,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.ORDER_REQUEST, map, filter);
                 }
                 if(loadingSpinner.isShowing()){
@@ -384,7 +388,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.message))
-                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        .setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                       // .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
@@ -409,7 +414,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
 
                     db.updateData(db.ORDER_REQUEST, map, filter);
                 }
@@ -426,7 +432,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 else{
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
                     alertDialogBuilder.setTitle("Message")
-                            .setMessage("Request " + tokens[0].toString() + " has been created")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                            //.setMessage("Request " + tokens[0].toString() + " has been created")
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override

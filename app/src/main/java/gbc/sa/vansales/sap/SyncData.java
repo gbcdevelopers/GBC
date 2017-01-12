@@ -44,9 +44,8 @@ public class SyncData extends IntentService {
     }
 
     public void syncData(){
-        Log.e("going for sync","going for sync");
         generateBatch(ConfigStore.LoadRequestFunction);
-        generateBatch(ConfigStore.CustomerOrderRequestFunction+"O");
+       // generateBatch(ConfigStore.CustomerOrderRequestFunction+"O");
         new syncData().execute();
     }
 

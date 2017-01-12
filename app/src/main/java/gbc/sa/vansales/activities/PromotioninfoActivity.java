@@ -221,8 +221,10 @@ public class PromotioninfoActivity extends AppCompatActivity {
             map.put(db.KEY_UOM, "");
             map.put(db.KEY_ORG_UNITS, "");
             map.put(db.KEY_AMOUNT, "");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED, "N");
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -248,6 +250,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
                     filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
                 }
 
@@ -283,6 +286,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
                     filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
                 }
 
@@ -299,7 +303,8 @@ public class PromotioninfoActivity extends AppCompatActivity {
                 else{
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
                     alertDialogBuilder.setTitle("Message")
-                            .setMessage("Request " + tokens[0].toString() + " has been created")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                           // .setMessage("Request " + tokens[0].toString() + " has been created")
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override

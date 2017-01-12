@@ -75,6 +75,9 @@ public class App extends Application {
     public static final String IS_LOGGED_ID = "isLoggedIn";
     public static final String LOGIN_DATE = "loginDate";
 
+    public static final String IS_COMPLETE = "true";
+    public static final String IS_NOT_COMPLETE = "false";
+
     @Override
     public void onCreate() {
         super.onCreate();

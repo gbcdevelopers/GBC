@@ -101,6 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    Settings.setString(App.IS_LOGGED_ID,"true");
                     Settings.setString(App.LANGUAGE, "ar");
                     AppController.changeLanguage(getBaseContext(), "ar");
                     Handler handler = new Handler();
@@ -115,6 +116,7 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     }, 2000);
                 } else {
+                    Settings.setString(App.IS_LOGGED_ID,"true");
                     Settings.setString(App.LANGUAGE, "en");
                     AppController.changeLanguage(getBaseContext(), "en");
                     Handler handler = new Handler();

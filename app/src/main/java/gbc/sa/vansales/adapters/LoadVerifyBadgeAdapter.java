@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class LoadVerifyBadgeAdapter extends ArrayAdapter<LoadSummary> {
         TextView quantity_cs = (TextView)convertView.findViewById(R.id.lbl_quantity_cases);
         TextView quantity_bt = (TextView)convertView.findViewById(R.id.lbl_quantity_units);*/
 
-        holder.item_code.setText(loadSummary.getItemCode());
+        holder.item_code.setText(StringUtils.stripStart(loadSummary.getMaterialNo(), "0"));
         holder.item_description.setText(loadSummary.getItemDescription());
         holder.quantity_cases.setText(loadSummary.getQuantityCases());
         holder.quantity_units.setText(loadSummary.getQuantityUnits());

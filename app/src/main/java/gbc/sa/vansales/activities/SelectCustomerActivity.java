@@ -62,6 +62,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
     EditText et_search;
     int tab_position;
     FloatingActionButton floatButton;
+    FloatingActionButton addCustomer;
     public static final int MY_PERMISSIONS_LOCATION = 1;
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<CustomerHeader> customers = new ArrayList<>();
@@ -84,6 +85,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         floatButton = (FloatingActionButton) findViewById(R.id.float_map);
+        addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText(getString(R.string.select_customer));
@@ -129,6 +131,13 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     Intent intent = new Intent(SelectCustomerActivity.this, CustomerOperationsMapActivity.class);
                     startActivity(intent);
                 }
+            }
+        });
+        addCustomer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SelectCustomerActivity.this, AddCustomerActivity.class);
+                startActivity(intent);
             }
         });
         et_search = (EditText) findViewById(R.id.et_search_customer);

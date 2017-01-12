@@ -246,6 +246,7 @@ public class SalesFragment extends Fragment {
                     map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                     map.put(db.KEY_ORDER_ID,purchaseNumber);
+                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
                     db.addData(db.CAPTURE_SALES_INVOICE, map);
                 }
                 Const.salesarrayList = salesarrayList;

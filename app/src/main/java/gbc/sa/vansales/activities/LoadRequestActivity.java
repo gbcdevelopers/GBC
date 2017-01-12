@@ -116,6 +116,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                         map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                         map.put(db.KEY_IS_PRINTED, "");
                         map.put(db.KEY_ORDER_ID,purchaseNum);
+                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
                         orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
                         if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
                             db.addData(db.LOAD_REQUEST,map);
@@ -383,7 +384,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                     filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                   // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.LOAD_REQUEST, map, filter);
                 }
                 if(loadingSpinner.isShowing()){
@@ -391,7 +393,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        .setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                        //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
@@ -416,7 +419,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                     filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                    filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                    filter.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.LOAD_REQUEST, map, filter);
                 }
                 if(loadingSpinner.isShowing()){
@@ -431,7 +435,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 else{
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
                     alertDialogBuilder.setTitle("Message")
-                            .setMessage("Request " + tokens[0].toString() + " has been created")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override

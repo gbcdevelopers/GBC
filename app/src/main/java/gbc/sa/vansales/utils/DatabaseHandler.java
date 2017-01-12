@@ -207,6 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //User Flags
     public static final String KEY_IS_BEGIN_DAY = "isBeginDay";
     public static final String KEY_IS_LOAD_VERIFIED = "isLoadVerified";
+    public static final String KEY_IS_UNLOAD = "isUnload";
     public static final String KEY_IS_END_DAY = "isEndDay";
     //Messages
     public static final String KEY_STRUCTURE = "structure";
@@ -223,6 +224,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_UOM_UNIT = "uomUnit";
     //Odometer
     public static final String KEY_ODOMETER_VALUE = "odometerValue";
+
+    //Customer Activities
+    public static final String KEY_IS_ORDER_CAPTURED = "isOrderCaptured";
+    public static final String KEY_IS_DELIVERY_CAPTURED = "isDeliveryCaptured";
+    public static final String KEY_IS_SALES_CAPTURED = "isSalesCaptured";
+    public static final String KEY_IS_COLLECTION_CAPTURED = "isCollectionCaptured";
+    public static final String KEY_IS_MERCHANDIZE_CAPTURED = "isMerchandizeCaptured";
+    public static final String KEY_IS_ORDER_POSTED = "isOrderPosted";
+    public static final String KEY_IS_DELIVERY_POSTED = "isDeliveryPosted";
+    public static final String KEY_IS_SALES_POSTED = "isSalesPosted";
+    public static final String KEY_IS_COLLECTION_POSTED = "isCollectionPosted";
+    public static final String KEY_IS_MERCHANDIZE_POSTED = "isMerchandizePosted";
+    public static final String KEY_IS_VISITED = "isVisited";
+
+
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -245,6 +261,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_EXEC_DATE + " TEXT,"
                 + KEY_DRIVER + " TEXT,"
+                + KEY_IS_ORDER_CAPTURED + " TEXT,"
+                + KEY_IS_DELIVERY_CAPTURED + " TEXT,"
+                + KEY_IS_SALES_CAPTURED + " TEXT,"
+                + KEY_IS_COLLECTION_CAPTURED + " TEXT,"
+                + KEY_IS_MERCHANDIZE_CAPTURED + " TEXT,"
+                + KEY_IS_ORDER_POSTED + " TEXT,"
+                + KEY_IS_DELIVERY_POSTED + " TEXT,"
+                + KEY_IS_SALES_POSTED + " TEXT,"
+                + KEY_IS_COLLECTION_POSTED + " TEXT,"
+                + KEY_IS_MERCHANDIZE_POSTED + " TEXT,"
+                + KEY_IS_VISITED + " TEXT,"
                 + KEY_VP_TYPE + " TEXT " + ")";
         String TABLE_TRIP_HEADER = "CREATE TABLE " + TRIP_HEADER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -526,6 +553,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TRIP_ID + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_ITEM_CATEGORY + " TEXT,"
                 + KEY_MATERIAL_NO + " TEXT,"
@@ -550,6 +578,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_UOM + " TEXT,"
                 + KEY_PRICE + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
         String TABLE_ORDER_REQUEST = "CREATE TABLE " + ORDER_REQUEST + "("
@@ -558,6 +587,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TRIP_ID + " TEXT,"
                 + KEY_DATE + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_MATERIAL_DESC1 + " TEXT,"
                 + KEY_MATERIAL_NO + " TEXT,"
@@ -579,6 +609,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_IS_BEGIN_DAY + " TEXT,"
                 + KEY_IS_LOAD_VERIFIED + " TEXT,"
+                + KEY_IS_UNLOAD + " TEXT,"
                 + KEY_IS_END_DAY + " TEXT " + ")";
         String TABLE_MESSAGES = "CREATE TABLE " + MESSAGES + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"

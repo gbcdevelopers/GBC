@@ -361,6 +361,11 @@
 												android:parentActivityName=".activities.CustomerOperationsActivity"
 												android:screenOrientation="portrait"/>
 								<activity
+												android:name=".activities.AddCustomerActivity"
+												android:label="@string/add_customer"
+												android:parentActivityName=".activities.CustomerOperationsActivity"
+												android:screenOrientation="portrait"/>
+								<activity
 												android:name=".activities.InformationsActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"

@@ -307,6 +307,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             for(int i=0;i<dataNew.size();i++){
                 LoadSummary loadSummary = new LoadSummary();
                 loadSummary.setItemCode(dataNew.get(i).getItemCode());
+                loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
                 loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
                 if(dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode()))
                 {

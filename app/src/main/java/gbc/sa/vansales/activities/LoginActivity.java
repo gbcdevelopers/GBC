@@ -50,6 +50,14 @@ public class LoginActivity extends Activity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         db = new DatabaseHandler(this);
         db.getWritableDatabase();
+
+        if( Boolean.parseBoolean(Settings.getString(App.IS_LOGGED_ID))){
+            Settings.setString(App.IS_LOGGED_ID, "false");
+            Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+            startActivityForResult(intent, 0);
+            finish();
+            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+        }
         Settings.setString(App.IS_LOGGED_ID, "false");
         Settings.setString(App.LOGIN_DATE, "");
         loadingSpinner = new LoadingSpinner(this);
@@ -261,10 +269,10 @@ public class LoginActivity extends Activity {
         Log.e("Inside chain", "" + tripId);
 
         HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_IS_BEGIN_DAY, "false");
-        map.put(db.KEY_IS_LOAD_VERIFIED, "false");
-        map.put(db.KEY_IS_END_DAY,"false");
-
+        map.put(db.KEY_IS_BEGIN_DAY, App.IS_NOT_COMPLETE);
+        map.put(db.KEY_IS_LOAD_VERIFIED, App.IS_NOT_COMPLETE);
+        map.put(db.KEY_IS_END_DAY,App.IS_NOT_COMPLETE);
+        map.put(db.KEY_IS_UNLOAD,App.IS_NOT_COMPLETE);
         db.addData(db.LOCK_FLAGS, map);
 
 

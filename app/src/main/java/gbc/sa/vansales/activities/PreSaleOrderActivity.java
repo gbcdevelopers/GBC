@@ -153,6 +153,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             HashMap<String,String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
             map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
             map.put(db.KEY_DATE,"");
 
             HashMap<String,String> filter = new HashMap<>();
@@ -187,6 +188,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             HashMap<String,String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
             map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
             map.put(db.KEY_DATE,"");
 
             HashMap<String,String> filter = new HashMap<>();
@@ -217,7 +219,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         Log.e("Cursor","" + cursor.getCount());
         do{
             OrderList orderList = new OrderList();
-            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
             Log.e("ORDER","" + orderList.getOrderId());
             if(!temp.contains(orderList.getOrderId())){
@@ -236,7 +239,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         Log.e("Cursor","" + cursor.getCount());
         do{
             OrderList orderList = new OrderList();
-            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
             Log.e("ORDER","" + orderList.getOrderId());
             if(!temp.contains(orderList.getOrderId())){

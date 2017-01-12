@@ -291,6 +291,18 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_DRIVER,object.get("Driver1").toString());
                         params.put(db.KEY_VP_TYPE,object.get("Vptype").toString());
 
+                        params.put(db.KEY_IS_DELIVERY_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_ORDER_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_SALES_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_COLLECTION_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_MERCHANDIZE_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_VISITED,App.IS_NOT_COMPLETE);
+
+                        params.put(db.KEY_IS_DELIVERY_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_ORDER_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_SALES_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_COLLECTION_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_MERCHANDIZE_POSTED,App.DATA_NOT_POSTED);
                         db.addData(db.VISIT_LIST, params);
                     }
                     catch (Exception e){

@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.App;
@@ -58,7 +60,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             holder = (ViewHolder) convertView.getTag();
         }
         final LoadRequest loadRequest = loadRequestList.get(pos);
-        holder.itemName.setText(loadRequest.getItemName());
+        holder.itemName.setText(StringUtils.stripStart(loadRequest.getMaterialNo(), "0") + " - " + loadRequest.getItemName());
 
         /*else if(loadRequestList.get(pos).getUom().equals(App.BOTTLES_UOM)){
             holder.cases.setEnabled(false);
