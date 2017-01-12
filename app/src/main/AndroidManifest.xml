@@ -248,6 +248,7 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.PaymentDetails"
+
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateAlwaysHidden"/>

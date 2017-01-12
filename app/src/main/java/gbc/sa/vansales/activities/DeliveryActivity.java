@@ -1,10 +1,13 @@
 package gbc.sa.vansales.activities;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +24,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryAdapter;
 import gbc.sa.vansales.adapters.DeliveryListBadgeAdapter;
 import gbc.sa.vansales.adapters.OrderListBadgeAdapter;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
@@ -33,26 +37,38 @@ import gbc.sa.vansales.utils.UrlBuilder;
  * Created by eheuristic on 12/10/2016.
  */
 public class DeliveryActivity extends AppCompatActivity {
-    ImageView iv_back;
+    ImageView iv_back,iv_refresh;
     TextView tv_top_header;
     ListView list_delivery;
-    DeliveryListBadgeAdapter adapter;
+//    DeliveryListBadgeAdapter adapter; //change
+    DeliveryAdapter adapter;
     FloatingActionButton flt_button;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
     ArrayList<OrderList> arrayList;
     LoadingSpinner loadingSpinner;
+
+    SwipeRefreshLayout refreshLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
         loadingSpinner = new LoadingSpinner(this);
         arrayList = new ArrayList<>();
+
+        refreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+
+
         new loadDeliveries().execute();
-        adapter = new DeliveryListBadgeAdapter(this, arrayList);
+//        adapter = new DeliveryListBadgeAdapter(this, arrayList); // change
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+        if(object==null)
+        {
+          object=Const.allCustomerdataArrayList.get(Const.customerPosition);
+        }
         customers = CustomerHeaders.get();
 
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
@@ -85,18 +101,52 @@ public class DeliveryActivity extends AppCompatActivity {
         flt_button = (FloatingActionButton) findViewById(R.id.flt_presale);
         flt_button.setVisibility(View.GONE);
         list_delivery = (ListView) findViewById(R.id.list_delivery);
-       // adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
+
+        iv_refresh=(ImageView)findViewById(R.id.img_refresh);
+
+
+
+        adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
         list_delivery.setAdapter(adapter);
         list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OrderList delivery = arrayList.get(position);
+//                OrderList delivery = arrayList.get(position); // change
                 Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
-                intent.putExtra("headerObj", object);
-                intent.putExtra("delivery", delivery);
+//                intent.putExtra("headerObj", object);  //change
+//                intent.putExtra("delivery", delivery); //change
+
                 startActivity(intent);
             }
         });
+
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.setRefreshing(false);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }, 2000);
+            }
+        });
+
+
+        iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dispatchRefresh();
+            }
+        });
+
+
+
     }
     public class loadDeliveries extends AsyncTask<Void, Void, Void> {
         @Override
@@ -139,5 +189,21 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         }
         while (cursor.moveToNext());
+        Log.v("arraylistsize",arrayList.size()+" -" +
+                "");
+    }
+
+    public void dispatchRefresh() {
+        refreshLayout.setRefreshing(true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }, 2000);
     }
 }

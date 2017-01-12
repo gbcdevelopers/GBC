@@ -3,7 +3,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +38,7 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class PreSaleOrderActivity extends AppCompatActivity {
-    ImageView iv_back;
+    ImageView iv_back,iv_refresh;
     TextView tv_top_header;
     ListView list_delivery;
     PresaleAdapter presaleAdapterdapter;
@@ -47,11 +50,16 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     ArrayList<OrderList> arrayList;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
+    SwipeRefreshLayout refreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
         loadingSpinner = new LoadingSpinner(this);
+
+        refreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+
         arrayList = new ArrayList<>();
         new loadOrders().execute();
         new loadOrdersLocal().execute();
@@ -59,6 +67,15 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         Const.constantsHashMap.clear();
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+
+
+
+        if(object==null)
+        {
+
+           object= Const.allCustomerdataArrayList.get(Const.customerPosition);
+        }
+
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
@@ -89,6 +106,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             }
         });
         list_delivery = (ListView) findViewById(R.id.list_delivery);
+        iv_refresh=(ImageView)findViewById(R.id.img_refresh);
+
         proceedArrayList = new ArrayList<>();
         presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
         list_delivery.setAdapter(adapter);
@@ -112,6 +131,33 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            refreshLayout.setRefreshing(false);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }, 2000);
+            }
+        });
+
+
+        iv_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dispatchRefresh();
+            }
+        });
+
     }
     @Override
     protected void onResume() {
@@ -251,6 +297,20 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         while (cursor.moveToNext());
 
 
+    }
+
+    public void dispatchRefresh() {
+        refreshLayout.setRefreshing(true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }, 2000);
     }
 
 }

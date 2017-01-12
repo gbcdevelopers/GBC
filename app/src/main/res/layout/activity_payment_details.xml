@@ -146,6 +146,7 @@
                     android:text=""
                     android:id="@+id/edt_check_no"
                     android:enabled="false"
+                    android:inputType="number"
                     />
 
             </LinearLayout>
@@ -211,10 +212,6 @@
                 android:text="@string/abn_amro"
                 android:entries="@array/paymentitem"
                 android:id="@+id/sp_item"
-
-
-
-
                 />
 
 

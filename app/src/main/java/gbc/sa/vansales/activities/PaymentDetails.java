@@ -80,22 +80,56 @@ public class PaymentDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
         loadingSpinner = new LoadingSpinner(this);
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        delivery = (OrderList) i.getParcelableExtra("delivery");
-        customers = CustomerHeaders.get();
-        articles = ArticleHeaders.get();
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
 
-        invoiceAmount = i.getExtras().getString("invoiceamount");
+        tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
 
-        TextView tv_cust_detail = (TextView)findViewById(R.id.tv_cust_detail);
-        if(customerHeader!=null){
-            tv_cust_detail.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+
+
+        if(getIntent().getExtras()!=null)
+        {
+
+
+            from=getIntent().getStringExtra("msg");
+            if(from.equals("collection"))
+            {
+                pos = getIntent().getIntExtra("pos", 0);
+
+                if (Const.colletionDatas.size() > 0) {
+                    amountdue = Const.colletionDatas.get(pos).getAmoutDue();
+                    tv_due_amt.setText(amountdue);
+                }
+
+            }
+            else {
+                Intent i = this.getIntent();
+                object = (Customer) i.getParcelableExtra("headerObj");
+                delivery = (OrderList) i.getParcelableExtra("delivery");
+
+                if(object==null)
+                {
+                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
+                }
+                customers = CustomerHeaders.get();
+                articles = ArticleHeaders.get();
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+
+                invoiceAmount = i.getExtras().getString("invoiceamount");
+
+                amountdue=invoiceAmount;
+
+                tv_due_amt.setText(invoiceAmount);
+                TextView tv_cust_detail = (TextView)findViewById(R.id.tv_cust_detail);
+                if(customerHeader!=null){
+                    tv_cust_detail.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                }
+                else{
+                    tv_cust_detail.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                }
+
+            }
         }
-        else{
-            tv_cust_detail.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
-        }
+
+
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -106,19 +140,29 @@ public class PaymentDetails extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HashMap<String,String> filter = new HashMap<String, String>();
-                filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
-                db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST, filter);
 
-                Intent intent = new Intent();
-                intent.putExtra("pos", 0);
-                intent.putExtra("amt", String.valueOf(total_amt));
-                setResult(RESULT_OK, intent);
+
+                if(from.equals("collection"))
+                {
+
+                }
+                else
+                {
+                    HashMap<String,String> filter = new HashMap<String, String>();
+                    filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                    db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST, filter);
+
+                }
+
+
+//                Intent intent = new Intent();
+//                intent.putExtra("pos", pos);
+//                intent.putExtra("amt", String.valueOf(total_amt));
+//                setResult(RESULT_OK, intent);
                 finish();
             }
         });
-        tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
-        tv_due_amt.setText(invoiceAmount);
+
         tv_total_amount = (TextView) findViewById(R.id.tv_total_amt);
         tv_date = (TextView) findViewById(R.id.tv_date);
         iv_cal = (ImageView) findViewById(R.id.image_cal);
@@ -134,14 +178,7 @@ public class PaymentDetails extends AppCompatActivity {
         sp_item.setEnabled(false);
         btn_edit1 = (Button) findViewById(R.id.btn_edit1);
         btn_edit2 = (Button) findViewById(R.id.btn_edit2);
-        if (getIntent().getExtras() != null) {
-            from = getIntent().getStringExtra("msg");
-            pos = getIntent().getIntExtra("pos", 0);
-            if (Const.colletionDatas.size() > 0) {
-                amountdue = Const.colletionDatas.get(pos).getAmoutDue();
-                tv_due_amt.setText(amountdue);
-            }
-        }
+
         btn_edit1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,9 +280,10 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                /*Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
-                                finish();*/
+                                finish();
                             }
                         });
                     } else {
@@ -260,7 +298,8 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                Intent intent = new Intent(PaymentDetails.this,CustomerDetailActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
                             }
@@ -269,11 +308,17 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                Intent intent = new Intent();
-                                intent.putExtra("pos", pos);
-                                intent.putExtra("amt", String.valueOf(total_amt));
-                                setResult(RESULT_OK, intent);
+                                Intent intent = new Intent(PaymentDetails.this,CustomerDetailActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 finish();
+
+//                               dialog.dismiss();
+//                                Intent intent = new Intent();
+//                                intent.putExtra("pos", pos);
+//                                intent.putExtra("amt", String.valueOf(total_amt));
+//                                setResult(RESULT_OK, intent);
+//                                finish();
                             }
                         });
                     }
@@ -398,7 +443,8 @@ public class PaymentDetails extends AppCompatActivity {
 
     }
 
-    public class postData extends AsyncTask<Void, Void, Void> {
+    public class
+    postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String>returnList;
         private String orderID = "";
         @Override
@@ -409,6 +455,7 @@ public class PaymentDetails extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
             this.orderID = postData();
+
             return null;
         }
         @Override
@@ -452,6 +499,11 @@ public class PaymentDetails extends AppCompatActivity {
                 alertDialog.show();
 
             }
+
+                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+               finish();
 
         }
     }

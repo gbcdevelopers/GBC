@@ -15,7 +15,7 @@
             android:textSize="@dimen/label_medium"
             android:layout_gravity="center_horizontal|center_vertical"
             android:background="@drawable/light_border"
-            android:gravity="center_horizontal|center_vertical"
+            android:paddingLeft="@dimen/size_five"
             android:layout_weight="3"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>

@@ -33,6 +33,7 @@ import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryItemBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
@@ -58,7 +59,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     TextView tv_amt;
     ArrayList<EditText[]> editTextArrayList;
     Customer object;
-    OrderList delivery;
+//    OrderList delivery;  // change
+
     ArrayList<CustomerHeader> customers;
     LoadingSpinner loadingSpinner;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -81,32 +83,61 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 
         Intent i = this.getIntent();
         object = (Customer)i.getParcelableExtra("headerObj");
-        delivery = (OrderList)i.getParcelableExtra("delivery");
-        customers = CustomerHeaders.get();
+//        delivery = (OrderList)i.getParcelableExtra("delivery"); // change
 
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+        if(object==null)
+        {
+            object= Const.allCustomerdataArrayList.get(Const.customerPosition);
+        }
+
+
+
+
+
+//        customers = CustomerHeaders.get(); change
+
+//        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());  change
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
 
-        if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
-            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
-            tv_customer_contact.setText(customerHeader.getPhone());
-        } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
-            tv_customer_address.setText(object.getCustomerAddress().toString());
-            tv_customer_pobox.setText("");
-            tv_customer_contact.setText("");
-        }
-        deliveryItemsList.setAdapter(adapter);
+//        if (!(customerHeader == null)) {
+//            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+//            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+//            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+//            tv_customer_contact.setText(customerHeader.getPhone());
+//        } else {
+//            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+//            tv_customer_address.setText(object.getCustomerAddress().toString());
+//            tv_customer_pobox.setText("");
+//            tv_customer_contact.setText("");
+//        }
+
+
+            tv_customer_name.setText("1000 Dex");
+            tv_customer_address.setText("Usa");
+            tv_customer_pobox.setText("pob");
+            tv_customer_contact.setText("34356");
+
+
+
+
+
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         tv_date = (TextView) findViewById(R.id.tv_date);
-        tv_date.setText(delivery.getOrderDate());
+
+
+
+
+//        tv_date.setText(delivery.getOrderDate()); //change
+        tv_date.setText("23/02/2016");
+
+
+
+
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText(getString(R.string.delivery_order));
@@ -128,16 +159,53 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 //setData();
             }
         });
-        new loadDeliveryItems().execute();
+
+
+
+
+        for(int j=0;j<6;j++)
+        {
+            DeliveryItem deliveryItem = new DeliveryItem();
+            deliveryItem.setItemDescription("berain "+j);
+            deliveryItem.setItemCase("10"+j);
+            deliveryItem.setItemUnits("1"+j);
+            arrayList.add(deliveryItem);
+
+        }
+        calculatePrice();
+        deliveryItemsList.setAdapter(adapter);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        new loadDeliveryItems().execute();
+
+
         //setData();
         btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveData();
+//                saveData();   // change
                 Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
                 intent.putExtra("msg", "delivery");
-                intent.putExtra("headerObj", object);
-                intent.putExtra("delivery", delivery);
+//                intent.putExtra("headerObj", object);  //change
+//                intent.putExtra("delivery", delivery);  //change
                 intent.putExtra("invoiceamount",tv_amt.getText().toString());
                 startActivity(intent);
                 finish();
@@ -294,7 +362,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 }
                 HashMap<String,String> map = new HashMap<String, String>();
                 map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+//                map.put(db.KEY_DELIVERY_NO,delivery.getOrderId()); // change
                 map.put(db.KEY_ITEM_NO,item.getItemCode());
                 map.put(db.KEY_MATERIAL_NO ,item.getMaterialNo());
                 map.put(db.KEY_MATERIAL_DESC1,item.getItemDescription());
@@ -347,11 +415,12 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             map.put(db.KEY_IS_DELIVERED,"");
 
             HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+//            filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId()); // change
 
             Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
+
                 setData(cursor);
             }
             return null;

@@ -33,7 +33,7 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class CustomerDetailActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = new String[6];
+    String strText[] = {"Order request", "Collections", "Sales", "Merchandizing", "Delivery", "Print"};
     int resarr[] = {R.drawable.ic_order_request, R.drawable.ic_collection, R.drawable.ic_sales, R.drawable.ic_merchandising, R.drawable.ic_distribution, R.drawable.ic_print};
     ImageView iv_back;
     TextView tv_top_header;
@@ -43,6 +43,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
+    String from="";
 
 
 
@@ -53,65 +54,80 @@ public class CustomerDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customer_detail);
 
 
+        if(getIntent().getExtras()!=null)
+        {
+            from=getIntent().getStringExtra("msg");
+            if(from.equals("visit") || from.equals("all"))
+            {
 
-        strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
-
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        customers = CustomerHeaders.get();
-
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
-        TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_id);
-        TextView tv_customer_address = (TextView)findViewById(R.id.tv_customer_address);
-        TextView tv_customer_pobox = (TextView)findViewById(R.id.tv_customer_pobox);
-        TextView tv_customer_contact = (TextView)findViewById(R.id.tv_customer_contact);
-
-        TextView tv_credit_days = (TextView)findViewById(R.id.tv_digits);
-        TextView tv_credit_limit = (TextView)findViewById(R.id.tv_digits1);
-        TextView tv_available_limit = (TextView)findViewById(R.id.tv_digits2);
-
-        if(!(customerHeader==null)){
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
-            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
-            tv_customer_contact.setText(customerHeader.getPhone());
-        }
-        else{
-            tv_customer_name.setText(object.getCustomerID().toString() + " " +  UrlBuilder.decodeString(object.getCustomerName().toString()));
-            tv_customer_address.setText(object.getCustomerAddress().toString());
-            tv_customer_pobox.setText("");
-            tv_customer_contact.setText("");
-        }
-
-        if(object.getPaymentMethod().equalsIgnoreCase("cash")){
-            tv_credit_days.setText("0");
-            tv_credit_limit.setText("0");
-            tv_available_limit.setText("0");
-        }
-        else{
-            try{
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO,"");
-                map.put(db.KEY_CREDIT_LIMIT,"");
-
-                HashMap<String, String>filters = new HashMap<>();
-                filters.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                Cursor cursor = db.getData(db.CUSTOMER_CREDIT,map,filters);
-                if(cursor.getCount()>0){
-                    cursor.moveToFirst();
-                    tv_credit_days.setText("0");
-                    tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-                    tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                Intent i = this.getIntent();
+                object = (Customer) i.getParcelableExtra("headerObj");
+                if(object==null)
+                {
+                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-            finally {
-                db.close();
-            }
 
+
+                customers = CustomerHeaders.get();
+
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
+                TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_id);
+                TextView tv_customer_address = (TextView)findViewById(R.id.tv_customer_address);
+                TextView tv_customer_pobox = (TextView)findViewById(R.id.tv_customer_pobox);
+                TextView tv_customer_contact = (TextView)findViewById(R.id.tv_customer_contact);
+
+                TextView tv_credit_days = (TextView)findViewById(R.id.tv_digits);
+                TextView tv_credit_limit = (TextView)findViewById(R.id.tv_digits1);
+                TextView tv_available_limit = (TextView)findViewById(R.id.tv_digits2);
+
+                if(!(customerHeader==null)){
+                    tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                    tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_contact.setText(customerHeader.getPhone());
+                }
+                else{
+                    tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                    tv_customer_address.setText(object.getCustomerAddress().toString());
+                    tv_customer_pobox.setText("");
+                    tv_customer_contact.setText("");
+                }
+
+
+                if(object.getPaymentMethod().equalsIgnoreCase("cash")){
+                    tv_credit_days.setText("0");
+                    tv_credit_limit.setText("0");
+                    tv_available_limit.setText("0");
+                }
+                else{
+                    try{
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_CUSTOMER_NO,"");
+                        map.put(db.KEY_CREDIT_LIMIT,"");
+
+                        HashMap<String, String>filters = new HashMap<>();
+                        filters.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        Cursor cursor = db.getData(db.CUSTOMER_CREDIT,map,filters);
+                        if(cursor.getCount()>0){
+                            cursor.moveToFirst();
+                            tv_credit_days.setText("0");
+                            tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                            tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                        }
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    finally {
+                        db.close();
+                    }
+
+                }
+
+            }
         }
+
+
 
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
@@ -222,6 +238,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                        intent2.putExtra("from","customerdetail");
                         intent2.putExtra("headerObj", object);
                         startActivity(intent2);
                         break;

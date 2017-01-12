@@ -33,7 +33,7 @@ public class PriceListCustomerActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Price List");
+        tv_top_header.setText("Price Items");
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

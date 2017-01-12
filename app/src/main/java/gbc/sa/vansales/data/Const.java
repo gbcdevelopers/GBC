@@ -32,5 +32,7 @@ public class Const {
     public static ArrayList<PreSaleProceed> proceedArrayList=new ArrayList<>();
     public static String availableLimit = "";
 
+    public static int customerPosition;
+
     public static int id=-1;
  }

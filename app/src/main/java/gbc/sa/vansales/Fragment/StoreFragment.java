@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -74,6 +75,10 @@ public class StoreFragment extends Fragment {
                 final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 ll_1.setVisibility(View.GONE);
+
+                RelativeLayout rl_specify=(RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
+                rl_specify.setVisibility(View.GONE);
+
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -88,8 +93,7 @@ public class StoreFragment extends Fragment {
                         String strpcs = ed_pcs.getText().toString();
                         TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                         TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                        tv_cases.setText(strCase);
-                        tv_pcs.setText(strpcs);
+
 
                         if(ed_cases.getText().toString().isEmpty()||ed_cases.getText().toString()==null){
                             strCase = "0";
@@ -97,6 +101,11 @@ public class StoreFragment extends Fragment {
                         if(ed_pcs.getText().toString().isEmpty()||ed_pcs.getText().toString()==null){
                             strpcs = "0";
                         }
+
+                        tv_cases.setText(strCase);
+                        tv_pcs.setText(strpcs);
+
+
                         product.setPro_pcs(Integer.parseInt(strpcs));
                         product.setPro_case(Integer.parseInt(strCase));
                         double total = 0;
@@ -115,7 +124,7 @@ public class StoreFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ShelfStockActivity.tab_position=1;
+                ShelfStockActivity.tab_position=1;
                 Settings.setString("from","store");
                 Intent intent = new Intent(getActivity(), CategoryListActivity.class);
 

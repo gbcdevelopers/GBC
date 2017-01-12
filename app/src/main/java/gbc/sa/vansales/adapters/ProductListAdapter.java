@@ -246,9 +246,9 @@ public class ProductListAdapter extends BaseAdapter  {
                             boolean isExists=false;
                             for(int i = 0; i< GListFragment.arrProductList.size(); i++)
                             {
-                                Log.e("check",dataList.get(position)+" "+GListFragment.arrProductList.get(i)+" "+ SalesInvoiceActivity.tab_position);
+                                Log.e("check",dataList.get(position)+" "+GListFragment.arrProductList.get(i).getName()+" "+ SalesInvoiceActivity.tab_position);
 
-                                if(GListFragment.arrProductList.get(i).equals(dataList.get(position)))
+                                if(GListFragment.arrProductList.get(i).getName().equals(dataList.get(position)))
                                 {
                                     isExists=true;
                                 }
@@ -286,9 +286,9 @@ public class ProductListAdapter extends BaseAdapter  {
                             boolean isExists=false;
                             for(int i = 0; i< BListFragment.arrProductList.size(); i++)
                             {
-                                Log.e("check",dataList.get(position)+" "+BListFragment.arrProductList.get(i)+" "+ SalesInvoiceActivity.tab_position);
+                                Log.e("check",dataList.get(position)+" "+BListFragment.arrProductList.get(i).getName()+" "+ SalesInvoiceActivity.tab_position);
 
-                                if(BListFragment.arrProductList.get(i).equals(dataList.get(position)))
+                                if(BListFragment.arrProductList.get(i).getName().equals(dataList.get(position)))
                                 {
                                     isExists=true;
                                 }

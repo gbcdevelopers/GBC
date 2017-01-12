@@ -40,6 +40,9 @@ public class PromotionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promotion);
 
+
+
+
         Intent i = this.getIntent();
         object = (Customer)i.getParcelableExtra("headerObj");
         delivery = (OrderList)i.getParcelableExtra("delivery");
@@ -61,6 +64,8 @@ public class PromotionActivity extends AppCompatActivity {
             int pos = getIntent().getIntExtra("pos", 10);
             if (str_promotion_message.equals("Final Invoice")) {
                 ll_bottom.setVisibility(View.VISIBLE);
+                tv_top_header.setText("Final Invoice");
+
             } else {
                 if (str_promotion_message.equals("delivery")) {
                     ll_bottom.setVisibility(View.VISIBLE);
@@ -72,10 +77,18 @@ public class PromotionActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                HashMap<String,String> filter = new HashMap<String, String>();
-                filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
-                db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST,filter);
-                finish();
+
+                if(str_promotion_message.equals("delivery"))
+                {
+                    HashMap<String,String> filter = new HashMap<String, String>();
+                    filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                    db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST,filter);
+                    finish();
+                }
+                else {
+                    finish();
+                }
+
             }
         });
         ll_bottom.setOnClickListener(new View.OnClickListener() {
@@ -92,13 +105,17 @@ public class PromotionActivity extends AppCompatActivity {
                     btn_print.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.cancel();
+                            Intent intent=new Intent(PromotionActivity.this,SalesInvoiceOptionActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
                         }
                     });
                     btn_notprint.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(PromotionActivity.this, DashboardActivity.class);
+                            Intent intent = new Intent(PromotionActivity.this, SalesInvoiceOptionActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                             finish();
                         }
@@ -112,31 +129,8 @@ public class PromotionActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-                    if (str_promotion_message.equals("")) {
-                        final Dialog dialog = new Dialog(PromotionActivity.this);
-                        dialog.setContentView(R.layout.dialog_doprint);
-                        dialog.setCancelable(true);
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                        LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                        LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                        dialog.show();
-                        btn_print.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
-                            }
-                        });
-                        btn_notprint.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(PromotionActivity.this, DashboardActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                    } else {
-                        finish();
-                    }
+
+                    finish();
                 }
             }
         });

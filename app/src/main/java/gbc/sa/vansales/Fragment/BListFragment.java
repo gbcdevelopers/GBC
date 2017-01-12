@@ -68,11 +68,11 @@ public class BListFragment extends Fragment {
 
         fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
 
-        String strProductname[]={"A","B","c","D"};
+        String strProductname[]={"Carton 80*150ml Fayha","CARTON 48*600ml Fayha","Shrink berain"};
         arrProductList = new ArrayList<>();
 
 
-        for(int i=0;i<4;i++)
+        for(int i=0;i<strProductname.length;i++)
         {
             Sales product=new Sales();
             product.setName(strProductname[i]);
@@ -112,6 +112,8 @@ public class BListFragment extends Fragment {
                 final Spinner spin=(Spinner)dialog.findViewById(R.id.spin);
 
 
+
+
                 ed_cases_inv.setText("10");
                 ed_pcs_inv.setText("3");
                 ed_cases_inv.setEnabled(false);
@@ -122,6 +124,7 @@ public class BListFragment extends Fragment {
 
                 LinearLayout ll_1=(LinearLayout)dialog.findViewById(R.id.ll_1);
 
+                ll_1.setVisibility(View.GONE);
 
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -138,7 +141,7 @@ public class BListFragment extends Fragment {
 
                         if(spin.getSelectedItem().toString().equals(""))
                         {
-                            dialog.dismiss();
+                            ((TextView)spin.getSelectedView()).setError("select reason");
 
                         }
                         else {

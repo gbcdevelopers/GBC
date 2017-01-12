@@ -7,10 +7,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:elevation="@dimen/size_five"
     app:cardBackgroundColor="@color/white"
-
-
-
-
     >
 
 
@@ -33,7 +29,6 @@
     android:layout_gravity="center"
     android:id="@+id/iv_round"
     android:layout_weight=".6"
-
 
     />
 

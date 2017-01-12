@@ -28,24 +28,20 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class SalesInvoiceOptionActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    //String strText[] = {"Shelf Stock", "Sales Invoice", "Invoice", "End Invoice"};
-    String strText[] = {"Sales Invoice", "Invoice", "End Invoice"};  //Hiding Shelf Stock
-    //int resarr[] = {R.drawable.ic_self_stock, R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
-    int resarr[] = {R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
+    String strText[] = {"Shelf Stock", "Sales Invoice", "Invoice", "End Invoice"};
+    int resarr[] = {R.drawable.ic_self_stock, R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
     ImageView iv_back;
     TextView tv_top_header;
     ImageView iv_updown;
     Customer object;
+    String from="";
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        customers = CustomerHeaders.get();
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
@@ -53,43 +49,74 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         TextView tv_credit_days = (TextView) findViewById(R.id.tv_digits);
         TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
         TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
-        if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
-            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
-            tv_customer_contact.setText(customerHeader.getPhone());
-        } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
-            tv_customer_address.setText(object.getCustomerAddress().toString());
-            tv_customer_pobox.setText("");
-            tv_customer_contact.setText("");
-        }
-        if (object.getPaymentMethod().equalsIgnoreCase("cash")) {
-            tv_credit_days.setText("0");
-            tv_credit_limit.setText("0");
-            tv_available_limit.setText("0");
-        } else {
-            try {
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO, "");
-                map.put(db.KEY_CREDIT_LIMIT, "");
-                map.put(db.KEY_AVAILABLE_LIMIT,"");
-                HashMap<String, String> filters = new HashMap<>();
-                filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    tv_credit_days.setText("0");
-                    tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-                    tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT)));
-                    Const.availableLimit = cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT));
+
+
+
+
+        if(getIntent().getExtras()!=null)
+        {
+            from=getIntent().getStringExtra("from");
+
+            if(from.equals("customerdetail"))
+            {
+                Intent i = this.getIntent();
+                object = (Customer) i.getParcelableExtra("headerObj");
+                if(object==null)
+                {
+                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                db.close();
+
+
+                customers = CustomerHeaders.get();
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+
+
+
+                if (!(customerHeader == null)) {
+                    tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                    tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_contact.setText(customerHeader.getPhone());
+                } else {
+                    tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                    tv_customer_address.setText(object.getCustomerAddress().toString());
+                    tv_customer_pobox.setText("");
+                    tv_customer_contact.setText("");
+                }
+                if (object.getPaymentMethod().equalsIgnoreCase("cash")) {
+                    tv_credit_days.setText("0");
+                    tv_credit_limit.setText("0");
+                    tv_available_limit.setText("0");
+                } else {
+                    try {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_CUSTOMER_NO, "");
+                        map.put(db.KEY_CREDIT_LIMIT, "");
+                        map.put(db.KEY_AVAILABLE_LIMIT,"");
+                        HashMap<String, String> filters = new HashMap<>();
+                        filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            tv_credit_days.setText("0");
+                            tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                            tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT)));
+                            Const.availableLimit = cursor.getString(cursor.getColumnIndex(db.KEY_AVAILABLE_LIMIT));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        db.close();
+                    }
+                }
+
+
             }
+
         }
+
+
+
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -110,7 +137,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
-                    /*case 0:
+                    case 0:
                         Intent intent = new Intent(SalesInvoiceOptionActivity.this, ShelfStockActivity.class);
                         startActivity(intent);
                         break;
@@ -126,21 +153,6 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         break;
                     case 3:
                         Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
-                        startActivity(intent3);
-                        break;*/
-                    case 0:
-                        Intent intent1 = new Intent(SalesInvoiceOptionActivity.this, SalesInvoiceActivity.class);
-                        intent1.putExtra("headerObj", object);
-                        startActivity(intent1);
-                        break;
-                    case 1:
-                        Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
-                        intent2.putExtra("headerObj", object);
-                        startActivity(intent2);
-                        break;
-                    case 2:
-                        Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
-                        intent3.putExtra("headerObj", object);
                         startActivity(intent3);
                         break;
                     default:

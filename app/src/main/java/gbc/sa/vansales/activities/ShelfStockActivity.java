@@ -73,6 +73,7 @@ public class ShelfStockActivity extends AppCompatActivity {
             public void onClick(View v) {
                 iv_search.setVisibility(View.GONE);
                 et_search.setVisibility(View.VISIBLE);
+                et_search.setHint("Search Products");
                 toolbar_iv_back.setVisibility(View.GONE);
                 tv_top_header.setVisibility(View.GONE);
             }

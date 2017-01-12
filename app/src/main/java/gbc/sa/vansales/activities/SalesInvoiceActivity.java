@@ -1,4 +1,5 @@
 package gbc.sa.vansales.activities;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.ShelfProduct;
 import gbc.sa.vansales.utils.DatabaseHandler;
+
 /**
  * Created by eheuristic on 12/5/2016.
  */
@@ -115,14 +117,15 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 iv_search.setVisibility(View.GONE);
                 et_search.setVisibility(View.VISIBLE);
+                et_search.setHint("Search Products..");
                 toolbar_iv_back.setVisibility(View.GONE);
                 tv_top_header.setVisibility(View.GONE);
             }
         });
         Bundle bundle = new Bundle();
-        bundle.putParcelable("data",object);
+        bundle.putParcelable("data", object);
         final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), "sales",bundle);
+                (getSupportFragmentManager(), tabLayout.getTabCount(), "sales", bundle);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -131,9 +134,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(tab.getPosition());
                 tab_position = tab.getPosition();
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
             }
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
@@ -159,9 +164,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                             FocFragment.adapter.getFilter().filter("");
                         } else if (tab_position == 2) {
                             GListFragment.adapter.getFilter().filter("");
-                        }/*else if (tab_position ==3) {
-                    ShelfFragment.adapter.getFilter().filter(s.toString());
-                }*/
+                        } else if (tab_position == 3) {
+                            BListFragment.adapter.getFilter().filter("");
+                        }
                         return true;
                     }
                 }
@@ -172,6 +177,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.v("addtext", "change");
@@ -181,11 +187,12 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     FocFragment.adapter.getFilter().filter(s.toString());
                 } else if (tab_position == 2) {
                     GListFragment.adapter.getFilter().filter(s.toString());
-                }/*else if (tab_position ==3) {
-                    ShelfFragment.adapter.getFilter().filter(s.toString());
-                }*/
+                } else if (tab_position == 3) {
+                    BListFragment.adapter.getFilter().filter(s.toString());
+                }
                 //planBadgeAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -203,6 +210,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             }
         });*/
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -273,7 +281,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.list_sales) {
+        if (v.getId() == R.id.list_sales) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_list, menu);
         }
@@ -282,22 +290,18 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
 
 
-                if(SalesInvoiceActivity.tab_position==2)
-                {
+                if (SalesInvoiceActivity.tab_position == 2) {
                     GListFragment.arrProductList.remove(info.position);
                     GListFragment.adapter.notifyDataSetChanged();
-                }
-                else if(SalesInvoiceActivity.tab_position==3)
-                {
+                } else if (SalesInvoiceActivity.tab_position == 3) {
                     BListFragment.arrProductList.remove(info.position);
                     BListFragment.adapter.notifyDataSetChanged();
                 }
-
 
 
                 return true;

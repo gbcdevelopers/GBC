@@ -47,7 +47,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 tv_top_header.setText("Print");
             }
             else {
-                tv_top_header.setText("Print");
+                tv_top_header.setText("Print Reports");
             }
 
         }else {

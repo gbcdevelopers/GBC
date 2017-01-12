@@ -53,10 +53,10 @@ public class CategoryListActivity extends AppCompatActivity {
         if (toolbar_iv_back != null) {
             toolbar_iv_back.setVisibility(View.VISIBLE);
         }
-        iv_search = (ImageView) findViewById(R.id.iv_search);
-        if (iv_search != null) {
-            iv_search.setVisibility(View.VISIBLE);
-        }
+//        iv_search = (ImageView) findViewById(R.id.iv_search);
+//        if (iv_search != null) {
+//            iv_search.setVisibility(View.VISIBLE);
+//        }
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount(), "category");
         viewPager.setAdapter(adapter);

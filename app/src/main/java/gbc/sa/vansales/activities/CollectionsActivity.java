@@ -41,8 +41,12 @@ public class CollectionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
 
-        Intent i = this.getIntent();
+        final Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+        if(object==null)
+        {
+            object=Const.allCustomerdataArrayList.get(Const.customerPosition);
+        }
         customers = CustomerHeaders.get();
 
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
@@ -89,7 +93,9 @@ public class CollectionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                startActivityForResult(intent, 1);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+//                startActivityForResult(intent, 1);
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
             }
@@ -105,7 +111,9 @@ public class CollectionsActivity extends AppCompatActivity {
                 Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
                 intent.putExtra("msg","collection");
                 intent.putExtra("pos",position);
-                startActivityForResult(intent, 1);
+
+                startActivity(intent);
+//                startActivityForResult(intent, 1);
             }
         });
 

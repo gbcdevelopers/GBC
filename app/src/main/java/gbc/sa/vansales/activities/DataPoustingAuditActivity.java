@@ -77,20 +77,27 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
 
 
-                        Toast.makeText(getApplicationContext(),"swipe",Toast.LENGTH_SHORT).show();
+
+                        if(position==1 || position==3 || position==4)
+                        {
+                            Toast.makeText(getApplicationContext(),"return false",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
                             arrayList.remove(position);
                             adapter.notifyDataSetChanged();
+                        }
 
 
                     } else {
-                        Toast.makeText(getApplicationContext(),"other",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(),"swipe right",Toast.LENGTH_SHORT).show();
 
                     }
                 }
                 else
                 {
 
-                    Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(),"click",Toast.LENGTH_SHORT).show();
 
 
                 }

@@ -54,6 +54,8 @@ public class ShelfFragment extends Fragment {
         listShelf.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+
+
                 final ShelfProduct product = arrayList.get(position);
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -67,6 +69,9 @@ public class ShelfFragment extends Fragment {
                 final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 ll_1.setVisibility(View.GONE);
+                RelativeLayout rl_specify=(RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
+                rl_specify.setVisibility(View.GONE);
+
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -81,15 +86,23 @@ public class ShelfFragment extends Fragment {
                         String strpcs = ed_pcs.getText().toString();
                         TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                         TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                        tv_cases.setText(strCase);
-                        tv_pcs.setText(strpcs);
+
 
                         if(ed_cases.getText().toString().isEmpty()||ed_cases.getText().toString()==null){
                             strCase = "0";
+
+
                         }
+
                         if(ed_pcs.getText().toString().isEmpty()||ed_pcs.getText().toString()==null){
                             strpcs = "0";
+
                         }
+
+                        tv_cases.setText(strCase);
+                        tv_pcs.setText(strpcs);
+
+
                         product.setPro_pcs(Integer.parseInt(strpcs));
                         product.setPro_case(Integer.parseInt(strCase));
                         double total = 0;
@@ -110,7 +123,7 @@ public class ShelfFragment extends Fragment {
             public void onClick(View v) {
 
                 Settings.setString("from","shelf");
-//                ShelfStockActivity.tab_position=0;
+                ShelfStockActivity.tab_position=0;
                 Intent intent = new Intent(getActivity(), CategoryListActivity.class);
 
                 getActivity().startActivity(intent);

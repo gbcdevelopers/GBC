@@ -49,11 +49,11 @@ public class FocFragment extends Fragment {
         listSales=(ListView) viewmain.findViewById(R.id.list_sales);
         fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
 
-        String strProductname[]={"A","B","c","D"};
+        String strProductname[]={"Carton 80*150ml Fayha","CARTON 48*600ml Fayha","Shrink berain"};
         salesarrayList = new ArrayList<>();
 
 
-        for(int i=0;i<4;i++)
+        for(int i=0;i<strProductname.length;i++)
         {
             Sales product=new Sales();
             product.setName(strProductname[i]);
@@ -123,6 +123,17 @@ public class FocFragment extends Fragment {
                         TextView tv_cases=(TextView)view.findViewById(R.id.tv_cases_value);
                         TextView tv_pcs=(TextView)view.findViewById(R.id.tv_pcs_value);
 
+
+
+                        if(ed_cases.getText().toString().isEmpty()){
+                            strCase = "0";
+
+
+                        }
+                        if(ed_pcs.getText().toString().isEmpty()){
+                            strpcs = "0";
+
+                        }
 
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);

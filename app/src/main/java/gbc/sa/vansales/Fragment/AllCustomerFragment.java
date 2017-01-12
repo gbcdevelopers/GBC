@@ -40,9 +40,11 @@ public class AllCustomerFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Const.customerPosition=position;
                 Customer customer = Const.allCustomerdataArrayList.get(position);
                 Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
                 intent.putExtra("headerObj", customer);
+                intent.putExtra("msg","all");
                 startActivity(intent);
 
             }
