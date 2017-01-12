@@ -94,22 +94,11 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         else{
             holder.horizontal_view.setBackgroundColor(Color.BLUE);
         }
-        if(!customer.isOrder()){
-            holder.orderFlag.setAlpha(.5f);
-        }
-        if(!customer.isSale()){
-            holder.saleflag.setAlpha(.5f);
-        }
-        if(!customer.isCollection()){
-            holder.collectionflag.setAlpha(.5f);
-        }
-        if(!customer.isDelivery()){
-            holder.deliveryflag.setAlpha(.5f);
-        }
-        if(!customer.isMerchandize()){
-            holder.merchandizeFlag.setAlpha(.5f);
-        }
-
+        holder.orderFlag.setAlpha(customer.isOrder()?1f:.3f);
+        holder.saleflag.setAlpha(customer.isSale()?1f:.3f);
+        holder.collectionflag.setAlpha(customer.isCollection()?1f:.3f);
+        holder.deliveryflag.setAlpha(customer.isDelivery()?1f:.3f);
+        holder.merchandizeFlag.setAlpha(customer.isMerchandize()?1f:.3f);
         return view;
     }
 
