@@ -11,10 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
-        >
-
+        android:orientation="horizontal">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -28,50 +25,78 @@
                 />
 
         </LinearLayout>
-
-
         <LinearLayout android:id="@+id/ll_items"
                       xmlns:android="http://schemas.android.com/apk/res/android"
                       xmlns:app="http://schemas.android.com/apk/res-auto"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:background="@color/white"
-                      android:orientation="vertical"
-            >
-
+                      android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_five"
                 android:orientation="horizontal"
+                android:weightSum="4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                android:weightSum="3"
-                >
-
-                <gbc.sa.vansales.views.TextViewWithLabel
-                    android:id="@+id/customer_id"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                <LinearLayout
                     android:layout_weight="3"
-                    app:label="@string/customerid"/>
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_five"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                        <gbc.sa.vansales.views.TextViewWithLabel
+                            android:id="@+id/customer_id"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            app:label="@string/customerid"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="3"
+
+                        >
+
+                        <gbc.sa.vansales.views.TextViewWithLabel
+                            android:id="@+id/customer_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            app:label="@string/customer_name"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/img_customer_new"
+                        android:src="@drawable/icon_new"
+                        android:visibility="invisible"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3"
 
-                >
-
-                <gbc.sa.vansales.views.TextViewWithLabel
-                    android:id="@+id/customer_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    app:label="@string/customer_name"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,7 +169,6 @@
 
 
         </LinearLayout>
-
 
     </LinearLayout>
 

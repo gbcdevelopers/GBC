@@ -15,6 +15,23 @@
         android:background="@color/white"
         />
 
+    <Button
+        android:id="@+id/btnPrint"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/space"
+        android:layout_marginLeft="@dimen/space"
+        android:layout_marginBottom="@dimen/space"
+        android:layout_marginTop="@dimen/h2"
+        android:background="@color/buttoncolor"
+        android:paddingLeft="@dimen/space"
+        android:paddingRight="@dimen/space"
+        android:textAllCaps="true"
+        android:text="@string/printload"
+        android:textColor="@color/white"
+        />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabVanStock"
         android:layout_width="wrap_content"
@@ -23,6 +40,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:clickable="true"
+        android:visibility="invisible"
         android:src="@drawable/ic_printer"
         />
 

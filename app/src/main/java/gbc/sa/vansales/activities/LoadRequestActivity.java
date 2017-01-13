@@ -24,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -128,17 +129,18 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 setTitle("Print Activity");
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
-                dialog.setContentView(R.layout.activity_print);
-                Button print = (Button)dialog.findViewById(R.id.btnPrint);
-                print.setOnClickListener(new View.OnClickListener() {
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         new postData().execute();
                         dialog.dismiss();
                     }
                 });
-                Button donotPrint = (Button)dialog.findViewById(R.id.btnCancel2);
-                donotPrint.setOnClickListener(new View.OnClickListener() {
+                btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
@@ -146,7 +148,6 @@ public class LoadRequestActivity extends AppCompatActivity {
 
                 });
                 dialog.setCancelable(false);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });

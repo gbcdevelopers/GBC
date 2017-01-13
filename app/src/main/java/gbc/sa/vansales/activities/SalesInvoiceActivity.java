@@ -56,6 +56,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     EditText et_search;
     public static int tab_position;
     FloatingActionButton button;
+    FloatingActionButton button1;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -70,7 +71,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         customers = CustomerHeaders.get();
 
         button = (FloatingActionButton) findViewById(R.id.float_map);
+        button1 = (FloatingActionButton) findViewById(R.id.addCustomer);
         button.setVisibility(View.GONE);
+        button1.setVisibility(View.GONE);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Sales"));
@@ -216,6 +219,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         super.onResume();
         switch (tab_position) {
             case 0:
+                button1.setVisibility(View.INVISIBLE);
+                button.setVisibility(View.INVISIBLE);
 //                if (SalesFragment.salesarrayList != null && SalesFragment.adapter != null) {
 //                    ArrayList<Sales> productArrayList = new ArrayList<>();
 //                    for (int i = 0; i < Const.addlist.size(); i++) {

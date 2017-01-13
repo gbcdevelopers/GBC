@@ -75,6 +75,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
             holder.collectionflag = (ImageView) view.findViewById(R.id.img_collection);
             holder.merchandizeFlag = (ImageView) view.findViewById(R.id.img_merchandize);
             holder.orderFlag = (ImageView) view.findViewById(R.id.img_order);
+            holder.newCustomer = (ImageView)view.findViewById(R.id.img_customer_new);
 
 
 
@@ -99,6 +100,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         holder.collectionflag.setAlpha(customer.isCollection()?1f:.3f);
         holder.deliveryflag.setAlpha(customer.isDelivery()?1f:.3f);
         holder.merchandizeFlag.setAlpha(customer.isMerchandize()?1f:.3f);
+        holder.newCustomer.setVisibility(customer.isNewCustomer()?View.VISIBLE:View.INVISIBLE);
         return view;
     }
 
@@ -161,6 +163,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         ImageView collectionflag;
         ImageView merchandizeFlag;
         ImageView orderFlag;
+        ImageView newCustomer;
         TextViewWithLabel customer_id;
         TextViewWithLabel customer_name;
         TextViewWithLabel customer_address;

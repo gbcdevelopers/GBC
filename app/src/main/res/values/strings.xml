@@ -94,7 +94,7 @@
     <string name="credit_1">10007665</string>
     <string name="credit_2">10007665</string>
     <string name="credit_3">10007665</string>
-    <string name="credit_available">Available Limit</string>
+    <string name="credit_available">Avail. Limit</string>
     <string name="credit_days">Credit Days</string>
     <string name="credit_limit">Credit Limit</string>
     <string name="currency">SAR</string>
@@ -104,6 +104,8 @@
     <string name="customer">Customer</string>
     <string name="customer_1">Customer 1</string>
     <string name="customer_address">Address</string>
+    <string name="customer_address1">Address(Line 1)</string>
+    <string name="customer_address2">Address(Line 2)</string>
     <string name="customer_balance_report">CUSTOMER BALANCE REPORT</string>
     <string name="customer_decs">Customer decs</string>
     <string name="customer_name">Customer Name</string>
@@ -139,6 +141,7 @@
     <string name="due_date">Due Date</string>
     <string name="e2000">E2000</string>
     <string name="edit">Edit</string>
+    <string name="email">Email</string>
     <string name="enableautosync">Enable Auto Sync</string>
     <string name="endtrip">End Trip</string>
     <string name="english">English</string>
@@ -147,11 +150,19 @@
     <string name="enter_password">Please enter password</string>
     <string name="error_message">An error occured. Please try again</string>
     <string name="error_title">Error</string>
+    <string name="fax">Fax</string>
     <string name="frahn">Frahn</string>
     <string name="freegoods">FREEGOODS</string>
     <string name="good">Good</string>
     <string name="good_return">Good Return</string>
     <string name="good_returns">GOOD RETURNS</string>
+    <string name="hint_customer_name"><i>eg. John Doe</i></string>
+    <string name="hint_customer_address1"><i>eg. 144 Baker Street</i></string>
+    <string name="hint_customer_address2"><i>eg. London City</i></string>
+    <string name="hint_customer_pobox"><i>12345</i></string>
+    <string name="hint_customer_email"><i>eg. abc@xyz.com</i></string>
+    <string name="hint_customer_phone"><i>eg. 0966xxxxxxx</i></string>
+    <string name="hint_customer_fax"><i>eg. 12345678</i></string>
     <string name="image">image</string>
     <string name="information">Informations</string>
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
@@ -270,6 +281,7 @@
     <string name="route_summary">ROUTE SUMMARY</string>
     <string name="s_l_no">S.L. No</string>
     <string name="sales">Sales</string>
+    <string name="sales_area">Sales Area</string>
     <string name="sales_date">Sales Date </string>
     <string name="sales_discounts">SALES DISCOUNTS</string>
     <string name="sales_man_name">Sales Man Name </string>
@@ -294,6 +306,7 @@
     <string name="synchronize">Synchronize Data</string>
     <string name="targetachieved">Achieved/Target</string>
     <string name="tc_sales">TC SALES</string>
+    <string name="telephone">Telephone</string>
     <string name="thermal_print">Thermal Print</string>
     <string name="time">Time </string>
     <string name="today_s_schedule">Today\'s Schedule</string>
@@ -307,7 +320,7 @@
     <string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>
     <string name="tv_cust_detail1">MOP:TC(CASH or CHEQUE)</string>
     <string name="tv_cust_detail2">PO box</string>
-    <string name="tv_cust_detail4">contact no</string>
+    <string name="tv_cust_detail4">Contact no</string>
     <string name="type">Type</string>
     <string name="unitLabel">"Pcs : "</string>
     <string name="unit_price">Pcs</string>

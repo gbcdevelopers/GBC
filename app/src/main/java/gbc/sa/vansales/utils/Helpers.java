@@ -132,6 +132,47 @@ public class Helpers {
         int length =5;
         HashMap<String, String> search = new HashMap<>();
         search.put(db.KEY_DOC_TYPE,documentType);
+        boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION, search);
+        if(checkPRNo){
+            HashMap<String, String> prData = new HashMap<>();
+            prData.put(db.KEY_PURCHASE_NUMBER,"");
+
+            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION,prData,search);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+
+                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                Log.e("Num Range From DB","" + numRange);
+                numRange = numRange + 1;
+
+                HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
+                db.updateData(db.PURCHASE_NUMBER_GENERATION, valueMap, search);
+            }
+        }
+        else{
+            numRange = numRange<=0?numRange+1:numRange;
+            HashMap<String, String> valueMap = new HashMap<>();
+            valueMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+            valueMap.put(db.KEY_ROUTE,Settings.getString(App.ROUTE));
+            valueMap.put(db.KEY_DOC_TYPE, documentType);
+            valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
+            Log.e("Adding Data Num Range","" + valueMap);
+            db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
+        }
+        return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
+    }
+
+    public static String generateCustomer(DatabaseHandler db, String documentType){
+
+        String route = Settings.getString(App.ROUTE);
+        String customer = "CUS";
+        // int routeId = Integer.parseInt(route);
+        int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
+        int numRange = 0;
+        int length =4;
+        HashMap<String, String> search = new HashMap<>();
+        search.put(db.KEY_DOC_TYPE,documentType);
         boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION,search);
         if(checkPRNo){
             HashMap<String, String> prData = new HashMap<>();
@@ -160,11 +201,7 @@ public class Helpers {
             Log.e("Adding Data Num Range","" + valueMap);
             db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
         }
-        Log.e("Num Range PO","" + numRange);
-
-        Log.e("Left Pad","" + StringUtils.leftPad(String.valueOf(numRange),length,"0"));
-        Log.e("Return Number","" + route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0"));
-        return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        return customer + route +StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
 
     public static String getDocumentTypeNo(String documentType){
@@ -184,6 +221,10 @@ public class Helpers {
             }
             case ConfigStore.CustomerDeliveryRequest_PR_Type:{
                 docTypeNo = ConfigStore.CustomerDeliveryRequest_PR;
+                break;
+            }
+            case ConfigStore.CustomerNew_PR_Type:{
+                docTypeNo = ConfigStore.CustomerNew_PR;
                 break;
             }
 

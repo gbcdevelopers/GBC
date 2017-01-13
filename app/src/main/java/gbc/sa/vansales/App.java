@@ -78,6 +78,9 @@ public class App extends Application {
     public static final String IS_COMPLETE = "true";
     public static final String IS_NOT_COMPLETE = "false";
 
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
+
     @Override
     public void onCreate() {
         super.onCreate();

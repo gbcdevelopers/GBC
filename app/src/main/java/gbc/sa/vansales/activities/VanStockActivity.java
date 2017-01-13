@@ -24,6 +24,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
@@ -40,6 +41,7 @@ public class VanStockActivity extends AppCompatActivity {
     ArrayList<VanStock> arraylist = new ArrayList<>();
     LoadingSpinner loadingSpinner;
     DatabaseHandler db = new DatabaseHandler(this);
+    Button btnPrint;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,30 +49,29 @@ public class VanStockActivity extends AppCompatActivity {
         setTitle(getString(R.string.vanstock));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadingSpinner = new LoadingSpinner(this);
+        btnPrint = (Button)findViewById(R.id.btnPrint);
         new loadItems().execute();
         printVanStock = (FloatingActionButton) findViewById(R.id.fabVanStock);
-        printVanStock.setOnClickListener(new View.OnClickListener() {
+        btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Dialog dialog = new Dialog(VanStockActivity.this);
-                dialog.setContentView(R.layout.activity_print);
-                dialog.setCancelable(true);
-                Button print = (Button) dialog.findViewById(R.id.btnPrint);
-                Button cancel = (Button) dialog.findViewById(R.id.btnCancel2);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.setCancelable(false);
+                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
                 dialog.show();
-                print.setOnClickListener(new View.OnClickListener() {
+                btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(VanStockActivity.this, DashboardActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
-                cancel.setOnClickListener(new View.OnClickListener() {
+                btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(VanStockActivity.this, DashboardActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
             }

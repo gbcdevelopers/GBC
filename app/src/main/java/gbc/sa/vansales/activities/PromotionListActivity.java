@@ -18,7 +18,7 @@ import gbc.sa.vansales.adapters.PromotionAdapter;
 import gbc.sa.vansales.adapters.PromotionInfoAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
-
+import gbc.sa.vansales.models.Customer;
 /**
  * Created by eheuristic on 12/7/2016.
  */
@@ -36,12 +36,16 @@ public class PromotionListActivity extends AppCompatActivity {
 
     ArrayList<String> arrayList;
     String from="promo";
-
+    Customer object;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_promotionlist);
+
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
+
         list_promotion = (ListView) findViewById(R.id.list_promotion);
 
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
@@ -58,15 +62,9 @@ public class PromotionListActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
-
-        if(getIntent().getExtras()!=null)
-        {
-
+        if (getIntent().getExtras() != null) {
             from = getIntent().getExtras().getString("from","");
-            if(from.equals("review"))
-            {
+            if (from.equals("review")) {
                 btn_apply.setVisibility(View.GONE);
             }
         }
@@ -93,22 +91,17 @@ public class PromotionListActivity extends AppCompatActivity {
 //                    }
 //                });
 //                builder.show();
-
-
-                Intent intent=new Intent(PromotionListActivity.this,PromotionActivity.class);
+                Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
                 intent.putExtra("msg","Final Invoice");
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
 
             }
         });
-
-
-        if(from.equals("review"))
-        {
+        if (from.equals("review")) {
             adapter1 = new PromotionInfoAdapter(PromotionListActivity.this,3, R.layout.custom_promotion_info_list);
             list_promotion.setAdapter(adapter1);
-        }
-        else {
+        } else {
             adapter = new PromotionAdapter(PromotionListActivity.this,3, R.layout.custom_promotionlist);
             list_promotion.setAdapter(adapter);
         }
@@ -137,59 +130,23 @@ public class PromotionListActivity extends AppCompatActivity {
 
 //                        TextView tv = (TextView) view.findViewById(R.id.tv_product);
 //                        String str_promotion_message = tv.getText().toString();
-
-                        if(from.equals("review"))
-                        {
                             Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
                             intent.putExtra("msg", arrayList.get(position));
                             intent.putExtra("pos",position);
                             startActivity(intent);
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                        }
-                        else {
+                    } else {
+                    }
+                } else {
+                    TextView tv = (TextView) view.findViewById(R.id.tv_product);
+                    String str_promotion_message = tv.getText().toString();
                             Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
-                            intent.putExtra("msg", arrayList.get(position));
+                    intent.putExtra("msg", str_promotion_message);
                             intent.putExtra("pos",position);
                             startActivity(intent);
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         }
-
-
-
-
-
-
-                    } else {
-
-                    }
-                }
-                else
-                {
-
-//                        TextView tv = (TextView) view.findViewById(R.id.tv_product);
-//                        String str_promotion_message = tv.getText().toString();
-
-
-
-                    if(from.equals("review"))
-                    {
-                        Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
-                        intent.putExtra("msg", arrayList.get(position));
-                        intent.putExtra("pos",position);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                    }
-                    else {
-                        Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
-                        intent.putExtra("msg", arrayList.get(position));
-                        intent.putExtra("pos",position);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                    }
-
-                }
             }
-
         };
 
 

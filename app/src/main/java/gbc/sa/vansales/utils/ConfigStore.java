@@ -53,6 +53,9 @@ public class ConfigStore {
     public static final String InvoiceRequest_PR = "03";
     public static final String CustomerDeliveryRequest_PR_Type = "DELIVERY";
     public static final String CustomerDeliveryRequest_PR = "04";
+    public static final String CustomerNew_PR_Type = "CUSTOMER";
+    public static final String CustomerNew_PR = "05";
+
 
 
     //Connectivity Messages

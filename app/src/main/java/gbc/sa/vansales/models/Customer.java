@@ -17,6 +17,7 @@ public class Customer implements Parcelable{
     private boolean delivery;
     private boolean collection;
     private boolean merchandize;
+    private boolean newcustomer;
 
     private boolean isCredit;
 
@@ -109,6 +110,12 @@ public class Customer implements Parcelable{
         this.order = order;
     }
 
+    public boolean isNewCustomer(){
+        return newcustomer;
+    }
+    public void setNewCustomer(boolean newcustomer){
+        this.newcustomer = newcustomer;
+    }
 
     public static final Creator<Customer> CREATOR = new Creator<Customer>() {
         @Override
@@ -127,6 +134,7 @@ public class Customer implements Parcelable{
             customer.collection = source.readByte()!=0;
             customer.merchandize = source.readByte()!=0;
             customer.order = source.readByte()!=0;
+            customer.newcustomer = source.readByte()!=0;
 
             return customer;
         }
@@ -153,5 +161,6 @@ public class Customer implements Parcelable{
         parcel.writeByte((byte)(collection ? 1:0));
         parcel.writeByte((byte)(merchandize ? 1:0));
         parcel.writeByte((byte)(order ? 1:0));
+        parcel.writeByte((byte)(newcustomer ? 1:0));
     }
 }

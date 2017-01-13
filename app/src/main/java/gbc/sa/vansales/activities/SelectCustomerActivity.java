@@ -299,7 +299,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                     customer.setCustomerAddress("");
                 }
-                HashMap<String,String> map = new HashMap<>();
+                HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(db.checkData(db.CUSTOMER_CREDIT,map)){
                     Log.e("Credit Exist","Credit Exist");
@@ -313,6 +313,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 customer.setCollection(false);
                 customer.setMerchandize(false);
                 customer.setDelivery(false);
+                customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
 
                 data.add(customer);
             }
@@ -364,6 +365,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
     private class loadVisitList extends AsyncTask<Void, Void, Void> {
         String tripId;
         private loadVisitList(String tripId) {
+            Log.e("CALLED","CALLED");
             this.tripId = tripId;
             execute();
         }
@@ -389,6 +391,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_COLLECTION_POSTED, "");
                 map.put(db.KEY_IS_MERCHANDIZE_POSTED, "");
                 map.put(db.KEY_IS_VISITED, "");
+                map.put(db.KEY_IS_NEW_CUSTOMER,"");
                 HashMap<String, String> filters = new HashMap<>();
                 filters.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 // filters.put(db.KEY_IS_VERIFIED,"false");

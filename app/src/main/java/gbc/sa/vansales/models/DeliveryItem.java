@@ -10,8 +10,16 @@ public class DeliveryItem implements Parcelable{
     private String materialNo;
     private String itemCase;
     private String itemUnits;
+    private String itemUom;
     private String amount;
 
+
+    public String getItemUom() {
+        return itemUom;
+    }
+    public void setItemUom(String itemUom) {
+        this.itemUom = itemUom;
+    }
     public String getAmount() {
         return amount;
     }
@@ -60,6 +68,7 @@ public class DeliveryItem implements Parcelable{
         parcel.writeString(itemUnits);
         parcel.writeString(materialNo);
         parcel.writeString(amount);
+        parcel.writeString(itemUom);
     }
 
     public static final Parcelable.Creator<DeliveryItem> CREATOR = new Parcelable.Creator<DeliveryItem>() {
@@ -73,7 +82,7 @@ public class DeliveryItem implements Parcelable{
             item.itemUnits = source.readString();
             item.materialNo = source.readString();
             item.amount = source.readString();
-
+            item.itemUom = source.readString();
             return item;
         }
         @Override

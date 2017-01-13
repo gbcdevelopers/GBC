@@ -303,6 +303,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_IS_SALES_POSTED,App.DATA_NOT_POSTED);
                         params.put(db.KEY_IS_COLLECTION_POSTED,App.DATA_NOT_POSTED);
                         params.put(db.KEY_IS_MERCHANDIZE_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_NEW_CUSTOMER,App.FALSE);
                         db.addData(db.VISIT_LIST, params);
                     }
                     catch (Exception e){

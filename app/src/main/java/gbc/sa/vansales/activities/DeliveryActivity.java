@@ -40,8 +40,7 @@ public class DeliveryActivity extends AppCompatActivity {
     ImageView iv_back,iv_refresh;
     TextView tv_top_header;
     ListView list_delivery;
-//    DeliveryListBadgeAdapter adapter; //change
-    DeliveryAdapter adapter;
+    DeliveryListBadgeAdapter adapter;
     FloatingActionButton flt_button;
     Customer object;
     ArrayList<CustomerHeader> customers;
@@ -62,13 +61,9 @@ public class DeliveryActivity extends AppCompatActivity {
 
 
         new loadDeliveries().execute();
-//        adapter = new DeliveryListBadgeAdapter(this, arrayList); // change
+        adapter = new DeliveryListBadgeAdapter(this, arrayList);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
-        if(object==null)
-        {
-          object=Const.allCustomerdataArrayList.get(Const.customerPosition);
-        }
         customers = CustomerHeaders.get();
 
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
@@ -106,16 +101,15 @@ public class DeliveryActivity extends AppCompatActivity {
 
 
 
-        adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
+     //  adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
         list_delivery.setAdapter(adapter);
         list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                OrderList delivery = arrayList.get(position); // change
+                OrderList delivery = arrayList.get(position);
                 Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
-//                intent.putExtra("headerObj", object);  //change
-//                intent.putExtra("delivery", delivery); //change
-
+                intent.putExtra("headerObj", object);
+                intent.putExtra("delivery", delivery);
                 startActivity(intent);
             }
         });

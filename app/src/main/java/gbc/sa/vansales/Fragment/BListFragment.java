@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -67,7 +68,8 @@ public class BListFragment extends Fragment {
         ll_top.setVisibility(View.GONE);
 
         fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
-
+        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
+        fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
         String strProductname[]={"Carton 80*150ml Fayha","CARTON 48*600ml Fayha","Shrink berain"};
         arrProductList = new ArrayList<>();
 

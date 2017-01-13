@@ -33,7 +33,7 @@ public class SyncData extends IntentService {
     }
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.e("I am here","IntentService" + Settings.getString(App.IS_DATA_SYNCING));
+        Log.e("I am here", "IntentService" + Settings.getString(App.IS_DATA_SYNCING));
         if(!Boolean.parseBoolean(Settings.getString(App.IS_DATA_SYNCING))){
             Log.e("Inside","Inside" + getSyncCount());
             if(getSyncCount()>0){
@@ -42,13 +42,37 @@ public class SyncData extends IntentService {
             }
         }
     }
-
     public void syncData(){
-        generateBatch(ConfigStore.LoadRequestFunction);
-       // generateBatch(ConfigStore.CustomerOrderRequestFunction+"O");
-        new syncData().execute();
-    }
+        boolean isEmpty = true;
+        if(getSyncCount(ConfigStore.LoadRequestFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.LoadRequestFunction);
+        }
+        if(getSyncCount(ConfigStore.CustomerOrderRequestFunction+"O")>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.CustomerOrderRequestFunction+"O");
+        }
+        if(getSyncCount(ConfigStore.InvoiceRequestFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.InvoiceRequestFunction);
+        }
+        if(getSyncCount(ConfigStore.CustomerDeliveryRequestFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.CustomerDeliveryRequestFunction);
+        }
+        if(!isEmpty){
+            new syncData().execute();
+        }
 
+    }
     public void generateBatch(String request) {
 
         String purchaseNumber = "";
@@ -273,12 +297,135 @@ public class SyncData extends IntentService {
                 break;
             }
             case ConfigStore.InvoiceRequestFunction:{
+                try{
 
+                    JSONArray deepEntity = new JSONArray();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_ITEM_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_NO,"");
+                    itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                    itemMap.put(db.KEY_ORG_CASE,"");
+                    itemMap.put(db.KEY_ORG_UNITS,"");
+                    itemMap.put(db.KEY_UOM,"");
+                    itemMap.put(db.KEY_AMOUNT,"");
+                    itemMap.put(db.KEY_ORDER_ID,"");
+                    itemMap.put(db.KEY_CUSTOMER_NO,"");
+                    itemMap.put(db.KEY_PURCHASE_NUMBER,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+                    Cursor pendingInvoiceCursor = db.getData(db.CAPTURE_SALES_INVOICE,itemMap,filter);
+                    if(pendingInvoiceCursor.getCount()>0){
+                        pendingInvoiceCursor.moveToFirst();
+                        int itemno = 10;
+                        do{
+                            tempPurchaseNumber = pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_ORDER_ID));
+                            tempCustomerNumber = pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_CUSTOMER_NO));
+                            if(customerNumber.equals("")){
+                                customerNumber = tempCustomerNumber;
+                            }
+                            if(purchaseNumber.equals("")){
+                                purchaseNumber = tempPurchaseNumber;
+                            }
+                            else if(purchaseNumber.equals(tempPurchaseNumber)){
+
+                            }
+                            else{
+                                if(customerNumber.equals(tempCustomerNumber)){
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    deepEntity = new JSONArray();
+                                }
+                                else{
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    customerNumber = tempCustomerNumber;
+                                    deepEntity = new JSONArray();
+                                }
+
+                            }
+
+                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_CASE)));
+                                jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                jo.put("Plant","");
+                                jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UNIT)));
+                                jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Storagelocation", "");
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno+10;
+                                deepEntity.put(jo);
+                            }
+                            //Check if cursor is at last position
+                            if(pendingInvoiceCursor.getPosition()==pendingInvoiceCursor.getCount()-1){
+
+                                if(customerNumber.equals(tempCustomerNumber)){
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    deepEntity = new JSONArray();
+                                }
+                                else{
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    customerNumber = tempCustomerNumber;
+                                    deepEntity = new JSONArray();
+                                }
+
+                                /*OfflinePost object = new OfflinePost();
+                                object.setCollectionName(App.POST_COLLECTION);
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, "0000205005", "", purchaseNumber));
+                                object.setDeepEntity(deepEntity);
+                                arrayList.add(object);
+                                deepEntity = new JSONArray();*/
+                            }
+
+                        }
+                        while (pendingInvoiceCursor.moveToNext());
+                    }
+
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
 
     }
-
     public class syncData extends AsyncTask<Void,Void,Void> {
         ArrayList<OfflineResponse> data = new ArrayList<>();
         @Override
@@ -349,7 +496,39 @@ public class SyncData extends IntentService {
 
         }
     }
+    public int getSyncCount(String function){
+        int syncCount = 0;
+        HashMap<String,String> map = new HashMap<String, String>();
+        map.put(db.KEY_TIME_STAMP, "");
 
+        HashMap<String,String> filter = new HashMap<>();
+        filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+        switch (function){
+            case ConfigStore.LoadRequestFunction:{
+                Cursor loadRequest = db.getData(db.LOAD_REQUEST,map,filter);
+                syncCount = loadRequest.getCount();
+                break;
+            }
+            case ConfigStore.CustomerOrderRequestFunction+"O":{
+                Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
+                syncCount = orderRequest.getCount();
+                break;
+            }
+            case ConfigStore.InvoiceRequestFunction:{
+                Cursor invoiceRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+                syncCount = invoiceRequest.getCount();
+                break;
+            }
+            case ConfigStore.CustomerDeliveryRequestFunction:{
+                Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
+                syncCount = deliveryRequest.getCount();
+                break;
+            }
+        }
+
+        return syncCount;
+    }
     public int getSyncCount(){
         int syncCount = 0;
         HashMap<String,String> map = new HashMap<String, String>();
@@ -359,11 +538,19 @@ public class SyncData extends IntentService {
         filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
         Cursor loadRequest = db.getData(db.LOAD_REQUEST,map,filter);
         Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
+        Cursor invoiceRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+        Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
         if(loadRequest.getCount()>0){
             syncCount += loadRequest.getCount();
         }
         if(orderRequest.getCount()>0){
             syncCount += orderRequest.getCount();
+        }
+        if(invoiceRequest.getCount()>0){
+            syncCount += invoiceRequest.getCount();
+        }
+        if(deliveryRequest.getCount()>0){
+            syncCount += deliveryRequest.getCount();
         }
         return syncCount;
     }

@@ -28,8 +28,8 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class SalesInvoiceOptionActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = {"Shelf Stock", "Sales Invoice", "Invoice", "End Invoice"};
-    int resarr[] = {R.drawable.ic_self_stock, R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
+    String strText[] = {"Sales Invoice", "Invoice", "End Invoice"};
+    int resarr[] = {R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
     ImageView iv_back;
     TextView tv_top_header;
     ImageView iv_updown;
@@ -138,21 +138,18 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(SalesInvoiceOptionActivity.this, ShelfStockActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 1:
                         Intent intent1 = new Intent(SalesInvoiceOptionActivity.this, SalesInvoiceActivity.class);
                         intent1.putExtra("headerObj", object);
                         startActivity(intent1);
                         break;
-                    case 2:
+                    case 1:
                         Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
                         intent2.putExtra("headerObj", object);
                         startActivity(intent2);
                         break;
-                    case 3:
+                    case 2:
                         Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
+                        intent3.putExtra("headerObj", object);
                         startActivity(intent3);
                         break;
                     default:

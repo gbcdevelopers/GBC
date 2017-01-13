@@ -127,9 +127,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
             }
         }
 
-
-
-
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);

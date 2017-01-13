@@ -269,10 +269,10 @@ public class LoginActivity extends Activity {
         Log.e("Inside chain", "" + tripId);
 
         HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_IS_BEGIN_DAY, App.IS_NOT_COMPLETE);
-        map.put(db.KEY_IS_LOAD_VERIFIED, App.IS_NOT_COMPLETE);
-        map.put(db.KEY_IS_END_DAY,App.IS_NOT_COMPLETE);
-        map.put(db.KEY_IS_UNLOAD,App.IS_NOT_COMPLETE);
+        map.put(db.KEY_IS_BEGIN_DAY, App.FALSE);
+        map.put(db.KEY_IS_LOAD_VERIFIED, App.FALSE);
+        map.put(db.KEY_IS_END_DAY,App.FALSE);
+        map.put(db.KEY_IS_UNLOAD,App.FALSE);
         db.addData(db.LOCK_FLAGS, map);
 
 

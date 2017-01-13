@@ -44,6 +44,7 @@ import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderList;
+import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -70,67 +71,45 @@ public class PaymentDetails extends AppCompatActivity {
     String invoiceAmount;
     ArrayList<CustomerHeader> customers;
     ArrayList<ArticleHeader> articles;
+
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
-
-    ArrayList<DeliveryItem>arrayList = new ArrayList<>();
-
+    ArrayList<DeliveryItem> arrayList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
         loadingSpinner = new LoadingSpinner(this);
-
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
-
-
-
-        if(getIntent().getExtras()!=null)
-        {
-
-
-            from=getIntent().getStringExtra("msg");
-            if(from.equals("collection"))
-            {
+        if (getIntent().getExtras() != null) {
+            from = getIntent().getStringExtra("msg");
+            if (from.equals("collection")) {
                 pos = getIntent().getIntExtra("pos", 0);
-
                 if (Const.colletionDatas.size() > 0) {
                     amountdue = Const.colletionDatas.get(pos).getAmoutDue();
                     tv_due_amt.setText(amountdue);
                 }
-
-            }
-            else {
+            } else {
                 Intent i = this.getIntent();
                 object = (Customer) i.getParcelableExtra("headerObj");
                 delivery = (OrderList) i.getParcelableExtra("delivery");
-
-                if(object==null)
-                {
-                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
+                if (object == null) {
+                    object = Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }
                 customers = CustomerHeaders.get();
                 articles = ArticleHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
-
                 invoiceAmount = i.getExtras().getString("invoiceamount");
-
-                amountdue=invoiceAmount;
-
+                amountdue = invoiceAmount;
                 tv_due_amt.setText(invoiceAmount);
-                TextView tv_cust_detail = (TextView)findViewById(R.id.tv_cust_detail);
-                if(customerHeader!=null){
+                TextView tv_cust_detail = (TextView) findViewById(R.id.tv_cust_detail);
+                if (customerHeader != null) {
                     tv_cust_detail.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
-                }
-                else{
+                } else {
                     tv_cust_detail.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
                 }
-
             }
         }
-
-
-
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -140,21 +119,12 @@ public class PaymentDetails extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                if(from.equals("collection"))
-                {
-
-                }
-                else
-                {
-                    HashMap<String,String> filter = new HashMap<String, String>();
+                if (from.equals("collection")) {
+                } else {
+                    HashMap<String, String> filter = new HashMap<String, String>();
                     filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
                     db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST, filter);
-
                 }
-
-
 //                Intent intent = new Intent();
 //                intent.putExtra("pos", pos);
 //                intent.putExtra("amt", String.valueOf(total_amt));
@@ -162,7 +132,6 @@ public class PaymentDetails extends AppCompatActivity {
                 finish();
             }
         });
-
         tv_total_amount = (TextView) findViewById(R.id.tv_total_amt);
         tv_date = (TextView) findViewById(R.id.tv_date);
         iv_cal = (ImageView) findViewById(R.id.image_cal);
@@ -178,7 +147,6 @@ public class PaymentDetails extends AppCompatActivity {
         sp_item.setEnabled(false);
         btn_edit1 = (Button) findViewById(R.id.btn_edit1);
         btn_edit2 = (Button) findViewById(R.id.btn_edit2);
-
         btn_edit1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,7 +266,7 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                Intent intent = new Intent(PaymentDetails.this,CustomerDetailActivity.class);
+                                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
@@ -308,11 +276,10 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                Intent intent = new Intent(PaymentDetails.this,CustomerDetailActivity.class);
+                                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                                 finish();
-
 //                               dialog.dismiss();
 //                                Intent intent = new Intent();
 //                                intent.putExtra("pos", pos);
@@ -364,10 +331,9 @@ public class PaymentDetails extends AppCompatActivity {
             tv_total_amount.setText(String.valueOf(total_amt));
         }
     }
-
-    public String postData(){
+    public String postData() {
         String orderID = "";
-        try{
+        try {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.CustomerDeliveryRequestFunction);
             map.put("OrderId", delivery.getOrderId());
@@ -380,73 +346,66 @@ public class PaymentDetails extends AppCompatActivity {
             map.put("Division", Settings.getString(App.DIVISION));
             map.put("OrderValue", invoiceAmount);
             map.put("Currency", "SAR");
-            map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.CustomerDeliveryRequest_PR_Type));
-
+            map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type));
             JSONArray deepEntity = new JSONArray();
-
             HashMap<String, String> itemMap = new HashMap<>();
-            itemMap.put(db.KEY_ITEM_NO,"");
-            itemMap.put(db.KEY_MATERIAL_NO,"");
-            itemMap.put(db.KEY_MATERIAL_DESC1,"");
-            itemMap.put(db.KEY_CASE,"");
-            itemMap.put(db.KEY_UNIT,"");
-            itemMap.put(db.KEY_AMOUNT,"");
-
+            itemMap.put(db.KEY_ITEM_NO, "");
+            itemMap.put(db.KEY_MATERIAL_NO, "");
+            itemMap.put(db.KEY_MATERIAL_DESC1, "");
+            itemMap.put(db.KEY_CASE, "");
+            itemMap.put(db.KEY_UNIT, "");
+            itemMap.put(db.KEY_AMOUNT, "");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
-
-            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,itemMap,filter);
-            if(cursor.getCount()>0){
+            filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, itemMap, filter);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 int itemno = 10;
-                do{
-                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    if(articleHeader.getBaseUOM().equals(App.CASE_UOM)){
+                do {
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    if (articleHeader.getBaseUOM().equals(App.CASE_UOM)) {
                         JSONObject jo = new JSONObject();
-                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                        jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                        jo.put("Plant","");
-                        jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", "");
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("UoM", App.CASE_UOM);
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
-                        itemno = itemno+10;
+                        itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
-                    if(articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)){
+                    if (articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
-                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                        jo.put("Material",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        jo.put("Description",cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                        jo.put("Plant","");
-                        jo.put("Quantity",cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", "");
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("UoM", App.BOTTLES_UOM);
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
-                        itemno = itemno+10;
+                        itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
                 }
                 while (cursor.moveToNext());
             }
             orderID = IntegrationService.postData(PaymentDetails.this, App.POST_COLLECTION, map, deepEntity);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return orderID;
-
     }
-
-    public class
-    postData extends AsyncTask<Void, Void, Void> {
-        private ArrayList<String>returnList;
+    public class postData extends AsyncTask<Void, Void, Void> {
+        private ArrayList<String> returnList;
         private String orderID = "";
+        private String[] tokens = new String[2];
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
@@ -455,39 +414,77 @@ public class PaymentDetails extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
             this.orderID = postData();
-
+            this.tokens = orderID.split(",");
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-
             Log.e("Order ID", "" + this.orderID);
 
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put(db.KEY_ENTRY_TIME, "");
+            map.put(db.KEY_DELIVERY_NO,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_NO ,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_CASE ,"");
+            map.put(db.KEY_UNIT ,"");
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_AMOUNT, "");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
 
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
 
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
+            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+
+                    DeliveryItem deliveryItem = new DeliveryItem();
+                    deliveryItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                    deliveryItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    deliveryItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    deliveryItem.setItemCase(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                    deliveryItem.setItemUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                    deliveryItem.setItemUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    deliveryItem.setAmount(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    arrayList.add(deliveryItem);
+                }
+                while (cursor.moveToNext());
             }
-            if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
-               // Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
-            }
-            else if(this.orderID.contains("Error")){
-                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
-            }
-            else{
+            if(this.tokens[0].toString().equals(this.tokens[1].toString())){
+                for (DeliveryItem item : arrayList) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, postmap, filtermap);
+                }
+
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PaymentDetails.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request " + this.orderID + " has been created")
+                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                HashMap<String,String> map = new HashMap<String, String>();
-                                map.put(db.KEY_IS_DELIVERED,"true");
-
-                                HashMap<String,String> filter = new HashMap<>();
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_IS_DELIVERED, "true");
+                                HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                                filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
                                 db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
                                 dialog.dismiss();
                                 finish();
@@ -499,11 +496,59 @@ public class PaymentDetails extends AppCompatActivity {
                 alertDialog.show();
 
             }
+            else{
+                for (DeliveryItem item : arrayList) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
 
-                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, postmap, filtermap);
+                }
+
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
+                    // Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+                } else if (this.orderID.contains("Error")) {
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                } else {
+                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PaymentDetails.this);
+                    alertDialogBuilder.setTitle("Message")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_IS_DELIVERED, "true");
+                                    HashMap<String, String> filter = new HashMap<>();
+                                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                                    db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    // create alert dialog
+                    android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
+                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                intent.putExtra("headerObj", object);
+                intent.putExtra("msg","all");
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-               finish();
+                finish();
+            }
 
         }
     }

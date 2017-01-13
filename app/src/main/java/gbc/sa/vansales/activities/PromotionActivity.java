@@ -129,8 +129,31 @@ public class PromotionActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 } else {
-
+                    if (str_promotion_message.equals("")) {
+                        final Dialog dialog = new Dialog(PromotionActivity.this);
+                        dialog.setContentView(R.layout.dialog_doprint);
+                        dialog.setCancelable(true);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                        LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                        dialog.show();
+                        btn_print.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        btn_notprint.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(PromotionActivity.this, DashboardActivity.class);
+                                startActivity(intent);
                     finish();
+                            }
+                        });
+                    } else {
+                        finish();
+                    }
                 }
             }
         });

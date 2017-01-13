@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,9 @@ public class FocFragment extends Fragment {
         viewmain =inflater.inflate(R.layout.fragment_salesinvoice,container,false);
         listSales=(ListView) viewmain.findViewById(R.id.list_sales);
         fab=(FloatingActionButton) viewmain.findViewById(R.id.fab);
+        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
+        fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
+
 
         String strProductname[]={"Carton 80*150ml Fayha","CARTON 48*600ml Fayha","Shrink berain"};
         salesarrayList = new ArrayList<>();

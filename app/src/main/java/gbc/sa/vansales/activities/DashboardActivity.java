@@ -317,22 +317,22 @@ public class DashboardActivity extends AppCompatActivity
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
         manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
-//        manageInventory.setIsEnabled(isBeginTripEnabled);
-        manageInventory.setIsEnabled(true);
+        manageInventory.setIsEnabled(isBeginTripEnabled);
+        //manageInventory.setIsEnabled(true);
         listDataHeader.add(manageInventory);
 
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
         customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
-//        customerOperations.setIsEnabled(isloadVerifiedEnabled);
-        customerOperations.setIsEnabled(true);
+        customerOperations.setIsEnabled(isloadVerifiedEnabled);
+       // customerOperations.setIsEnabled(true);
         listDataHeader.add(customerOperations);
 
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
-//        endTrip.setIsEnabled(isBeginTripEnabled);
-        endTrip.setIsEnabled(true);
+        endTrip.setIsEnabled(isBeginTripEnabled);
+       // endTrip.setIsEnabled(true);
         listDataHeader.add(endTrip);
 
         ExpandedMenuModel information = new ExpandedMenuModel();

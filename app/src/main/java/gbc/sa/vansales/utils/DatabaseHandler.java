@@ -237,6 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_COLLECTION_POSTED = "isCollectionPosted";
     public static final String KEY_IS_MERCHANDIZE_POSTED = "isMerchandizePosted";
     public static final String KEY_IS_VISITED = "isVisited";
+    public static final String KEY_IS_NEW_CUSTOMER = "isNewCustomer";
 
 
     private static DatabaseHandler sInstance;
@@ -272,6 +273,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_COLLECTION_POSTED + " TEXT,"
                 + KEY_IS_MERCHANDIZE_POSTED + " TEXT,"
                 + KEY_IS_VISITED + " TEXT,"
+                + KEY_IS_NEW_CUSTOMER + " TEXT,"
                 + KEY_VP_TYPE + " TEXT " + ")";
         String TABLE_TRIP_HEADER = "CREATE TABLE " + TRIP_HEADER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -517,18 +519,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_MATERIAL_DESC1 + " TEXT,"
                 + KEY_ORG_CASE + " TEXT,"
                 + KEY_ORG_UNITS + " TEXT,"
+                + KEY_UOM + " TEXT,"
                 + KEY_VAR_CASE + " TEXT,"
                 + KEY_VAR_UNITS + " TEXT " + ")";
         String TABLE_CUSTOMER_DELIVERY_ITEMS_POST = "CREATE TABLE " + CUSTOMER_DELIVERY_ITEMS_POST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ENTRY_TIME + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_DELIVERY_NO + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_MATERIAL_NO + " TEXT,"
                 + KEY_MATERIAL_DESC1 + " TEXT,"
                 + KEY_CASE + " TEXT,"
                 + KEY_UNIT + " TEXT,"
-                + KEY_AMOUNT + " TEXT " + ")";
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
         String TABLE_BEGIN_DAY = "CREATE TABLE " + BEGIN_DAY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ENTRY_TIME + " TEXT,"
