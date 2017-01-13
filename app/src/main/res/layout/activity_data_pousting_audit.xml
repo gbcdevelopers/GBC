@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_data_pousting_audit"
+    android:id="@+id/activity_data_pousting_audit" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="gbc.sa.vansales.activities.DataPoustingAuditActivity">
@@ -66,7 +66,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="@string/cust_ID"
+                        android:text="@string/customer"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 
@@ -126,7 +126,18 @@
 
         </LinearLayout>
 
+
     </android.support.v7.widget.CardView>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/syncData"
+        android:src="@drawable/ic_sync"
+        app:backgroundTint="@color/colorPrimary"
+        />
+
 
 
 </RelativeLayout>

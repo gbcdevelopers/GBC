@@ -333,6 +333,7 @@ public class PaymentDetails extends AppCompatActivity {
     }
     public String postData() {
         String orderID = "";
+        String purchaseNumber = "";
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.CustomerDeliveryRequestFunction);
@@ -346,7 +347,7 @@ public class PaymentDetails extends AppCompatActivity {
             map.put("Division", Settings.getString(App.DIVISION));
             map.put("OrderValue", invoiceAmount);
             map.put("Currency", "SAR");
-            map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type));
+            /*map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type));*/
             JSONArray deepEntity = new JSONArray();
             HashMap<String, String> itemMap = new HashMap<>();
             itemMap.put(db.KEY_ITEM_NO, "");
@@ -355,11 +356,14 @@ public class PaymentDetails extends AppCompatActivity {
             itemMap.put(db.KEY_CASE, "");
             itemMap.put(db.KEY_UNIT, "");
             itemMap.put(db.KEY_AMOUNT, "");
+            itemMap.put(db.KEY_ORDER_ID, "");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
             Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, itemMap, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
+                map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {
                     ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -400,7 +404,7 @@ public class PaymentDetails extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderID;
+        return orderID + "," + purchaseNumber;
     }
     public class postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> returnList;
@@ -422,7 +426,7 @@ public class PaymentDetails extends AppCompatActivity {
             Log.e("Order ID", "" + this.orderID);
 
             HashMap<String,String> map = new HashMap<String, String>();
-            map.put(db.KEY_ENTRY_TIME, "");
+            map.put(db.KEY_TIME_STAMP, "");
             map.put(db.KEY_DELIVERY_NO,"");
             map.put(db.KEY_ITEM_NO,"");
             map.put(db.KEY_MATERIAL_NO ,"");
@@ -463,7 +467,7 @@ public class PaymentDetails extends AppCompatActivity {
 
                     HashMap<String, String> filtermap = new HashMap<>();
                     filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                   // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
                     filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
@@ -505,7 +509,7 @@ public class PaymentDetails extends AppCompatActivity {
 
                     HashMap<String, String> filtermap = new HashMap<>();
                     filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                  //  filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
                     filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());

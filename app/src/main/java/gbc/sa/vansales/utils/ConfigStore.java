@@ -63,6 +63,14 @@ public class ConfigStore {
     public static final String MOBILE_DATA_CONNECTED = "Mobile Data Enabled";
     public static final String NO_CONNECTION = "Not connected to Internet";
 
+    //Transaction Types
 
+    public static final String LoadRequest_TR = "LR";
+    public static final String OrderRequest_TR = "OR";
+    public static final String SalesInvoice_TR = "SI";
+    public static final String InventoryRequest_TR = "INV";
+    public static final String CollectionRequest_TR = "AR";
+    public static final String DeliveryRequest_TR = "DLV";
+    public static final String UnloadRequest_TR = "UL";
 
 }

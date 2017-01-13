@@ -68,6 +68,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
 
+/*
 
 
         if(object==null)
@@ -75,6 +76,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
            object= Const.allCustomerdataArrayList.get(Const.customerPosition);
         }
+*/
 
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
@@ -167,14 +169,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         if (proceedArrayList != null) {
             proceedArrayList.clear();
         }
-        Log.v("hashmap", Const.constantsHashMap.size() + "");
-        for (int i = 0; i < Const.constantsHashMap.size(); i++) {
-            proceedArrayList.add(i);
-            List<LoadRequestConstants> constantses = Const.constantsHashMap.get(i);
-            for (int j = 0; j < constantses.size(); j++) {
-                Log.v("itemname", constantses.get(j).getItemName());
-            }
-        }
+
 //        for(int i=0;i<Const.constantsHashMap.size();i++)
 //        {
 //            proceedArrayList.add(i);

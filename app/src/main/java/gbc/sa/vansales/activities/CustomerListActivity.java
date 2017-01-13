@@ -44,20 +44,23 @@ public class CustomerListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerListActivity.this,TodaysScheduleActivity.class);
+                intent.putExtra("schedule","schedule");
                 startActivity(intent);
             }
         });
         text_today_unserviced_customer_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerListActivity.this,TodaysUnservicedActivity.class);
+                Intent intent = new Intent(CustomerListActivity.this,TodaysScheduleActivity.class);
+                intent.putExtra("schedule","unserviced");
                 startActivity(intent);
             }
         });
         text_today_all_route_customer_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerListActivity.this,AllRouteCustomerActivity.class);
+                Intent intent = new Intent(CustomerListActivity.this,TodaysScheduleActivity.class);
+                intent.putExtra("schedule","all");
                 startActivity(intent);
             }
         });

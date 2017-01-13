@@ -24,19 +24,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
-            <include
-                android:id="@+id/include_header"
-                layout="@layout/item_list_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <ListView
-                android:id="@+id/list_item_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:divider="@null" />
+                android:id="@+id/listview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="0px"
+                android:background="@color/white"
+                />
 
         </LinearLayout>
 

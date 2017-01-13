@@ -49,8 +49,7 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             convertView = mInflater.inflate(R.layout.activity_single_load, null);
             holder = new ViewHolder();
             holder.deliveryNo = (TextView) convertView.findViewById(R.id.deliveryNo);
-            holder.loadingDate = (TextView) convertView
-                    .findViewById(R.id.loadingDate);
+            holder.loadingDate = (TextView) convertView.findViewById(R.id.loadingDate);
             holder.loadAvailable = (ImageView)convertView.findViewById(R.id.img_loadVerified);
           //  holder.availableLoad = (TextView) convertView.findViewById(R.id.availableLoad);
            // holder.txtStatus = (TextView) convertView.findViewById(R.id.status);

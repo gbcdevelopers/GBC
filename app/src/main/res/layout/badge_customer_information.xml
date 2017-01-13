@@ -1,0 +1,75 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:elevation="@dimen/size_five"
+    >
+
+    <LinearLayout android:id="@+id/ll_items"
+                  xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:weightSum="4"
+                  android:paddingLeft="@dimen/activity_horizontal_margin"
+                  android:background="@color/white"
+                  android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/size_five"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <gbc.sa.vansales.views.TextViewWithLabel
+                android:id="@+id/customer_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:label="@string/customerid"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/size_five"
+            android:orientation="horizontal"
+            android:weightSum="3"
+
+            >
+
+            <gbc.sa.vansales.views.TextViewWithLabel
+                android:id="@+id/customer_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:label="@string/customer_name"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/size_five"
+            android:layout_marginBottom="@dimen/size_five"
+            android:weightSum="3"
+
+            >
+
+            <gbc.sa.vansales.views.TextViewWithLabel
+                android:id="@+id/customer_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:label="@string/customer_address"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+
+
+

@@ -68,6 +68,7 @@ public class App extends Application {
     public static final String DATA_IS_POSTED = "Y";
     public static final String DATA_MARKED_FOR_POST = "M";
     public static final String DATA_NOT_POSTED = "N";
+    public static final String DATA_PUT_ON_HOLD = "H";
 
     public static final String LANGUAGE = "lang";
     public static final String IS_DATA_SYNCING = "isDataSync";
@@ -80,6 +81,8 @@ public class App extends Application {
 
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+
+    //Transaction Types
 
     @Override
     public void onCreate() {

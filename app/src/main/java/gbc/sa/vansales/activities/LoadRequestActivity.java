@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -69,6 +71,9 @@ public class LoadRequestActivity extends AppCompatActivity {
     public ArrayList<ArticleHeader> articles;
     int orderTotalValue = 0;
     LoadingSpinner loadingSpinner;
+    boolean isPutOnHold;
+    boolean putOnHoldValueChanged = false;
+    CheckBox putOnHold;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
@@ -77,10 +82,41 @@ public class LoadRequestActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(LoadRequestActivity.this);
-        new loadItems();
+        putOnHold = (CheckBox)findViewById(R.id.putOnHold);
+
+        HashMap<String,String> filter = new HashMap<>();
+        filter.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+
+        if(db.checkData(db.LOAD_REQUEST,filter)){
+            putOnHold.setChecked(true);
+            isPutOnHold = true;
+            new loadItems(true);
+        }
+        else{
+            isPutOnHold = false;
+            putOnHold.setChecked(false);
+            new loadItems(false);
+        }
+
         datepickerdialogbutton = (ImageButton) findViewById(R.id.btnDate);
         selecteddate = (TextView) findViewById(R.id.tv1);
         processLoadRequest = (Button) findViewById(R.id.btnProcess);
+
+        putOnHold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                putOnHoldValueChanged = true;
+                if(isChecked){
+                    isPutOnHold = true;
+                    Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    isPutOnHold = false;
+                    Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // Generate sample data
         datepickerdialogbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -93,40 +129,51 @@ public class LoadRequestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*new postData().execute();*/
-                String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
-                Log.e("Purchase Num PR","" + purchaseNum);
-                for(LoadRequest loadRequest:arraylist){
-                    try{
-                        if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
-                            loadRequest.setCases("0");
-                        }
-                        if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
-                            loadRequest.setUnits("0");
-                        }
-                        HashMap<String,String> map = new HashMap<String, String>();
-                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                        map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
-                        map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
-                        map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                        map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
-                        map.put(db.KEY_CASE,loadRequest.getCases());
-                        map.put(db.KEY_UNIT,loadRequest.getUnits());
-                        map.put(db.KEY_UOM,loadRequest.getUom());
-                        map.put(db.KEY_PRICE,loadRequest.getPrice());
-                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                        map.put(db.KEY_IS_PRINTED, "");
-                        map.put(db.KEY_ORDER_ID,purchaseNum);
-                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
-                        orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
-                        if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
-                            db.addData(db.LOAD_REQUEST,map);
-                        }
+                String purchaseNum = isPutOnHold?"":Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                if(putOnHoldValueChanged){
+                    if(isPutOnHold){
+
                     }
-                    catch (Exception e){
-                        e.printStackTrace();
+                    else{
+
                     }
                 }
+                else{
+                    for(LoadRequest loadRequest:arraylist){
+                        try{
+                            if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                loadRequest.setCases("0");
+                            }
+                            if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                loadRequest.setUnits("0");
+                            }
+                            HashMap<String,String> map = new HashMap<String, String>();
+                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                            map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                            map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                            map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                            map.put(db.KEY_CASE,loadRequest.getCases());
+                            map.put(db.KEY_UNIT,loadRequest.getUnits());
+                            map.put(db.KEY_UOM,loadRequest.getUom());
+                            map.put(db.KEY_PRICE,loadRequest.getPrice());
+                            map.put(db.KEY_IS_POSTED,isPutOnHold?App.DATA_PUT_ON_HOLD:App.DATA_NOT_POSTED);
+                            map.put(db.KEY_IS_PRINTED, "");
+                            map.put(db.KEY_ORDER_ID,purchaseNum);
+                            map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
+                            orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                            if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                                db.addData(db.LOAD_REQUEST,map);
+                            }
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
                 setTitle("Print Activity");
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.dialog_doprint);
@@ -136,19 +183,29 @@ public class LoadRequestActivity extends AppCompatActivity {
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new postData().execute();
+                        if(!isPutOnHold){
+                            new postData().execute();
+                        }
+
                         dialog.dismiss();
+                        finish();
                     }
                 });
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                        finish();
                     }
 
                 });
                 dialog.setCancelable(false);
-                dialog.show();
+                if(!isPutOnHold){
+                    dialog.show();
+                }
+                else{
+                    finish();
+                }
             }
         });
         // Locate the ListView in listview_main.xml
@@ -286,7 +343,9 @@ public class LoadRequestActivity extends AppCompatActivity {
     }
     public class loadItems extends AsyncTask<Void,Void,Void>{
 
-        private loadItems() {
+        boolean putOnHoldExists = false;
+        private loadItems(boolean putOnHoldExists) {
+            this.putOnHoldExists = putOnHoldExists;
             execute();
         }
 
@@ -317,13 +376,21 @@ public class LoadRequestActivity extends AppCompatActivity {
 
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
-                setLoadItems(cursor);
+                setLoadItems(cursor,this.putOnHoldExists);
             }
             return null;
         }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            adapter.notifyDataSetChanged();
+        }
     }
 
-    public void setLoadItems(Cursor loadItemsCursor){
+    public void setLoadItems(Cursor loadItemsCursor,boolean putOnHoldExists){
+
         Cursor cursor = loadItemsCursor;
 
         do{
@@ -351,7 +418,44 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext());
 
-        adapter.notifyDataSetChanged();
+        if(putOnHoldExists){
+            for(int i=0;i<arraylist.size();i++){
+                LoadRequest loadRequest = arraylist.get(i);
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_ITEM_NO,"");
+                map.put(db.KEY_MATERIAL_DESC1,"");
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_MATERIAL_GROUP,"");
+                map.put(db.KEY_CASE,"");
+                map.put(db.KEY_UNIT,"");
+                map.put(db.KEY_UOM,"");
+                map.put(db.KEY_PRICE,"");
+                map.put(db.KEY_ORDER_ID,"");
+                map.put(db.KEY_PURCHASE_NUMBER,"");
+                HashMap<String,String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                filter.put(db.KEY_IS_POSTED, App.DATA_PUT_ON_HOLD);
+                Cursor holdCursor = db.getData(db.LOAD_REQUEST,map,filter);
+                Log.e("HOLD Cursor", "" + holdCursor.getCount());
+                if(holdCursor.getCount()>0){
+                    holdCursor.moveToFirst();
+                    do {
+                        if(holdCursor.getString(holdCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||holdCursor.getString(holdCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)){
+                            loadRequest.setCases(holdCursor.getString(holdCursor.getColumnIndex(db.KEY_CASE)));
+                        }
+                        if(holdCursor.getString(holdCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            loadRequest.setUnits(holdCursor.getString(holdCursor.getColumnIndex(db.KEY_UNIT)));
+                        }
+                    }
+                    while (holdCursor.moveToNext());
+                    arraylist.remove(i);
+                    arraylist.add(i, loadRequest);
+                }
+
+            }
+        }
+
+      //  adapter.notifyDataSetChanged();
     }
 
     public class postData extends AsyncTask<Void, Void, Void>{
@@ -409,7 +513,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 // show it
                 alertDialog.show();
             }
-            else{
+            else if(!tokens[0].toString().equals("")){
                 for(LoadRequest loadRequest:arraylist){
                     HashMap<String,String> map = new HashMap<String, String>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -450,6 +554,9 @@ public class LoadRequestActivity extends AppCompatActivity {
                     // show it
                     alertDialog.show();
                 }
+            }
+            else{
+                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
             }
 
 

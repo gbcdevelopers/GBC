@@ -251,8 +251,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         break;
                     case 5:
                         Intent intent5 = new Intent(CustomerDetailActivity.this, PrintCustomerActivity.class);
-//                        intent5.putExtra("headerObj", object);
-//                        intent5.putExtra("from", "customer");
+                        intent5.putExtra("headerObj", object);
+                        intent5.putExtra("from", "customer");
                         startActivity(intent5);
                         break;
                     default:

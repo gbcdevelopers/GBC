@@ -300,8 +300,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 }
 
                 HashMap<String,String> map = new HashMap<String, String>();
-                map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
                 map.put(db.KEY_ITEM_NO,item.getItemCode());
                 map.put(db.KEY_MATERIAL_NO ,item.getMaterialNo());
