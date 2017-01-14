@@ -5,7 +5,7 @@
     android:id="@+id/activity_data_pousting_audit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="gbc.sa.vansales.activities.DataPoustingAuditActivity">
+    tools:context=".activities.DataPostingAuditActivity">
 
     <include
         android:id="@+id/inc_comman_header_poustind_audit"

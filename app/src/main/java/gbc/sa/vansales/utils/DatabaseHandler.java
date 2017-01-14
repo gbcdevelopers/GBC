@@ -238,7 +238,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_MERCHANDIZE_POSTED = "isMerchandizePosted";
     public static final String KEY_IS_VISITED = "isVisited";
     public static final String KEY_IS_NEW_CUSTOMER = "isNewCustomer";
-
+    public static final String KEY_FUNCTION = "function";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -426,6 +426,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_LOAD_DELIVERY_ITEMS = "CREATE TABLE " + LOAD_DELIVERY_ITEMS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_DELIVERY_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_ITEM_CATEGORY + " TEXT,"
                 + KEY_CREATED_BY + " TEXT,"
@@ -514,6 +515,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ENTRY_TIME + " TEXT,"
                 + KEY_DELIVERY_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_MATERIAL_NO + " TEXT,"
                 + KEY_MATERIAL_DESC1 + " TEXT,"
@@ -540,9 +542,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_PRINTED + " TEXT " + ")";
         String TABLE_BEGIN_DAY = "CREATE TABLE " + BEGIN_DAY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + KEY_ENTRY_TIME + " TEXT,"
+                + KEY_TIME_STAMP + " TEXT,"
                 + KEY_TRIP_ID + " TEXT,"
+                + KEY_FUNCTION + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_DATE + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_SELECTED + " TEXT " + ")";
         String TABLE_CAPTURE_CUSTOMER_STOCK = "CREATE TABLE " + CAPTURE_CUSTOMER_STOCK + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -630,6 +635,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_ODOMETER_VALUE = "CREATE TABLE " + ODOMETER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
                 + KEY_ODOMETER_VALUE + " TEXT " + ")";
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);

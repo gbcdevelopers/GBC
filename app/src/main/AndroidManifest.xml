@@ -417,7 +417,7 @@
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
-												android:name=".activities.DataPoustingAuditActivity"
+												android:name=".activities.DataPostingAuditActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>

@@ -27,7 +27,7 @@ import gbc.sa.vansales.models.Print;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
-public class DataPoustingAuditActivity extends AppCompatActivity {
+public class DataPostingAuditActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     View view1;
@@ -58,7 +58,7 @@ public class DataPoustingAuditActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                /*adapter = new DataPoustingAuditAdapter(DataPoustingAuditActivity.this, arrayList, isChecked);
+                /*adapter = new DataPoustingAuditAdapter(DataPostingAuditActivity.this, arrayList, isChecked);
                 listView.setAdapter(adapter);*/
             }
         });

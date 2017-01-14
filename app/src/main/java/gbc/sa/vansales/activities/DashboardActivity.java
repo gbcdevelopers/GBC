@@ -206,14 +206,6 @@ public class DashboardActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_DATE,new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
-                map.put(db.KEY_IS_SELECTED, "true");
-
-                db.addData(db.BEGIN_DAY, map);
-
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

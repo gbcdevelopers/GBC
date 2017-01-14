@@ -77,7 +77,7 @@ public class ReviewActivity extends AppCompatActivity {
                         startActivity(todaysOrder);
                         break;
                     case 6:
-                        Intent data = new Intent(ReviewActivity.this, DataPoustingAuditActivity.class);
+                        Intent data = new Intent(ReviewActivity.this, DataPostingAuditActivity.class);
                         startActivity(data);
                         break;
                     default:

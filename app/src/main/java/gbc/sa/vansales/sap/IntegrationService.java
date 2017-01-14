@@ -302,7 +302,50 @@ public class IntegrationService extends IntentService {
         }
         return orderId;
     }
-    public static String postOdometer(Context context, String collection, HashMap<String, String> map, JSONArray deepEntity) {
+    public static String postTrip(Context context, String collection, HashMap<String, String> map, JSONArray deepEntity, String purchaseNum) {
+        String orderId = "";
+        try {
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
+            HttpPost post = new HttpPost(postUrl(collection));
+            String authString = "ecs" + ":" + "sap123";
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+            post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
+            post.addHeader(ACCEPT, APPLICATION_JSON);
+            post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
+            //   post.addHeader(X_CSRF_TOKEN_KEY,token);
+            post.setEntity(getPayload(map, deepEntity));
+            if (!Helpers.isNetworkAvailable(context)) {
+                orderId = purchaseNum;
+            } else {
+                HttpResponse response = client.execute(post);
+                if (response.getStatusLine().getStatusCode() == 201) {
+                    Header[] headers = response.getAllHeaders();
+                    HttpEntity r_entity = response.getEntity();
+                    String jsonString = getJSONString(r_entity);
+                    JSONObject jsonObj = new JSONObject(jsonString);
+                    jsonObj = jsonObj.getJSONObject("d");
+                    orderId = jsonObj.getString("OrderId");
+                    Log.e("Posting", "" + jsonObj);
+                    return orderId;
+                } else {
+                    Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+                    Log.e("Message", "Message" + response);
+                    HttpEntity r_entity = response.getEntity();
+                    String jsonString = getJSONString(r_entity);
+                    JSONObject jsonObj = new JSONObject(jsonString);
+                    jsonObj = jsonObj.getJSONObject("error").getJSONObject("message");
+                    Log.e("Entity", "" + jsonObj);
+                    orderId = "Error" + jsonObj.getString("value");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderId;
+    }
+    public static String postOdometer(Context context, String collection, HashMap<String, String> map, JSONArray deepEntity, String purchaseNumber) {
         String flag = "";
         try {
             DefaultHttpClient client = new DefaultHttpClient();
@@ -316,22 +359,28 @@ public class IntegrationService extends IntentService {
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
             //   post.addHeader(X_CSRF_TOKEN_KEY,token);
             post.setEntity(getPayload(map, deepEntity));
-            HttpResponse response = client.execute(post);
-            if (response.getStatusLine().getStatusCode() == 201) {
-                Header[] headers = response.getAllHeaders();
-                HttpEntity r_entity = response.getEntity();
-                String jsonString = getJSONString(r_entity);
-                JSONObject jsonObj = new JSONObject(jsonString);
-                jsonObj = jsonObj.getJSONObject("d");
-                flag = jsonObj.getString("Flag");
-                if (flag.equals("N")) {
-                    flag = "Error" + jsonObj.getString("Message");
-                }
-                Log.e("Posting", "" + jsonObj);
-                return flag;
-            } else {
-                Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+            if (!Helpers.isNetworkAvailable(context)) {
+                flag = purchaseNumber;
             }
+            else{
+                HttpResponse response = client.execute(post);
+                if (response.getStatusLine().getStatusCode() == 201) {
+                    Header[] headers = response.getAllHeaders();
+                    HttpEntity r_entity = response.getEntity();
+                    String jsonString = getJSONString(r_entity);
+                    JSONObject jsonObj = new JSONObject(jsonString);
+                    jsonObj = jsonObj.getJSONObject("d");
+                    flag = jsonObj.getString("Flag");
+                    if (flag.equals("N")) {
+                        flag = "Error" + jsonObj.getString("Message");
+                    }
+                    Log.e("Posting", "" + jsonObj);
+                    return flag;
+                } else {
+                    Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

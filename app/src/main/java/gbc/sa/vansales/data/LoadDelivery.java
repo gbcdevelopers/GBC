@@ -18,6 +18,7 @@ public class LoadDelivery {
 
         HashMap<String, String> params = new HashMap<>();
         params.put(TRIP_ID,tripId);
+      //  params.put(TRIP_ID,"GBC012000000008");
 
         HashMap<String,String>expansion = new HashMap<>();
         expansion.put(LOAD_DEL_ITEMS,LOAD_DEL_ITEMS);

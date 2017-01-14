@@ -227,6 +227,18 @@ public class Helpers {
                 docTypeNo = ConfigStore.CustomerNew_PR;
                 break;
             }
+            case ConfigStore.BeginDay_PR_Type:{
+                docTypeNo = ConfigStore.BeginDay_PR;
+                break;
+            }
+            case ConfigStore.EndDay_PR_Type:{
+                docTypeNo = ConfigStore.EndDay_PR;
+                break;
+            }
+            case ConfigStore.Odometer_PR_Type:{
+                docTypeNo = ConfigStore.Odometer_PR;
+                break;
+            }
 
         }
         return docTypeNo;

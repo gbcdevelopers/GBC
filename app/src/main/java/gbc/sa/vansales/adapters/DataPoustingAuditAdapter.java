@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.activities.DataPoustingAuditActivity;
+import gbc.sa.vansales.activities.DataPostingAuditActivity;
 import gbc.sa.vansales.models.DataPoustingAudit;
 
 /**
@@ -70,7 +70,7 @@ public class DataPoustingAuditAdapter extends BaseAdapter {
 
 
 
-        ll.setOnTouchListener(DataPoustingAuditActivity.swipeDetector);
+        ll.setOnTouchListener(DataPostingAuditActivity.swipeDetector);
 //        ll.setOnClickListener();
 
 

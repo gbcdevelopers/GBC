@@ -11,8 +11,8 @@
         android:layout_marginTop="@dimen/h3"
         android:layout_marginLeft="@dimen/h3"
         android:layout_marginRight="@dimen/h3"
-        android:divider="@color/aluminum"
-        android:dividerHeight="@dimen/size_four"
+        android:divider="@color/colorPrimary"
+        android:dividerHeight="0.5dp"
         />
 
 </LinearLayout>

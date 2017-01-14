@@ -41,6 +41,9 @@ public class ConfigStore {
     public static final String LoadConfirmationFunction = "LCON";
     public static final String InvoiceRequestFunction = "HHTIV";
     public static final String CustomerDeliveryRequestFunction = "CUSTDEL";
+    public static final String BeginDayFunction = "BEGINDAY";
+
+    //Document Types
     public static final String DocumentType = "ZVDL";
     public static final String DeliveryDocumentType = "ZVAN";
 
@@ -55,7 +58,12 @@ public class ConfigStore {
     public static final String CustomerDeliveryRequest_PR = "04";
     public static final String CustomerNew_PR_Type = "CUSTOMER";
     public static final String CustomerNew_PR = "05";
-
+    public static final String BeginDay_PR_Type = "BEGINDAY";
+    public static final String BeginDay_PR = "98";
+    public static final String EndDay_PR_Type = "ENDDAY";
+    public static final String EndDay_PR = "99";
+    public static final String Odometer_PR_Type = "ODOMETER";
+    public static final String Odometer_PR = "97";
 
 
     //Connectivity Messages

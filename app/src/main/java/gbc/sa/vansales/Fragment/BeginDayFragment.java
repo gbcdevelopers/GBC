@@ -48,6 +48,7 @@ import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.sap.IntegrationService;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -84,10 +85,8 @@ public class BeginDayFragment extends Fragment {
     Button btn_continue;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         view = inflater.inflate(R.layout.activity_begin_day, container, false);
         db = new DatabaseHandler(getActivity());
-
         loadingSpinner = new LoadingSpinner(getActivity());
         salesDate = (TextView) view.findViewById(R.id.salesDate);
         time = (TextView) view.findViewById(R.id.time);
@@ -118,24 +117,32 @@ public class BeginDayFragment extends Fragment {
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                map.put(db.KEY_IS_SELECTED, "true");
+                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                db.addData(db.BEGIN_DAY, map);
+                new postTrip(purchaseNumber);
+                // showDialog();
             }
         });
         salesDate.setEnabled(false);
         return view;
     }
-
     private void setBeginDayVisibility() {
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "true");
-        if(db.checkData(db.LOCK_FLAGS,map)){
+        if (db.checkData(db.LOCK_FLAGS, map)) {
             btn_continue.setEnabled(false);
             btn_continue.setAlpha(.5f);
             // btnBDay.setVisibility(View.INVISIBLE);
         }
-
     }
-
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -151,23 +158,19 @@ public class BeginDayFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 getActivity());
         alertDialogBuilder.setView(promptsView);
-
         //Reading last save odometer
-        HashMap<String,String>map = new HashMap<>();
-        map.put(db.KEY_ODOMETER_VALUE,"");
-        HashMap<String,String>filter = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_ODOMETER_VALUE, "");
+        HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-
-        if(db.checkData(db.ODOMETER,filter)){
-            Cursor cursor = db.getData(db.ODOMETER,map,filter);
-            if(cursor.getCount()>0){
+        if (db.checkData(db.ODOMETER, filter)) {
+            Cursor cursor = db.getData(db.ODOMETER, map, filter);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
             }
+        } else {
         }
-        else{
-        }
-
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
         // set dialog message
@@ -181,11 +184,12 @@ public class BeginDayFragment extends Fragment {
                                     dialog.cancel();
                                     Toast.makeText(getContext(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
                                 } else {
-                                    if (Float.parseFloat(input) > lastValue) {
+                                    postOdometer(input);
+                                    /*if (Float.parseFloat(input) > lastValue) {
                                         postOdometer(input);
                                     } else {
                                         Toast.makeText(getContext(), getString(R.string.value_greater), Toast.LENGTH_SHORT).show();
-                                    }
+                                    }*/
                                 }
                             }
                         })
@@ -202,68 +206,89 @@ public class BeginDayFragment extends Fragment {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
-
-    public void postOdometer(String value){
-        HashMap<String,String> map = new HashMap<>();
-        map.put(db.KEY_ODOMETER_VALUE,value);
-
-        HashMap<String,String>filter = new HashMap<>();
+    public void postOdometer(String value) {
+        String purchaseNumber = Helpers.generateNumber(db, ConfigStore.OrderRequest_PR_Type);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_ODOMETER_VALUE, value);
+        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+        map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+        HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-        if(db.checkData(db.ODOMETER,filter)){
-            db.updateData(db.ODOMETER,map,filter);
+        if (db.checkData(db.ODOMETER, filter)) {
+            db.updateData(db.ODOMETER, map, filter);
+        } else {
+            db.addData(db.ODOMETER, map);
         }
-        else{
-            db.addData(db.ODOMETER,map);
-        }
-        new postData(value);
+        new postData(value, purchaseNumber);
     }
-
-    public class postData extends AsyncTask<Void,Void,Void>{
-
+    public class postData extends AsyncTask<Void, Void, Void> {
         String flag = "";
         String value = "";
-
+        String purchaseNumber = "";
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             loadingSpinner.show();
         }
-
-        private postData(String value) {
+        private postData(String value, String purchaseNumber) {
             this.value = value;
+            this.purchaseNumber = purchaseNumber;
             execute();
         }
-
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String,String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<String, String>();
             map.put("TripID", Settings.getString(App.TRIP_ID));
-            map.put("Value",this.value);
+            map.put("Value", this.value);
             JSONArray deepEntity = new JSONArray();
-
-            this.flag = IntegrationService.postOdometer(getActivity(),App.POST_ODOMETER_SET,map,deepEntity);
+            this.flag = IntegrationService.postOdometer(getActivity(), App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
+            if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
             hideKeyboard();
-            if(this.flag.equals("Y")){
+            if (this.flag.equals(purchaseNumber)) {
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                db.updateData(db.ODOMETER, map, filter);
+
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_BEGIN_DAY, "true");
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_IS_BEGIN_DAY, "false");
-                db.updateData(db.LOCK_FLAGS, altMap, filter);
+                HashMap<String, String> filterMap = new HashMap<>();
+                filterMap.put(db.KEY_IS_BEGIN_DAY, "false");
+                db.updateData(db.LOCK_FLAGS, altMap, filterMap);
                 Intent i = new Intent(getActivity(), LoadActivity.class);
                 startActivity(i);
-            }
-            else if(this.flag.contains("Error")){
-                Toast.makeText(getActivity(),this.flag.replaceAll("Error","").trim(),Toast.LENGTH_SHORT).show();
-            }
-            else{
+
+
+            } else if (this.flag.equals("Y")) {
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                db.updateData(db.ODOMETER, map, filter);
+
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_BEGIN_DAY, "true");
+                HashMap<String, String> filterMap = new HashMap<>();
+                filterMap.put(db.KEY_IS_BEGIN_DAY, "false");
+                db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+                Intent i = new Intent(getActivity(), LoadActivity.class);
+                startActivity(i);
+            } else if (this.flag.contains("Error")) {
+                Toast.makeText(getActivity(), this.flag.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+            } else {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle(R.string.error_title)
                         .setMessage(R.string.error_message)
@@ -271,7 +296,7 @@ public class BeginDayFragment extends Fragment {
                         .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if(loadingSpinner.isShowing()){
+                                if (loadingSpinner.isShowing()) {
                                     loadingSpinner.hide();
                                 }
                                 dialog.dismiss();
@@ -282,8 +307,78 @@ public class BeginDayFragment extends Fragment {
                 // show it
                 alertDialog.show();
             }
-
         }
     }
-
+    public class postTrip extends AsyncTask<Void, Void, Void> {
+        String orderID = "";
+        String value = "";
+        String purchaseNumber = "";
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingSpinner.show();
+        }
+        private postTrip(String purchaseNumber) {
+            this.purchaseNumber = purchaseNumber;
+            execute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("Function", ConfigStore.BeginDayFunction);
+            map.put("TripId", Settings.getString(App.TRIP_ID));
+            map.put("CreatedBy", Settings.getString(App.DRIVER));
+            JSONArray deepEntity = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            deepEntity.put(jsonObject);
+            this.orderID = IntegrationService.postTrip(getActivity(), App.POST_COLLECTION, map, deepEntity, purchaseNumber);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (loadingSpinner.isShowing()) {
+                loadingSpinner.hide();
+            }
+            if (!this.orderID.contains("Error") && !this.orderID.equals("")) {
+                if (this.orderID.equals(this.purchaseNumber)) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                    db.updateData(db.BEGIN_DAY, map, filter);
+                } else {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                    db.updateData(db.BEGIN_DAY, map, filter);
+                }
+                showDialog();
+            } else if (this.orderID.contains("Error")) {
+                Toast.makeText(getActivity(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                alertDialogBuilder.setTitle(R.string.error_title)
+                        .setMessage(R.string.error_message)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (loadingSpinner.isShowing()) {
+                                    loadingSpinner.hide();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+            }
+        }
+    }
 }

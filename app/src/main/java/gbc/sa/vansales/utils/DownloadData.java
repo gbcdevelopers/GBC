@@ -133,6 +133,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         JSONObject object = loadItems.getJSONObject(j);
                         HashMap<String, String> params = new HashMap<>();
                         params.put(db.KEY_DELIVERY_NO,object.get("DeliveryNo").toString());
+                        params.put(db.KEY_ORDER_ID,object.get("OrderId").toString());
                         params.put(db.KEY_ITEM_NO,object.get("Itemno").toString());
                         params.put(db.KEY_ITEM_CATEGORY, object.get("DelvItmCat").toString());
                         params.put(db.KEY_CREATED_BY, object.get("CreatedBy").toString());
