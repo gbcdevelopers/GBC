@@ -133,6 +133,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:id="@+id/syncData"
         android:src="@drawable/ic_sync"
         app:backgroundTint="@color/colorPrimary"
