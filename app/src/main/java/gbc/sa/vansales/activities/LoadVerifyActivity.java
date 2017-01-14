@@ -87,7 +87,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
 
         addItemstoVan(dataNew);
-
         if(!checkIfLoadExists()){
             if(createDataForPost(dataNew,dataOld)){
                 HashMap<String, String> altMap = new HashMap<>();
@@ -228,13 +227,20 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     map.put(db.KEY_UOM_CASE, App.CASE_UOM);
                    // db.addData(db.VAN_STOCK_ITEMS, map);
                 }
-                map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
+                /*map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
                 map.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf("0"));
                 map.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString())-0));
-                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);*/
 
             }
-            else if(!((dataNew.get(i).getQuantityUnits().isEmpty())||(dataNew.get(i).getQuantityUnits().equals(""))
+            else{
+                int reservedQty = 0;
+                map.put(db.KEY_ACTUAL_QTY_CASE,dataNew.get(i).getQuantityCases().toString());
+                map.put(db.KEY_RESERVED_QTY_CASE,String.valueOf(reservedQty));
+                map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString())-reservedQty));
+                map.put(db.KEY_UOM_CASE, App.CASE_UOM);
+            }
+            if(!((dataNew.get(i).getQuantityUnits().isEmpty())||(dataNew.get(i).getQuantityUnits().equals(""))
                     ||(dataNew.get(i).getQuantityUnits().equals("0"))||(dataNew.get(i).getQuantityUnits().equals("")))){
                 Log.e("Step 0","Step 0");
                 if(checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.BOTTLES_UOM)){
@@ -294,19 +300,27 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
                 }
 
-                map.put(db.KEY_ACTUAL_QTY_CASE,dataNew.get(i).getQuantityCases().toString());
+               /* map.put(db.KEY_ACTUAL_QTY_CASE,dataNew.get(i).getQuantityCases().toString());
                 map.put(db.KEY_RESERVED_QTY_CASE,String.valueOf("0"));
                 map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString())-0));
-                map.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                map.put(db.KEY_UOM_CASE, App.CASE_UOM);*/
 
             }
-            Log.e("ITEM MAP","" + map);
+            else{
+                int reservedQty = 0;
+                map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
+                map.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf(reservedQty));
+                map.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString())-reservedQty));
+                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+
+            }
+            Log.e("ITEM MAP", "" + map);
 
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_MATERIAL_NO,dataNew.get(i).getMaterialNo().toString());
-            Log.e("Step 3","Step 3");
+            Log.e("Step 3", "Step 3");
             if((checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.CASE_UOM))||(checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.BOTTLES_UOM))){
-                db.updateData(db.VAN_STOCK_ITEMS,map,filter);
+                db.updateData(db.VAN_STOCK_ITEMS, map, filter);
             }
             else{
                 db.addData(db.VAN_STOCK_ITEMS, map);
@@ -405,7 +419,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
-
+            Log.e("POST Data - Foo","" + this.orderID);
             if(this.orderID.contains("Error")){
                 Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
             }
@@ -505,8 +519,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
                         HashMap<String,String> updateMap = new HashMap<>();
                         updateMap.put(db.KEY_ACTUAL_QTY_CASE,actualCase);
-                        updateMap.put(db.KEY_RESERVED_QTY_CASE,String.valueOf(Float.parseFloat(reservedCase)+Float.parseFloat(deliveryCase)));
-                        updateMap.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(remainingCase) - Float.parseFloat(deliveryCase)));
+                        updateMap.put(db.KEY_RESERVED_QTY_CASE,String.valueOf(Float.parseFloat(reservedCase==null?"0":reservedCase)+Float.parseFloat(deliveryCase==null?"0":deliveryCase)));
+                        updateMap.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(remainingCase==null?"0":remainingCase) - Float.parseFloat(deliveryCase==null?"0":deliveryCase)));
 
                         HashMap<String,String>updateFilter = new HashMap<>();
                         updateFilter.put(db.KEY_MATERIAL_NO,vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -521,8 +535,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
                         HashMap<String,String> updateMap = new HashMap<>();
                         updateMap.put(db.KEY_ACTUAL_QTY_UNIT,actualUnits);
-                        updateMap.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf(Float.parseFloat(reservedUnits)+Float.parseFloat(deliveryUnits)));
-                        updateMap.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(remainingUnits)-Float.parseFloat(deliveryUnits)));
+                        updateMap.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf(Float.parseFloat(reservedUnits==null?"0":reservedUnits)+Float.parseFloat(deliveryUnits==null?"0":deliveryUnits)));
+                        updateMap.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(remainingUnits==null?"0":remainingUnits)-Float.parseFloat(deliveryUnits==null?"0":deliveryUnits)));
 
                         Log.e("Update Map B/T", "" + updateMap);
                         HashMap<String,String>updateFilter = new HashMap<>();

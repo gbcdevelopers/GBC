@@ -229,34 +229,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
             }
         });
     }
-    public void hideKeyboard() {
-        try {
-            InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        } catch (Exception e) {
-            // Ignore exceptions if any
-            Log.e("KeyBoardUtil", e.toString(), e);
-        }
-    }
-    /*public void loadData() {
-//        planBadgeAdapter.clear();
-        for (int i = 0; i < 10; i++) {
-//            Customer customer = createCustomerData(i);
-//            journeyList.add(customer);
-            CustomerData customerData = createCustomerData(i);
-            dataArrayList.add(customerData);
-        }
-//        dataAdapter = new DataAdapter(SelectCustomerActivity.this,dataArrayList);
-        //Const.dataArrayList = dataArrayList;
-    }*/
-    public static CustomerData createCustomerData(int index) {
-        CustomerData customer = new CustomerData();
-        int i = 100 + index;
-        customer.setId(String.valueOf(i));
-        customer.setName("ankit");
-        customer.setAddress("rajkot");
-        return customer;
-    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {

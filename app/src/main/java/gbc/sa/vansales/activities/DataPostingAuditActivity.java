@@ -38,6 +38,7 @@ public class DataPostingAuditActivity extends AppCompatActivity {
     DataPostingAuditAdapter adapter;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
+    boolean isSelectAll = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +59,25 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    isSelectAll = true;
+                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this,arrayList,isSelectAll);
+                    listView.setAdapter(adapter);
+
+                    adapter.notifyDataSetChanged();
+                }
+                else{
+                    isSelectAll = false;
+                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this,arrayList,isSelectAll);
+                    listView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
                 /*adapter = new DataPoustingAuditAdapter(DataPostingAuditActivity.this, arrayList, isChecked);
                 listView.setAdapter(adapter);*/
             }
         });
         listView = (ListView) findViewById(R.id.print_document_list);
-        adapter = new DataPostingAuditAdapter(this,arrayList);
+        adapter = new DataPostingAuditAdapter(this,arrayList,isSelectAll);
         listView.setAdapter(adapter);
         swipeDetector = new SwipeDetector();
 

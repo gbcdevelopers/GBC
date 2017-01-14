@@ -62,7 +62,7 @@ public class Helpers {
         return timeStamp;
     }
 
-    public void backupDatabase(){
+    public static void backupDatabase(){
         File dbFile = new File(App.APP_DB_PATH);
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;

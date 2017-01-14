@@ -69,7 +69,7 @@ public class SyncData extends IntentService {
             generateBatch(ConfigStore.CustomerDeliveryRequestFunction);
         }
         if(!isEmpty){
-           // new syncData().execute();
+            new syncData().execute();
         }
 
     }
@@ -552,6 +552,7 @@ public class SyncData extends IntentService {
         if(deliveryRequest.getCount()>0){
             syncCount += deliveryRequest.getCount();
         }
+        Log.e("Sync count","" + syncCount);
         return syncCount;
     }
 }

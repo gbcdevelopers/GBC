@@ -274,7 +274,13 @@ public class IntegrationService extends IntentService {
             //   post.addHeader(X_CSRF_TOKEN_KEY,token);
             post.setEntity(getPayload(map, deepEntity));
             if (!Helpers.isNetworkAvailable(context)) {
-                orderId = map.get("PurchaseNum").toString();
+                if(map.containsKey("PurchaseNum")){
+                    orderId = map.get("PurchaseNum").toString();
+                }
+                else if(map.containsKey("OrderId")){
+                    orderId = map.get("OrderId").toString();
+                }
+                //orderId = map.get("PurchaseNum").toString();
             } else {
                 HttpResponse response = client.execute(post);
                 if (response.getStatusLine().getStatusCode() == 201) {

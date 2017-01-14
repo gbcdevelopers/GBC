@@ -20,10 +20,17 @@ import gbc.sa.vansales.models.Print;
  */
 public class DataPostingAuditAdapter extends ArrayAdapter<Print> {
     private LayoutInflater mInflater;
+    private boolean selectAll;
 
     public DataPostingAuditAdapter(Context context, ArrayList<Print> prints) {
         super(context, R.layout.item_data_pousting_audit, prints);
         mInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public DataPostingAuditAdapter(Context context, ArrayList<Print> prints, boolean selectAll) {
+        super(context, R.layout.item_data_pousting_audit, prints);
+        mInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.selectAll = selectAll;
     }
 
     @Override
@@ -49,6 +56,9 @@ public class DataPostingAuditAdapter extends ArrayAdapter<Print> {
         holder.customer_id.setText(print.getCustomer_id());
         holder.referenceNumber.setText(print.getReferenceNumber());
         holder.transactionType.setText(print.getTransactionType());
+        if(selectAll){
+            holder.checkbox_print_doc.setChecked(print.isPosted()?false:true);
+        }
         if(print.isPosted()){
             holder.imageView.setBackgroundColor(Color.GREEN);
         }
