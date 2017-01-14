@@ -757,7 +757,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             filterArray = paramsBuilder(filters, true).split(",");
         }
         int records = db.update(tablename, values, filterKeys, filterArray);
-       // Log.e("Records updated", "" + records);
+        Log.e("Records updated", "" + records);
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();

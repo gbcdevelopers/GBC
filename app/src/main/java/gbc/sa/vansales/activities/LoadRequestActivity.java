@@ -108,11 +108,11 @@ public class LoadRequestActivity extends AppCompatActivity {
                 putOnHoldValueChanged = true;
                 if(isChecked){
                     isPutOnHold = true;
-                    Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
                 }
                 else{
                     isPutOnHold = false;
-                    Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -129,49 +129,322 @@ public class LoadRequestActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 /*new postData().execute();*/
-                String purchaseNum = isPutOnHold?"":Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                //String purchaseNum = isPutOnHold?"":Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
                 if(putOnHoldValueChanged){
                     if(isPutOnHold){
+                        HashMap<String,String> filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                        if(db.checkData(db.LOAD_REQUEST,filter)){
+                            HashMap<String,String>map = new HashMap<String, String>();
+                            map.put(db.KEY_PURCHASE_NUMBER,"");
+                            Cursor cursor = db.getData(db.LOAD_REQUEST,map,filter);
+                            String purchaseNumber = "";
+                            if(cursor.getCount()>0){
+                                cursor.moveToFirst();
+                                purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER));
+                                for(LoadRequest loadRequest:arraylist){
+                                    try{
+                                        if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                            loadRequest.setCases("0");
+                                        }
+                                        if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                            loadRequest.setUnits("0");
+                                        }
+                                        HashMap<String,String> updateMap = new HashMap<String, String>();
+                                        updateMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                        updateMap.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                        updateMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        updateMap.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                        updateMap.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                        updateMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        updateMap.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                        updateMap.put(db.KEY_CASE,loadRequest.getCases());
+                                        updateMap.put(db.KEY_UNIT,loadRequest.getUnits());
+                                        updateMap.put(db.KEY_UOM,loadRequest.getUom());
+                                        updateMap.put(db.KEY_PRICE,loadRequest.getPrice());
+                                        updateMap.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                                        updateMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                                        updateMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
 
+                                        HashMap<String,String> filterMap = new HashMap<>();
+                                        //  filterMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        filterMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                                        filterMap.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                        if(db.checkData(db.LOAD_REQUEST,filterMap)){
+                                            db.updateData(db.LOAD_REQUEST, updateMap, filterMap);
+                                        }
+                                        else{
+                                            db.addData(db.LOAD_REQUEST,updateMap);
+                                        }
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                        }
+                        else{
+                            String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                            for(LoadRequest loadRequest:arraylist){
+                                try{
+                                    if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                        loadRequest.setCases("0");
+                                    }
+                                    if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                        loadRequest.setUnits("0");
+                                    }
+                                    HashMap<String,String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                    map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                    map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                    map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                    map.put(db.KEY_CASE,loadRequest.getCases());
+                                    map.put(db.KEY_UNIT,loadRequest.getUnits());
+                                    map.put(db.KEY_UOM,loadRequest.getUom());
+                                    map.put(db.KEY_PRICE,loadRequest.getPrice());
+                                    map.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                                    map.put(db.KEY_IS_PRINTED, "");
+                                    map.put(db.KEY_ORDER_ID,purchaseNum);
+                                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
+                                    orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                                    if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                                        db.addData(db.LOAD_REQUEST,map);
+                                    }
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
                     else{
+                        HashMap<String,String> filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                        if(db.checkData(db.LOAD_REQUEST,filter)){
+                            HashMap<String,String>map = new HashMap<String, String>();
+                            map.put(db.KEY_PURCHASE_NUMBER,"");
+                            Cursor cursor = db.getData(db.LOAD_REQUEST,map,filter);
+                            String purchaseNumber = "";
+                            if(cursor.getCount()>0){
+                                cursor.moveToFirst();
+                                purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER));
+                                for(LoadRequest loadRequest:arraylist){
+                                    try{
+                                        if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                            loadRequest.setCases("0");
+                                        }
+                                        if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                            loadRequest.setUnits("0");
+                                        }
+                                        HashMap<String,String> updateMap = new HashMap<String, String>();
+                                        updateMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                        updateMap.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                        updateMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        updateMap.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                        updateMap.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                        updateMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        updateMap.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                        updateMap.put(db.KEY_CASE,loadRequest.getCases());
+                                        updateMap.put(db.KEY_UNIT,loadRequest.getUnits());
+                                        updateMap.put(db.KEY_UOM,loadRequest.getUom());
+                                        updateMap.put(db.KEY_PRICE,loadRequest.getPrice());
+                                        updateMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                        updateMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                                        updateMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
 
+                                        HashMap<String,String> filterMap = new HashMap<>();
+                                        //  filterMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        filterMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                                        filterMap.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                        if(db.checkData(db.LOAD_REQUEST,filterMap)){
+                                            db.updateData(db.LOAD_REQUEST, updateMap, filterMap);
+                                        }
+                                        else{
+                                            db.addData(db.LOAD_REQUEST,updateMap);
+                                        }
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                        }
+                        else{
+                            String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                            for(LoadRequest loadRequest:arraylist){
+                                try{
+                                    if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                        loadRequest.setCases("0");
+                                    }
+                                    if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                        loadRequest.setUnits("0");
+                                    }
+                                    HashMap<String,String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                    map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                    map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                    map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                    map.put(db.KEY_CASE,loadRequest.getCases());
+                                    map.put(db.KEY_UNIT,loadRequest.getUnits());
+                                    map.put(db.KEY_UOM,loadRequest.getUom());
+                                    map.put(db.KEY_PRICE,loadRequest.getPrice());
+                                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                    map.put(db.KEY_IS_PRINTED, "");
+                                    map.put(db.KEY_ORDER_ID,purchaseNum);
+                                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
+                                    orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                                    if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                                        db.addData(db.LOAD_REQUEST,map);
+                                    }
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
                 }
                 else{
-                    for(LoadRequest loadRequest:arraylist){
-                        try{
-                            if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
-                                loadRequest.setCases("0");
+                    if(isPutOnHold){
+                        HashMap<String,String> filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                        if(db.checkData(db.LOAD_REQUEST,filter)){
+                            HashMap<String,String>map = new HashMap<String, String>();
+                            map.put(db.KEY_PURCHASE_NUMBER,"");
+                            Cursor cursor = db.getData(db.LOAD_REQUEST,map,filter);
+                            String purchaseNumber = "";
+                            if(cursor.getCount()>0){
+                                cursor.moveToFirst();
+                                purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER));
+                                Log.e("My Purchase","" + purchaseNumber);
+                                for(LoadRequest loadRequest:arraylist){
+                                    try{
+                                        if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                            loadRequest.setCases("0");
+                                        }
+                                        if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                            loadRequest.setUnits("0");
+                                        }
+                                        HashMap<String,String> updateMap = new HashMap<String, String>();
+                                        updateMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                        updateMap.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                        updateMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        updateMap.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                        updateMap.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                        updateMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        updateMap.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                        updateMap.put(db.KEY_CASE,loadRequest.getCases());
+                                        updateMap.put(db.KEY_UNIT,loadRequest.getUnits());
+                                        updateMap.put(db.KEY_UOM,loadRequest.getUom());
+                                        updateMap.put(db.KEY_PRICE,loadRequest.getPrice());
+                                        updateMap.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                                        updateMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                                        updateMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+
+                                        HashMap<String,String> filterMap = new HashMap<>();
+                                      //  filterMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                        filterMap.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                        // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                                        filterMap.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                        if(db.checkData(db.LOAD_REQUEST,filterMap)){
+                                            db.updateData(db.LOAD_REQUEST, updateMap, filterMap);
+                                        }
+                                        else{
+                                            db.addData(db.LOAD_REQUEST,updateMap);
+                                        }
+
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
-                            if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
-                                loadRequest.setUnits("0");
-                            }
-                            HashMap<String,String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
-                            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
-                            map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
-                            map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
-                            map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
-                            map.put(db.KEY_CASE,loadRequest.getCases());
-                            map.put(db.KEY_UNIT,loadRequest.getUnits());
-                            map.put(db.KEY_UOM,loadRequest.getUom());
-                            map.put(db.KEY_PRICE,loadRequest.getPrice());
-                            map.put(db.KEY_IS_POSTED,isPutOnHold?App.DATA_PUT_ON_HOLD:App.DATA_NOT_POSTED);
-                            map.put(db.KEY_IS_PRINTED, "");
-                            map.put(db.KEY_ORDER_ID,purchaseNum);
-                            map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
-                            orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
-                            if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
-                                db.addData(db.LOAD_REQUEST,map);
-                            }
+
                         }
-                        catch (Exception e){
-                            e.printStackTrace();
+                        else{
+                            String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                            for(LoadRequest loadRequest:arraylist){
+                                try{
+                                    if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                        loadRequest.setCases("0");
+                                    }
+                                    if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                        loadRequest.setUnits("0");
+                                    }
+                                    HashMap<String,String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                    map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                    map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                    map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                    map.put(db.KEY_CASE,loadRequest.getCases());
+                                    map.put(db.KEY_UNIT,loadRequest.getUnits());
+                                    map.put(db.KEY_UOM,loadRequest.getUom());
+                                    map.put(db.KEY_PRICE,loadRequest.getPrice());
+                                    map.put(db.KEY_IS_POSTED,App.DATA_PUT_ON_HOLD);
+                                    map.put(db.KEY_IS_PRINTED, "");
+                                    map.put(db.KEY_ORDER_ID,purchaseNum);
+                                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
+                                    orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                                    if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                                        db.addData(db.LOAD_REQUEST,map);
+                                    }
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
+                    else{
+                        String purchaseNum = Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                        for(LoadRequest loadRequest:arraylist){
+                            try{
+                                if(loadRequest.getCases().equals("")||loadRequest.getCases().isEmpty()||loadRequest.getCases()==null){
+                                    loadRequest.setCases("0");
+                                }
+                                if(loadRequest.getUnits().equals("")||loadRequest.getUnits().isEmpty()||loadRequest.getUnits()==null){
+                                    loadRequest.setUnits("0");
+                                }
+                                HashMap<String,String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                map.put(db.KEY_ITEM_NO,loadRequest.getItemCode());
+                                map.put(db.KEY_MATERIAL_DESC1,loadRequest.getItemName());
+                                map.put(db.KEY_MATERIAL_NO,loadRequest.getMaterialNo());
+                                map.put(db.KEY_MATERIAL_GROUP,loadRequest.getItemCategory());
+                                map.put(db.KEY_CASE,loadRequest.getCases());
+                                map.put(db.KEY_UNIT,loadRequest.getUnits());
+                                map.put(db.KEY_UOM,loadRequest.getUom());
+                                map.put(db.KEY_PRICE,loadRequest.getPrice());
+                                map.put(db.KEY_IS_POSTED,isPutOnHold?App.DATA_PUT_ON_HOLD:App.DATA_NOT_POSTED);
+                                map.put(db.KEY_IS_PRINTED, "");
+                                map.put(db.KEY_ORDER_ID,purchaseNum);
+                                map.put(db.KEY_PURCHASE_NUMBER,purchaseNum);
+                                orderTotalValue = orderTotalValue + Integer.parseInt(loadRequest.getPrice());
+                                if(Integer.parseInt(loadRequest.getCases())>0 || Integer.parseInt(loadRequest.getUnits())>0){
+                                    db.addData(db.LOAD_REQUEST,map);
+                                }
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                 }
 
                 setTitle("Print Activity");
@@ -186,9 +459,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                         if(!isPutOnHold){
                             new postData().execute();
                         }
-
                         dialog.dismiss();
-                        finish();
+                        //finish();
                     }
                 });
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
@@ -418,6 +690,8 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext());
 
+        Log.e("Array List zie","" + arraylist.size());
+        ArrayList<LoadRequest> temp = new ArrayList<>();
         if(putOnHoldExists){
             for(int i=0;i<arraylist.size();i++){
                 LoadRequest loadRequest = arraylist.get(i);
@@ -453,6 +727,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
 
             }
+            Log.e("Temp","" + temp.size());
+            temp.clear();
         }
 
       //  adapter.notifyDataSetChanged();

@@ -69,7 +69,7 @@ public class SyncData extends IntentService {
             generateBatch(ConfigStore.CustomerDeliveryRequestFunction);
         }
         if(!isEmpty){
-            new syncData().execute();
+           // new syncData().execute();
         }
 
     }
