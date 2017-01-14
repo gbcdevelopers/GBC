@@ -1,4 +1,5 @@
 package gbc.sa.vansales.activities;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -94,7 +95,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                 params.put(db.KEY_IS_DELIVERY_POSTED,App.DATA_NOT_POSTED);
                 params.put(db.KEY_IS_ORDER_POSTED,App.DATA_NOT_POSTED);
                 params.put(db.KEY_IS_SALES_POSTED,App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_COLLECTION_POSTED,App.DATA_NOT_POSTED);
+                params.put(db.KEY_IS_COLLECTION_POSTED, App.DATA_NOT_POSTED);
                 params.put(db.KEY_IS_MERCHANDIZE_POSTED, App.DATA_NOT_POSTED);
                 params.put(db.KEY_IS_NEW_CUSTOMER, App.TRUE);
                 db.addData(db.VISIT_LIST, params);
@@ -125,14 +126,16 @@ public class AddCustomerActivity extends AppCompatActivity {
                 headerParams.put(db.KEY_DISTRICT ,"");
                 headerParams.put(db.KEY_REGION ,"001");
                 headerParams.put(db.KEY_SITE_CODE ,"");
-                headerParams.put(db.KEY_POST_CODE ,et_customer_pobox.getText().toString());
-                headerParams.put(db.KEY_PHONE_NO ,et_customer_telephone.getText().toString());
+                headerParams.put(db.KEY_POST_CODE, et_customer_pobox.getText().toString());
+                headerParams.put(db.KEY_PHONE_NO, et_customer_telephone.getText().toString());
                 headerParams.put(db.KEY_COMPANY_CODE, "GBC");
 
                 db.addData(db.CUSTOMER_HEADER, headerParams);
-                VisitAllFragment.dataAdapter.notifyDataSetChanged();
+                /*VisitAllFragment.dataAdapter.notifyDataSetChanged();
                 AllCustomerFragment.dataAdapter1.notifyDataSetChanged();
-                finish();
+                finish();*/
+                Intent intent = new Intent(AddCustomerActivity.this,SelectCustomerActivity.class);
+                startActivity(intent);
             }
         });
     }
