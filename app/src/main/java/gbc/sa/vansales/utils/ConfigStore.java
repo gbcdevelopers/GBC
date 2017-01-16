@@ -11,7 +11,9 @@ public class ConfigStore {
         init();
     }
     public static void init() {
-
+        hashMap.put("Y002", "SKU Discount");
+        hashMap.put("Y007", "SKU Surcharge");
+        hashMap.put("Y005", "Promotion");
     }
 
     public static String getCode(String param) {
@@ -34,6 +36,13 @@ public class ConfigStore {
     public static final String CustomerDeliverHeaderEntity = "ZSFA_DOWNLOAD_SRV.CustomerDelHD";
     public static final String CustomerDeliveryItemEntity = "ZSFA_DOWNLOAD_SRV.CustomerDelItm";
     public static final String MessageEntity = "ZSFA_DOWNLOAD_SRV.Messages";
+    public static final String DriverRouteEntity = "ZSFA_DOWNLOAD_SRV.RouteFlag";
+    public static final String OrderReasonEntity = "ZSFA_DOWNLOAD_SRV.OrderReason";
+    public static final String VisitReasonEntity = "ZSFA_DOWNLOAD_SRV.VisitReason";
+    public static final String PricingEntity = "ZSFA_DOWNLOAD_SRV.Pricing";
+    public static final String Promotion02Entity = "ZSFA_DOWNLOAD_SRV.Promotion02";
+    public static final String Promotion05Entity = "ZSFA_DOWNLOAD_SRV.Promotion05";
+    public static final String Promotion07Entity = "ZSFA_DOWNLOAD_SRV.Promotion07";
 
     //Functions for Posting
     public static final String LoadRequestFunction = "ORDERREQ";
@@ -46,6 +55,10 @@ public class ConfigStore {
     //Document Types
     public static final String DocumentType = "ZVDL";
     public static final String DeliveryDocumentType = "ZVAN";
+    public static final String GoodReturnType = "ZGRN";
+    public static final String BadReturnType = "ZEXP";
+    public static final String OrderRequestType = "ZPRE";
+    public static final String EndingInventory = "ZVLO";
 
     //DocumentTypes for PR Number Generation
     public static final String LoadRequest_PR_Type = "LOAD";
@@ -80,5 +93,10 @@ public class ConfigStore {
     public static final String CollectionRequest_TR = "AR";
     public static final String DeliveryRequest_TR = "DLV";
     public static final String UnloadRequest_TR = "UL";
+
+    static {
+        init();
+    }
+
 
 }

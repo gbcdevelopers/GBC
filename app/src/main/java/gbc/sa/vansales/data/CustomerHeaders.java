@@ -19,6 +19,7 @@ public class CustomerHeaders {
     private static final String CUSTOMER_SALES_AREAS = "CustomerSalesAreas";
     private static final String CUSTOMER_OPEN_ITEMS = "CustomerOpenItems";
     private static final String CUSTOMER_CREDIT = "CustomerCredit";
+    private static final String CUSTOMER_FLAGS = "CustomerFlags";
     private static final String TRIP_ID = "ITripId";
 
     private static ArrayList<CustomerHeader> data = new ArrayList<>();
@@ -31,7 +32,7 @@ public class CustomerHeaders {
         expansion.put(CUSTOMER_SALES_AREAS,CUSTOMER_SALES_AREAS);
         expansion.put(CUSTOMER_OPEN_ITEMS,CUSTOMER_OPEN_ITEMS);
         expansion.put(CUSTOMER_CREDIT,CUSTOMER_CREDIT);
-
+        expansion.put(CUSTOMER_FLAGS,CUSTOMER_FLAGS);
         new DownloadData(context,COLLECTION_NAME,params,expansion,db);
     }
 

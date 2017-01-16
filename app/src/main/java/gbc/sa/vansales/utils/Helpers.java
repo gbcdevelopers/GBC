@@ -62,6 +62,16 @@ public class Helpers {
         return timeStamp;
     }
 
+    public static String[]parseTimeStamp(String timeStamp){
+        //This method is used for parsing the timestamp and format to send to SAP
+        String date = timeStamp.substring(0,8);
+        date = date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8)+"T00:00:00";//+"-"+date.substring(8,10);
+        String time = timeStamp.substring(8,timeStamp.length());
+        time = "PT"+time.substring(0,2)+"H"+time.substring(2,4)+"M"+time.substring(4,6)+"S";
+        String[] tokens = new String[]{date,time};
+        return tokens;
+    }
+
     public static void backupDatabase(){
         File dbFile = new File(App.APP_DB_PATH);
         FileInputStream inputStream = null;

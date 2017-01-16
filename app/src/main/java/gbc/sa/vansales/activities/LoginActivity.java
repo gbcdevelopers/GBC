@@ -16,10 +16,17 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.Messages;
+import gbc.sa.vansales.data.OrderReasons;
+import gbc.sa.vansales.data.Pricing;
+import gbc.sa.vansales.data.Promotions02;
+import gbc.sa.vansales.data.Promotions05;
+import gbc.sa.vansales.data.Promotions07;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.data.VisitList;
+import gbc.sa.vansales.data.VisitReasons;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.Chain;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -300,6 +307,13 @@ public class LoginActivity extends Activity {
                 VisitList.load(LoginActivity.this, tripId, db);
                 Messages.load(LoginActivity.this, username, db);
                 CustomerDelivery.load(LoginActivity.this,tripId,db);
+                DriverRouteFlags.load(LoginActivity.this,tripId,db);
+                OrderReasons.load(LoginActivity.this,"",db);
+                VisitReasons.load(LoginActivity.this, "", db);
+                Promotions02.load(LoginActivity.this,username,db);
+                Promotions05.load(LoginActivity.this, username, db);
+                Promotions07.load(LoginActivity.this, username, db);
+                Pricing.load(LoginActivity.this, username, db);
                 /*ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());*/
             }

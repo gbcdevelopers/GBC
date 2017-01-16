@@ -1,21 +1,22 @@
 package gbc.sa.vansales.models;
-
+import android.os.Parcel;
+import android.os.Parcelable;
 /**
  * Created by eheuristic on 24/12/2016.
  */
 
-public class Sales {
-    String item_code;
-    String item_category;
-    String material_no;
-    String material_description;
-    String uom;
-    String name;
-    String price;
-    String pic;
-    String cases;
-    String inv_cases;
-    String inv_piece;
+public class Sales implements Parcelable {
+    private String item_code;
+    private String item_category;
+    private String material_no;
+    private String material_description;
+    private String uom;
+    private String name;
+    private String price;
+    private String pic;
+    private String cases;
+    private String inv_cases;
+    private String inv_piece;
 
     public String getMaterial_description() {
         return material_description;
@@ -94,4 +95,47 @@ public class Sales {
     public void setCases(String cases) {
         this.cases = cases;
     }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeString(item_code);
+        parcel.writeString(item_category);
+        parcel.writeString(material_no);
+        parcel.writeString(material_description);
+        parcel.writeString(uom);
+        parcel.writeString(name);
+        parcel.writeString(price);
+        parcel.writeString(pic);
+        parcel.writeString(cases);
+        parcel.writeString(inv_cases);
+        parcel.writeString(inv_piece);
+    }
+
+    public static final Creator<Sales> CREATOR = new Creator<Sales>() {
+        @Override
+        public Sales createFromParcel(Parcel source) {
+            Sales sale = new Sales();
+
+            sale.item_code = source.readString();
+            sale.item_category = source.readString();
+            sale.material_no = source.readString();
+            sale.material_description = source.readString();
+            sale.uom = source.readString();
+            sale.name = source.readString();
+            sale.price = source.readString();
+            sale.pic = source.readString();
+            sale.cases = source.readString();
+            sale.inv_cases = source.readString();
+            sale.inv_piece = source.readString();
+
+            return sale;
+        }
+        @Override
+        public Sales[] newArray(int size) {
+            return new Sales[size];
+        }
+    };
 }

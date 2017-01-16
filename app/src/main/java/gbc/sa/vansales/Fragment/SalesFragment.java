@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +35,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CategoryListActivity;
 import gbc.sa.vansales.activities.CustomerDetailActivity;
 import gbc.sa.vansales.adapters.SalesAdapter;
+import gbc.sa.vansales.adapters.SalesInvoiceAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.ArticleHeader;
@@ -52,56 +54,18 @@ public class SalesFragment extends Fragment {
     View viewmain;
     ListView listSales;
     public static SalesAdapter adapter;
-    public static ArrayList<Sales> salesarrayList;
+    ArrayAdapter<Sales> myAdapter;
+    private  ArrayList<Sales> salesarrayList;
     FloatingActionButton fab;
     boolean workStarted = false;
     DatabaseHandler db;
     Customer object;
     public ArrayList<ArticleHeader> articles;
+    String orderID="";
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (!isVisibleToUser) {
-            if (workStarted) {
-                /*String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
-                for (Sales sale : salesarrayList) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    map.put(db.KEY_ITEM_NO, sale.getItem_code());
-                    map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
-                    map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                    map.put(db.KEY_MATERIAL_GROUP, "");
-                    map.put(db.KEY_MATERIAL_DESC1,sale.getName());
-                    map.put(db.KEY_ORG_CASE, sale.getCases());
-                    map.put(db.KEY_UOM,sale.getUom());
-                    map.put(db.KEY_ORG_UNITS, sale.getPic());
-                    map.put(db.KEY_AMOUNT, sale.getPrice());
-                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-                    map.put(db.KEY_ORDER_ID,purchaseNumber);
-                    db.addData(db.CAPTURE_SALES_INVOICE, map);
-                }*/
-                Const.salesarrayList = salesarrayList;
-            }
-        }
-        else{
-            if (workStarted) {
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
-                    HashMap<String,String>map = new HashMap<>();
-                    map.put(db.KEY_ORDER_ID,"");
-                    Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
-                    if(cursor.getCount()>0){
-                        cursor.moveToFirst();
-                        new loadItems(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
-                    }
-                }
-            }
 
-        }
     }
     @Nullable
     @Override
@@ -121,9 +85,25 @@ public class SalesFragment extends Fragment {
         fab.setImageDrawable(getResources().getDrawable(R.drawable.btn_select_all));
         fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.btn_select_all));
         //fab.hide();
-        new loadItems("");
-        String strProductname[] = {"A", "B", "c", "D"};
         salesarrayList = new ArrayList<>();
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+        if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_ORDER_ID,"");
+            Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                orderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                new loadItems(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            }
+        }else{
+            new loadItems("");
+        }
+
+        String strProductname[] = {"A", "B", "c", "D"};
+
         /*for (int i = 0; i < 4; i++) {
             Sales product = new Sales();
             product.setName(strProductname[i]);
@@ -131,8 +111,9 @@ public class SalesFragment extends Fragment {
             product.setPic("0");
             salesarrayList.add(product);
         }*/
-        adapter = new SalesAdapter(getActivity(), salesarrayList);
-        listSales.setAdapter(adapter);
+       // adapter = new SalesAdapter(getActivity(), salesarrayList);
+        myAdapter = new SalesInvoiceAdapter(getActivity(), salesarrayList);
+        listSales.setAdapter(myAdapter);
         listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
@@ -210,14 +191,17 @@ public class SalesFragment extends Fragment {
                             int salesTotal = 0;
                             int pcsTotal = 0;
                             double total = 0;
-                            for (int i = 0; i < salesarrayList.size(); i++) {
-                                Sales sales1 = salesarrayList.get(i);
-                                Log.e("Sales1 Cs", "" + sales1.getCases());
-                                Log.e("Sales1 Pc", "" + sales1.getPic());
-                                sales1.setPrice(String.valueOf((Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25)));
-                                total = total + (Double.parseDouble(sales1.getCases()) * 54 + Double.parseDouble(sales1.getPic()) * 2.25);
-                                salesTotal = salesTotal + Integer.parseInt(sales1.getCases());
-                                pcsTotal = pcsTotal + Integer.parseInt(sales1.getPic());
+                            for(Sales sale:salesarrayList){
+                                double itemPrice = 0;
+                                if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)){
+                                    itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
+                                }
+                                else if(sale.getUom().equals(App.BOTTLES_UOM)){
+                                    itemPrice = Double.parseDouble(sale.getPic())*Double.parseDouble(sale.getPrice());
+                                }
+                                total+=itemPrice;
+                                salesTotal = salesTotal + Integer.parseInt(sale.getCases());
+                                pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
                             }
                             TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
                             tv.setText(String.valueOf(total));
@@ -225,6 +209,8 @@ public class SalesFragment extends Fragment {
                             tvsales.setText(salesTotal + "/" + pcsTotal);
                             dialog.dismiss();
                         }
+
+
                     }
                 });
             }
@@ -232,32 +218,83 @@ public class SalesFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
-                for (Sales sale : salesarrayList) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    map.put(db.KEY_ITEM_NO, sale.getItem_code());
-                    map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
-                    map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                    map.put(db.KEY_MATERIAL_GROUP, "");
-                    map.put(db.KEY_MATERIAL_DESC1,sale.getName());
-                    map.put(db.KEY_ORG_CASE, sale.getCases());
-                    map.put(db.KEY_UOM,sale.getUom());
-                    map.put(db.KEY_ORG_UNITS, sale.getPic());
-                    map.put(db.KEY_AMOUNT, sale.getPrice());
-                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-                    map.put(db.KEY_ORDER_ID,purchaseNumber);
-                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
-                    db.addData(db.CAPTURE_SALES_INVOICE, map);
+                if(orderID.equals("")||orderID==null){
+                    String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+                    for (Sales sale : salesarrayList) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                        map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                        map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP, "");
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_ORG_CASE, sale.getCases());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_ORG_UNITS, sale.getPic());
+                        map.put(db.KEY_AMOUNT, sale.getPrice());
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_ORDER_ID,purchaseNumber);
+                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                        db.addData(db.CAPTURE_SALES_INVOICE, map);
+                    }
                 }
-                Const.salesarrayList = salesarrayList;
+                else{
+                   // String purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+                    for (Sales sale : salesarrayList) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                        map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                        map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP, "");
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_ORG_CASE, sale.getCases());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_ORG_UNITS, sale.getPic());
+                        map.put(db.KEY_AMOUNT, sale.getPrice());
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_ORDER_ID,orderID);
+                        map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        db.addData(db.CAPTURE_SALES_INVOICE, map);
+                    }
+                }
+
+              //  Const.salesarrayList = salesarrayList;
 
                 getActivity().finish();
             }
         });
         return viewmain;
+    }
+
+    private void calculateCost(){
+        int salesTotal = 0;
+        int pcsTotal = 0;
+        double total = 0;
+        for(Sales sale:salesarrayList){
+            double itemPrice = 0;
+            if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)){
+                itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
+            }
+            else if(sale.getUom().equals(App.BOTTLES_UOM)){
+                itemPrice = Double.parseDouble(sale.getPic())*Double.parseDouble(sale.getPrice());
+            }
+            total+=itemPrice;
+            salesTotal = salesTotal + Integer.parseInt(sale.getCases());
+            pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
+        }
+        TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
+        tv.setText(String.valueOf(total));
+        TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
+        tvsales.setText(salesTotal + "/" + pcsTotal);
     }
     private class loadItems extends AsyncTask<Void, Void, Void> {
         private String orderID;
@@ -272,7 +309,6 @@ public class SalesFragment extends Fragment {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            if(this.orderID.equals("")||this.orderID==null){
             try {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_DELIVERY_NO, "");
@@ -289,26 +325,32 @@ public class SalesFragment extends Fragment {
                 map.put(db.KEY_IS_VERIFIED, "");
                 HashMap<String, String> filter = new HashMap<>();
                 Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-                if (cursor.getCount() > 0) {
-                    setLoadItems(cursor);
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        if(this.orderID.equals("")||this.orderID==null){
+                            setLoadItems(cursor, false, "");
+                        }
+                        else{
+                            setLoadItems(cursor, true, this.orderID);
+                        }
+
+                    }
                 }
-            } catch (Exception e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
-            }
-            else{
-                Log.e("Sales Array","" + salesarrayList);
-                salesarrayList = Const.salesarrayList;
-            }
+
 
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter.notifyDataSetChanged();
+           // adapter.notifyDataSetChanged();
+            myAdapter.notifyDataSetChanged();
+            calculateCost();
         }
     }
-    private void setLoadItems(Cursor loadItems) {
+    private void setLoadItems(Cursor loadItems,boolean isSaved,String orderID) {
         workStarted = true;
         salesarrayList.clear();
         Cursor cursor = loadItems;
@@ -330,17 +372,87 @@ public class SalesFragment extends Fragment {
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                     product.setName(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
                 }
                 product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)) : "0");
                 product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)) : "0");
                 product.setCases("0");
                 product.setPic("0");
+
+                HashMap<String,String> filterComp = new HashMap<>();
+                filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                filterComp.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                HashMap<String,String> filterPart = new HashMap<>();
+                filterPart.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_AMOUNT,"");
+
+                if(db.checkData(db.PRICING,filterComp)){
+                    //Pricing exists for Product for customer
+                    Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
+                    if(customerPriceCursor.getCount()>0){
+                        customerPriceCursor.moveToFirst();
+                        String price = customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT));
+                        product.setPrice(product.getUom().equals(App.CASE_UOM)?String.valueOf(Float.parseFloat(price)*10):price);
+//                        product.setPrice(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) ? String.valueOf(Float.parseFloat(price) * 10) : price);
+                    }
+                }
+                else if(db.checkData(db.PRICING,filterPart)){
+                    //Pricing exists for Product for customer
+                    //Pricing exists for Product for customer
+                    Cursor priceCursor = db.getData(db.PRICING,map,filterPart);
+                    if(priceCursor.getCount()>0){
+                        priceCursor.moveToFirst();
+                        String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                        product.setPrice(product.getUom().equals(App.CASE_UOM)?String.valueOf(Float.parseFloat(price)*10):price);
+                    }
+                }
+                else{
+                    product.setPrice("0");
+                }
                 salesarrayList.add(product);
             } catch (Exception e) {
+                Log.e("Exception 1","Exception 1");
                 e.printStackTrace();
             }
         }
         while (cursor.moveToNext());
+        if(isSaved){
+            HashMap<String,String> altMap = new HashMap<>();
+            altMap.put(db.KEY_ITEM_NO,"");
+            altMap.put(db.KEY_ITEM_CATEGORY,"");
+            altMap.put(db.KEY_MATERIAL_NO,"");
+            altMap.put(db.KEY_MATERIAL_DESC1,"");
+            altMap.put(db.KEY_MATERIAL_GROUP,"");
+            altMap.put(db.KEY_ORG_CASE,"");
+            altMap.put(db.KEY_ORG_UNITS,"");
+            altMap.put(db.KEY_AMOUNT,"");
+            altMap.put(db.KEY_UOM,"");
+            HashMap<String,String>filterMap = new HashMap<>();
+            filterMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filterMap.put(db.KEY_PURCHASE_NUMBER,orderID);
+            filterMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+
+            Cursor savedDataCursor = db.getData(db.CAPTURE_SALES_INVOICE,altMap,filterMap);
+            if (savedDataCursor.getCount()>0){
+                savedDataCursor.moveToFirst();
+                do{
+                    for(int i=0;i<salesarrayList.size();i++){
+                        Sales sale = salesarrayList.get(i);
+                        if(sale.getMaterial_no().equals(savedDataCursor.getString(savedDataCursor.getColumnIndex(db.KEY_MATERIAL_NO)))){
+                            sale.setCases(savedDataCursor.getString(savedDataCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                            sale.setPic(savedDataCursor.getString(savedDataCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        }
+                        salesarrayList.remove(i);
+                        salesarrayList.add(i,sale);
+                    }
+                }
+                while (savedDataCursor.moveToNext());
+            }
+        }
         // adapter.notifyDataSetChanged();
     }
 }

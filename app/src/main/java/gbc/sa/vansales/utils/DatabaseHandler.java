@@ -32,6 +32,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CUSTOMER_SALES_AREAS = "CUSTOMER_SALES_AREAS";
     public static final String CUSTOMER_OPEN_ITEMS = "CUSTOMER_OPEN_ITEMS";
     public static final String CUSTOMER_CREDIT = "CUSTOMER_CREDIT";
+    public static final String CUSTOMER_FLAGS = "CUSTOMER_FLAGS";
+    public static final String DRIVER_FLAGS = "DRIVER_FLAGS";
     public static final String LOAD_DELIVERY_HEADER = "LOAD_DELIVERY";
     public static final String LOAD_DELIVERY_ITEMS = "LOAD_DELIVERY_ITEMS";
     public static final String LOAD_DELIVERY_ITEMS_POST = "LOAD_DELIVERY_ITEMS_POST";
@@ -48,6 +50,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String ORDER_REQUEST = "ORDER_REQUEST";
     public static final String MESSAGES = "MESSAGES";
     public static final String ODOMETER = "ODOMETER";
+    public static final String REASONS = "REASONS";
+    public static final String PROMOTIONS = "PROMOTIONS";
+    public static final String PRICING = "PRICING";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -239,6 +244,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_VISITED = "isVisited";
     public static final String KEY_IS_NEW_CUSTOMER = "isNewCustomer";
     public static final String KEY_FUNCTION = "function";
+
+    //Customer Flags
+    public static final String KEY_THRESHOLD_LIMIT = "thresholdLimit";
+    public static final String KEY_VERIFYGPS = "verifyGPS";
+    public static final String KEY_GPS_SAVE = "gpsSave";
+    public static final String KEY_ENABLE_INVOICE = "enableInvoice";
+    public static final String KEY_ENABLE_DELAY_PRINT = "enableDelayPrint";
+    public static final String KEY_ENABLE_EDIT_ORDERS = "enableEditOrders";
+    public static final String KEY_ENABLE_EDIT_INVOICE = "enableEditInvoice";
+    public static final String KEY_ENABLE_RETURNS = "enableReturns";
+    public static final String KEY_ENABLE_DAMAGED = "enableDamaged";
+    public static final String KEY_ENABLE_SIGN_CAPTURE = "enableSignCapture";
+    public static final String KEY_ENABLE_RETURN = "enableReturn";
+    public static final String KEY_ENABLE_AR_COLLECTION = "enableARCollection";
+    public static final String KEY_ENABLE_POS_EQUI = "enablePOSEqui";
+    public static final String KEY_ENABLE_SUR_AUDIT = "enableAudit";
+
+    //Driver Flags
+    public static final String KEY_ROUTE_TYPE = "routeType";
+    public static final String KEY_PROMPT_ODOMETER = "promptOdometer";
+    public static final String KEY_EOD_SALES_REPORT = "eodSalesReport";
+    public static final String KEY_ENABLE_PVOID = "enablePVoid";
+    public static final String KEY_ENABLE_NO_SALE = "enableSale";
+    public static final String KEY_ENABLE_ADD_CUSTOMER = "enableAddCustomer";
+    public static final String KEY_DEFAULT_DELIVERY_DAYS = "defaultDeliveryDays";
+    public static final String KEY_PASSWORD1 = "password1";
+    public static final String KEY_PASSWORD2 = "password2";
+    public static final String KEY_PASSWORD3 = "password3";
+    public static final String KEY_PASSWORD4 = "password4";
+    public static final String KEY_PASSWORD5 = "password5";
+    public static final String KEY_DATE_TIME_CHANGE = "dateTimeChange";
+    public static final String KEY_PRICE_CHANGE = "priceChange";
+    public static final String KEY_PROMO_OVERRIDE = "promoOverride";
+    public static final String KEY_ROUTE_SETUP = "routeSetup";
+    public static final String KEY_VIEW_STOCK = "viewStock";
+    public static final String KEY_LOAD_SECURITY_GUARD = "loadSecurityGuard";
+    public static final String KEY_START_OF_DAY = "startOfDay";
+    public static final String KEY_SETTLEMENT = "settlement";
+    public static final String KEY_PRINT_EOD = "printEOD";
+    public static final String KEY_LOAD_ADJUST = "loadAdjust";
+    public static final String KEY_ENFORCE_CALL_SEQ = "enforceCallSequence";
+    public static final String KEY_DISPLAY_IV_SUMMARY = "displayInvoiceSummary";
+    public static final String KEY_ALLOW_RADIUS = "allowRadius";
+    public static final String KEY_ENABLE_GPS = "enableGPS";
+
+    //Reasons
+    public static final String KEY_REASON_TYPE = "reasonType";
+    public static final String KEY_REASON_CODE = "reasonCode";
+    public static final String KEY_REASON_DESCRIPTION = "reasonDescription";
+
+    //Promotions
+    public static final String KEY_PROMOTION_TYPE = "promotionType";
+
+    //Pricing
+    public static final String KEY_PRIORITY = "priority";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -639,6 +699,82 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TIME_STAMP + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_ODOMETER_VALUE + " TEXT " + ")";
+
+        String TABLE_CUSTOMER_FLAGS = "CREATE TABLE " + CUSTOMER_FLAGS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_THRESHOLD_LIMIT + " TEXT,"
+                + KEY_VERIFYGPS + " TEXT,"
+                + KEY_GPS_SAVE + " TEXT,"
+                + KEY_ENABLE_INVOICE + " TEXT,"
+                + KEY_ENABLE_DELAY_PRINT + " TEXT,"
+                + KEY_ENABLE_EDIT_ORDERS + " TEXT,"
+                + KEY_ENABLE_EDIT_INVOICE + " TEXT,"
+                + KEY_ENABLE_RETURNS + " TEXT,"
+                + KEY_ENABLE_DAMAGED + " TEXT,"
+                + KEY_ENABLE_SIGN_CAPTURE + " TEXT,"
+                + KEY_ENABLE_RETURN + " TEXT,"
+                + KEY_ENABLE_AR_COLLECTION + " TEXT,"
+                + KEY_ENABLE_POS_EQUI + " TEXT,"
+                + KEY_ENABLE_SUR_AUDIT + " TEXT " + ")";
+
+        String TABLE_DRIVER_FLAGS = "CREATE TABLE " + DRIVER_FLAGS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_DRIVER + " TEXT,"
+                + KEY_ROUTE_TYPE + " TEXT,"
+                + KEY_PROMPT_ODOMETER + " TEXT,"
+                + KEY_EOD_SALES_REPORT + " TEXT,"
+                + KEY_ENABLE_PVOID + " TEXT,"
+                + KEY_ENABLE_NO_SALE + " TEXT,"
+                + KEY_ENABLE_ADD_CUSTOMER + " TEXT,"
+                + KEY_DEFAULT_DELIVERY_DAYS + " TEXT,"
+                + KEY_PASSWORD1 + " TEXT,"
+                + KEY_PASSWORD2 + " TEXT,"
+                + KEY_PASSWORD3 + " TEXT,"
+                + KEY_PASSWORD4 + " TEXT,"
+                + KEY_PASSWORD5 + " TEXT,"
+                + KEY_DATE_TIME_CHANGE + " TEXT,"
+                + KEY_PRICE_CHANGE + " TEXT,"
+                + KEY_PROMO_OVERRIDE + " TEXT,"
+                + KEY_ROUTE_SETUP + " TEXT,"
+                + KEY_VIEW_STOCK + " TEXT,"
+                + KEY_LOAD_SECURITY_GUARD + " TEXT,"
+                + KEY_START_OF_DAY + " TEXT,"
+                + KEY_SETTLEMENT + " TEXT,"
+                + KEY_LOAD_ADJUST + " TEXT,"
+                + KEY_ENFORCE_CALL_SEQ + " TEXT,"
+                + KEY_DISPLAY_IV_SUMMARY + " TEXT,"
+                + KEY_ALLOW_RADIUS + " TEXT,"
+                + KEY_ENABLE_GPS + " TEXT " + ")";
+
+        String TABLE_REASONS = "CREATE TABLE " + REASONS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_REASON_TYPE + " TEXT,"
+                + KEY_REASON_CODE + " TEXT,"
+                + KEY_REASON_DESCRIPTION + " TEXT " + ")";
+
+        String TABLE_PROMOTIONS = "CREATE TABLE " + PROMOTIONS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_PROMOTION_TYPE + " TEXT,"
+                + KEY_SALES_ORG + " TEXT,"
+                + KEY_DIST_CHANNEL + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
+                + KEY_CURRENCY + " TEXT,"
+                + KEY_DRIVER + " TEXT " + ")";
+
+        String TABLE_PRICING = "CREATE TABLE " + PRICING + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
+                + KEY_CURRENCY + " TEXT,"
+                + KEY_PRIORITY + " TEXT,"
+                + KEY_DRIVER + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -666,6 +802,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_VAN_STOCK_ITEMS);
         db.execSQL(TABLE_MESSAGES);
         db.execSQL(TABLE_ODOMETER_VALUE);
+        db.execSQL(TABLE_CUSTOMER_FLAGS);
+        db.execSQL(TABLE_DRIVER_FLAGS);
+        db.execSQL(TABLE_REASONS);
+        db.execSQL(TABLE_PROMOTIONS);
+        db.execSQL(TABLE_PRICING);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -694,6 +835,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ORDER_REQUEST);
         db.execSQL("DROP TABLE IF EXISTS " + MESSAGES);
         db.execSQL("DROP TABLE IF EXISTS " + ODOMETER);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_FLAGS);
+        db.execSQL("DROP TABLE IF EXISTS " + DRIVER_FLAGS);
+        db.execSQL("DROP TABLE IF EXISTS " + REASONS);
+        db.execSQL("DROP TABLE IF EXISTS " + PROMOTIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + PRICING);
         onCreate(db);
     }
     //Storing Secured Credentials

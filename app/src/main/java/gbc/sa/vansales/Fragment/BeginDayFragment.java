@@ -119,7 +119,8 @@ public class BeginDayFragment extends Fragment {
             public void onClick(View v) {
                 String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
                 HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                String timeStamp = Helpers.getCurrentTimeStamp();
+                map.put(db.KEY_TIME_STAMP, timeStamp);
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
                 map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
@@ -127,7 +128,7 @@ public class BeginDayFragment extends Fragment {
                 map.put(db.KEY_IS_SELECTED, "true");
                 map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                 db.addData(db.BEGIN_DAY, map);
-                new postTrip(purchaseNumber);
+                new postTrip(purchaseNumber,timeStamp);
                 // showDialog();
             }
         });
@@ -208,11 +209,12 @@ public class BeginDayFragment extends Fragment {
     }
     public void postOdometer(String value) {
         String purchaseNumber = Helpers.generateNumber(db, ConfigStore.OrderRequest_PR_Type);
+        String timeStamp = Helpers.getCurrentTimeStamp();
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_ODOMETER_VALUE, value);
         map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
         map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+        map.put(db.KEY_TIME_STAMP, timeStamp);
         map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
@@ -227,6 +229,7 @@ public class BeginDayFragment extends Fragment {
         String flag = "";
         String value = "";
         String purchaseNumber = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -235,13 +238,16 @@ public class BeginDayFragment extends Fragment {
         private postData(String value, String purchaseNumber) {
             this.value = value;
             this.purchaseNumber = purchaseNumber;
+
             execute();
         }
         @Override
         protected Void doInBackground(Void... params) {
+
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("TripID", Settings.getString(App.TRIP_ID));
             map.put("Value", this.value);
+
             JSONArray deepEntity = new JSONArray();
             this.flag = IntegrationService.postOdometer(getActivity(), App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
             return null;
@@ -313,13 +319,18 @@ public class BeginDayFragment extends Fragment {
         String orderID = "";
         String value = "";
         String purchaseNumber = "";
+        String timeStamp = "";
+        String[] tokens = new String[2];
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             loadingSpinner.show();
         }
-        private postTrip(String purchaseNumber) {
+        private postTrip(String purchaseNumber,String timeStamp) {
             this.purchaseNumber = purchaseNumber;
+            this.timeStamp = timeStamp;
+            this.tokens = Helpers.parseTimeStamp(this.timeStamp);
             execute();
         }
         @Override
@@ -328,6 +339,8 @@ public class BeginDayFragment extends Fragment {
             map.put("Function", ConfigStore.BeginDayFunction);
             map.put("TripId", Settings.getString(App.TRIP_ID));
             map.put("CreatedBy", Settings.getString(App.DRIVER));
+            map.put("StartDate",tokens[0].toString());
+            map.put("StartTime",tokens[1].toString());
             JSONArray deepEntity = new JSONArray();
             JSONObject jsonObject = new JSONObject();
             deepEntity.put(jsonObject);

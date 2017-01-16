@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.PromotionActivity;
 import gbc.sa.vansales.activities.PromotionListActivity;
@@ -68,6 +69,14 @@ public class SalesAdapter extends BaseAdapter implements Filterable {
                 holder = (Holder) convertView.getTag();
             }
             holder.tv_title.setText(salesArrayList.get(position).getName());
+            final Sales sales = salesArrayList.get(position);
+            Log.e("UOM","" + position + sales.getMaterial_no() + sales.getUom());
+            /*if(salesArrayList.get(position).getUom().equals(App.CASE_UOM)||salesArrayList.get(position).getUom().equals(App.CASE_UOM_NEW)){
+                holder.tv_price.setText("Price:" + salesArrayList.get(position).getPrice() + "/0.00");
+            }
+            else{
+                holder.tv_price.setText("Price: 0.00/" + salesArrayList.get(position).getPrice());
+            }*/
             holder.tv_price.setText("Price:54.00/2.25");
             holder.tv_cases.setText("Cases");
             holder.tv_cases_value.setText(salesArrayList.get(position).getCases());

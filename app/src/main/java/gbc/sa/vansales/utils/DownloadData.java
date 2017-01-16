@@ -321,7 +321,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     JSONArray customerCreditArray = headerObj.getJSONObject("CustomerCredit").getJSONArray("results");
                     JSONArray customerSalesAreas = headerObj.getJSONObject("CustomerSalesAreas").getJSONArray("results");
                     JSONArray customerOpenItems = headerObj.getJSONObject("CustomerOpenItems").getJSONArray("results");
-
+                    JSONArray customerFlags = headerObj.getJSONObject("CustomerFlags").getJSONArray("results");
                     HashMap<String, String> headerParams = new HashMap<>();
                     headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
                     headerParams.put(db.KEY_ORDER_BLOCK  ,headerObj.get("OrderBlock").toString());
@@ -381,7 +381,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_DRIVER,customerSalesAreasObject.get("DriverNo").toString());
                         params.put(db.KEY_SOLD_TO_NO ,customerSalesAreasObject.get("SoldToNo").toString());
                         params.put(db.KEY_BILL_TO_NO  ,customerSalesAreasObject.get("BillToNo").toString());
-                        params.put(db.KEY_SHIP_TO_NO ,customerSalesAreasObject.get("ShipToNo").toString());
+                        params.put(db.KEY_SHIP_TO_NO, customerSalesAreasObject.get("ShipToNo").toString());
                         params.put(db.KEY_PAYER_NO  ,customerSalesAreasObject.get("PayerNo").toString());
                         params.put(db.KEY_SALES_NO  ,customerSalesAreasObject.get("SalesNo").toString());
                         params.put(db.KEY_CUSTOMER_GROUP1  ,customerSalesAreasObject.get("CustomerGroup1").toString());
@@ -392,6 +392,29 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_CUSTOMER_GROUP5 ,customerSalesAreasObject.get("CustomerGroup5").toString());
 
                         db.addData(db.CUSTOMER_SALES_AREAS,params);
+                    }
+
+                    for(int l=0;l<customerFlags.length();l++){
+                        JSONObject customerFlagObject = customerFlags.getJSONObject(l);
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        params.put(db.KEY_CUSTOMER_NO,customerFlagObject.get("CustNo").toString());
+                        params.put(db.KEY_THRESHOLD_LIMIT,customerFlagObject.get("Thresholdlimit").toString());
+                        params.put(db.KEY_VERIFYGPS,customerFlagObject.get("Verifygpsdata").toString());
+                        params.put(db.KEY_GPS_SAVE,customerFlagObject.get("Gpssavecount").toString());
+                        params.put(db.KEY_ENABLE_INVOICE,customerFlagObject.get("Enableivcopy").toString());
+                        params.put(db.KEY_ENABLE_DELAY_PRINT,customerFlagObject.get("Enabledelayprint").toString());
+                        params.put(db.KEY_ENABLE_EDIT_ORDERS,customerFlagObject.get("Enableeditorders").toString());
+                        params.put(db.KEY_ENABLE_EDIT_INVOICE,customerFlagObject.get("Enableeditiv").toString());
+                        params.put(db.KEY_ENABLE_RETURNS,customerFlagObject.get("Enablereturns").toString());
+                        params.put(db.KEY_ENABLE_DAMAGED,customerFlagObject.get("Enabledamaged").toString());
+                        params.put(db.KEY_ENABLE_SIGN_CAPTURE,customerFlagObject.get("Enablsigncapture").toString());
+                        params.put(db.KEY_ENABLE_RETURN,customerFlagObject.get("Enablereturn").toString());
+                        params.put(db.KEY_ENABLE_AR_COLLECTION,customerFlagObject.get("Enablearcoll").toString());
+                        params.put(db.KEY_ENABLE_POS_EQUI,customerFlagObject.get("Enableposequi").toString());
+                        params.put(db.KEY_ENABLE_SUR_AUDIT,customerFlagObject.get("Enablesuraudit").toString());
+
+                        db.addData(db.CUSTOMER_FLAGS,params);
                     }
                 }
                 break;
@@ -418,6 +441,178 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                 Helpers.loadData(this.context);
                 break;
             }
+
+            case ConfigStore.DriverRouteEntity:{
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        params.put(db.KEY_DRIVER,object.get("DriverNo").toString());
+                        params.put(db.KEY_ROUTE_TYPE,object.get("Routetype").toString());
+                        params.put(db.KEY_PROMPT_ODOMETER,object.get("Promptodometer").toString());
+                        params.put(db.KEY_EOD_SALES_REPORT,object.get("Eodsalesrep").toString());
+                        params.put(db.KEY_ENABLE_PVOID,object.get("Enablepvoid").toString());
+                        params.put(db.KEY_ENABLE_NO_SALE,object.get("Enablenosale").toString());
+                        params.put(db.KEY_ENABLE_ADD_CUSTOMER,object.get("Enableaddcustomer").toString());
+                        params.put(db.KEY_DEFAULT_DELIVERY_DAYS,object.get("Defaultdeldays").toString());
+                        params.put(db.KEY_PASSWORD1,object.get("Password1").toString());
+                        params.put(db.KEY_PASSWORD2,object.get("Password2").toString());
+                        params.put(db.KEY_PASSWORD3,object.get("Password3").toString());
+                        params.put(db.KEY_PASSWORD4,object.get("Password4").toString());
+                        params.put(db.KEY_PASSWORD5,object.get("Password5").toString());
+                        params.put(db.KEY_DATE_TIME_CHANGE,object.get("Datetimechange").toString());
+                        params.put(db.KEY_PRICE_CHANGE,object.get("Pricechange").toString());
+                        params.put(db.KEY_PROMO_OVERRIDE,object.get("Promooverride").toString());
+                        params.put(db.KEY_ROUTE_SETUP,object.get("Routesetup").toString());
+                        params.put(db.KEY_VIEW_STOCK,object.get("Viewstock").toString());
+                        params.put(db.KEY_LOAD_SECURITY_GUARD,object.get("Loadsecurityguard").toString());
+                        params.put(db.KEY_START_OF_DAY,object.get("Startofday").toString());
+                        params.put(db.KEY_SETTLEMENT,object.get("Settlement").toString());
+                        params.put(db.KEY_LOAD_ADJUST,object.get("Loadadjust").toString());
+                        params.put(db.KEY_ENFORCE_CALL_SEQ,object.get("Enforcecallseq").toString());
+                        params.put(db.KEY_DISPLAY_IV_SUMMARY,object.get("Displayivsummary").toString());
+                        params.put(db.KEY_ALLOW_RADIUS,object.get("Allowradious").toString());
+                        params.put(db.KEY_ENABLE_GPS ,object.get("Enablegps").toString());
+                        db.addData(db.DRIVER_FLAGS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+            }
+
+            case ConfigStore.OrderReasonEntity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_REASON_TYPE,App.OrderReasons);
+                        params.put(db.KEY_REASON_CODE,object.get("Reason").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        db.addData(db.REASONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+            case ConfigStore.VisitReasonEntity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_REASON_TYPE,App.VisitReasons);
+                        params.put(db.KEY_REASON_CODE,object.get("VisitActivity").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        db.addData(db.REASONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+            case ConfigStore.PricingEntity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_CUSTOMER_NO,object.get("CustNo").toString());
+                        params.put(db.KEY_MATERIAL_NO,object.get("Material").toString());
+                        params.put(db.KEY_AMOUNT,object.get("Amount").toString());
+                        params.put(db.KEY_CURRENCY,object.get("Currency").toString());
+                        params.put(db.KEY_PRIORITY, object.get("Priority").toString());
+                        params.put(db.KEY_DRIVER, object.get("Driver").toString());
+                        db.addData(db.PRICING, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+
+            case ConfigStore.Promotion02Entity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
+                        params.put(db.KEY_SALES_ORG,object.get("SalesOrg").toString());
+                        params.put(db.KEY_DIST_CHANNEL,object.get("DistChannel").toString());
+                        params.put(db.KEY_CUSTOMER_NO,object.get("CustNo").toString());
+                        params.put(db.KEY_MATERIAL_NO, object.get("Material").toString());
+                        params.put(db.KEY_AMOUNT, object.get("Amount").toString());
+                        params.put(db.KEY_CURRENCY, object.get("Currency").toString());
+                        params.put(db.KEY_DRIVER, object.get("Driver").toString());
+                        db.addData(db.PROMOTIONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+
+            case ConfigStore.Promotion05Entity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_PROMOTION_TYPE,App.Promotions05);
+                        params.put(db.KEY_SALES_ORG,object.get("SalesOrg").toString());
+                        params.put(db.KEY_DIST_CHANNEL,object.get("DistChannel").toString());
+                        params.put(db.KEY_CUSTOMER_NO,object.get("CustNo").toString());
+                        params.put(db.KEY_MATERIAL_NO, object.get("Material").toString());
+                        params.put(db.KEY_AMOUNT, object.get("Amount").toString());
+                        params.put(db.KEY_CURRENCY, object.get("Currency").toString());
+                        params.put(db.KEY_DRIVER, object.get("Driver").toString());
+                        db.addData(db.PROMOTIONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
+            case ConfigStore.Promotion07Entity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_PROMOTION_TYPE,App.Promotions07);
+                        params.put(db.KEY_SALES_ORG,object.get("SalesOrg").toString());
+                        params.put(db.KEY_DIST_CHANNEL,object.get("DistChannel").toString());
+                        params.put(db.KEY_CUSTOMER_NO,object.get("CustNo").toString());
+                        params.put(db.KEY_MATERIAL_NO, object.get("Material").toString());
+                        params.put(db.KEY_AMOUNT, object.get("Amount").toString());
+                        params.put(db.KEY_CURRENCY, object.get("Currency").toString());
+                        params.put(db.KEY_DRIVER, object.get("Driver").toString());
+                        db.addData(db.PROMOTIONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
         }
     }
 }

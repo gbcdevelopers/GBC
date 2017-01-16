@@ -82,7 +82,14 @@ public class App extends Application {
     public static final String TRUE = "true";
     public static final String FALSE = "false";
 
-    //Transaction Types
+    //Reason Types
+    public static final String OrderReasons = "ORDER";
+    public static final String VisitReasons = "VISIT";
+
+    //Promotions
+    public static final String Promotions02 = "Y002";
+    public static final String Promotions05 = "Y005";
+    public static final String Promotions07 = "Y007";
 
     @Override
     public void onCreate() {
