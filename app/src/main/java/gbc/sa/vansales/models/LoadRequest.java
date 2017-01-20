@@ -15,6 +15,7 @@ public class LoadRequest implements Parcelable {
     private String uom;
     private boolean isCaseEnabled;
     private boolean isUnitEnabled;
+    private boolean isAltUOM;
 
 
     public static final Creator<LoadRequest> CREATOR = new Creator<LoadRequest>() {
@@ -31,6 +32,7 @@ public class LoadRequest implements Parcelable {
             loadRequest.itemName = source.readString();
             loadRequest.isCaseEnabled = source.readByte() != 0;
             loadRequest.isUnitEnabled = source.readByte() != 0;
+            loadRequest.isAltUOM = source.readByte()!=0;
             return loadRequest;
         }
         @Override
@@ -98,6 +100,12 @@ public class LoadRequest implements Parcelable {
     public void setIsUnitEnabled(boolean isUnitEnabled) {
         this.isUnitEnabled = isUnitEnabled;
     }
+    public boolean isAltUOM() {
+        return isAltUOM;
+    }
+    public void setIsAltUOM(boolean isAltUOM) {
+        this.isAltUOM = isAltUOM;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -114,5 +122,6 @@ public class LoadRequest implements Parcelable {
         parcel.writeString(itemName);
         parcel.writeByte((byte) (isCaseEnabled ? 1 : 0));
         parcel.writeByte((byte) (isUnitEnabled ? 1 : 0));
+        parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
 }

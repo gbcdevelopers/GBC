@@ -150,7 +150,7 @@
 												android:label="@string/dashboard"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme"
-												android:windowSoftInputMode="stateHidden"/>
+												android:windowSoftInputMode="stateAlwaysHidden"/>
 								<activity
 												android:name=".activities.LoadActivity"
 												android:label="@string/dashboard"

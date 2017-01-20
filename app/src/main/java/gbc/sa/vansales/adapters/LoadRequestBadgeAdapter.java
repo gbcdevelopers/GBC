@@ -50,9 +50,10 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             //holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
             holder.itemCode = (TextView)convertView.findViewById(R.id.tv_item);
             holder.itemName = (TextView) convertView.findViewById(R.id.tvItemName);
-            holder.cases = (EditText) convertView.findViewById(R.id.tvCases);
-            holder.units = (EditText) convertView.findViewById(R.id.tvUnit);
+            holder.cases = (TextView) convertView.findViewById(R.id.tvCases);
+            holder.units = (TextView) convertView.findViewById(R.id.tvUnit);
             holder.categoryImage = (ImageView) convertView.findViewById(R.id.categoryImage);
+            holder.item_price = (TextView)convertView.findViewById(R.id.tv_price);
             // set tag for holder
             convertView.setTag(holder);
         }
@@ -61,56 +62,21 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             holder = (ViewHolder) convertView.getTag();
         }
         final LoadRequest loadRequest = loadRequestList.get(pos);
-        holder.itemCode.setText(StringUtils.stripStart(loadRequest.getMaterialNo(), "0"));
+        holder.itemCode.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(loadRequest.getMaterialNo(), "0"));
         holder.itemName.setText(loadRequest.getItemName());
 
         /*else if(loadRequestList.get(pos).getUom().equals(App.BOTTLES_UOM)){
             holder.cases.setEnabled(false);
         }*/
 
-
-        holder.casestextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                loadRequestList.get(pos).setCases(s.toString());
-                int price = 1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price*Integer.parseInt(s.toString());
-                }
-                loadRequestList.get(pos).setPrice(String.valueOf(price));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-        holder.unitsTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int price = loadRequestList.get(pos).getPrice()!=null?Integer.parseInt(loadRequestList.get(pos).getPrice().toString()):1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price==1?Integer.parseInt(s.toString())*2:Integer.parseInt(s.toString())*2+price;
-                }
-                loadRequestList.get(pos).setUnits(s.toString());
-                loadRequestList.get(pos).setPrice(String.valueOf(price));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-        holder.cases.addTextChangedListener(holder.casestextWatcher);
         holder.cases.setText(loadRequestList.get(pos).getCases());
-        holder.units.addTextChangedListener(holder.unitsTextWatcher);
         holder.units.setText(loadRequestList.get(pos).getUnits());
+        if(!loadRequestList.get(pos).getCases().equals("0")){
+            holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(loadRequestList.get(pos).getPrice())*Float.parseFloat(loadRequestList.get(pos).getCases())));
+        }
+        else{
+            holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(loadRequestList.get(pos).getPrice())));
+        }
        // holder.units.setText(loadRequest.getUnits());
         // Set the results into ImageView
         holder.categoryImage.setImageResource(R.drawable.beraincategory);
@@ -120,12 +86,13 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
     public class ViewHolder {
         TextView itemCode;
         TextView itemName;
-        EditText cases;
-        EditText units;
+        TextView cases;
+        TextView units;
         ImageView categoryImage;
         LinearLayout rl_item;
         public TextWatcher casestextWatcher;
         public TextWatcher unitsTextWatcher;
+        TextView item_price;
 
         /*public ViewHolder(View v) {
             rl_item = (LinearLayout)v.findViewById(R.id.rl_item);

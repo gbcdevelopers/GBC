@@ -21,8 +21,8 @@
 																android:layout_height="wrap_content"
 																android:layout_marginLeft="@dimen/h3"
 																android:layout_marginRight="@dimen/h3"
-																android:layout_marginTop="@dimen/h3"
-																android:hint="Enter category here">
+																android:layout_marginTop="@dimen/space"
+																android:hint="@string/enter_category">
 												</EditText>
 
 												<ListView
@@ -30,9 +30,11 @@
 																android:layout_width="fill_parent"
 																android:layout_height="wrap_content"
 																android:layout_below="@+id/search"
+																android:dividerHeight="0.3dp"
+																android:divider="@color/colorPrimary"
 																android:layout_marginLeft="@dimen/h3"
 																android:layout_marginRight="@dimen/h3"
-																android:layout_marginTop="@dimen/h1"
+																android:layout_marginTop="@dimen/h4"
 																/>
 								</RelativeLayout>
 
@@ -71,7 +73,7 @@
 																				android:layout_width="wrap_content"
 																				android:layout_height="wrap_content"
 																				android:layout_centerVertical="true"
-																				android:layout_marginLeft="@dimen/h3"
+																				android:layout_marginLeft="20dp"
 																				android:text="@string/date"
 																				android:textSize="@dimen/label_small"
 																				/>
@@ -81,6 +83,7 @@
 																				android:layout_width="@dimen/big"
 																				android:layout_height="@dimen/big"
 																				android:layout_centerVertical="true"
+																				android:layout_marginLeft="40dp"
 																				android:layout_toRightOf="@+id/tv1"
 																				android:background="@drawable/calend"
 																				/>

@@ -649,6 +649,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_PRINTED + " TEXT " + ")";
         String TABLE_LOAD_REQUEST = "CREATE TABLE " + LOAD_REQUEST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DATE + " TEXT,"
                 + KEY_TIME_STAMP + " TEXT,"
                 + KEY_TRIP_ID + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"

@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -45,7 +47,7 @@ public class VanStockBadgeAdapter extends ArrayAdapter<VanStock> {
 
         VanStock vanStock = getItem(position);
 
-        holder.item_code.setText(vanStock.getItem_code());
+        holder.item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(vanStock.getItem_code(), "0"));
         holder.item_description.setText(UrlBuilder.decodeString(vanStock.getItem_description()));
         holder.item_case.setText(vanStock.getItem_case());
         holder.item_unit.setText(vanStock.getItem_units());

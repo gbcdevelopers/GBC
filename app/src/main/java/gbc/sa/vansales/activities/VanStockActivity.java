@@ -99,6 +99,7 @@ public class VanStockActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             HashMap<String,String> map = new HashMap<>();
             map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_NO,"");
             map.put(db.KEY_MATERIAL_DESC1,"");
             map.put(db.KEY_RESERVED_QTY_CASE,"");
             map.put(db.KEY_RESERVED_QTY_UNIT,"");
@@ -127,7 +128,7 @@ public class VanStockActivity extends AppCompatActivity {
     private void setLoadItems(Cursor cursor){
         do{
             VanStock vanStock = new VanStock();
-            vanStock.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+            vanStock.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             vanStock.setItem_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
             vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
             vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));

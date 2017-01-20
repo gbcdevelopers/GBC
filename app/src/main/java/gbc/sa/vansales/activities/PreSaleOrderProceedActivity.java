@@ -431,7 +431,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             Cursor cursor = db.getData(db.ORDER_REQUEST, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                tv_date.setText(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
+
                 setLoadItems(cursor, true);
             }
             return null;
@@ -439,12 +439,16 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     }
     public void setLoadItems(Cursor loadItemsCursor, Boolean isPosted) {
         Cursor cursor = loadItemsCursor;
+        if(isPosted){
+            tv_date.setText(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
+        }
         do {
             OrderRequest loadRequest = new OrderRequest();
             loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
             ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             if (isPosted) {
+
                 loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_CASE)) : "0");
                 //loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)) : "0");
                 loadRequest.setUnits("0");
