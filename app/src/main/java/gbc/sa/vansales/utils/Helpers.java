@@ -72,6 +72,12 @@ public class Helpers {
         return tokens;
     }
 
+    public static String parseDateforPost(String date){
+        String[] dateArr = date.split("\\-");
+        String dateStr = dateArr[2]+"-"+dateArr[1]+"-"+dateArr[0]+"T00:00:00";
+        return dateStr;
+    }
+
     public static void backupDatabase(){
         File dbFile = new File(App.APP_DB_PATH);
         FileInputStream inputStream = null;

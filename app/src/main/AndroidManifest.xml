@@ -246,7 +246,7 @@
 												android:name=".activities.PreSaleOrderProceedActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
-												android:windowSoftInputMode="stateHidden"/>
+												android:windowSoftInputMode="stateAlwaysHidden"/>
 								<activity
 												android:name=".activities.CollectionsActivity"
 												android:screenOrientation="portrait"

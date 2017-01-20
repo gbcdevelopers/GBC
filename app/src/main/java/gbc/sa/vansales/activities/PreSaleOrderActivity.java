@@ -55,6 +55,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
         loadingSpinner = new LoadingSpinner(this);
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         arrayList = new ArrayList<>();
@@ -62,18 +64,6 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         new loadOrdersLocal().execute();
         adapter = new OrderListBadgeAdapter(this, arrayList);
         Const.constantsHashMap.clear();
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-
-/*
-
-
-        if(object==null)
-        {
-
-           object= Const.allCustomerdataArrayList.get(Const.customerPosition);
-        }
-*/
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);

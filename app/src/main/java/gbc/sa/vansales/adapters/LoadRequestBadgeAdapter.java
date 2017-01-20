@@ -47,7 +47,7 @@ public class LoadRequestBadgeAdapter extends ArrayAdapter<LoadRequest> {
             convertView = inflater.inflate(R.layout.activity_loadrequest_items,parent,false);
             // get all UI view
             holder = new ViewHolder();
-            holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
+            //holder.rl_item = (LinearLayout)convertView.findViewById(R.id.rl_item);
             holder.itemCode = (TextView)convertView.findViewById(R.id.tv_item);
             holder.itemName = (TextView) convertView.findViewById(R.id.tvItemName);
             holder.cases = (EditText) convertView.findViewById(R.id.tvCases);

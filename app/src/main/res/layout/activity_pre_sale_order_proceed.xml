@@ -6,7 +6,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/grey"
+                android:background="@color/white"
                 tools:context="gbc.sa.vansales.activities.PreSaleOrderProceedActivity">
 
 				<include
@@ -17,7 +17,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="match_parent"
 								android:layout_marginBottom="60dp"
-								android:layout_marginTop="100dp"
+								android:layout_marginTop="50dp"
 								android:orientation="vertical"
 								android:layout_below="@+id/ll_common"
 								>
@@ -72,6 +72,8 @@
 												android:layout_width="fill_parent"
 												android:layout_height="wrap_content"
 												android:layout_marginLeft="@dimen/h3"
+												android:divider="@color/colorPrimary"
+												android:dividerHeight="0.3dp"
 												android:layout_marginRight="@dimen/h3"
 												android:layout_marginTop="@dimen/h3"
 												>
@@ -98,7 +100,7 @@
 																android:layout_width="wrap_content"
 																android:layout_height="wrap_content"
 																android:layout_alignParentRight="true"
-																android:src="@drawable/double_tick"
+																android:src="@drawable/ic_printer"
 																app:backgroundTint="@color/colorPrimary"
 																/>
 

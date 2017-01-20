@@ -85,15 +85,13 @@ public class BeginDayFragment extends Fragment {
     LoadingSpinner loadingSpinner;
     float lastValue = 0;
     Button btn_continue;
-
     @Override
     public void setMenuVisibility(final boolean visible) {
         super.setMenuVisibility(visible);
         if (visible) {
-         //   setBeginDayVisibility();
+            //   setBeginDayVisibility();
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_begin_day, container, false);
@@ -124,8 +122,8 @@ public class BeginDayFragment extends Fragment {
             e.printStackTrace();
         }
         btn_continue = (Button) view.findViewById(R.id.btnBack);
-        boolean isMessageClicked = ((BeginTripActivity)getActivity()).hello;
-        Log.e("=========","" + isMessageClicked);
+        boolean isMessageClicked = ((BeginTripActivity) getActivity()).hello;
+        Log.e("=========", "" + isMessageClicked);
         setBeginDayVisibility();
        /* if(isMessageClicked){
 
@@ -148,7 +146,7 @@ public class BeginDayFragment extends Fragment {
                 map.put(db.KEY_IS_SELECTED, "true");
                 map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                 db.addData(db.BEGIN_DAY, map);
-                new postTrip(purchaseNumber,timeStamp);
+                new postTrip(purchaseNumber, timeStamp);
                 // showDialog();
             }
         });
@@ -156,7 +154,7 @@ public class BeginDayFragment extends Fragment {
         return view;
     }
     private void setBeginDayVisibility() {
-        Log.e("Called","Called");
+        Log.e("Called", "Called");
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "true");
         if (db.checkData(db.LOCK_FLAGS, map)) {
@@ -164,7 +162,6 @@ public class BeginDayFragment extends Fragment {
             btn_continue.setAlpha(.5f);
             // btnBDay.setVisibility(View.INVISIBLE);
         }
-
     }
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
@@ -247,13 +244,10 @@ public class BeginDayFragment extends Fragment {
         }
         new postData(value, purchaseNumber);
     }
-
-
     public class postData extends AsyncTask<Void, Void, Void> {
         String flag = "";
         String value = "";
         String purchaseNumber = "";
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -262,16 +256,13 @@ public class BeginDayFragment extends Fragment {
         private postData(String value, String purchaseNumber) {
             this.value = value;
             this.purchaseNumber = purchaseNumber;
-
             execute();
         }
         @Override
         protected Void doInBackground(Void... params) {
-
             HashMap<String, String> map = new HashMap<String, String>();
             map.put("TripID", Settings.getString(App.TRIP_ID));
             map.put("Value", this.value);
-
             JSONArray deepEntity = new JSONArray();
             this.flag = IntegrationService.postOdometer(getActivity(), App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
             return null;
@@ -283,14 +274,12 @@ public class BeginDayFragment extends Fragment {
             }
             hideKeyboard();
             if (this.flag.equals(purchaseNumber)) {
-
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 HashMap<String, String> filter = new HashMap<>();
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 db.updateData(db.ODOMETER, map, filter);
-
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_BEGIN_DAY, "true");
                 HashMap<String, String> filterMap = new HashMap<>();
@@ -298,17 +287,13 @@ public class BeginDayFragment extends Fragment {
                 db.updateData(db.LOCK_FLAGS, altMap, filterMap);
                 Intent i = new Intent(getActivity(), LoadActivity.class);
                 startActivity(i);
-
-
             } else if (this.flag.equals("Y")) {
-
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
                 HashMap<String, String> filter = new HashMap<>();
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 db.updateData(db.ODOMETER, map, filter);
-
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_BEGIN_DAY, "true");
                 HashMap<String, String> filterMap = new HashMap<>();
@@ -345,13 +330,12 @@ public class BeginDayFragment extends Fragment {
         String purchaseNumber = "";
         String timeStamp = "";
         String[] tokens = new String[2];
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             loadingSpinner.show();
         }
-        private postTrip(String purchaseNumber,String timeStamp) {
+        private postTrip(String purchaseNumber, String timeStamp) {
             this.purchaseNumber = purchaseNumber;
             this.timeStamp = timeStamp;
             this.tokens = Helpers.parseTimeStamp(this.timeStamp);
@@ -363,8 +347,8 @@ public class BeginDayFragment extends Fragment {
             map.put("Function", ConfigStore.BeginDayFunction);
             map.put("TripId", Settings.getString(App.TRIP_ID));
             map.put("CreatedBy", Settings.getString(App.DRIVER));
-            map.put("StartDate",tokens[0].toString());
-            map.put("StartTime",tokens[1].toString());
+            map.put("StartDate", tokens[0].toString());
+            map.put("StartTime", tokens[1].toString());
             JSONArray deepEntity = new JSONArray();
             JSONObject jsonObject = new JSONObject();
             deepEntity.put(jsonObject);
