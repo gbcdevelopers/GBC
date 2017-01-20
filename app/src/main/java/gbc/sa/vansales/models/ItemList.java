@@ -6,13 +6,17 @@ package gbc.sa.vansales.models;
 
 public class ItemList
 {
-    int id,item_number,case_price,unit_price,upc;
+    int id;
     String item_des;
+    String item_number;
+    String case_price;
+    String unit_price;
+    String upc;
 
     public ItemList()
     {}
 
-    public ItemList(int item_number, String item_des, int case_price, int unit_price, int upc)
+    public ItemList(String item_number, String item_des, String case_price, String unit_price, String upc)
     {
 
         this.item_number = item_number;
@@ -31,38 +35,38 @@ public class ItemList
         this.item_des = item_des;
     }
 
-    public int getItem_number()
+    public String getItem_number()
     {
         return item_number;
     }
-    public void setItem_number(int item_number)
+    public void setItem_number(String item_number)
     {
         this.item_number = item_number;
     }
 
-    public int getCase_price()
+    public String getCase_price()
     {
         return case_price;
     }
-    public void setCase_price(int case_price)
+    public void setCase_price(String case_price)
     {
         this.case_price = case_price;
     }
 
-    public int getUnit_price()
+    public String getUnit_price()
     {
         return unit_price;
     }
-    public void setUnit_price(int unit_price)
+    public void setUnit_price(String unit_price)
     {
         this.unit_price = unit_price;
     }
 
-    public int getUpc()
+    public String getUpc()
     {
         return upc;
     }
-    public void setUpc(int upc)
+    public void setUpc(String upc)
     {
         this.upc = upc;
     }

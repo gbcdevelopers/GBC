@@ -35,6 +35,40 @@
     <ListView
         android:id="@+id/list_item"
         android:layout_width="match_parent"
+        android:layout_marginBottom="80dp"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:paddingTop="@dimen/h3"
+        android:paddingBottom="@dimen/h3"
+        android:orientation="vertical"
+        android:layout_marginTop="-80dp"
+        android:background="@drawable/custom_border"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="@string/total_amount"
+            android:layout_marginBottom="@dimen/size_five"
+            android:textColor="@color/green"
+            android:textSize="@dimen/label_small"
+            android:id="@+id/tv_label"/>
+        <TextView
+            android:id="@+id/tv_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:text="@string/_0_00"
+            android:textSize="@dimen/label_big"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
 
 </LinearLayout>

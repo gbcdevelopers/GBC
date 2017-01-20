@@ -2,6 +2,7 @@ package gbc.sa.vansales.adapters;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ public class LoadVerifyBadgeAdapter extends ArrayAdapter<LoadSummary> {
     public LoadVerifyBadgeAdapter(Context context, ArrayList<LoadSummary> loadSummaries){
         super(context, R.layout.badge_load_verify, loadSummaries);
         this.activity = (LoadVerifyActivity)context;
-
         this.loadSummaryList = loadSummaries;
         this.tempList = new ArrayList<>();
 
@@ -66,11 +66,13 @@ public class LoadVerifyBadgeAdapter extends ArrayAdapter<LoadSummary> {
         TextView quantity_cs = (TextView)convertView.findViewById(R.id.lbl_quantity_cases);
         TextView quantity_bt = (TextView)convertView.findViewById(R.id.lbl_quantity_units);*/
 
-        holder.item_code.setText(StringUtils.stripStart(loadSummary.getMaterialNo(), "0"));
+        holder.item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(loadSummary.getMaterialNo(),"0"));
         holder.item_description.setText(loadSummary.getItemDescription());
         holder.quantity_cases.setText(loadSummary.getQuantityCases());
         holder.quantity_units.setText(loadSummary.getQuantityUnits());
-
+        String[] caseArray = new String[2];
+        caseArray = loadSummary.getQuantityCases().split("\\|");
+        holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(loadSummary.getPrice())*Float.parseFloat(caseArray[1].toString())));
         return convertView;
     }
 
@@ -82,7 +84,7 @@ public class LoadVerifyBadgeAdapter extends ArrayAdapter<LoadSummary> {
         private TextView item_description;
         private TextView quantity_cases;
         private TextView quantity_units;
-
+        private TextView item_price;
 
         public ViewHolder(View v) {
 
@@ -90,7 +92,7 @@ public class LoadVerifyBadgeAdapter extends ArrayAdapter<LoadSummary> {
             item_description = (TextView) v.findViewById(R.id.lbl_item_description);
             quantity_cases = (TextView) v.findViewById(R.id.lbl_quantity_cases);
             quantity_units = (TextView) v.findViewById(R.id.lbl_quantity_units);
-
+            item_price = (TextView)v.findViewById(R.id.lbl_item_price);
         }
     }
 }

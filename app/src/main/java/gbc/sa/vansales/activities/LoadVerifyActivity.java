@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -69,15 +70,27 @@ public class LoadVerifyActivity extends AppCompatActivity {
       //  loadSummaryList = dataNew;
         adapter = new LoadVerifyBadgeAdapter(this, loadSummaryList);
         loadSummaryList = generateData(dataNew,dataOld);
-        for(int i=0;i<loadSummaryList.size();i++){
-            System.out.println(loadSummaryList.get(i).getQuantityCases());
-        }
-
+        calculateCost();
         listView = (ListView)findViewById(R.id.loadSummaryList);
         listView.setAdapter(adapter);
 
     }
 
+    private void calculateCost(){
+        int salesTotal = 0;
+        int pcsTotal = 0;
+        double total = 0;
+        for(LoadSummary item:loadSummaryList){
+            double itemPrice = 0;
+            String[] cases = item.getQuantityCases().split("\\|");
+            if(!item.isAltUOM()){
+                itemPrice = Double.parseDouble(cases[1])*Double.parseDouble(item.getPrice());
+            }
+            total+=itemPrice;
+        }
+        TextView tv = (TextView) findViewById(R.id.tv_amt);
+        tv.setText(String.valueOf(total));
+    }
     public void confirmLoad(View v){
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put(db.KEY_IS_VERIFIED, "true");
@@ -358,12 +371,12 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
                 if(dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode()))
                 {
-                   // Log.e("I m here","here");
                     loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases()+"|"+dataNew.get(i).getQuantityCases());
                 }
                 if(dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
                     loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
                 }
+                loadSummary.setPrice(dataNew.get(i).getPrice());
                 loadSummaryList.add(loadSummary);
             }
 

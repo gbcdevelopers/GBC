@@ -101,7 +101,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
                 if(!(customerHeader==null)){
                     tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 }
                 else{
@@ -121,7 +121,12 @@ public class CustomerMessageListActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Handler handler = new Handler();
+                if (refreshLayout.isRefreshing()) {
+                    dispatchRefresh();
+                    refreshLayout.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+               /* Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -130,7 +135,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
                             adapter.notifyDataSetChanged();
                         }
                     }
-                }, 2000);
+                }, 2000);*/
             }
         });
         iv_refresh.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +153,16 @@ public class CustomerMessageListActivity extends AppCompatActivity {
     }
     public void dispatchRefresh() {
         refreshLayout.setRefreshing(true);
-        Handler handler = new Handler();
+        if (refreshLayout.isRefreshing()) {
+            refreshLayout.setRefreshing(false);
+            HashMap<String,String> filter = new HashMap<String, String>();
+            filter.put(db.KEY_STRUCTURE,App.DRIVER_MESSAGE_KEY);
+            db.deleteData(db.MESSAGES,filter);
+            Messages.load(CustomerMessageListActivity.this, Settings.getString(App.DRIVER), db);
+            new loadMessages(getIntent().getStringExtra("from"));
+            // adapter.notifyDataSetChanged();
+        }
+        /*Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -162,7 +176,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
                    // adapter.notifyDataSetChanged();
                 }
             }
-        }, 4000);
+        }, 4000);*/
     }
 
     public class loadMessages extends AsyncTask<Void,Void,Void>{

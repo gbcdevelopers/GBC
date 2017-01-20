@@ -50,7 +50,7 @@ public class PriceListActivity extends AppCompatActivity {
     {
 
 
-        for(int i=0;i<10;i++)
+       /* for(int i=0;i<10;i++)
         {
             ItemList model = new ItemList();
             model.setItem_number(i);
@@ -58,7 +58,7 @@ public class PriceListActivity extends AppCompatActivity {
             model.setCase_price(100 + i);
 
             arrayList.add(model);
-        }
+        }*/
 
         adapter = new PriceListAdapter(PriceListActivity.this,arrayList);
         listView.setAdapter(adapter);

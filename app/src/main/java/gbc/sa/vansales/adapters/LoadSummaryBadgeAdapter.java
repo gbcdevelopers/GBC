@@ -79,12 +79,13 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         TextView quantity_cs = (TextView)convertView.findViewById(R.id.lbl_quantity_cases);
         TextView quantity_bt = (TextView)convertView.findViewById(R.id.lbl_quantity_units);*/
 
-        holder.item_code.setText(StringUtils.stripStart(loadSummary.getMaterialNo(),"0"));
+        holder.item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(loadSummary.getMaterialNo(),"0"));
         holder.item_description.setText(loadSummary.getItemDescription());
         holder.quantity_cases.setText(loadSummary.getQuantityCases());
         holder.quantity_units.setText(loadSummary.getQuantityUnits());
-        holder.btn_accept.setOnClickListener(onAcceptListener(position, holder));
-        holder.btn_reject.setOnClickListener(onRejectListener(position,holder));
+        holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(loadSummary.getPrice())*Float.parseFloat(loadSummary.getQuantityCases())));
+       // holder.btn_accept.setOnClickListener(onAcceptListener(position, holder));
+       // holder.btn_reject.setOnClickListener(onRejectListener(position,holder));
 
         return convertView;
     }
@@ -97,7 +98,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
                 tempList.add(loadSummaryList.get(position));
                 LoadSummary loadSummary = loadSummaryList.get(position);
                 loadSummaryList.remove(position);
-                holder.swipeLayout.close();
+             //   holder.swipeLayout.close();
                 activity.updateAdapter(tempList);
 
                 //Logic to update is verified flag
@@ -147,7 +148,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
                 loadSummaryList.get(position).setQuantityUnits(et_quantity_unit.getText().toString().trim());
                 activity.hideKeyboard(v);
                 activity.updateAdapter(tempList);
-                holder.swipeLayout.close();
+              //  holder.swipeLayout.close();
                 dialog.dismiss();
             }
         });
@@ -155,7 +156,7 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.swipeLayout.close();
+             //   holder.swipeLayout.close();
                 dialog.dismiss();
                 activity.hideKeyboard(v);
             }
@@ -169,20 +170,22 @@ public class LoadSummaryBadgeAdapter extends ArrayAdapter<LoadSummary> {
         private TextView item_description;
         private TextView quantity_cases;
         private TextView quantity_units;
-        private View btn_accept;
-        private View btn_reject;
-        private SwipeLayout swipeLayout;
+        private TextView item_price;
+     //   private View btn_accept;
+      //  private View btn_reject;
+     //   private SwipeLayout swipeLayout;
 
         public ViewHolder(View v) {
-            swipeLayout = (SwipeLayout)v.findViewById(R.id.swipe_layout);
-            btn_accept = v.findViewById(R.id.accept);
-            btn_reject = v.findViewById(R.id.reject);
+          //  swipeLayout = (SwipeLayout)v.findViewById(R.id.swipe_layout);
+          //  btn_accept = v.findViewById(R.id.accept);
+         //   btn_reject = v.findViewById(R.id.reject);
             item_code = (TextView) v.findViewById(R.id.lbl_item_code);
             item_description = (TextView) v.findViewById(R.id.lbl_item_description);
             quantity_cases = (TextView) v.findViewById(R.id.lbl_quantity_cases);
             quantity_units = (TextView) v.findViewById(R.id.lbl_quantity_units);
+            item_price = (TextView)v.findViewById(R.id.lbl_item_price);
 
-            swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+          //  swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         }
     }
 }

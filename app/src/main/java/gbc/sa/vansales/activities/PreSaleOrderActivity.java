@@ -38,7 +38,7 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class PreSaleOrderActivity extends AppCompatActivity {
-    ImageView iv_back,iv_refresh;
+    ImageView iv_back, iv_refresh;
     TextView tv_top_header;
     ListView list_delivery;
     PresaleAdapter presaleAdapterdapter;
@@ -51,19 +51,16 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     SwipeRefreshLayout refreshLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
         loadingSpinner = new LoadingSpinner(this);
-
-        refreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_layout);
-
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         arrayList = new ArrayList<>();
         new loadOrders().execute();
         new loadOrdersLocal().execute();
-        adapter = new OrderListBadgeAdapter(this,arrayList);
+        adapter = new OrderListBadgeAdapter(this, arrayList);
         Const.constantsHashMap.clear();
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
@@ -77,7 +74,6 @@ public class PreSaleOrderActivity extends AppCompatActivity {
            object= Const.allCustomerdataArrayList.get(Const.customerPosition);
         }
 */
-
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
@@ -87,7 +83,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         if (!(customerHeader == null)) {
             tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+            tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
             tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
@@ -108,8 +104,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             }
         });
         list_delivery = (ListView) findViewById(R.id.list_delivery);
-        iv_refresh=(ImageView)findViewById(R.id.img_refresh);
-
+        iv_refresh = (ImageView) findViewById(R.id.img_refresh);
+        iv_refresh.setVisibility(View.INVISIBLE);
         proceedArrayList = new ArrayList<>();
         presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
         list_delivery.setAdapter(adapter);
@@ -129,12 +125,10 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "list");
                 intent.putExtra("pos", position);
-                intent.putExtra("orderList",orderList);
+                intent.putExtra("orderList", orderList);
                 startActivity(intent);
             }
         });
-
-
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -150,16 +144,12 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 }, 2000);
             }
         });
-
-
         iv_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 dispatchRefresh();
             }
         });
-
     }
     @Override
     protected void onResume() {
@@ -169,7 +159,6 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         if (proceedArrayList != null) {
             proceedArrayList.clear();
         }
-
 //        for(int i=0;i<Const.constantsHashMap.size();i++)
 //        {
 //            proceedArrayList.add(i);
@@ -181,119 +170,102 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             list_delivery.setAdapter(presaleAdapterdapter);
         }*/
     }
-
-    public class loadOrders extends AsyncTask<Void,Void,Void>{
-
-
+    public class loadOrders extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String,String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-            map.put(db.KEY_ORDER_ID,"");
-            map.put(db.KEY_PURCHASE_NUMBER,"");
-            map.put(db.KEY_DATE,"");
-
-            HashMap<String,String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-
-            Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
-            if(cursor.getCount()>0){
+            map.put(db.KEY_ORDER_ID, "");
+            map.put(db.KEY_PURCHASE_NUMBER, "");
+            map.put(db.KEY_DATE, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            Cursor cursor = db.getData(db.ORDER_REQUEST, map, filter);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 setOrders(cursor);
             }
-
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
+            if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
             adapter.notifyDataSetChanged();
         }
     }
-    public class loadOrdersLocal extends AsyncTask<Void,Void,Void>{
-
-
+    public class loadOrdersLocal extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String,String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-            map.put(db.KEY_ORDER_ID,"");
-            map.put(db.KEY_PURCHASE_NUMBER,"");
-            map.put(db.KEY_DATE,"");
-
-            HashMap<String,String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-
-            Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
-            if(cursor.getCount()>0){
+            map.put(db.KEY_ORDER_ID, "");
+            map.put(db.KEY_PURCHASE_NUMBER, "");
+            map.put(db.KEY_DATE, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            Cursor cursor = db.getData(db.ORDER_REQUEST, map, filter);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 setOrdersLocal(cursor);
             }
-
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
+            if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
             adapter.notifyDataSetChanged();
         }
     }
-
-    private void setOrders(Cursor cursor){
-        ArrayList<String> temp=new ArrayList<String>();
+    private void setOrders(Cursor cursor) {
+        ArrayList<String> temp = new ArrayList<String>();
         temp.clear();
         arrayList.clear();
-        Log.e("Cursor","" + cursor.getCount());
-        do{
+        Log.e("Cursor", "" + cursor.getCount());
+        do {
             OrderList orderList = new OrderList();
             //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            Log.e("ORDER","" + orderList.getOrderId());
-            if(!temp.contains(orderList.getOrderId())){
+            Log.e("ORDER", "" + orderList.getOrderId());
+            if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }
         }
         while (cursor.moveToNext());
-
-
     }
-    private void setOrdersLocal(Cursor cursor){
-        ArrayList<String> temp=new ArrayList<String>();
+    private void setOrdersLocal(Cursor cursor) {
+        ArrayList<String> temp = new ArrayList<String>();
         temp.clear();
         //arrayList.clear();
-        Log.e("Cursor","" + cursor.getCount());
-        do{
+        Log.e("Cursor", "" + cursor.getCount());
+        do {
             OrderList orderList = new OrderList();
             //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            Log.e("ORDER","" + orderList.getOrderId());
-            if(!temp.contains(orderList.getOrderId())){
+            Log.e("ORDER", "" + orderList.getOrderId());
+            if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }
         }
         while (cursor.moveToNext());
-
-
     }
-
     public void dispatchRefresh() {
         refreshLayout.setRefreshing(true);
         Handler handler = new Handler();
@@ -307,5 +279,4 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
 }

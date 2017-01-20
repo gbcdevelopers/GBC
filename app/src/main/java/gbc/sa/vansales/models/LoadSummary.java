@@ -4,64 +4,79 @@ import android.os.Parcelable;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
-public class LoadSummary implements Parcelable{
+public class LoadSummary implements Parcelable {
     private String item_code;
     private String item_description;
     private String quantity_cases;
     private String quantity_units;
+    private String uom;
+    private String price;
+    private String materialNo;
+    private boolean isAltUOM;
+    //Get Instance
+    public LoadSummary() {
+    }
+    //Getter and Setter
+    public String getItemCode() {
+        return item_code;
+    }
+    public void setItemCode(String item_code) {
+        this.item_code = item_code;
+    }
+    public String getItemDescription() {
+        return item_description;
+    }
+    public void setItemDescription(String item_description) {
+        this.item_description = item_description;
+    }
+    public String getQuantityCases() {
+        return quantity_cases;
+    }
+    public void setQuantityCases(String quantity_cases) {
+        this.quantity_cases = quantity_cases;
+    }
+    public String getQuantityUnits() {
+        return quantity_units;
+    }
+    public void setQuantityUnits(String quantity_units) {
+        this.quantity_units = quantity_units;
+    }
     public String getMaterialNo() {
         return materialNo;
     }
     public void setMaterialNo(String materialNo) {
         this.materialNo = materialNo;
     }
-    private String materialNo;
-
-    //Get Instance
-    public LoadSummary(){
-
+    public String getUom() {
+        return uom;
     }
-
-    //Getter and Setter
-    public String getItemCode(){
-        return item_code;
+    public void setUom(String uom) {
+        this.uom = uom;
     }
-    public void setItemCode(String item_code){
-        this.item_code = item_code;
+    public String getPrice() {
+        return price;
     }
-
-    public String getItemDescription(){
-        return item_description;
+    public void setPrice(String price) {
+        this.price = price;
     }
-    public void setItemDescription(String item_description){
-        this.item_description = item_description;
+    public boolean isAltUOM() {
+        return isAltUOM;
     }
-
-    public String getQuantityCases(){
-        return quantity_cases;
+    public void setIsAltUOM(boolean isAltUOM) {
+        this.isAltUOM = isAltUOM;
     }
-    public void setQuantityCases(String quantity_cases){
-        this.quantity_cases = quantity_cases;
-    }
-
-    public String getQuantityUnits(){
-        return quantity_units;
-    }
-    public void setQuantityUnits(String quantity_units){
-        this.quantity_units = quantity_units;
-    }
-
     public static final Parcelable.Creator<LoadSummary> CREATOR = new Parcelable.Creator<LoadSummary>() {
         @Override
         public LoadSummary createFromParcel(Parcel source) {
             LoadSummary loadSummary = new LoadSummary();
-
             loadSummary.item_code = source.readString();
             loadSummary.item_description = source.readString();
             loadSummary.quantity_cases = source.readString();
             loadSummary.quantity_units = source.readString();
             loadSummary.materialNo = source.readString();
-
+            loadSummary.uom = source.readString();
+            loadSummary.price = source.readString();
+            loadSummary.isAltUOM = source.readByte()!=0;
             return loadSummary;
         }
         @Override
@@ -80,6 +95,8 @@ public class LoadSummary implements Parcelable{
         parcel.writeString(quantity_cases);
         parcel.writeString(quantity_units);
         parcel.writeString(materialNo);
+        parcel.writeString(uom);
+        parcel.writeString(price);
+        parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
-
 }

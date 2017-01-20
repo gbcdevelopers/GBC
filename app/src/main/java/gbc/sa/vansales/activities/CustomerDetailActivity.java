@@ -38,95 +38,71 @@ public class CustomerDetailActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     View view1;
-    LinearLayout ll_updown, ll_message, ll_promotion,ll_pricelist,ll_balance;
+    LinearLayout ll_updown, ll_message, ll_promotion, ll_pricelist, ll_balance;
     ImageView iv_updown;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
-    String from="";
-
-
-
+    String from = "";
     //    LinearLayout tv_order;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
-
-
-        if(getIntent().getExtras()!=null)
-        {
-            from=getIntent().getStringExtra("msg");
-            if(from.equals("visit") || from.equals("all"))
-            {
-
+        if (getIntent().getExtras() != null) {
+            from = getIntent().getStringExtra("msg");
+            if (from.equals("visit") || from.equals("all")) {
                 Intent i = this.getIntent();
                 object = (Customer) i.getParcelableExtra("headerObj");
-                if(object==null)
-                {
-                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
-                }
-
-
+                /*if (object == null) {
+                    object = Const.allCustomerdataArrayList.get(Const.customerPosition);
+                }*/
                 customers = CustomerHeaders.get();
-
-                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
-                TextView tv_customer_name = (TextView)findViewById(R.id.tv_customer_id);
-                TextView tv_customer_address = (TextView)findViewById(R.id.tv_customer_address);
-                TextView tv_customer_pobox = (TextView)findViewById(R.id.tv_customer_pobox);
-                TextView tv_customer_contact = (TextView)findViewById(R.id.tv_customer_contact);
-
-                TextView tv_credit_days = (TextView)findViewById(R.id.tv_digits);
-                TextView tv_credit_limit = (TextView)findViewById(R.id.tv_digits1);
-                TextView tv_available_limit = (TextView)findViewById(R.id.tv_digits2);
-
-                if(!(customerHeader==null)){
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+                TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
+                TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
+                TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
+                TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
+                TextView tv_credit_days = (TextView) findViewById(R.id.tv_digits);
+                TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
+                TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
+                if (!(customerHeader == null)) {
                     tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
-                }
-                else{
+                } else {
                     tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
                     tv_customer_address.setText(object.getCustomerAddress().toString());
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
                 }
-
-
-                if(object.getPaymentMethod().equalsIgnoreCase("cash")){
+                if (object.getPaymentMethod().equalsIgnoreCase("cash")) {
                     tv_credit_days.setText("0");
                     tv_credit_limit.setText("0");
                     tv_available_limit.setText("0");
-                }
-                else{
-                    try{
+                } else {
+                    try {
                         HashMap<String, String> map = new HashMap<>();
-                        map.put(db.KEY_CUSTOMER_NO,"");
-                        map.put(db.KEY_CREDIT_LIMIT,"");
-
-                        HashMap<String, String>filters = new HashMap<>();
-                        filters.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                        Cursor cursor = db.getData(db.CUSTOMER_CREDIT,map,filters);
-                        if(cursor.getCount()>0){
+                        map.put(db.KEY_CUSTOMER_NO, "");
+                        map.put(db.KEY_CREDIT_LIMIT, "");
+                        HashMap<String, String> filters = new HashMap<>();
+                        filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
+                        if (cursor.getCount() > 0) {
                             cursor.moveToFirst();
                             tv_credit_days.setText("0");
                             tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
                             tv_available_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
                         }
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
-                    }
-                    finally {
+                    } finally {
                         db.close();
                     }
-
                 }
-
             }
         }
-
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -146,9 +122,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        ll_pricelist=(LinearLayout) findViewById(R.id.ll_pricelist);
-        ll_balance=(LinearLayout)findViewById(R.id.ll_balance);
+        ll_pricelist = (LinearLayout) findViewById(R.id.ll_pricelist);
+        ll_balance = (LinearLayout) findViewById(R.id.ll_balance);
 //        tv_order.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -158,33 +133,22 @@ public class CustomerDetailActivity extends AppCompatActivity {
 //
 //            }
 //        });
-
-
         ll_pricelist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent=new Intent(CustomerDetailActivity.this,PriceListCustomerActivity.class);
+                Intent intent = new Intent(CustomerDetailActivity.this, PriceListCustomerActivity.class);
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
         });
-
-
-        ll_balance=(LinearLayout) findViewById(R.id.ll_balance);
-
-
+        ll_balance = (LinearLayout) findViewById(R.id.ll_balance);
         ll_balance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent=new Intent(CustomerDetailActivity.this,BalanceActivity.class);
+                Intent intent = new Intent(CustomerDetailActivity.this, BalanceActivity.class);
                 startActivity(intent);
-
-
             }
         });
-
-
         iv_updown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,7 +165,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerDetailActivity.this, CustomerMessageListActivity.class);
-                intent.putExtra("from",object.getCustomerID());
+                intent.putExtra("from", object.getCustomerID());
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
@@ -210,7 +174,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CustomerDetailActivity.this, PromotionListActivity.class);
-                intent.putExtra("from","review");
+                intent.putExtra("from", "review");
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
         });
@@ -235,7 +200,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
-                        intent2.putExtra("from","customerdetail");
+                        intent2.putExtra("from", "customerdetail");
                         intent2.putExtra("headerObj", object);
                         startActivity(intent2);
                         break;

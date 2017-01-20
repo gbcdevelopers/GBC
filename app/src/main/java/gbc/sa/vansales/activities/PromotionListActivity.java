@@ -72,8 +72,10 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             }
         }
         if (from.equals("review")) {
-            adapter1 = new PromotionInfoAdapter(PromotionListActivity.this, 3, R.layout.custom_promotion_info_list);
-            list_promotion.setAdapter(adapter1);
+            /*adapter1 = new PromotionInfoAdapter(PromotionListActivity.this, 3, R.layout.custom_promotion_info_list);
+            list_promotion.setAdapter(adapter1);*/
+            adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
+            list_promotion.setAdapter(adapter);
         } else {
             Log.e("Here","Here");
             adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
@@ -122,7 +124,13 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
                     intent.putExtra("headerObj", object);
                     intent.putExtra("promocode",arrayList.get(position).getPromotionCode());
                     intent.putExtra("pos", position);
-                    startActivity(intent);
+                    if(from.equals("review")){
+
+                    }
+                    else{
+                        startActivity(intent);
+                    }
+
                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 }
             }

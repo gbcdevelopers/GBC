@@ -264,6 +264,11 @@
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
+												android:name=".activities.SelectCustomerStatus"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
 												android:name=".activities.CustomerOperationsActivity"
 												android:label="@string/customeroperation"
 												android:launchMode="singleTop"
@@ -318,7 +323,7 @@
 												android:parentActivityName=".activities.LoadActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.ActionBar"
-												android:windowSoftInputMode="stateHidden"/>
+												android:windowSoftInputMode="stateAlwaysHidden"/>
 								<activity
 												android:name=".activities.LoadVerifyActivity"
 												android:label="@string/load_summary_title"
@@ -339,7 +344,6 @@
 
 					<activity
 						android:name=".activities.PriceListCustomerActivity"
-
 						android:launchMode="singleTop"
 						android:parentActivityName=".activities.LoadSummaryActivity"
 						android:screenOrientation="portrait"

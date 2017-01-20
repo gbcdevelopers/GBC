@@ -240,7 +240,7 @@
 
 								<LinearLayout
 												android:layout_width="match_parent"
-												android:layout_height="wrap_content"
+												android:layout_height="70dp"
 												android:layout_marginTop="@dimen/activity_vertical_margin"
 												android:orientation="horizontal"
 												android:paddingLeft="@dimen/size_five"
@@ -274,12 +274,11 @@
 																				android:layout_width="wrap_content"
 																				android:layout_height="wrap_content"
 																				android:layout_below="@+id/tv_credit"
-																				android:layout_marginRight="@dimen/size_five"
 																				android:layout_centerHorizontal="true"
+																				android:layout_marginRight="@dimen/size_five"
 																				android:ellipsize="end"
-																				android:maxLines="1"
-
 																				android:gravity="center_vertical|center_horizontal"
+																				android:maxLines="1"
 																				android:singleLine="true"
 																				android:text="@string/credit_1"
 																				android:textSize="@dimen/label_small"
@@ -290,9 +289,9 @@
 																				android:layout_height="wrap_content"
 																				android:layout_below="@id/tv_digits"
 																				android:gravity="end"
-																				android:visibility="invisible"
 																				android:text="@string/days"
 																				android:textColor="@color/btn_positive"
+																				android:visibility="invisible"
 																				/>
 												</RelativeLayout>
 
@@ -333,12 +332,12 @@
 																<TextView
 																				android:layout_width="match_parent"
 																				android:layout_height="wrap_content"
-																				android:layout_toRightOf="@+id/tv_digits1"
 																				android:layout_below="@id/tv_credit1"
+																				android:layout_toRightOf="@+id/tv_digits1"
 																				android:gravity="end"
 																				android:text="@string/currency"
-																				android:textSize="@dimen/label_small"
 																				android:textColor="@color/btn_positive"
+																				android:textSize="@dimen/label_small"
 																				/>
 												</RelativeLayout>
 
@@ -362,8 +361,6 @@
 																				android:textSize="@dimen/label_small"
 																				/>
 
-
-
 																<TextView
 																				android:id="@+id/tv_digits2"
 																				android:layout_width="wrap_content"
@@ -384,8 +381,8 @@
 																				android:layout_toRightOf="@+id/tv_digits2"
 																				android:gravity="end"
 																				android:text="@string/currency"
-																				android:textSize="@dimen/label_small"
 																				android:textColor="@color/btn_positive"
+																				android:textSize="@dimen/label_small"
 																				/>
 												</RelativeLayout>
 								</LinearLayout>

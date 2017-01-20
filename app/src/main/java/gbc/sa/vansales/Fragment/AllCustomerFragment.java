@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.CustomerDetailActivity;
+import gbc.sa.vansales.activities.SelectCustomerActivity;
+import gbc.sa.vansales.activities.SelectCustomerStatus;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.Customer;
@@ -42,7 +44,8 @@ public class AllCustomerFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Const.customerPosition=position;
                 Customer customer = Const.allCustomerdataArrayList.get(position);
-                Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
+                //Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
+                Intent intent = new Intent(getActivity(), SelectCustomerStatus.class);
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg","all");
                 startActivity(intent);
