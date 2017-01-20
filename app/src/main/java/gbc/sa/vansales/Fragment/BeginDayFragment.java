@@ -64,7 +64,7 @@ import static gbc.sa.vansales.R.id.thing_proto;
 /**
  * Created by eheuristic on 12/2/2016.
  */
-public class BeginDayFragment extends Fragment implements DataListener{
+public class BeginDayFragment extends Fragment {
     String TAG = BeginDayFragment.class.getSimpleName();
     TextView salesDate;
     TextView time;
@@ -126,13 +126,14 @@ public class BeginDayFragment extends Fragment implements DataListener{
         btn_continue = (Button) view.findViewById(R.id.btnBack);
         boolean isMessageClicked = ((BeginTripActivity)getActivity()).hello;
         Log.e("=========","" + isMessageClicked);
-        if(isMessageClicked){
-            setBeginDayVisibility();
+        setBeginDayVisibility();
+       /* if(isMessageClicked){
+
         }
         else{
             btn_continue.setEnabled(false);
             btn_continue.setAlpha(.5f);
-        }
+        }*/
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,10 +247,7 @@ public class BeginDayFragment extends Fragment implements DataListener{
         }
         new postData(value, purchaseNumber);
     }
-    @Override
-    public void onProcessingComplete() {
-        setBeginDayVisibility();
-    }
+
 
     public class postData extends AsyncTask<Void, Void, Void> {
         String flag = "";

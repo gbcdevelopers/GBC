@@ -2,7 +2,9 @@ package gbc.sa.vansales.Fragment;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,10 @@ import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.BeginTripActivity;
 import gbc.sa.vansales.adapters.MessageBadgeAdapter;
 import gbc.sa.vansales.adapters.MessageListAdapter;
+import gbc.sa.vansales.data.Messages;
 import gbc.sa.vansales.models.Message;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -36,7 +40,16 @@ public class MessageFragment extends Fragment {
     DatabaseHandler db;
     String arr[] = {"silent meeting", "silent meeting"};
     ArrayList<Message> arrayList;
+    SwipeRefreshLayout refreshLayout;
 
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible) {
+            ((BeginTripActivity)getActivity()).hello = true;
+
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.message_fragment, container, false);
@@ -45,7 +58,31 @@ public class MessageFragment extends Fragment {
         lv_message = (ListView) view.findViewById(R.id.lv_messages);
         iv_round = (RoundedImageView) view.findViewById(R.id.roundedImageView);
         arrayList = new ArrayList<>();
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (refreshLayout.isRefreshing()) {
+                    dispatchRefresh();
+                    refreshLayout.setRefreshing(false);
+                    adapter.notifyDataSetChanged();
+                }
+                /*Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (refreshLayout.isRefreshing()) {
+                            dispatchRefresh();
+                            refreshLayout.setRefreshing(false);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }, 2000);*/
+            }
+        });
+
         adapter = new MessageBadgeAdapter(getActivity(),arrayList);
+
        // adapter = new MessageListAdapter(getActivity().getBaseContext(), arr);
         lv_message.setAdapter(adapter);
         bindData();
@@ -117,5 +154,38 @@ public class MessageFragment extends Fragment {
             arrayList.add(message);
         }
         while (cursor.moveToNext());
+    }
+
+    public void dispatchRefresh() {
+        Log.e("Dispatch Called","Called");
+        refreshLayout.setRefreshing(true);
+        if (refreshLayout.isRefreshing()) {
+            refreshLayout.setRefreshing(false);
+            adapter.clear();
+            HashMap<String,String> filter = new HashMap<String, String>();
+            filter.put(db.KEY_STRUCTURE, App.DRIVER_MESSAGE_KEY);
+            db.deleteData(db.MESSAGES, filter);
+            Log.e("MEssage","Bring");
+            Messages.load(getActivity(), Settings.getString(App.DRIVER), db);
+            bindData();
+            // adapter.notifyDataSetChanged();
+        }
+        /*Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
+                    adapter.clear();
+                    HashMap<String,String> filter = new HashMap<String, String>();
+                    filter.put(db.KEY_STRUCTURE, App.DRIVER_MESSAGE_KEY);
+                    db.deleteData(db.MESSAGES, filter);
+                    Log.e("MEssage","Bring");
+                    Messages.load(getActivity(), Settings.getString(App.DRIVER), db);
+                    bindData();
+                    // adapter.notifyDataSetChanged();
+                }
+            }
+        }, 4000);*/
     }
 }
