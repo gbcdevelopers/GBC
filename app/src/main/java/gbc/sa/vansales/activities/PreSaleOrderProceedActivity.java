@@ -113,11 +113,6 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
 
-        if(object==null)
-        {
-            object=Const.allCustomerdataArrayList.get(Const.customerPosition);
-        }
-
         orderList = (OrderList)i.getParcelableExtra("orderList");
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
@@ -560,7 +555,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.CustomerOrderRequestFunction);
             map.put("OrderId", "");
-            map.put("DocumentType", ConfigStore.DocumentType);
+            map.put("DocumentType", ConfigStore.CustomerOrderRequestDocumentType);
             // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
             // map.put("DocumentDate", null);
             map.put("CustomerId", object.getCustomerID());

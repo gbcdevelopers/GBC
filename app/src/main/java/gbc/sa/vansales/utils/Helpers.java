@@ -249,6 +249,30 @@ public class Helpers {
                 docTypeNo = ConfigStore.Odometer_PR;
                 break;
             }
+            case ConfigStore.GoodReturns_PR_Type:{
+                docTypeNo = ConfigStore.GoodReturns_PR;
+                break;
+            }
+            case ConfigStore.BadReturns_PR_Type:{
+                docTypeNo = ConfigStore.BadReturns_PR;
+                break;
+            }
+            case ConfigStore.TheftorTruck_PR_Type:{
+                docTypeNo = ConfigStore.TheftorTruck_PR;
+                break;
+            }
+            case ConfigStore.Excess_PR_Type:{
+                docTypeNo = ConfigStore.Excess_PR;
+                break;
+            }
+            case ConfigStore.EndingInventory_PR_Type:{
+                docTypeNo = ConfigStore.EndingInventory_PR;
+                break;
+            }
+            case ConfigStore.FreshUnload_PR_Type:{
+                docTypeNo = ConfigStore.FreshUnload_PR;
+                break;
+            }
 
         }
         return docTypeNo;

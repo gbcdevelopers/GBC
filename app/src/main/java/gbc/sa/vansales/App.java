@@ -91,6 +91,23 @@ public class App extends Application {
     public static final String Promotions05 = "Y005";
     public static final String Promotions07 = "Y007";
 
+    //Returns
+    public static final String GOOD_RETURN = "GOOD";
+    public static final String BAD_RETURN = "BAD";
+
+    //Variance for Unload
+    public static final String BAD_RETURN_VARIANCE = "BAD_RETURN_VARIANCE";
+    public static final String ENDING_INVENTORY = "ENDING_INVENTORY";
+    public static final String TRUCK_DAMAGE = "TRUCK_DAMAGE";
+    public static final String INVENTORY_VARIANCE = "INVENTORY_VARIANCE";
+    public static final String THEFT = "THEFT";
+    public static final String EXCESS = "EXCESS";
+    public static final String FRESHUNLOAD = "FRESHUNLOAD";
+
+    //Posting Constants
+    public static final String STORAGE_LOCATION = "VAN";
+    public static final String PLANT = "1000";
+
     @Override
     public void onCreate() {
         super.onCreate();

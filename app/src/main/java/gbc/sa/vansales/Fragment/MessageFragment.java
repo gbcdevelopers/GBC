@@ -36,6 +36,7 @@ public class MessageFragment extends Fragment {
     DatabaseHandler db;
     String arr[] = {"silent meeting", "silent meeting"};
     ArrayList<Message> arrayList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.message_fragment, container, false);

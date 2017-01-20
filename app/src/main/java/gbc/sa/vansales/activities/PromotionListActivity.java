@@ -1,9 +1,10 @@
 package gbc.sa.vansales.activities;
-
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -12,50 +13,52 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.PromotionAdapter;
 import gbc.sa.vansales.adapters.PromotionInfoAdapter;
+import gbc.sa.vansales.adapters.PromotionsAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
 import gbc.sa.vansales.models.Customer;
+import gbc.sa.vansales.models.Promotions;
+import gbc.sa.vansales.sap.DataListener;
+import gbc.sa.vansales.utils.ConfigStore;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.LoadingSpinner;
 /**
  * Created by eheuristic on 12/7/2016.
  */
-
-public class PromotionListActivity extends AppCompatActivity {
-
+public class PromotionListActivity extends AppCompatActivity implements DataListener{
     ListView list_promotion;
-    PromotionAdapter adapter;
+    PromotionsAdapter adapter;
     PromotionInfoAdapter adapter1;
-
-
     ImageView iv_back;
     TextView tv_top_header;
     Button btn_apply;
-
-    ArrayList<String> arrayList;
-    String from="promo";
+    ArrayList<Promotions> arrayList;
+    String from = "promo";
     Customer object;
+    int count = 0;
+    DatabaseHandler db = new DatabaseHandler(this);
+    LoadingSpinner loadingSpinner;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_promotionlist);
-
         Intent i = this.getIntent();
+        loadingSpinner = new LoadingSpinner(this);
         object = (Customer) i.getParcelableExtra("headerObj");
-
+        arrayList = new ArrayList<>();
         list_promotion = (ListView) findViewById(R.id.list_promotion);
-
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         btn_apply = (Button) findViewById(R.id.btn_apply);
-
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Promotion List");
+        tv_top_header.setText(getString(R.string.promotion));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,97 +66,128 @@ public class PromotionListActivity extends AppCompatActivity {
             }
         });
         if (getIntent().getExtras() != null) {
-            from = getIntent().getExtras().getString("from","");
+            from = getIntent().getExtras().getString("from", "");
             if (from.equals("review")) {
                 btn_apply.setVisibility(View.GONE);
             }
         }
-
-        arrayList=new ArrayList<>();
-        arrayList.add("50% AMC Invoice Discount");
-        arrayList.add("20% FOC Discount");
-        arrayList.add("10% Other Discount");
-
-
-        btn_apply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-//                AlertDialog.Builder builder = new AlertDialog.Builder(PromotionListActivity.this);
-//                builder.setTitle("Promotion list");
-//                builder.setMessage("Applied Successfully");
-//                builder.setCancelable(true);
-//                builder.setIcon(R.mipmap.ic_launcher);
-//                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.cancel();
-//                    }
-//                });
-//                builder.show();
-                Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
-                intent.putExtra("msg","Final Invoice");
-                intent.putExtra("headerObj", object);
-                startActivity(intent);
-
-            }
-        });
         if (from.equals("review")) {
-            adapter1 = new PromotionInfoAdapter(PromotionListActivity.this,3, R.layout.custom_promotion_info_list);
+            adapter1 = new PromotionInfoAdapter(PromotionListActivity.this, 3, R.layout.custom_promotion_info_list);
             list_promotion.setAdapter(adapter1);
         } else {
-            adapter = new PromotionAdapter(PromotionListActivity.this,3, R.layout.custom_promotionlist);
+            Log.e("Here","Here");
+            adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
             list_promotion.setAdapter(adapter);
         }
 
-
-
-
-      /*  list_promotion.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*arrayList.add("50% AMC Invoice Discount");
+        arrayList.add("20% FOC Discount");
+        arrayList.add("10% Other Discount");*/
+        new loadPromotions(App.Promotions02);
+        new loadPromotions(App.Promotions05);
+        new loadPromotions(App.Promotions07);
+        btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            public void onClick(View v) {
+                Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
+                intent.putExtra("msg", "Final Invoice");
+                intent.putExtra("headerObj", object);
+                startActivity(intent);
             }
-        });*/
-
-      final SwipeDetector swipeDetector=new SwipeDetector();
+        });
 
 
+
+        final SwipeDetector swipeDetector = new SwipeDetector();
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int position,
                                     long arg3) {
                 if (swipeDetector.swipeDetected()) {
-
                     if (swipeDetector.getAction() == SwipeDetector.Action.RL) {
-
-
 //                        TextView tv = (TextView) view.findViewById(R.id.tv_product);
 //                        String str_promotion_message = tv.getText().toString();
-                            Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
-                            intent.putExtra("msg", arrayList.get(position));
-                            intent.putExtra("pos",position);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                        Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
+                        intent.putExtra("msg", arrayList.get(position));
+                        intent.putExtra("pos", position);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                     } else {
                     }
                 } else {
                     TextView tv = (TextView) view.findViewById(R.id.tv_product);
                     String str_promotion_message = tv.getText().toString();
-                            Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
+                    Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
                     intent.putExtra("msg", str_promotion_message);
-                            intent.putExtra("pos",position);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                        }
+                    intent.putExtra("headerObj", object);
+                    intent.putExtra("promocode",arrayList.get(position).getPromotionCode());
+                    intent.putExtra("pos", position);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                }
             }
         };
-
-
         list_promotion.setOnTouchListener(swipeDetector);
         list_promotion.setOnItemClickListener(listener);
+    }
 
+    private void setPromotions(String promocode){
+        if(promocode.equals(App.Promotions02)){
+            Promotions promotions = new Promotions();
+            promotions.setIsMandatory(true);
+            promotions.setPromotionCode(App.Promotions02);
+            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions02));
+            arrayList.add(promotions);
+        }
+        else if(promocode.equals(App.Promotions05)){
+            Promotions promotions = new Promotions();
+            promotions.setIsMandatory(true);
+            promotions.setPromotionCode(App.Promotions05);
+            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions05));
+            arrayList.add(promotions);
+        }
+        else if(promocode.equals(App.Promotions07)){
+            Promotions promotions = new Promotions();
+            promotions.setIsMandatory(true);
+            promotions.setPromotionCode(App.Promotions07);
+            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions07));
+            arrayList.add(promotions);
+        }
+    }
+    @Override
+    public void onProcessingComplete() {
+        adapter.notifyDataSetChanged();
+    }
+    public class loadPromotions extends AsyncTask<Void,Void,Void>{
+        String promotionType = "";
+        private loadPromotions(String promotionType) {
+            this.promotionType = promotionType;
+            execute();
+        }
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            count++;
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_PROMOTION_TYPE,this.promotionType);
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            if(db.checkData(db.PROMOTIONS,filter)) {
+                setPromotions(this.promotionType);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(count==3){
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                onProcessingComplete();
+            }
 
-
+        }
     }
 }

@@ -10,10 +10,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 import gbc.sa.vansales.data.Const;
@@ -34,14 +36,13 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
     TextView tv_top_header;
     ImageView iv_updown;
     Customer object;
-    String from="";
+    String from = "";
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
-
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
@@ -49,29 +50,16 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         TextView tv_credit_days = (TextView) findViewById(R.id.tv_digits);
         TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
         TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
-
-
-
-
-        if(getIntent().getExtras()!=null)
-        {
-            from=getIntent().getStringExtra("from");
-
-            if(from.equals("customerdetail"))
-            {
+        if (getIntent().getExtras() != null) {
+            from = getIntent().getStringExtra("from");
+            if (from.equals("customerdetail")) {
                 Intent i = this.getIntent();
                 object = (Customer) i.getParcelableExtra("headerObj");
-                if(object==null)
-                {
-                    object=Const.allCustomerdataArrayList.get(Const.customerPosition);
+                if (object == null) {
+                    object = Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }
-
-
                 customers = CustomerHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
-
-
-
                 if (!(customerHeader == null)) {
                     tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
@@ -92,7 +80,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         HashMap<String, String> map = new HashMap<>();
                         map.put(db.KEY_CUSTOMER_NO, "");
                         map.put(db.KEY_CREDIT_LIMIT, "");
-                        map.put(db.KEY_AVAILABLE_LIMIT,"");
+                        map.put(db.KEY_AVAILABLE_LIMIT, "");
                         HashMap<String, String> filters = new HashMap<>();
                         filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                         Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
@@ -109,14 +97,8 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         db.close();
                     }
                 }
-
-
             }
-
         }
-
-
-
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -143,19 +125,45 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         startActivity(intent1);
                         break;
                     case 1:
-                        Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
-                        intent2.putExtra("headerObj", object);
-                        startActivity(intent2);
-                        break;
+                        if(invoiceExist()){
+                            Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
+                            intent2.putExtra("headerObj", object);
+                            startActivity(intent2);
+                            break;
+                        }
+                        else{
+                            Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
+                        }
+
                     case 2:
-                        Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
-                        intent3.putExtra("headerObj", object);
-                        startActivity(intent3);
-                        break;
+                        if(invoiceExist()){
+                            Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
+                            intent3.putExtra("headerObj", object);
+                            startActivity(intent3);
+                            break;
+                        }
+                        else{
+                            Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
+                        }
+
                     default:
                         break;
                 }
             }
         });
+    }
+
+    private boolean invoiceExist(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_TIME_STAMP,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+        if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)||db.checkData(db.RETURNS,filter)){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

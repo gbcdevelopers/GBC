@@ -514,7 +514,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadRequestFunction);
             map.put("OrderId", "");
-            map.put("DocumentType", ConfigStore.DocumentType);
+            map.put("DocumentType", ConfigStore.LoadRequestDocumentType);
            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
            // map.put("DocumentDate", null);
            /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));

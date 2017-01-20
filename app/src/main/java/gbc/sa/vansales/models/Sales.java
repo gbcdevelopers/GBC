@@ -17,7 +17,13 @@ public class Sales implements Parcelable {
     private String cases;
     private String inv_cases;
     private String inv_piece;
-
+    private String reasonCode;
+    public String getReasonCode() {
+        return reasonCode;
+    }
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
+    }
     public String getMaterial_description() {
         return material_description;
     }
@@ -112,6 +118,7 @@ public class Sales implements Parcelable {
         parcel.writeString(cases);
         parcel.writeString(inv_cases);
         parcel.writeString(inv_piece);
+        parcel.writeString(reasonCode);
     }
 
     public static final Creator<Sales> CREATOR = new Creator<Sales>() {
@@ -130,7 +137,7 @@ public class Sales implements Parcelable {
             sale.cases = source.readString();
             sale.inv_cases = source.readString();
             sale.inv_piece = source.readString();
-
+            sale.reasonCode = source.readString();
             return sale;
         }
         @Override

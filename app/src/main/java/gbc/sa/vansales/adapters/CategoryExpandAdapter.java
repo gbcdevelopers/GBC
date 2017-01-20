@@ -304,7 +304,7 @@ public class CategoryExpandAdapter extends BaseExpandableListAdapter {
                         }
                         else {
 
-                            addlist.add(childText);
+                           // addlist.add(childText);
                             checkBox.setChecked(true);
                         }
 

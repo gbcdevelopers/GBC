@@ -44,7 +44,7 @@ public class BeginTripActivity extends AppCompatActivity  {
     private LoadingSpinner loadingSpinner;
     private static final String COLLECTION_NAME = "VisitListSet";
     private static final String TRIP_ID = "ITripId";
-
+    public boolean hello = false;
     ViewPager viewPager;
     TabLayout tabLayout;
 

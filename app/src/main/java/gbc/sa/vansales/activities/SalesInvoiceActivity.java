@@ -166,7 +166,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         } else if (tab_position == 1) {
                             FocFragment.adapter.getFilter().filter("");
                         } else if (tab_position == 2) {
-                            GListFragment.adapter.getFilter().filter("");
+                         //`   GListFragment.adapter.getFilter().filter("");
                         } else if (tab_position == 3) {
                             BListFragment.adapter.getFilter().filter("");
                         }
@@ -185,11 +185,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.v("addtext", "change");
                 if (tab_position == 0) {
-                    SalesFragment.adapter.getFilter().filter(s.toString());
+          //          SalesFragment.adapter.getFilter().filter(s.toString());
                 } else if (tab_position == 1) {
                     FocFragment.adapter.getFilter().filter(s.toString());
                 } else if (tab_position == 2) {
-                    GListFragment.adapter.getFilter().filter(s.toString());
+             //       GListFragment.adapter.getFilter().filter(s.toString());
                 } else if (tab_position == 3) {
                     BListFragment.adapter.getFilter().filter(s.toString());
                 }
@@ -258,7 +258,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         sales.setPic("0");
                         productArrayList.add(sales);
                     }
-                    GListFragment.arrProductList.addAll(productArrayList);
+                    //GListFragment.arrProductList.addAll(productArrayList);
                     GListFragment.adapter.notifyDataSetChanged();
 
                 }
@@ -273,7 +273,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         sales.setPic("0");
                         productArrayList.add(sales);
                     }
-                    BListFragment.arrProductList.addAll(productArrayList);
+                    //BListFragment.arrProductList.addAll(productArrayList);
                     BListFragment.adapter.notifyDataSetChanged();
 
                 }

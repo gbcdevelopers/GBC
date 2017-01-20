@@ -51,14 +51,21 @@ public class ConfigStore {
     public static final String InvoiceRequestFunction = "HHTIV";
     public static final String CustomerDeliveryRequestFunction = "CUSTDEL";
     public static final String BeginDayFunction = "BEGINDAY";
+    public static final String ReturnsFunction = "RETURNS";
+    public static final String UnloadFunction = "ORDERREQ";
 
     //Document Types
     public static final String DocumentType = "ZVDL";
+    public static final String LoadRequestDocumentType = "ZPRE";
+    public static final String CustomerOrderRequestDocumentType = "ZPRE";
     public static final String DeliveryDocumentType = "ZVAN";
     public static final String GoodReturnType = "ZGRN";
     public static final String BadReturnType = "ZEXP";
     public static final String OrderRequestType = "ZPRE";
     public static final String EndingInventory = "ZVLO";
+    public static final String TheftorTruckDocumentType = "ZDRX";
+    public static final String ExcessDocumentType = "ZCRX";
+    public static final String FreshUnload = "ZVLO";
 
     //DocumentTypes for PR Number Generation
     public static final String LoadRequest_PR_Type = "LOAD";
@@ -77,7 +84,18 @@ public class ConfigStore {
     public static final String EndDay_PR = "99";
     public static final String Odometer_PR_Type = "ODOMETER";
     public static final String Odometer_PR = "97";
-
+    public static final String GoodReturns_PR_Type = "GOODRETURN";
+    public static final String GoodReturns_PR = "06";
+    public static final String BadReturns_PR_Type = "BADRETURN";
+    public static final String BadReturns_PR = "07";
+    public static final String TheftorTruck_PR_Type = "THEFTORTRUCK";
+    public static final String TheftorTruck_PR = "08";
+    public static final String Excess_PR_Type = "EXCESS";
+    public static final String Excess_PR = "09";
+    public static final String EndingInventory_PR_Type = "ENDINGINVENTORY";
+    public static final String EndingInventory_PR = "10";
+    public static final String FreshUnload_PR_Type = "FRESHUNLOAD";
+    public static final String FreshUnload_PR = "11";
 
     //Connectivity Messages
     public static final String WIFI_CONNECTED = "Wifi Enabled";

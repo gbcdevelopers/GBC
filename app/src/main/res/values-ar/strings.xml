@@ -54,6 +54,7 @@
 				<string name="availableload">التحميل المتاح</string>
 				<string name="bad">سىء</string>
 				<string name="bad_return">مرتجعات سيئة</string>
+				<string name="bad_return_variance">Bad Return(Variance)</string>
 				<string name="bad_returns">مرتجعات سيئة</string>
 				<string name="balance">الرصيد</string>
 				<string name="beginDay">تبدأ يوم</string>
@@ -160,6 +161,7 @@
 				<string name="invoice">فاتورة</string>
 				<string name="invoice_discounts">خصومات فاتورة</string>
 				<string name="invoice_no">رقم الفاتورة</string>
+				<string name="invoice_not_exist">No invoice or returns exist</string>
 				<string name="invoice_summary">ملخص الفاتورة</string>
 				<string name="invoice_total">إجمالي الفاتورة</string>
 				<string name="itemNameLabel">"اسم الصنف"</string>

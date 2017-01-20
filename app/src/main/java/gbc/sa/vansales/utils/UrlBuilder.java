@@ -161,4 +161,15 @@ public class UrlBuilder {
         }
         return data;
     }
+
+    public static String encodeString(String data){
+        if(data == null) return "";
+        try {
+            data = URLEncoder.encode(data,ConfigStore.CHARSET);
+//            data = URLDecoder.en(data,ConfigStore.CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
 }

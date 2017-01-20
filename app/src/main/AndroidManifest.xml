@@ -164,6 +164,12 @@
 												android:theme="@style/AppTheme"
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
+												android:name=".activities.UnloadDetailActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
 												android:name=".activities.VanStockActivity"
 												android:label="@string/dashboard"
 												android:screenOrientation="portrait"

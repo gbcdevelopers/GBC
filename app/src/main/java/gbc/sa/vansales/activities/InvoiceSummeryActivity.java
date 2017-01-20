@@ -139,7 +139,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             map.put(db.KEY_ORG_CASE, "");
             map.put(db.KEY_ORG_UNITS, "");
             map.put(db.KEY_AMOUNT, "");
-
+            map.put(db.KEY_UOM,"");
             HashMap<String,String>filter = new HashMap<>();
             filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
@@ -152,8 +152,14 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             do{
                 case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
                 unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                totalamnt += amount;
+                if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                    amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                else {
+                    amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                }
+                totalamnt = amount;
             }
             while (cursor.moveToNext());
             return null;

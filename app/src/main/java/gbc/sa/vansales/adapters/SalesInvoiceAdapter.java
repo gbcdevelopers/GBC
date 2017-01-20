@@ -35,6 +35,7 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ArrayList<Sales> dataList = this.salesArrayList;
+        Log.e("Sales Array","" + this.salesArrayList.size());
         pos = position;
         ViewHolder holder;
         if(convertView==null){
@@ -58,11 +59,17 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
         holder.tv_title.setText(salesArrayList.get(position).getName());
         final Sales sales = salesArrayList.get(pos);
         Log.e("UOM", "" + position + sales.getMaterial_no() + sales.getUom());
-        if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)){
-            holder.tv_price.setText("Price:" + salesArrayList.get(position).getPrice() + "/0.00");
+        try{
+            if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)){
+                holder.tv_price.setText("Price:" + salesArrayList.get(position).getPrice() + "/0.00");
+            }
+            else{
+                holder.tv_price.setText("Price: 0.00/" + salesArrayList.get(position).getPrice());
+            }
+
         }
-        else{
-            holder.tv_price.setText("Price: 0.00/" + salesArrayList.get(position).getPrice());
+        catch (Exception e){
+            e.printStackTrace();
         }
         //holder.tv_price.setText("Price:54.00/2.25");
         holder.tv_cases.setText("Cases");

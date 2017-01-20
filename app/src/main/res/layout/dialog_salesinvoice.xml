@@ -63,12 +63,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="bottom"
+                    android:gravity="center_vertical"
                     android:text="@string/inv_qty"
                     android:textColor="@color/black"
                     android:textSize="@dimen/label_small"
-
-                    />
+                    android:layout_gravity="center"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="0dp"
@@ -124,12 +123,10 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="bottom"
                     android:text="@string/quantity"
                     android:textColor="@color/black"
                     android:textSize="@dimen/label_small"
-
-                    />
+                    android:gravity="center_vertical"/>
 
 
                 <android.support.design.widget.TextInputLayout
@@ -197,14 +194,13 @@
             android:textSize="@dimen/label_small"
             android:layout_marginRight="10dp"
             android:id="@+id/lbl_specify"
-            />
+            android:gravity="center_vertical"/>
 
 
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/spin"
-            android:entries="@array/returnReasons"
             android:layout_toRightOf="@+id/lbl_specify"
             >
 

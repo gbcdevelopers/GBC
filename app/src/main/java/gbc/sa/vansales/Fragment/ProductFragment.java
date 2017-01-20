@@ -3,6 +3,7 @@ package gbc.sa.vansales.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.adapters.ProductListAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
@@ -56,14 +58,15 @@ public class ProductFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    getActivity().finish();
-
+                Log.e("IN PRODUCT CLicked", "CLICK");
+                if (SalesInvoiceActivity.tab_position == 2) {
+                    GListFragment.setProductList();
+                } else if (SalesInvoiceActivity.tab_position == 3) {
+                    BListFragment.setProductList();
+                }
+                getActivity().finish();
             }
         });
-
-
-
         return view;
     }
 }

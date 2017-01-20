@@ -29,6 +29,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.Sales;
+import gbc.sa.vansales.sap.DataListener;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -38,7 +39,7 @@ import gbc.sa.vansales.utils.Settings;
 /**
  * Created by eheuristic on 12/6/2016.
  */
-public class PromotioninfoActivity extends AppCompatActivity {
+public class PromotioninfoActivity extends AppCompatActivity implements DataListener {
     ImageView iv_back;
     TextView tv_top_header;
     TextView tv_promotion;
@@ -50,8 +51,14 @@ public class PromotioninfoActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     float totalamnt = 0;
+    float discount = 0;
     TextView tv_current_invoice;
     ArrayList<Sales> arraylist = new ArrayList<>();
+    int count=0;
+    int returnCount = 0;
+    int referenceCount = 0;
+    EditText tv_discount;
+    EditText tv_net_invoice;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,15 +68,14 @@ public class PromotioninfoActivity extends AppCompatActivity {
         object = (Customer) i.getParcelableExtra("headerObj");
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-
-
-
         ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText("Promo Details");
         tv_promotion = (TextView) findViewById(R.id.tv_promotion);
         tv_current_invoice = (TextView) findViewById(R.id.tv_invoice_amount);
+        tv_discount = (EditText)findViewById(R.id.et_discount);
+        tv_net_invoice = (EditText)findViewById(R.id.tv_net_invoice);
         if (getIntent().getExtras() != null) {
             str_promotion_message = getIntent().getExtras().getString("msg", "extra Promotion");
             tv_promotion.setText(str_promotion_message.substring(0, 1).toUpperCase() + str_promotion_message.substring(1).toLowerCase());
@@ -104,8 +110,26 @@ public class PromotioninfoActivity extends AppCompatActivity {
                     btn_print.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            new postData().execute();
-                            dialog.cancel();
+                            if(returnExist("")){
+                                if(returnExist(App.GOOD_RETURN)&&returnExist(App.BAD_RETURN)){
+                                    referenceCount = 2;
+                                    new postReturns(App.GOOD_RETURN);
+                                    new postReturns(App.BAD_RETURN);
+                                }
+                                else if(returnExist(App.GOOD_RETURN)){
+                                    referenceCount = 1;
+                                    new postReturns(App.GOOD_RETURN);
+                                }
+                                else if(returnExist(App.BAD_RETURN)){
+                                    referenceCount = 1;
+                                    new postReturns(App.BAD_RETURN);
+                                }
+                            }
+                            else{
+                                new postData().execute();
+                                dialog.cancel();
+                            }
+
                         }
                     });
                     btn_notprint.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +186,86 @@ public class PromotioninfoActivity extends AppCompatActivity {
             new loadData().execute();
         }
     }
+
+    private boolean returnExist(String returnType){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_TIME_STAMP,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+
+        if(returnType.equals("")||returnType==null){
+
+        }
+        else{
+            filter.put(db.KEY_REASON_TYPE,returnType);
+        }
+
+        if(db.checkData(db.RETURNS,filter)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    private boolean invoiceExist(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_TIME_STAMP,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+        if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public void recalculateTotal(Cursor cursor){
+        Cursor saleCursor = cursor;
+        saleCursor.moveToFirst();
+        do{
+            float tempPrice = 0;
+            HashMap<String,String> filterComp = new HashMap<>();
+            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_AMOUNT,"");
+            if(db.checkData(db.PRICING,filterComp)){
+                Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
+                if(customerPriceCursor.getCount()>0){
+                    customerPriceCursor.moveToFirst();
+                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                    totalamnt += tempPrice*10*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                else {
+                    totalamnt += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                }
+
+            }
+            else{
+                if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                    totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                else {
+                    totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                }
+            }
+
+        }
+        while(saleCursor.moveToNext());
+    }
+    @Override
+    public void onProcessingComplete() {
+        tv_discount.setText(String.valueOf(discount));
+        tv_net_invoice.setText(String.valueOf(totalamnt + discount));
+    }
     public class loadData extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -170,31 +274,293 @@ public class PromotioninfoActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            map.put(db.KEY_CUSTOMER_NO,"");
             map.put(db.KEY_ORG_CASE, "");
             map.put(db.KEY_ORG_UNITS, "");
             map.put(db.KEY_AMOUNT, "");
-            HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
+                recalculateTotal(cursor);
             }
-            do {
-                totalamnt += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-            }
-            while (cursor.moveToNext());
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (loadingSpinner.isShowing()) {
-                loadingSpinner.hide();
-            }
+            new loadPromotions(App.Promotions02);
+            new loadPromotions(App.Promotions05);
+            new loadPromotions(App.Promotions07);
             tv_current_invoice.setText(String.valueOf(totalamnt));
         }
     }
+
+    public class postReturns extends AsyncTask<Void, Void, Void> {
+        private ArrayList<String> returnList;
+        private String orderID = "";
+        private String[] tokens = new String[2];
+        private String returnType = "";
+
+        private postReturns(String returnType) {
+            this.returnType = returnType;
+            execute();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
+            this.orderID = postReturns(this.returnType);
+            this.tokens = orderID.split(",");
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.e("Order ID", "" + this.orderID);
+            returnCount++;
+            arraylist.clear();
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TIME_STAMP,"");
+            map.put(db.KEY_TRIP_ID,"");
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_REASON_TYPE, "");
+            map.put(db.KEY_REASON_CODE,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_MATERIAL_GROUP,"");
+            map.put(db.KEY_CASE,"");
+            map.put(db.KEY_UNIT,"");
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_PRICE,"");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
+            map.put(db.KEY_IS_POSTED,"");
+            map.put(db.KEY_IS_PRINTED,"");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            filter.put(db.KEY_REASON_TYPE,this.returnType);
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            Cursor cursor = db.getData(db.RETURNS, map, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    Sales sale = new Sales();
+                    sale.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                    sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                    sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    arraylist.add(sale);
+                }
+                while (cursor.moveToNext());
+            }
+            if(this.tokens[0].toString().equals(this.tokens[1].toString())){
+                for (Sales sale : arraylist) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    filtermap.put(db.KEY_REASON_TYPE,this.returnType);
+                    db.updateData(db.RETURNS, postmap, filtermap);
+                }
+
+                if(returnCount==referenceCount){
+                    if(invoiceExist()){
+                        if(loadingSpinner.isShowing()){
+                            loadingSpinner.hide();
+                        }
+                        if(returnType.equals(App.GOOD_RETURN)){
+                            updateStockinVan(true);
+                        }
+                        new postData().execute();
+                    }
+                    else{
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
+                        alertDialogBuilder.setTitle("Message")
+                                .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if(returnType.equals(App.GOOD_RETURN)){
+                                            updateStockinVan(true);
+                                        }
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                    }
+                }
+
+
+            }
+            else{
+                for (Sales sale : arraylist) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    filtermap.put(db.KEY_REASON_TYPE,this.returnType);
+                    db.updateData(db.RETURNS, postmap, filtermap);
+                }
+
+                if(returnCount==referenceCount){
+                    if(invoiceExist()){
+                        if(loadingSpinner.isShowing()){
+                            loadingSpinner.hide();
+                        }
+                        if(returnType.equals(App.GOOD_RETURN)){
+                            updateStockinVan(true);
+                        }
+                        new postData().execute();
+                    }
+                    else{
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
+                        alertDialogBuilder.setTitle("Message")
+                                .setMessage("Request " + tokens[1].toString() + " has been created")
+                                        // .setMessage("Request " + tokens[0].toString() + " has been created")
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (returnType.equals(App.GOOD_RETURN)) {
+                                            updateStockinVan(true);
+                                        }
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                    }
+                }
+
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+
+                if(this.orderID.isEmpty()||this.orderID.equals("")||this.orderID==null){
+                    Toast.makeText(getApplicationContext(),getString(R.string.request_timeout),Toast.LENGTH_SHORT ).show();
+                }
+                else if(this.orderID.contains("Error")){
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
+                }
+                else{
+
+                    // show it
+                  //  alertDialog.show();
+                }
+            }
+        }
+    }
+    public String postReturns(String returnType) {
+        String orderID = "";
+        String purchaseNumber = "";
+
+        try {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("Function", ConfigStore.ReturnsFunction);
+            map.put("OrderId", "");
+            map.put("DocumentType", returnType.equals(App.GOOD_RETURN)?ConfigStore.GoodReturnType:ConfigStore.BadReturnType);
+            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+            // map.put("DocumentDate", null);
+            map.put("CustomerId", object.getCustomerID());
+            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+            map.put("Division", Settings.getString(App.DIVISION));
+            map.put("OrderValue", String.valueOf(totalamnt));
+            map.put("Currency", "SAR");
+            // map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type));
+            JSONArray deepEntity = new JSONArray();
+            HashMap<String, String> itemMap = new HashMap<>();
+            itemMap.put(db.KEY_ITEM_NO, "");
+            itemMap.put(db.KEY_MATERIAL_NO, "");
+            itemMap.put(db.KEY_MATERIAL_DESC1, "");
+            itemMap.put(db.KEY_CASE, "");
+            itemMap.put(db.KEY_UNIT, "");
+            itemMap.put(db.KEY_UOM, "");
+            itemMap.put(db.KEY_PRICE, "");
+            itemMap.put(db.KEY_ORDER_ID,"");
+            itemMap.put(db.KEY_REASON_CODE,"");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            filter.put(db.KEY_REASON_TYPE,returnType);
+            Cursor cursor = db.getData(db.RETURNS, itemMap, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                map.put("OrdReason",cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
+                purchaseNumber = map.get("PurchaseNum");
+                int itemno = 10;
+                do {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                        JSONObject jo = new JSONObject();
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", App.PLANT);
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("Storagelocation", App.STORAGE_LOCATION);
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno + 10;
+                        deepEntity.put(jo);
+                    }
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                        JSONObject jo = new JSONObject();
+                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", App.PLANT);
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
+                        jo.put("Storagelocation", App.STORAGE_LOCATION);
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno + 10;
+                        deepEntity.put(jo);
+                    }
+                }
+                while (cursor.moveToNext());
+            }
+            orderID = IntegrationService.postData(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderID + "," + purchaseNumber;
+    }
+
     public class postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> returnList;
         private String orderID = "";
@@ -213,6 +579,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.e("Order ID", "" + this.orderID);
+            arraylist.clear();
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, "");
             map.put(db.KEY_ITEM_NO, "");
@@ -227,6 +594,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
             map.put(db.KEY_ORDER_ID,"");
             map.put(db.KEY_PURCHASE_NUMBER,"");
             HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
             if (cursor.getCount() > 0) {
@@ -247,7 +615,6 @@ public class PromotioninfoActivity extends AppCompatActivity {
                     postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                     postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                     postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
-
                     HashMap<String, String> filtermap = new HashMap<>();
                     filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
@@ -267,9 +634,12 @@ public class PromotioninfoActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                updateStockinVan();
+                                updateStockinVan(false);
                                 dialog.dismiss();
-                                finish();
+                                Intent intent = new Intent(PromotioninfoActivity.this,SalesInvoiceOptionActivity.class);
+                                intent.putExtra("from","customerdetail");
+                                intent.putExtra("headerObj", object);
+                                startActivity(intent);
                             }
                         });
                 // create alert dialog
@@ -312,7 +682,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    updateStockinVan();
+                                    updateStockinVan(false);
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -355,6 +725,7 @@ public class PromotioninfoActivity extends AppCompatActivity {
             itemMap.put(db.KEY_ORDER_ID,"");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, itemMap, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -367,12 +738,12 @@ public class PromotioninfoActivity extends AppCompatActivity {
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                         jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                        jo.put("Plant", "");
+                        jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("UoM", App.CASE_UOM);
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("Storagelocation", "");
+                        jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
@@ -382,12 +753,12 @@ public class PromotioninfoActivity extends AppCompatActivity {
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                         jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                        jo.put("Plant", "");
+                        jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("UoM", App.BOTTLES_UOM);
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("Storagelocation", "");
+                        jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
@@ -401,44 +772,164 @@ public class PromotioninfoActivity extends AppCompatActivity {
         }
         return orderID + "," + purchaseNumber;
     }
-    public void updateStockinVan() {
-        loadingSpinner.show();
-        Log.e("ArrayList Size", "" + arraylist.size());
-        for (Sales sale : arraylist) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_MATERIAL_NO, "");
-            map.put(db.KEY_REMAINING_QTY_CASE, "");
-            map.put(db.KEY_REMAINING_QTY_UNIT, "");
-            HashMap<String, String> filter = new HashMap<>();
-            Log.e("Filter MN", "" + sale.getMaterial_no());
-            filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-            Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-            Log.e("Cursor count", "" + cursor.getCount());
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-            }
-            do {
-                HashMap<String, String> updateDataMap = new HashMap<>();
-                float remainingCase = 0;
-                float remainingUnit = 0;
-                remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                Log.e("RemainingCs", "" + remainingCase + sale.getCases());
-                Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
-                if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
-                    remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+    public void updateStockinVan(boolean add) {
+        if(add){
+            loadingSpinner.show();
+            Log.e("ArrayList Size", "" + arraylist.size());
+            for (Sales sale : arraylist) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO, "");
+                map.put(db.KEY_REMAINING_QTY_CASE, "");
+                map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                HashMap<String, String> filter = new HashMap<>();
+                Log.e("Filter MN", "" + sale.getMaterial_no());
+                filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                Log.e("Cursor count", "" + cursor.getCount());
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
                 }
-                if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
-                    remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                do {
+                    HashMap<String, String> updateDataMap = new HashMap<>();
+                    float remainingCase = 0;
+                    float remainingUnit = 0;
+                    remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                    remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                    Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                    Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                    if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                        remainingCase = remainingCase + Float.parseFloat(sale.getCases());
+                    }
+                    if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                        remainingUnit = remainingUnit + Float.parseFloat(sale.getPic());
+                    }
+                    updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                    updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                    HashMap<String, String> filterInter = new HashMap<>();
+                    filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
                 }
-                updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
-                updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
-                HashMap<String, String> filterInter = new HashMap<>();
-                filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                while (cursor.moveToNext());
             }
-            while (cursor.moveToNext());
+            loadingSpinner.hide();
         }
-        loadingSpinner.hide();
+        else{
+            loadingSpinner.show();
+            Log.e("ArrayList Size", "" + arraylist.size());
+            for (Sales sale : arraylist) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO, "");
+                map.put(db.KEY_REMAINING_QTY_CASE, "");
+                map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                HashMap<String, String> filter = new HashMap<>();
+                Log.e("Filter MN", "" + sale.getMaterial_no());
+                filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                Log.e("Cursor count", "" + cursor.getCount());
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                }
+                do {
+                    HashMap<String, String> updateDataMap = new HashMap<>();
+                    float remainingCase = 0;
+                    float remainingUnit = 0;
+                    remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                    remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                    Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                    Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                    if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                        remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+                    }
+                    if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                        remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                    }
+                    updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                    updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                    HashMap<String, String> filterInter = new HashMap<>();
+                    filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                }
+                while (cursor.moveToNext());
+            }
+            loadingSpinner.hide();
+        }
+
+    }
+    public class loadPromotions extends AsyncTask<Void,Void,Void>{
+        private String promoCode;
+        private loadPromotions(String promoCode) {
+            this.promoCode = promoCode;
+            execute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_AMOUNT,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            if(promoCode.equals(App.Promotions02)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
+            }
+            else if(promoCode.equals(App.Promotions05)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions05);
+            }
+            else if(promoCode.equals(App.Promotions07)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions07);
+            }
+            Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
+            cursor.moveToFirst();
+            applyPromotions(cursor);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            count++;
+            if(count==3){
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                onProcessingComplete();
+            }
+        }
+    }
+    private void applyPromotions(Cursor cursor){
+        Cursor promotionCursor = cursor;
+        promotionCursor.moveToFirst();
+        do{
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_ORG_CASE,"");
+            map.put(db.KEY_ORG_UNITS,"");
+            map.put(db.KEY_AMOUNT,"");
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_IS_POSTED,"");
+            map.put(db.KEY_IS_PRINTED,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            filter.put(db.KEY_MATERIAL_NO,promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+            Cursor ivCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+            if(ivCursor.getCount()>0){
+                ivCursor.moveToFirst();
+                do{
+                    if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)))*10);
+                    }
+                    else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                }
+                while (ivCursor.moveToNext());
+            }
+        }
+        while (promotionCursor.moveToNext());
+
+        Log.e("Discount", "" + discount);
+
     }
 }

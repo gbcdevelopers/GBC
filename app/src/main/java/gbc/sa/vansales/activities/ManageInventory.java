@@ -93,6 +93,7 @@ public class ManageInventory extends AppCompatActivity {
         boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
         boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
         boolean isUnloadenabled = setUnloadVisibility();
+       // boolean isUnloadenabled = true;  //This is only for testing purpose;
         if(isBeginTripEnabled){
             if (!isloadVerifiedEnabled) {
                 loadRequest.setEnabled(false);

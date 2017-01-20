@@ -57,6 +57,7 @@ public class SalesFragment extends Fragment {
     ArrayAdapter<Sales> myAdapter;
     private  ArrayList<Sales> salesarrayList;
     FloatingActionButton fab;
+    FloatingActionButton add;
     boolean workStarted = false;
     DatabaseHandler db;
     Customer object;
@@ -191,6 +192,7 @@ public class SalesFragment extends Fragment {
                             int salesTotal = 0;
                             int pcsTotal = 0;
                             double total = 0;
+
                             for(Sales sale:salesarrayList){
                                 double itemPrice = 0;
                                 if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)){
@@ -263,7 +265,8 @@ public class SalesFragment extends Fragment {
                         filter.put(db.KEY_PURCHASE_NUMBER,orderID);
                         filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                         filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                        db.addData(db.CAPTURE_SALES_INVOICE, map);
+                        filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
                     }
                 }
 
@@ -390,7 +393,7 @@ public class SalesFragment extends Fragment {
                 map.put(db.KEY_MATERIAL_NO,"");
                 map.put(db.KEY_AMOUNT,"");
 
-                if(db.checkData(db.PRICING,filterComp)){
+                /*if(db.checkData(db.PRICING,filterComp)){
                     //Pricing exists for Product for customer
                     Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
                     if(customerPriceCursor.getCount()>0){
@@ -400,7 +403,8 @@ public class SalesFragment extends Fragment {
 //                        product.setPrice(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) ? String.valueOf(Float.parseFloat(price) * 10) : price);
                     }
                 }
-                else if(db.checkData(db.PRICING,filterPart)){
+                else */
+                if(db.checkData(db.PRICING,filterPart)){
                     //Pricing exists for Product for customer
                     //Pricing exists for Product for customer
                     Cursor priceCursor = db.getData(db.PRICING,map,filterPart);

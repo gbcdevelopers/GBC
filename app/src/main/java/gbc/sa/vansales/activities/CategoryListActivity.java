@@ -26,12 +26,15 @@ public class CategoryListActivity extends AppCompatActivity {
     EditText et_search;
     int tab_position;
     FloatingActionButton button;
+    FloatingActionButton button1;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
         button = (FloatingActionButton) findViewById(R.id.float_map);
         button.setVisibility(View.GONE);
+        button1 = (FloatingActionButton) findViewById(R.id.addCustomer);
+        button1.setVisibility(View.GONE);
         et_search = (EditText) findViewById(R.id.et_search_customer);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);

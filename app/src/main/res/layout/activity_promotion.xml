@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/return_qualified_amount"
                 android:textSize="@dimen/label_small"
-                android:text="@string/_10"
+                android:text="0"
                 android:enabled="false"
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/return_applied_promotion"
                     android:textSize="@dimen/label_small"
-                    android:text="@string/_50"
+                    android:text="0"
                     android:enabled="false"
                     android:textColorHint="@color/colorPrimary"
                     app:backgroundTint="@color/base"
@@ -167,7 +167,7 @@
                 android:textColorHint="@color/colorPrimary"
                 app:backgroundTint="@color/base"
                 android:textColor="@color/black"
-                />
+                android:id="@+id/et_discount"/>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -189,7 +189,7 @@
             android:textColorHint="@color/colorPrimary"
             app:backgroundTint="@color/base"
             android:textColor="@color/black"
-            />
+            android:id="@+id/tv_net_invoice"/>
 
     </android.support.design.widget.TextInputLayout>
 

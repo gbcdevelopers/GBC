@@ -75,9 +75,15 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     return tab2;
                 case 2:
                     GListFragment tab3 = new GListFragment();
+                    if (bundle != null) {
+                        tab3.setArguments(this.bundle);
+                    }
                     return tab3;
                 case 3:
                     BListFragment tab4 = new BListFragment();
+                    if (bundle != null) {
+                        tab4.setArguments(this.bundle);
+                    }
                     return tab4;
                 default:
                     return null;

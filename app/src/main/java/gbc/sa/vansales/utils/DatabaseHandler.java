@@ -53,6 +53,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String REASONS = "REASONS";
     public static final String PROMOTIONS = "PROMOTIONS";
     public static final String PRICING = "PRICING";
+    public static final String RETURNS = "RETURNS";
+    public static final String UNLOAD_VARIANCE = "UNLOAD_VARIANCE";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -299,6 +301,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Pricing
     public static final String KEY_PRIORITY = "priority";
+
+    //Returns
+    public static final String KEY_RETURN_TYPE = "returnType";
+
+    //Unload
+    public static final String KEY_VARIANCE_TYPE = "varianceType";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -775,6 +783,45 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PRIORITY + " TEXT,"
                 + KEY_DRIVER + " TEXT " + ")";
 
+
+        String TABLE_RETURNS = "CREATE TABLE " + RETURNS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_REASON_TYPE + " TEXT,"
+                + KEY_REASON_CODE + " TEXT,"
+                + KEY_ITEM_NO + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_MATERIAL_GROUP + " TEXT,"
+                + KEY_CASE + " TEXT,"
+                + KEY_UNIT + " TEXT,"
+                + KEY_UOM + " TEXT,"
+                + KEY_PRICE + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
+        String TABLE_UNLOAD_VARIANCE = "CREATE TABLE " + UNLOAD_VARIANCE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_VARIANCE_TYPE + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_ITEM_NO + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_MATERIAL_GROUP + " TEXT,"
+                + KEY_CASE + " TEXT,"
+                + KEY_UNIT + " TEXT,"
+                + KEY_UOM + " TEXT,"
+                + KEY_PRICE + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -807,6 +854,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_REASONS);
         db.execSQL(TABLE_PROMOTIONS);
         db.execSQL(TABLE_PRICING);
+        db.execSQL(TABLE_RETURNS);
+        db.execSQL(TABLE_UNLOAD_VARIANCE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -840,6 +889,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + REASONS);
         db.execSQL("DROP TABLE IF EXISTS " + PROMOTIONS);
         db.execSQL("DROP TABLE IF EXISTS " + PRICING);
+        db.execSQL("DROP TABLE IF EXISTS " + RETURNS);
+        db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_VARIANCE);
         onCreate(db);
     }
     //Storing Secured Credentials

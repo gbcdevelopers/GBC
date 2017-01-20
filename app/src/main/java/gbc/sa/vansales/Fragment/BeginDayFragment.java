@@ -42,11 +42,13 @@ import java.util.Set;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.BeginDay;
+import gbc.sa.vansales.activities.BeginTripActivity;
 import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.LoadActivity;
 import gbc.sa.vansales.activities.LoadSummaryActivity;
 import gbc.sa.vansales.activities.OdometerPopupActivity;
 import gbc.sa.vansales.data.TripHeader;
+import gbc.sa.vansales.sap.DataListener;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -62,7 +64,7 @@ import static gbc.sa.vansales.R.id.thing_proto;
 /**
  * Created by eheuristic on 12/2/2016.
  */
-public class BeginDayFragment extends Fragment {
+public class BeginDayFragment extends Fragment implements DataListener{
     String TAG = BeginDayFragment.class.getSimpleName();
     TextView salesDate;
     TextView time;
@@ -83,6 +85,15 @@ public class BeginDayFragment extends Fragment {
     LoadingSpinner loadingSpinner;
     float lastValue = 0;
     Button btn_continue;
+
+    @Override
+    public void setMenuVisibility(final boolean visible) {
+        super.setMenuVisibility(visible);
+        if (visible) {
+         //   setBeginDayVisibility();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.activity_begin_day, container, false);
@@ -113,7 +124,15 @@ public class BeginDayFragment extends Fragment {
             e.printStackTrace();
         }
         btn_continue = (Button) view.findViewById(R.id.btnBack);
-        setBeginDayVisibility();
+        boolean isMessageClicked = ((BeginTripActivity)getActivity()).hello;
+        Log.e("=========","" + isMessageClicked);
+        if(isMessageClicked){
+            setBeginDayVisibility();
+        }
+        else{
+            btn_continue.setEnabled(false);
+            btn_continue.setAlpha(.5f);
+        }
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +155,7 @@ public class BeginDayFragment extends Fragment {
         return view;
     }
     private void setBeginDayVisibility() {
+        Log.e("Called","Called");
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "true");
         if (db.checkData(db.LOCK_FLAGS, map)) {
@@ -143,6 +163,7 @@ public class BeginDayFragment extends Fragment {
             btn_continue.setAlpha(.5f);
             // btnBDay.setVisibility(View.INVISIBLE);
         }
+
     }
     void hideKeyboard() {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
@@ -208,7 +229,7 @@ public class BeginDayFragment extends Fragment {
         alertDialog.show();
     }
     public void postOdometer(String value) {
-        String purchaseNumber = Helpers.generateNumber(db, ConfigStore.OrderRequest_PR_Type);
+        String purchaseNumber = Helpers.generateNumber(db, ConfigStore.Odometer_PR_Type);
         String timeStamp = Helpers.getCurrentTimeStamp();
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_ODOMETER_VALUE, value);
@@ -225,6 +246,11 @@ public class BeginDayFragment extends Fragment {
         }
         new postData(value, purchaseNumber);
     }
+    @Override
+    public void onProcessingComplete() {
+        setBeginDayVisibility();
+    }
+
     public class postData extends AsyncTask<Void, Void, Void> {
         String flag = "";
         String value = "";
