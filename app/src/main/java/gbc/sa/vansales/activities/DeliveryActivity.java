@@ -74,7 +74,7 @@ public class DeliveryActivity extends AppCompatActivity {
         if (!(customerHeader == null)) {
             tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+            tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
             tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
@@ -176,7 +176,9 @@ public class DeliveryActivity extends AppCompatActivity {
         do {
             OrderList orderList = new OrderList();
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
-            orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
+            String date = cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE));
+            String[]token = date.split("\\.");
+            orderList.setOrderDate(Helpers.getMaskedValue(token[2],2)+"-"+Helpers.getMaskedValue(token[1],2)+"-"+token[0]);
             if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);

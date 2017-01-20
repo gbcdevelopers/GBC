@@ -82,7 +82,7 @@ public class PaymentDetails extends AppCompatActivity {
         loadingSpinner = new LoadingSpinner(this);
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
         if (getIntent().getExtras() != null) {
-            from = getIntent().getStringExtra("msg");
+            from = getIntent().getStringExtra("from");
             if (from.equals("collection")) {
                 pos = getIntent().getIntExtra("pos", 0);
                 if (Const.colletionDatas.size() > 0) {

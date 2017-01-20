@@ -22,6 +22,7 @@ import gbc.sa.vansales.adapters.CustomerStatusAdapter;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.LoadingSpinner;
 /**
  * Created by Rakshit on 20-Jan-17.
  */
@@ -34,11 +35,13 @@ public class SelectCustomerStatus extends AppCompatActivity {
     TextView tv_top_header;
     Customer object;
     String from;
+    LoadingSpinner loadingSpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_customer_status);
+        loadingSpinner = new LoadingSpinner(this);
         Intent i = this.getIntent();
         from=i.getStringExtra("msg");
         object = (Customer) i.getParcelableExtra("headerObj");
@@ -78,6 +81,10 @@ public class SelectCustomerStatus extends AppCompatActivity {
 
     private class loadCustomerStatus extends AsyncTask<Void,Void,Void>{
         @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String>map = new HashMap<>();
             map.put(db.KEY_REASON_TYPE,"");
@@ -94,6 +101,9 @@ public class SelectCustomerStatus extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
             adapter.notifyDataSetChanged();
         }
     }

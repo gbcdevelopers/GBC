@@ -1,47 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="40dp">
+              android:layout_height="wrap_content"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:background="@color/white">
 
     <LinearLayout
-        android:weightSum="5"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/h3"
+        android:orientation="vertical"
+        >
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_medium"
+            android:text="@string/am5500_large_swiss_roll_vanila_24x110g"
+            android:textColor="@color/green"
+            android:layout_marginBottom="@dimen/size_five"
             android:id="@+id/tv_item_description"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price_54_00_2_25"
+            android:textColor="@color/black"
             android:textSize="@dimen/label_medium"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:background="@drawable/light_border"
-            android:paddingLeft="@dimen/size_five"
-            android:layout_weight="3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <EditText
-            android:id="@+id/tv_item_case"
+            android:layout_marginBottom="@dimen/all_padding"
+            android:id="@+id/lbl_item_code"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price_54_00_2_25"
+            android:textColor="@color/black"
             android:textSize="@dimen/label_medium"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:background="@drawable/light_border"
-            android:gravity="center_horizontal|center_vertical"
-            android:inputType="number"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+            android:layout_marginBottom="@dimen/label_min"
+            android:id="@+id/tv_price"
+            />
 
-        <EditText
-            android:id="@+id/tv_item_unit"
-            android:textSize="@dimen/label_medium"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:background="@drawable/light_border"
-            android:gravity="center_horizontal|center_vertical"
-            android:inputType="number"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/label_medium"
+                    android:text="@string/cases"
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/tv_cases"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_five"
+                    android:layout_marginTop="@dimen/size_five"
+                    tools:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_small"
+                    android:id="@+id/tv_item_case"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/label_big"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/label_medium"
+                    android:text="@string/pcs"
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/tv_pcs"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_five"
+                    android:layout_marginTop="@dimen/size_five"
+                    tools:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/label_small"
+                    android:id="@+id/tv_item_unit"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

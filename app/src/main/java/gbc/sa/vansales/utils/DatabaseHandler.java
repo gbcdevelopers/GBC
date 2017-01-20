@@ -582,6 +582,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_LOAD_DELIVERY_ITEMS_POST = "CREATE TABLE " + LOAD_DELIVERY_ITEMS_POST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_ENTRY_TIME + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_DELIVERY_NO + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
@@ -589,6 +590,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_MATERIAL_DESC1 + " TEXT,"
                 + KEY_ORG_CASE + " TEXT,"
                 + KEY_ORG_UNITS + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
                 + KEY_UOM + " TEXT,"
                 + KEY_VAR_CASE + " TEXT,"
                 + KEY_VAR_UNITS + " TEXT " + ")";

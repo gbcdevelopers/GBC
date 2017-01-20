@@ -139,12 +139,17 @@ public class SalesFragment extends Fragment {
                 ed_pcs_inv.setText(sales.getInv_piece());
                 ed_cases_inv.setEnabled(false);
                 ed_pcs_inv.setEnabled(false);
-                if(sales.getUom().equals(App.BOTTLES_UOM)){
+                if (sales.isAltUOM()) {
+                    ed_pcs.setEnabled(true);
+                } else {
+                    ed_pcs.setEnabled(false);
+                }
+                /*if(sales.getUom().equals(App.BOTTLES_UOM)){
                     ed_cases.setEnabled(false);
                 }
                 else if(sales.getUom().equals(App.CASE_UOM)||sales.getUom().equals(App.CASE_UOM_NEW)){
                     ed_pcs.setEnabled(false);
-                }
+                }*/
                 ed_cases.setText(sales.getCases());
                 ed_pcs.setText(sales.getPic());
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
@@ -377,10 +382,29 @@ public class SalesFragment extends Fragment {
                     product.setName(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
 
                 }
-                product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)) : "0");
-                product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)) : "0");
+                product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)) : "0");
+                //product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)) : "0");
+                product.setInv_piece("0");
                 product.setCases("0");
                 product.setPic("0");
+
+
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_UOM, "");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter);
+                if (altUOMCursor.getCount() > 0) {
+                    altUOMCursor.moveToFirst();
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))
+                            ||cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
+                        product.setIsAltUOM(false);
+                    } else {
+                        product.setIsAltUOM(true);
+                    }
+                } else {
+                    product.setIsAltUOM(false);
+                }
 
                 HashMap<String,String> filterComp = new HashMap<>();
                 filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
@@ -411,7 +435,7 @@ public class SalesFragment extends Fragment {
                     if(priceCursor.getCount()>0){
                         priceCursor.moveToFirst();
                         String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
-                        product.setPrice(product.getUom().equals(App.CASE_UOM)?String.valueOf(Float.parseFloat(price)*10):price);
+                        product.setPrice(product.getUom().equals(App.CASE_UOM)||product.getUom().equals(App.BOTTLES_UOM)?price:price);
                     }
                 }
                 else{

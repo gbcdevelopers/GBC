@@ -46,8 +46,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     LinearLayout ll_bottom;
     String str_promotion_message = "";
     Customer object;
-    OrderList delivery;
     String invoiceAmount;
+    String from;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     float totalamnt = 0;
@@ -59,6 +59,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     int referenceCount = 0;
     EditText tv_discount;
     EditText tv_net_invoice;
+    OrderList delivery;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +67,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         loadingSpinner = new LoadingSpinner(this);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+        delivery = (OrderList)i.getParcelableExtra("delivery");
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
@@ -78,12 +80,13 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         tv_net_invoice = (EditText)findViewById(R.id.tv_net_invoice);
         if (getIntent().getExtras() != null) {
             str_promotion_message = getIntent().getExtras().getString("msg", "extra Promotion");
+            from = getIntent().getExtras().getString("from","");
             tv_promotion.setText(str_promotion_message.substring(0, 1).toUpperCase() + str_promotion_message.substring(1).toLowerCase());
             int pos = getIntent().getIntExtra("pos", 10);
-            if (str_promotion_message.equals("Final Invoice")) {
+            if (from.equals("Final Invoice")) {
                 ll_bottom.setVisibility(View.VISIBLE);
             } else {
-                if (str_promotion_message.equals("delivery")) {
+                if (from.equals("delivery")) {
                     ll_bottom.setVisibility(View.VISIBLE);
                 } else {
             ll_bottom.setVisibility(View.GONE);
@@ -99,7 +102,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         ll_bottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (str_promotion_message.equals("Final Invoice")) {
+                if (from.equals("Final Invoice")) {
                     final Dialog dialog = new Dialog(PromotioninfoActivity.this);
                     dialog.setContentView(R.layout.dialog_doprint);
                     dialog.setCancelable(false);
@@ -110,26 +113,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     btn_print.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(returnExist("")){
-                                if(returnExist(App.GOOD_RETURN)&&returnExist(App.BAD_RETURN)){
+                            if (returnExist("")) {
+                                if (returnExist(App.GOOD_RETURN) && returnExist(App.BAD_RETURN)) {
                                     referenceCount = 2;
                                     new postReturns(App.GOOD_RETURN);
                                     new postReturns(App.BAD_RETURN);
-                                }
-                                else if(returnExist(App.GOOD_RETURN)){
+                                } else if (returnExist(App.GOOD_RETURN)) {
                                     referenceCount = 1;
                                     new postReturns(App.GOOD_RETURN);
-                                }
-                                else if(returnExist(App.BAD_RETURN)){
+                                } else if (returnExist(App.BAD_RETURN)) {
                                     referenceCount = 1;
                                     new postReturns(App.BAD_RETURN);
                                 }
-                            }
-                            else{
+                            } else {
                                 new postData().execute();
                                 dialog.cancel();
                             }
-
                         }
                     });
                     btn_notprint.setOnClickListener(new View.OnClickListener() {
@@ -141,16 +140,17 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                             dialog.dismiss();
                         }
                     });
-                } else if (str_promotion_message.equals("delivery")) {
+                } else if (from.equals("delivery")) {
                     Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
                     intent.putExtra("msg", str_promotion_message);
+                    intent.putExtra("from",from);
                     intent.putExtra("headerObj", object);
                     intent.putExtra("delivery", delivery);
-                    intent.putExtra("invoiceamount", invoiceAmount);
+                    intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
                     startActivity(intent);
                     finish();
                 } else {
-                    if (str_promotion_message.equals("")) {
+                    if (from.equals("")) {
                         final Dialog dialog = new Dialog(PromotioninfoActivity.this);
                         dialog.setContentView(R.layout.dialog_doprint);
                         dialog.setCancelable(true);
@@ -161,7 +161,6 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         btn_print.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
                                 dialog.cancel();
                             }
                         });
@@ -179,12 +178,24 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 }
             }
         });
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-        if (db.checkData(db.CAPTURE_SALES_INVOICE, map)) {
-            new loadData().execute();
+        if(from.equals("Final Invoice")){
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            if (db.checkData(db.CAPTURE_SALES_INVOICE, map)) {
+                new loadData().execute();
+            }
         }
+        else{
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+            map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+            if(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST,map)){
+                new loadDeliveryData().execute();
+            }
+        }
+
     }
 
     private boolean returnExist(String returnType){
@@ -221,45 +232,82 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             return false;
         }
     }
+    public void recalculateTotal(Cursor cursor,String from){
+        if(from.equals("Final Invoice")){
+            Cursor saleCursor = cursor;
+            saleCursor.moveToFirst();
+            do{
+                float tempPrice = 0;
+                HashMap<String,String> filterComp = new HashMap<>();
+                filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_AMOUNT,"");
+                if(db.checkData(db.PRICING,filterComp)){
+                    Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
+                    if(customerPriceCursor.getCount()>0){
+                        customerPriceCursor.moveToFirst();
+                        tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        totalamnt += tempPrice*10*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                    else {
+                        totalamnt += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                    }
 
-    public void recalculateTotal(Cursor cursor){
-        Cursor saleCursor = cursor;
-        saleCursor.moveToFirst();
-        do{
-            float tempPrice = 0;
-            HashMap<String,String> filterComp = new HashMap<>();
-            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-            filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            HashMap<String,String> map = new HashMap<>();
-            map.put(db.KEY_MATERIAL_NO,"");
-            map.put(db.KEY_AMOUNT,"");
-            if(db.checkData(db.PRICING,filterComp)){
-                Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
-                if(customerPriceCursor.getCount()>0){
-                    customerPriceCursor.moveToFirst();
-                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
                 }
-                if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                    totalamnt += tempPrice*10*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                }
-                else {
-                    totalamnt += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                else{
+                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                    else {
+                        totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                    }
                 }
 
             }
-            else{
-                if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                    totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                }
-                else {
-                    totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                }
-            }
-
+            while(saleCursor.moveToNext());
         }
-        while(saleCursor.moveToNext());
+        else{
+            Cursor deliveryCursor = cursor;
+            deliveryCursor.moveToFirst();
+            do{
+                float tempPrice = 0;
+                HashMap<String,String> filterComp = new HashMap<>();
+                filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                filterComp.put(db.KEY_MATERIAL_NO, deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                HashMap<String,String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_AMOUNT,"");
+                if(db.checkData(db.PRICING,filterComp)){
+                    Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
+                    if(customerPriceCursor.getCount()>0){
+                        customerPriceCursor.moveToFirst();
+                        tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                    if(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        totalamnt += tempPrice*Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
+                        //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+
+
+                }
+                else{
+                    if(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        totalamnt += Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
+                        //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+
+                }
+
+            }
+            while(deliveryCursor.moveToNext());
+        }
+
     }
     @Override
     public void onProcessingComplete() {
@@ -286,12 +334,52 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                recalculateTotal(cursor);
+                recalculateTotal(cursor,from);
             }
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            new loadPromotions(App.Promotions02);
+            new loadPromotions(App.Promotions05);
+            new loadPromotions(App.Promotions07);
+            tv_current_invoice.setText(String.valueOf(totalamnt));
+        }
+    }
+    public class loadDeliveryData extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_CASE, "");
+            map.put(db.KEY_UNIT, "");
+            map.put(db.KEY_AMOUNT, "");
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                recalculateTotal(cursor,from);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
             new loadPromotions(App.Promotions02);
             new loadPromotions(App.Promotions05);
             new loadPromotions(App.Promotions07);
@@ -880,7 +968,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             }
             Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
             cursor.moveToFirst();
-            applyPromotions(cursor);
+            applyPromotions(cursor,from);
             return null;
         }
         @Override
@@ -894,40 +982,77 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             }
         }
     }
-    private void applyPromotions(Cursor cursor){
+    private void applyPromotions(Cursor cursor,String from){
         Cursor promotionCursor = cursor;
         promotionCursor.moveToFirst();
-        do{
-            HashMap<String,String>map = new HashMap<>();
-            map.put(db.KEY_CUSTOMER_NO,"");
-            map.put(db.KEY_MATERIAL_NO,"");
-            map.put(db.KEY_ORG_CASE,"");
-            map.put(db.KEY_ORG_UNITS,"");
-            map.put(db.KEY_AMOUNT,"");
-            map.put(db.KEY_UOM,"");
-            map.put(db.KEY_IS_POSTED,"");
-            map.put(db.KEY_IS_PRINTED,"");
-            HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-            filter.put(db.KEY_MATERIAL_NO,promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-            Cursor ivCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
-            if(ivCursor.getCount()>0){
-                ivCursor.moveToFirst();
-                do{
-                    if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                        float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                        discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)))*10);
+        if(from.equals("Final Invoice")){
+            do{
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,"");
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_ORG_CASE,"");
+                map.put(db.KEY_ORG_UNITS,"");
+                map.put(db.KEY_AMOUNT,"");
+                map.put(db.KEY_UOM,"");
+                map.put(db.KEY_IS_POSTED,"");
+                map.put(db.KEY_IS_PRINTED,"");
+                HashMap<String,String>filter = new HashMap<>();
+                filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                filter.put(db.KEY_MATERIAL_NO,promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                Cursor ivCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+                if(ivCursor.getCount()>0){
+                    ivCursor.moveToFirst();
+                    do{
+                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                            float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)))*10);
+                        }
+                        else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                            discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
+                        }
                     }
-                    else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
-                        float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                        discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
-                    }
+                    while (ivCursor.moveToNext());
                 }
-                while (ivCursor.moveToNext());
             }
+            while (promotionCursor.moveToNext());
         }
-        while (promotionCursor.moveToNext());
+        else if(from.equals("delivery")){
+            do{
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,"");
+                map.put(db.KEY_MATERIAL_NO,"");
+                map.put(db.KEY_CASE,"");
+                map.put(db.KEY_UNIT,"");
+                map.put(db.KEY_AMOUNT,"");
+                map.put(db.KEY_UOM,"");
+                map.put(db.KEY_IS_POSTED,"");
+                map.put(db.KEY_IS_PRINTED,"");
+                HashMap<String,String>filter = new HashMap<>();
+                filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                filter.put(db.KEY_MATERIAL_NO,promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                Cursor ivCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
+                if(ivCursor.getCount()>0){
+                    ivCursor.moveToFirst();
+                    do{
+                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_CASE)));
+                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT))));
+                        }
+                        /*else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                            discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
+                        }*/
+                    }
+                    while (ivCursor.moveToNext());
+                }
+            }
+            while (promotionCursor.moveToNext());
+        }
+
 
         Log.e("Discount", "" + discount);
 

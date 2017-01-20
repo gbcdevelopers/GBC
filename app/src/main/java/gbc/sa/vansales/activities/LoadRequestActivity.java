@@ -606,6 +606,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             map.put("Currency", "SAR");
             JSONArray deepEntity = new JSONArray();
             HashMap<String, String> itemMap = new HashMap<>();
+            itemMap.put(db.KEY_DATE,"");
             itemMap.put(db.KEY_ITEM_NO, "");
             itemMap.put(db.KEY_MATERIAL_NO, "");
             itemMap.put(db.KEY_MATERIAL_DESC1, "");
@@ -620,6 +621,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                map.put("DocumentDate", Helpers.parseDateforPost(cursor.getString(cursor.getColumnIndex(db.KEY_DATE))));
                 purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {

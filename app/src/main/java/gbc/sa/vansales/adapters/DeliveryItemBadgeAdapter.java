@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -30,9 +32,8 @@ public class DeliveryItemBadgeAdapter extends ArrayAdapter<DeliveryItem> {
     private int pos;
     public DeliveryItemBadgeAdapter(Context context, ArrayList<DeliveryItem> deliveryItems) {
         super(context, R.layout.badge_delivery_list, deliveryItems);
-        if(context instanceof DeliveryOrderActivity){
+        if (context instanceof DeliveryOrderActivity) {
             this.activity = (DeliveryOrderActivity) context;
-
         }
         this.deliveryItems = deliveryItems;
     }
@@ -53,67 +54,31 @@ public class DeliveryItemBadgeAdapter extends ArrayAdapter<DeliveryItem> {
         }
         DeliveryItem deliveryItem = getItem(position);
         holder.itemDescription.setText(deliveryItem.getItemDescription());
-
-        holder.casestextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                deliveryItems.get(pos).setItemCase(s.toString());
-                float price = 1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price*Float.parseFloat(s.toString());
-                    activity.calculatePrice();
-                }
-                deliveryItems.get(pos).setAmount(String.valueOf(price));
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-        holder.unitsTextWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                float price = deliveryItems.get(pos).getAmount()!=null?Float.parseFloat(deliveryItems.get(pos).getAmount().toString()):1;
-                if(!(s.toString().isEmpty()||s.toString()==null||s.toString().equals(""))){
-                    price = price==1?Float.parseFloat(s.toString())*2:Float.parseFloat(s.toString())*2+price;
-                    activity.calculatePrice();
-                }
-                deliveryItems.get(pos).setItemUnits(s.toString());
-                deliveryItems.get(pos).setAmount(String.valueOf(price));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-        holder.itemCase.addTextChangedListener(holder.casestextWatcher);
         holder.itemCase.setText(deliveryItems.get(pos).getItemCase());
-        holder.itemUnit.addTextChangedListener(holder.unitsTextWatcher);
         holder.itemUnit.setText(deliveryItems.get(pos).getItemUnits());
-
-
+        holder.item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(deliveryItem.getMaterialNo(), "0"));
+        if(!deliveryItems.get(pos).getItemCase().equals("0")){
+            holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(deliveryItems.get(pos).getAmount())*Float.parseFloat(deliveryItems.get(pos).getItemCase())));
+        }
+        else{
+            holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(deliveryItems.get(pos).getAmount())));
+        }
         return convertView;
     }
     private class ViewHolder {
         private TextView itemDescription;
-        private EditText itemCase;
-        private EditText itemUnit;
+        private TextView itemCase;
+        private TextView itemUnit;
+        private TextView item_code;
+        private TextView item_price;
         public TextWatcher casestextWatcher;
         public TextWatcher unitsTextWatcher;
-
         public ViewHolder(View v) {
             itemDescription = (TextView) v.findViewById(R.id.tv_item_description);
-            itemCase = (EditText) v.findViewById(R.id.tv_item_case);
-            itemUnit = (EditText) v.findViewById(R.id.tv_item_unit);
+            itemCase = (TextView) v.findViewById(R.id.tv_item_case);
+            itemUnit = (TextView) v.findViewById(R.id.tv_item_unit);
+            item_code = (TextView) v.findViewById(R.id.lbl_item_code);
+            item_price = (TextView)v.findViewById(R.id.tv_price);
         }
     }
 }

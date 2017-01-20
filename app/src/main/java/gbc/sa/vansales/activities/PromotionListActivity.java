@@ -23,6 +23,7 @@ import gbc.sa.vansales.adapters.PromotionsAdapter;
 import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
 import gbc.sa.vansales.models.Customer;
+import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.Promotions;
 import gbc.sa.vansales.sap.DataListener;
 import gbc.sa.vansales.utils.ConfigStore;
@@ -41,6 +42,7 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
     ArrayList<Promotions> arrayList;
     String from = "promo";
     Customer object;
+    OrderList delivery;
     int count = 0;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
@@ -51,6 +53,7 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
         Intent i = this.getIntent();
         loadingSpinner = new LoadingSpinner(this);
         object = (Customer) i.getParcelableExtra("headerObj");
+        delivery = (OrderList)i.getParcelableExtra("delivery");
         arrayList = new ArrayList<>();
         list_promotion = (ListView) findViewById(R.id.list_promotion);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
@@ -93,6 +96,8 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             public void onClick(View v) {
                 Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
                 intent.putExtra("msg", "Final Invoice");
+                intent.putExtra("delivery",delivery);
+                intent.putExtra("from",from);
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
@@ -121,7 +126,9 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
                     String str_promotion_message = tv.getText().toString();
                     Intent intent = new Intent(PromotionListActivity.this, PromotionActivity.class);
                     intent.putExtra("msg", str_promotion_message);
+                    intent.putExtra("from",from);
                     intent.putExtra("headerObj", object);
+                    intent.putExtra("delivery",delivery);
                     intent.putExtra("promocode",arrayList.get(position).getPromotionCode());
                     intent.putExtra("pos", position);
                     if(from.equals("review")){

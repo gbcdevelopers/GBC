@@ -18,6 +18,7 @@ public class Sales implements Parcelable {
     private String inv_cases;
     private String inv_piece;
     private String reasonCode;
+    private boolean isAltUOM;
     public String getReasonCode() {
         return reasonCode;
     }
@@ -101,6 +102,12 @@ public class Sales implements Parcelable {
     public void setCases(String cases) {
         this.cases = cases;
     }
+    public boolean isAltUOM() {
+        return isAltUOM;
+    }
+    public void setIsAltUOM(boolean isAltUOM) {
+        this.isAltUOM = isAltUOM;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -119,6 +126,7 @@ public class Sales implements Parcelable {
         parcel.writeString(inv_cases);
         parcel.writeString(inv_piece);
         parcel.writeString(reasonCode);
+        parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
 
     public static final Creator<Sales> CREATOR = new Creator<Sales>() {
@@ -138,6 +146,7 @@ public class Sales implements Parcelable {
             sale.inv_cases = source.readString();
             sale.inv_piece = source.readString();
             sale.reasonCode = source.readString();
+            sale.isAltUOM = source.readByte()!=0;
             return sale;
         }
         @Override

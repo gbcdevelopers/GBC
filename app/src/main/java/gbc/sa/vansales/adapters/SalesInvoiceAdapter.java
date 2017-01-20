@@ -44,6 +44,7 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
             // get all UI view
             holder = new ViewHolder();
             holder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
+            holder.tv_item_code = (TextView)convertView.findViewById(R.id.tv_item_code);
             holder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
             holder.tv_cases = (TextView) convertView.findViewById(R.id.tv_cases);
             holder.tv_cases_value = (TextView) convertView.findViewById(R.id.tv_cases_value);
@@ -60,7 +61,7 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
         final Sales sales = salesArrayList.get(pos);
         Log.e("UOM", "" + position + sales.getMaterial_no() + sales.getUom());
         try{
-            if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)){
+            if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)||salesArrayList.get(pos).getUom().equals(App.BOTTLES_UOM)){
                 holder.tv_price.setText("Price:" + salesArrayList.get(position).getPrice() + "/0.00");
             }
             else{
@@ -72,6 +73,7 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
             e.printStackTrace();
         }
         //holder.tv_price.setText("Price:54.00/2.25");
+        holder.tv_item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(salesArrayList.get(position).getMaterial_no(), "0"));
         holder.tv_cases.setText("Cases");
         holder.tv_cases_value.setText(salesArrayList.get(position).getCases());
         holder.tv_pcs.setText("Pcs");
@@ -80,6 +82,6 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
     }
 
     public class ViewHolder {
-        TextView tv_title, tv_price, tv_cases, tv_cases_value, tv_pcs, tv_pcs_value;
+        TextView tv_title, tv_price, tv_cases, tv_cases_value, tv_pcs, tv_pcs_value, tv_item_code;
     }
 }
