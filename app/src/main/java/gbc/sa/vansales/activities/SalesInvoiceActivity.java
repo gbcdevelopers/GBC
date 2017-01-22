@@ -298,8 +298,6 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
-
-
                 if (SalesInvoiceActivity.tab_position == 2) {
                     GListFragment.arrProductList.remove(info.position);
                     GListFragment.adapter.notifyDataSetChanged();
@@ -307,8 +305,6 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     BListFragment.arrProductList.remove(info.position);
                     BListFragment.adapter.notifyDataSetChanged();
                 }
-
-
                 return true;
             case R.id.cancel:
                 // edit stuff here

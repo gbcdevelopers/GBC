@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -66,12 +67,16 @@ public class DashboardActivity extends AppCompatActivity
     HashMap<ExpandedMenuModel, List<String>> listDataChild;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
+    float salesCount = 0;
+    float goodReturnsCount = 0;
+    float badReturnsCount = 0;
+    int postCount = 0;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         /*ArticleHeaders.loadData(getApplicationContext());
         CustomerHeaders.loadData(getApplicationContext());*/
-        loadingSpinner = new LoadingSpinner(this,getString(R.string.changinglanguage));
+        loadingSpinner = new LoadingSpinner(this, getString(R.string.changinglanguage));
         Helpers.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
@@ -87,7 +92,7 @@ public class DashboardActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        btn_settings = (Button)findViewById(R.id.btn_settings);
+        btn_settings = (Button) findViewById(R.id.btn_settings);
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,39 +102,35 @@ public class DashboardActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        btn_logout = (Button)findViewById(R.id.btn_logout);
+        btn_logout = (Button) findViewById(R.id.btn_logout);
         btn_logout.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 mDrawerLayout.closeDrawers();
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.log_out))
-                .setMessage(getString(R.string.log_out_msg))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                        .setMessage(getString(R.string.log_out_msg))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
                 alertDialog.show();
-
-
             }
         });
         //Load all Articles
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         expandableList = (ExpandableListView) findViewById(R.id.navigationmenu);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -158,9 +159,6 @@ public class DashboardActivity extends AppCompatActivity
                     Intent i = new Intent(DashboardActivity.this, UnloadActivity.class);
                     startActivity(i);
                 }
-
-
-
                 return false;
             }
         });
@@ -168,28 +166,7 @@ public class DashboardActivity extends AppCompatActivity
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v,
                                         int groupPosition, long id) {
-
-                Log.v("Group","click");
-//                Object item = parent.getExpandableListAdapter().getGroupId(groupPosition);
-//                String position = item.toString();
-//                if (position == "0") {
-//                    Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
-//                    startActivity(i);
-//                } else if (position == "1") {
-//                    Intent i = new Intent(DashboardActivity.this, ManageInventory.class);
-//                    startActivity(i);
-//                } else if (position == "2") {
-//
-//
-//                    Intent i = new Intent(DashboardActivity.this, MyCalendarActivity.class);
-//                    startActivity(i);
-//                } else if (position == "3") {
-//                    Intent i = new Intent(DashboardActivity.this, EndTripActivity.class);
-//                    startActivity(i);
-//                } else if (position == "4") {
-//                    Intent i = new Intent(DashboardActivity.this, InformationsActivity.class);
-//                    startActivity(i);
-//                }
+                Log.v("Group", "click");
                 return false;
             }
         });
@@ -201,11 +178,9 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
         setBeginDayVisibility();
-
         btnBDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -221,8 +196,10 @@ public class DashboardActivity extends AppCompatActivity
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
         createPieChart();
-       // createLineChart();
+        // createLineChart();
         createBarChart();
+       // new loadBarChartData(App.SALES);
+
         TextView lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
         TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         TextView lbl_targetachieved = (TextView) findViewById(R.id.lbl_targetachieved);
@@ -231,16 +208,14 @@ public class DashboardActivity extends AppCompatActivity
         lbl_targetachieved.setText("594.00/75000.00");
     }
     private void setBeginDayVisibility() {
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "true");
-        if(db.checkData(db.LOCK_FLAGS,map)){
+        if (db.checkData(db.LOCK_FLAGS, map)) {
             /*btnBDay.setEnabled(false);
             btnBDay.setAlpha(.5f);*/
-           // btnBDay.setVisibility(View.INVISIBLE);
+            // btnBDay.setVisibility(View.INVISIBLE);
         }
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -264,12 +239,10 @@ public class DashboardActivity extends AppCompatActivity
         labels.add(getString(R.string.credit));
         labels.add("TC");
         PieData data = new PieData(labels, dataset);
-
         List<Integer> colorCodes = new ArrayList<Integer>();
         colorCodes.add(Color.parseColor("#c15525"));
         colorCodes.add(Color.parseColor("#ffc502"));
         colorCodes.add(Color.parseColor("#ff9201"));
-
         dataset.setColors(colorCodes); //
         //  pieChart.setDescription("Description");
         pieChart.setDrawSliceText(false);
@@ -281,23 +254,19 @@ public class DashboardActivity extends AppCompatActivity
         // pieChart.setUsePercentValues(true);
         pieChart.animateY(3000);
     }
-
     private void prepareListData() {
-
-        HashMap<String,String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "");
-        map.put(db.KEY_IS_LOAD_VERIFIED,"");
-        map.put(db.KEY_IS_END_DAY,"");
-        HashMap<String,String> filter = new HashMap<>();
-        Cursor cursor = db.getData(db.LOCK_FLAGS,map,filter);
-
-        if(cursor.getCount()>0){
+        map.put(db.KEY_IS_LOAD_VERIFIED, "");
+        map.put(db.KEY_IS_END_DAY, "");
+        HashMap<String, String> filter = new HashMap<>();
+        Cursor cursor = db.getData(db.LOCK_FLAGS, map, filter);
+        if (cursor.getCount() > 0) {
             cursor.moveToFirst();
         }
         boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
         boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
         boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
-
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
@@ -305,28 +274,24 @@ public class DashboardActivity extends AppCompatActivity
         beginTrip.setIconImg(R.drawable.ic_begintrip);
         beginTrip.setIsEnabled(true);
         listDataHeader.add(beginTrip);
-
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
         manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
         manageInventory.setIsEnabled(isBeginTripEnabled);
         //manageInventory.setIsEnabled(true);
         listDataHeader.add(manageInventory);
-
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
         customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
         customerOperations.setIsEnabled(isloadVerifiedEnabled);
-       // customerOperations.setIsEnabled(true);
+        // customerOperations.setIsEnabled(true);
         listDataHeader.add(customerOperations);
-
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
         endTrip.setIsEnabled(isBeginTripEnabled);
-       // endTrip.setIsEnabled(true);
+        // endTrip.setIsEnabled(true);
         listDataHeader.add(endTrip);
-
         ExpandedMenuModel information = new ExpandedMenuModel();
         information.setIconName(getString(R.string.information));
         information.setIconImg(R.drawable.ic_info);
@@ -395,30 +360,59 @@ public class DashboardActivity extends AppCompatActivity
         lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         lineChart.animateY(2000);
     }*/
-    void createBarChart(){
+    void createBarChart() {
         BarChart barChart = (BarChart) findViewById(R.id.barChart);
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
         barChart.setPinchZoom(false);
         barChart.setDrawGridBackground(false);
-
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(4f, 0));
         entries.add(new BarEntry(8f, 1));
         entries.add(new BarEntry(6f, 2));
         BarDataSet dataset = new BarDataSet(entries, "");
-       // dataset.setColors(ColorTemplate.PASTEL_COLORS);
+        // dataset.setColors(ColorTemplate.PASTEL_COLORS);
         List<Integer> colorCodes = new ArrayList<Integer>();
         colorCodes.add(Color.parseColor("#82d173"));
         colorCodes.add(Color.parseColor("#3e7aae"));
         colorCodes.add(Color.parseColor("#ff715b"));
         dataset.setColors(colorCodes);
-
         ArrayList<String> labels = new ArrayList<String>();
         labels.add(getString(R.string.sales));
         labels.add(getString(R.string.good_return));
         labels.add(getString(R.string.bad_return));
-
+        BarData data = new BarData(labels, dataset);
+        barChart.setData(data);
+        barChart.animateY(2000);
+        barChart.setDescription("");
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getLegend().setEnabled(false);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+    }
+    void createBarChartFromLiveData(float salesCount,float goodreturnsCount,float badreturnsCount) {
+        BarChart barChart = (BarChart) findViewById(R.id.barChart);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(false);
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        entries.add(new BarEntry(salesCount,0));
+        entries.add(new BarEntry(goodreturnsCount,0));
+        entries.add(new BarEntry(badreturnsCount,0));
+        /*entries.add(new BarEntry(4f, 0));
+        entries.add(new BarEntry(8f, 1));
+        entries.add(new BarEntry(6f, 2));*/
+        BarDataSet dataset = new BarDataSet(entries, "");
+        // dataset.setColors(ColorTemplate.PASTEL_COLORS);
+        List<Integer> colorCodes = new ArrayList<Integer>();
+        colorCodes.add(Color.parseColor("#82d173"));
+        colorCodes.add(Color.parseColor("#3e7aae"));
+        colorCodes.add(Color.parseColor("#ff715b"));
+        dataset.setColors(colorCodes);
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add(getString(R.string.sales));
+        labels.add(getString(R.string.good_return));
+        labels.add(getString(R.string.bad_return));
         BarData data = new BarData(labels, dataset);
         barChart.setData(data);
         barChart.animateY(2000);
@@ -453,5 +447,168 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         return false;
+    }
+    public class loadBarChartData extends AsyncTask<Void, Void, Void> {
+
+        private String var;
+        private loadBarChartData(String var){
+            this.var = var;
+            execute();
+        }
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            if(var.equals(App.SALES)){
+                HashMap<String, String>map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP,"");
+                map.put(db.KEY_ORG_CASE,"");
+                HashMap<String,String>filterPostedSales = new HashMap<>();
+                filterPostedSales.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED); //Count of all invoices posted in SAP
+                HashMap<String,String>filterMarkedforPostSales = new HashMap<>();
+                filterMarkedforPostSales.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                Cursor salesPostedCursor = null;
+                /*if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
+                    salesPostedCursor  = db.getData(db.CAPTURE_SALES_INVOICE,map,filterPostedSales);
+                }*/
+                Cursor salesMarkforPostCursor = null;
+                if(db.checkData(db.CAPTURE_SALES_INVOICE,filterMarkedforPostSales)){
+                    salesMarkforPostCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filterMarkedforPostSales);
+                }
+                salesCount = calculateData(var,salesPostedCursor,salesMarkforPostCursor);
+            }
+            else if(var.equals(App.GOOD_RETURN))
+            {
+                HashMap<String, String>returnMap = new HashMap<>();
+                returnMap.put(db.KEY_TIME_STAMP,"");
+                returnMap.put(db.KEY_CASE,"");
+                HashMap<String,String>filterPostedGoodReturn = new HashMap<>();
+                filterPostedGoodReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                filterPostedGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                HashMap<String,String>filterMarkedforPostGoodReturn = new HashMap<>();
+                filterMarkedforPostGoodReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                filterMarkedforPostGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+
+                Cursor goodReturnPostedCursor = null;
+                /*if(db.checkData(db.RETURNS,filterPostedGoodReturn)){
+                    goodReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedGoodReturn);
+                }*/
+                Cursor goodReturnMarkforPostCursor = null;
+                if(db.checkData(db.RETURNS,filterMarkedforPostGoodReturn)){
+                    goodReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostGoodReturn);
+                }
+                 goodReturnsCount = calculateData(var,goodReturnPostedCursor,goodReturnMarkforPostCursor);
+            }
+            else if(var.equals(App.BAD_RETURN)){
+                HashMap<String, String>returnMap = new HashMap<>();
+                returnMap.put(db.KEY_TIME_STAMP,"");
+                returnMap.put(db.KEY_CASE,"");
+                HashMap<String,String>filterPostedBadReturn = new HashMap<>();
+                filterPostedBadReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                filterPostedBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                HashMap<String,String>filterMarkedforPostBadReturn = new HashMap<>();
+                filterMarkedforPostBadReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                filterMarkedforPostBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                Cursor badReturnPostedCursor = null;
+                Cursor badReturnMarkforPostCursor = null;
+                /*if(db.checkData(db.RETURNS,filterPostedBadReturn)){
+                    badReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedBadReturn);
+                }*/
+                if(db.checkData(db.RETURNS,filterMarkedforPostBadReturn)){
+                    badReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostBadReturn);
+                }
+
+                badReturnsCount = calculateData(var,badReturnPostedCursor,badReturnMarkforPostCursor);
+            }
+
+           // badReturnsCount = GoodReturnPostedCursor.getCount() + GoodReturnMarkforPostCursor.getCount();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            postCount++;
+            if(var.equals(App.SALES)){
+                new loadBarChartData(App.GOOD_RETURN);
+            }
+            else if(var.equals(App.GOOD_RETURN)){
+                new loadBarChartData(App.BAD_RETURN);
+            }
+            else{
+                if(postCount==3){
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
+                    createBarChartFromLiveData(salesCount,goodReturnsCount,badReturnsCount);
+                }
+            }
+
+
+        }
+    }
+
+    private float calculateData(String var,Cursor c1,Cursor c2){
+        float count = 0;
+        if(var.equals(App.SALES)){
+            if(c1!=null){
+                if(c1.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_ORG_CASE)));
+                    }
+                    while (c1.moveToNext());
+                }
+            }
+            if(c2!=null){
+                if(c2.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_ORG_CASE)));
+                    }
+                    while (c2.moveToNext());
+                }
+            }
+
+
+        }
+        else if(var.equals(App.GOOD_RETURN)){
+            if(c1!=null){
+                if(c1.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
+                    }
+                    while (c1.moveToNext());
+                }
+            }
+            if(c2!=null){
+                if(c2.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                    }
+                    while (c2.moveToNext());
+                }
+            }
+
+        }
+        else if(var.equals(App.BAD_RETURN)){
+            if(c1!=null){
+                if(c1.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
+                    }
+                    while (c1.moveToNext());
+                }
+            }
+            if(c2!=null){
+                if(c2.getCount()>0){
+                    do{
+                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                    }
+                    while (c2.moveToNext());
+                }
+            }
+
+        }
+        return count;
     }
 }

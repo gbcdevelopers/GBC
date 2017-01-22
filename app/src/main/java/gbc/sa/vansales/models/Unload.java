@@ -17,6 +17,7 @@ public class Unload implements Parcelable{
     private String inv_cases;
     private String inv_piece;
     private String reasonCode;
+    private boolean isAltUOM;
     public String getReasonCode() {
         return reasonCode;
     }
@@ -100,6 +101,12 @@ public class Unload implements Parcelable{
     public void setCases(String cases) {
         this.cases = cases;
     }
+    public boolean isAltUOM() {
+        return isAltUOM;
+    }
+    public void setIsAltUOM(boolean isAltUOM) {
+        this.isAltUOM = isAltUOM;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -118,6 +125,7 @@ public class Unload implements Parcelable{
         parcel.writeString(inv_cases);
         parcel.writeString(inv_piece);
         parcel.writeString(reasonCode);
+        parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
 
     public static final Parcelable.Creator<Unload> CREATOR = new Parcelable.Creator<Unload>() {
@@ -137,6 +145,7 @@ public class Unload implements Parcelable{
             unload.inv_cases = source.readString();
             unload.inv_piece = source.readString();
             unload.reasonCode = source.readString();
+            unload.isAltUOM = source.readByte()!=0;
             return unload;
         }
         @Override

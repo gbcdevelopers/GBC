@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,9 +56,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
             if (from.equals("visit") || from.equals("all")) {
                 Intent i = this.getIntent();
                 object = (Customer) i.getParcelableExtra("headerObj");
-                /*if (object == null) {
+                if (object == null) {
                     object = Const.allCustomerdataArrayList.get(Const.customerPosition);
-                }*/
+                }
                 customers = CustomerHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
                 TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
@@ -67,12 +69,12 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
                 TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
                 if (!(customerHeader == null)) {
-                    tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                    tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
                     tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 } else {
-                    tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
                     tv_customer_address.setText(object.getCustomerAddress().toString());
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
@@ -119,6 +121,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
+                startActivity(intent);
                 finish();
             }
         });

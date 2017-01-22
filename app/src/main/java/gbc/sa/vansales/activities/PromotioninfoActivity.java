@@ -236,6 +236,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         if(from.equals("Final Invoice")){
             Cursor saleCursor = cursor;
             saleCursor.moveToFirst();
+            float amount=0;
             do{
                 float tempPrice = 0;
                 HashMap<String,String> filterComp = new HashMap<>();
@@ -250,27 +251,28 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         customerPriceCursor.moveToFirst();
                         tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
                     }
-                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                        totalamnt += tempPrice*10*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        amount += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
                         //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                     }
                     else {
-                        totalamnt += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        amount += tempPrice*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
                     }
 
                 }
                 else{
-                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                        totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    if(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
                         //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                     }
                     else {
-                        totalamnt += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
                     }
                 }
 
             }
             while(saleCursor.moveToNext());
+            totalamnt = amount;
         }
         else{
             Cursor deliveryCursor = cursor;
@@ -479,12 +481,13 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     else{
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
                         alertDialogBuilder.setTitle("Message")
-                                .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                                .setMessage(getString(R.string.request_created))
+                                //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                                 .setCancelable(false)
                                 .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if(returnType.equals(App.GOOD_RETURN)){
+                                        if (returnType.equals(App.GOOD_RETURN)) {
                                             updateStockinVan(true);
                                         }
                                         dialog.dismiss();
@@ -495,6 +498,11 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         // show it
                         alertDialog.show();
+                    }
+                }
+                else{
+                    if(returnType.equals(App.GOOD_RETURN)){
+                        updateStockinVan(true);
                     }
                 }
 
@@ -609,7 +617,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -617,14 +625,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM",cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    else{
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -632,7 +640,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
@@ -705,7 +713,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
                     HashMap<String, String> filtermap = new HashMap<>();
                     filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                   // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                     filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
                     filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
@@ -717,17 +725,23 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        .setMessage(getString(R.string.request_created))
+                        //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 updateStockinVan(false);
                                 dialog.dismiss();
-                                Intent intent = new Intent(PromotioninfoActivity.this,SalesInvoiceOptionActivity.class);
-                                intent.putExtra("from","customerdetail");
-                                intent.putExtra("headerObj", object);
-                                startActivity(intent);
+                               /* Intent intent = new Intent(PromotioninfoActivity.this,SalesInvoiceOptionActivity.class);
+                                intent.putExtra("from", "customerdetail");
+                                intent.putExtra("headerObj", object);*/
+
+                                Intent intent1 = new Intent(PromotioninfoActivity.this, CollectionsActivity.class);
+                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent1.putExtra("headerObj", object);
+                                startActivity(intent1);
+                                finish();
                             }
                         });
                 // create alert dialog
@@ -821,7 +835,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -829,14 +843,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    else {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -844,7 +858,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
@@ -1004,14 +1018,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 if(ivCursor.getCount()>0){
                     ivCursor.moveToFirst();
                     do{
-                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                             float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)))*10);
+                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT))));
                         }
-                        else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        /* else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                             float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
                             discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
-                        }
+                        }*/
                     }
                     while (ivCursor.moveToNext());
                 }

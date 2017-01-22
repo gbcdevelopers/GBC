@@ -589,6 +589,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     public String postData() {
         String orderID = "";
         String purchaseNumber = "";
+        float orderTotalValue = 0;
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadRequestFunction);
@@ -602,7 +603,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             map.put("SalesOrg", Settings.getString(App.SALES_ORG));
             map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
             map.put("Division", Settings.getString(App.DIVISION));
-            map.put("OrderValue", String.valueOf(orderTotalValue));
+           // map.put("OrderValue", String.valueOf(orderTotalValue));
             map.put("Currency", "SAR");
             JSONArray deepEntity = new JSONArray();
             HashMap<String, String> itemMap = new HashMap<>();
@@ -625,7 +626,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -633,14 +634,15 @@ public class LoadRequestActivity extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
+                        orderTotalValue += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         deepEntity.put(jo);
                     }
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    else {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -648,15 +650,17 @@ public class LoadRequestActivity extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
+                        orderTotalValue += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         deepEntity.put(jo);
                     }
                 }
                 while (cursor.moveToNext());
+                map.put("OrderValue", String.valueOf(orderTotalValue));
             }
             orderID = IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
@@ -860,7 +864,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                        //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                        .setMessage(getString(R.string.request_created))
                                 //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {

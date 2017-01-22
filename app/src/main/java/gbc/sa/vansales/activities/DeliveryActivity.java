@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -72,12 +74,12 @@ public class DeliveryActivity extends AppCompatActivity {
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -90,6 +92,10 @@ public class DeliveryActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(DeliveryActivity.this, CustomerDetailActivity.class);
+                intent.putExtra("headerObj", object);
+                intent.putExtra("msg", "all");
+                startActivity(intent);
                 finish();
             }
         });

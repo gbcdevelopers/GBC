@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,12 +73,12 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + UrlBuilder.decodeString(customerHeader.getName1()));
+            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -146,19 +148,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         super.onResume();
         new loadOrders().execute();
         new loadOrdersLocal().execute();
-        if (proceedArrayList != null) {
-            proceedArrayList.clear();
-        }
-//        for(int i=0;i<Const.constantsHashMap.size();i++)
-//        {
-//            proceedArrayList.add(i);
-//            Log.v("size",Const.constantsHashMap.get(i).get(i).getItemName());
-//
-//        }
-        /*if (Const.constantsHashMap.size() > 0) {
-            presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
-            list_delivery.setAdapter(presaleAdapterdapter);
-        }*/
+
     }
     public class loadOrders extends AsyncTask<Void, Void, Void> {
         @Override
@@ -217,6 +207,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
+            Log.e("ArrayList","" + arrayList.size());
             adapter.notifyDataSetChanged();
         }
     }
@@ -230,7 +221,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            Log.e("ORDER", "" + orderList.getOrderId());
+            Log.e("ORDER1", "" + orderList.getOrderId());
             if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
@@ -243,13 +234,15 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         temp.clear();
         //arrayList.clear();
         Log.e("Cursor", "" + cursor.getCount());
+        cursor.moveToFirst();
         do {
             OrderList orderList = new OrderList();
             //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            Log.e("ORDER", "" + orderList.getOrderId());
+
             if (!temp.contains(orderList.getOrderId())) {
+                Log.e("ORDER", "" + orderList.getOrderId());
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }

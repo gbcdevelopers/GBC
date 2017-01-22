@@ -119,7 +119,7 @@ public class SyncData extends IntentService {
                                 deepEntity = new JSONArray();
                             }
 
-                            if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                            if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -127,14 +127,14 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_CASE)));
                                 jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("UoM", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno+10;
                                 deepEntity.put(jo);
                             }
-                            if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            else{
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -142,7 +142,7 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UNIT)));
                                 jo.put("ItemValue", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("UoM", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
@@ -225,7 +225,7 @@ public class SyncData extends IntentService {
 
                             }
 
-                            if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                            if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -233,14 +233,14 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_CASE)));
                                 jo.put("ItemValue", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("UoM", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno+10;
                                 deepEntity.put(jo);
                             }
-                            if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            else{
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -248,7 +248,7 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UNIT)));
                                 jo.put("ItemValue", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("UoM", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
@@ -353,7 +353,7 @@ public class SyncData extends IntentService {
 
                             }
 
-                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -361,14 +361,14 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_CASE)));
                                 jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("UoM", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno+10;
                                 deepEntity.put(jo);
                             }
-                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            else{
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
                                 jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -376,7 +376,7 @@ public class SyncData extends IntentService {
                                 jo.put("Plant","");
                                 jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UNIT)));
                                 jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("UoM", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)));
                                 jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));

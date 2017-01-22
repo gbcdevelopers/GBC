@@ -29,7 +29,7 @@
             android:text="@string/price_54_00_2_25"
             android:textColor="@color/black"
             android:textSize="@dimen/label_medium"
-            android:layout_marginBottom="@dimen/label_min"
+            android:layout_marginBottom="@dimen/all_padding"
             android:id="@+id/tv_item_code"
             />
 

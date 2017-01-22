@@ -1,11 +1,14 @@
 package gbc.sa.vansales.activities;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +20,7 @@ import java.util.HashMap;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Settings;
 public class ManageInventory extends AppCompatActivity {
     Button load, loadRequest, unload, vanStock;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -57,9 +61,42 @@ public class ManageInventory extends AppCompatActivity {
         unload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LayoutInflater li = LayoutInflater.from(ManageInventory.this);
+                View promptsView = li.inflate(R.layout.password_prompt, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
+                alertDialogBuilder.setView(promptsView);
+                //Reading last save odometer
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        String input = userInput.getText().toString();
+                                        if (input.equals("")) {
+                                            dialog.cancel();
+                                            Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                                            startActivity(i);
+                                        }
+                                    }
+                                })
+                        .setNegativeButton(getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+//                                startActivity(i);
+                                    }
+                                });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
                 // Toast.makeText(getApplicationContext(), "Unload Popup", Toast.LENGTH_LONG).show();
-                Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                startActivity(i);
+
             }
         });
     }

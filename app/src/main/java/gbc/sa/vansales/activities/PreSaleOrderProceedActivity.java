@@ -273,7 +273,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         map.put(db.KEY_ORDER_ID, purchaseNum);
                         map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
                         orderTotalValue = orderTotalValue + Float.parseFloat(loadRequest.getPrice());
-                        if (Integer.parseInt(loadRequest.getCases()) > 0 || Integer.parseInt(loadRequest.getUnits()) > 0) {
+                        if (Float.parseFloat(loadRequest.getCases()) > 0 || Float.parseFloat(loadRequest.getUnits()) > 0) {
+                            Log.e("Insert","BROOOOOOO");
                             db.addData(db.ORDER_REQUEST, map);
                         }
                     } catch (Exception e) {
@@ -541,7 +542,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.message))
-                        .setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                        //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                        .setMessage(getString(R.string.request_created))
                                 // .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
@@ -601,6 +603,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     private String postData() {
         String orderID = "";
         String purchaseNumber = "";
+        float orderTotalValue = 0;
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.CustomerOrderRequestFunction);
@@ -612,7 +615,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             map.put("SalesOrg", Settings.getString(App.SALES_ORG));
             map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
             map.put("Division", Settings.getString(App.DIVISION));
-            map.put("OrderValue", String.valueOf(orderTotalValue));
+
             map.put("Currency", "SAR");
             // map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.LoadRequest_PR_Type));
             JSONArray deepEntity = new JSONArray();
@@ -637,7 +640,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 purchaseNumber = map.get("PurchaseNum");
                 int itemno = 10;
                 do {
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -645,14 +648,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
+                        orderTotalValue+= Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         deepEntity.put(jo);
                     }
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    else {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -660,15 +664,17 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
+                        orderTotalValue+= Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
                 }
                 while (cursor.moveToNext());
+                map.put("OrderValue", String.valueOf(orderTotalValue));
             }
             Log.e("Map", "" + map);
             Log.e("Deep Entity", "" + deepEntity);

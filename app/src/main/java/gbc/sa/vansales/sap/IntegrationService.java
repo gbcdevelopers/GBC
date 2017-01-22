@@ -282,6 +282,41 @@ public class IntegrationService extends IntentService {
                 }
                 //orderId = map.get("PurchaseNum").toString();
             } else {
+                if(map.containsKey("PurchaseNum")){
+                    orderId = map.get("PurchaseNum").toString();
+                }
+                else if(map.containsKey("OrderId")){
+                    orderId = map.get("OrderId").toString();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderId;
+    }
+    public static String postDataBackup(Context context, String collection, HashMap<String, String> map, JSONArray deepEntity) {
+        String orderId = "";
+        try {
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
+            HttpPost post = new HttpPost(postUrl(collection));
+            String authString = "ecs" + ":" + "sap123";
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+            post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
+            post.addHeader(ACCEPT, APPLICATION_JSON);
+            post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
+            //   post.addHeader(X_CSRF_TOKEN_KEY,token);
+            post.setEntity(getPayload(map, deepEntity));
+            if (!Helpers.isNetworkAvailable(context)) {
+                if(map.containsKey("PurchaseNum")){
+                    orderId = map.get("PurchaseNum").toString();
+                }
+                else if(map.containsKey("OrderId")){
+                    orderId = map.get("OrderId").toString();
+                }
+                //orderId = map.get("PurchaseNum").toString();
+            } else {
                 HttpResponse response = client.execute(post);
                 if (response.getStatusLine().getStatusCode() == 201) {
                     Header[] headers = response.getAllHeaders();

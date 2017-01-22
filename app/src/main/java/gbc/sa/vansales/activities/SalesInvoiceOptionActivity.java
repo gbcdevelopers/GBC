@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -61,12 +63,12 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                 customers = CustomerHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
                 if (!(customerHeader == null)) {
-                    tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                    tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
                     tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 } else {
-                    tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
                     tv_customer_address.setText(object.getCustomerAddress().toString());
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
@@ -139,6 +141,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         if(invoiceExist()){
                             Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
                             intent3.putExtra("headerObj", object);
+                            intent3.putExtra("from","Final Invoice");
                             startActivity(intent3);
                             break;
                         }

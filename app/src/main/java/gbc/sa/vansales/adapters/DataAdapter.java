@@ -11,6 +11,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -85,7 +87,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         }
 
         Customer customer = dataList.get(i);
-        holder.customer_id.setText(customer.getCustomerID());
+        holder.customer_id.setText(StringUtils.stripStart(customer.getCustomerID(), "0"));
         holder.customer_name.setText(UrlBuilder.decodeString(customer.getCustomerName()));
         holder.customer_address.setText(customer.getCustomerAddress());
 

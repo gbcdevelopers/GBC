@@ -332,21 +332,23 @@ public class PromotionActivity extends AppCompatActivity {
             Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
-            }
+                do{
+                    case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                    if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    }
+                    else {
+                        amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                    }
 
-            do{
-                case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
-                unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
-                    amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
-                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                 }
-                else {
-                    amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                }
+                while (cursor.moveToNext());
                 totalamnt = amount;
             }
-            while (cursor.moveToNext());
+
+
         }
 
         tv_invoice_amount.setText(String.valueOf(totalamnt));

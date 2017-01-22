@@ -1,6 +1,8 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -12,9 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,6 +40,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import gbc.sa.vansales.App;
+import gbc.sa.vansales.Fragment.BListFragment;
+import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryItemBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
@@ -75,6 +83,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     DeliveryItemBadgeAdapter adapter;
     LinearLayout custLayout;
     LinearLayout labelView;
+    FloatingActionButton edit;
+    FloatingActionButton ok;
+    boolean canEdit = false;
     public ArrayList<ArticleHeader> articles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +100,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         labelView = (LinearLayout) findViewById(R.id.labelView);
         custLayout.setVisibility(View.GONE);
         labelView.setVisibility(View.GONE);
+        edit = (FloatingActionButton)findViewById(R.id.edit);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
         delivery = (OrderList) i.getParcelableExtra("delivery");
@@ -99,12 +111,12 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -137,6 +149,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         });
         new loadDeliveryItems().execute();
         //setData();
+        registerForContextMenu(deliveryItemsList);
         btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,7 +238,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                dialog.show();
+                if (canEdit) {
+                    dialog.show();
+                } else {
+                }
                 btn_save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -266,7 +282,97 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 });
             }
         });
+        deliveryItemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return false;
+            }
+        });
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(canEdit){
+                    canEdit=false;
+                }
+                else{
+                    canEdit = true;
+                }
+            }
+        });
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.list_delivery_items) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove:
+                // add stuff here
+
+                showReasonDialog(arrayList, info.position);
+
+                return true;
+            case R.id.cancel:
+                // edit stuff here
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void showReasonDialog(ArrayList<DeliveryItem>list, final int position){
+        final int pos = position;
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(DeliveryOrderActivity.this);
+        builderSingle.setTitle(getString(R.string.select_reason));
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DeliveryOrderActivity.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("Cancel Delivery");
+        arrayAdapter.add("Already Delivered");
+        arrayAdapter.add("Other Reasons");
+
+        builderSingle.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                arrayList.remove(pos);
+                adapter.notifyDataSetChanged();
+                calculatePrice();
+                if(arrayList.size()==0){
+                    finish();
+                }
+               /* String strName = arrayAdapter.getItem(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(DeliveryOrderActivity.this);
+                builderInner.setMessage(strName);
+                builderInner.setTitle("Your Selected Item is");
+                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();*/
+            }
+        });
+        builderSingle.show();
+
+
+    }
+
     public void setData(Cursor cursor) {
         if (preSaleProceeds != null) {
             preSaleProceeds.clear();

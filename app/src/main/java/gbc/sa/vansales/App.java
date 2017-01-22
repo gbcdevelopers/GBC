@@ -91,6 +91,7 @@ public class App extends Application {
     public static final String Promotions05 = "Y005";
     public static final String Promotions07 = "Y007";
 
+    public static final String SALES = "SALES";
     //Returns
     public static final String GOOD_RETURN = "GOOD";
     public static final String BAD_RETURN = "BAD";

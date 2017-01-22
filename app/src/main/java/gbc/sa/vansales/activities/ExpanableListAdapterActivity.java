@@ -1,5 +1,7 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -7,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -117,8 +121,43 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
 
                 } else if (groupPosition == 3) {
                     if(headerTitle.isEnabled()){
-                        Intent i = new Intent(mContext, EndTripActivity.class);
-                        mContext.startActivity(i);
+
+                        LayoutInflater li = LayoutInflater.from(mContext);
+                        View promptsView = li.inflate(R.layout.password_prompt, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                        alertDialogBuilder.setView(promptsView);
+                        //Reading last save odometer
+                        final EditText userInput = (EditText) promptsView
+                                .findViewById(R.id.editTextDialogUserInput);
+                        // set dialog message
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton(mContext.getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                String input = userInput.getText().toString();
+                                                if (input.equals("")) {
+                                                    dialog.cancel();
+                                                    Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Intent i = new Intent(mContext, EndTripActivity.class);
+                                                    mContext.startActivity(i);
+                                                }
+                                            }
+                                        })
+                                .setNegativeButton(mContext.getString(R.string.cancel),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+//                                startActivity(i);
+                                            }
+                                        });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+
                     }
 
                 } else if (groupPosition == 4) {

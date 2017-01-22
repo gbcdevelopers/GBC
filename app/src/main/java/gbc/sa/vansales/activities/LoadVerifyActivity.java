@@ -432,7 +432,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
-            Log.e("POST Data - Foo","" + this.orderID);
             if(this.orderID.contains("Error")){
                 Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error","").trim(), Toast.LENGTH_SHORT).show();
             }

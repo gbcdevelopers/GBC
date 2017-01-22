@@ -78,7 +78,8 @@ public class UnloadActivity extends AppCompatActivity {
         btn_bad_return.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
+               // Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
+                Intent intent = new Intent(UnloadActivity.this,UnloadActivityBadReturnList.class);
                 intent.putExtra("context","badreturn");
                 startActivity(intent);
             }
@@ -245,7 +246,8 @@ public class UnloadActivity extends AppCompatActivity {
                 if(this.tokens[0].toString().equals(this.tokens[1].toString())){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UnloadActivity.this);
                     alertDialogBuilder.setTitle("Message")
-                            .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                            //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                            .setMessage(getString(R.string.request_created))
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
@@ -313,7 +315,6 @@ public class UnloadActivity extends AppCompatActivity {
         }
         return docType;
     }
-
     private void fetchTruckTheftData(){
         for(int i=0;i<articles.size();i++){
             HashMap<String, String> itemMap = new HashMap<>();
@@ -389,7 +390,6 @@ public class UnloadActivity extends AppCompatActivity {
             }
         }
     }
-
     public String postData(String param1,String param2){
         //There is no post for truck and theft
         String orderID="";
@@ -414,7 +414,7 @@ public class UnloadActivity extends AppCompatActivity {
 
                 int itemno = 10;
                 for(Unload unload:arrayList){
-                    if(unload.getUom().equals(App.CASE_UOM)){
+                    if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", unload.getMaterial_no());
@@ -422,14 +422,14 @@ public class UnloadActivity extends AppCompatActivity {
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", unload.getCases());
                         jo.put("ItemValue", unload.getPrice());
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM", unload.getUom());
                         jo.put("Value", unload.getPrice());
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
-                    if(unload.getUom().equals(App.BOTTLES_UOM)){
+                    else{
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", unload.getMaterial_no());
@@ -437,7 +437,7 @@ public class UnloadActivity extends AppCompatActivity {
                         jo.put("Plant", App.PLANT);
                         jo.put("Quantity", unload.getPic());
                         jo.put("ItemValue", unload.getPrice());
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", unload.getUom());
                         jo.put("Value", unload.getPrice());
                         jo.put("Storagelocation", App.STORAGE_LOCATION);
                         jo.put("Route", Settings.getString(App.ROUTE));
@@ -506,22 +506,22 @@ public class UnloadActivity extends AppCompatActivity {
                         do{
                             ArticleHeader articleHeader = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
 
-                            if (articleHeader.getBaseUOM().equals(App.CASE_UOM)) {
+                            if (articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
                                 jo.put("Plant", App.PLANT);
-                                jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                                jo.put("Quantity", param1.equals(App.EXCESS) ? String.valueOf(Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)))*-1) : cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                                 jo.put("ItemValue", "0");
-                                jo.put("UoM", App.CASE_UOM);
+                                jo.put("UoM", articleHeader.getBaseUOM());
                                 jo.put("Value", "0");
                                 jo.put("Storagelocation", App.STORAGE_LOCATION);
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno + 10;
                                 deepEntity.put(jo);
                             }
-                            if (articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
+                            else {
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -529,7 +529,7 @@ public class UnloadActivity extends AppCompatActivity {
                                 jo.put("Plant", App.PLANT);
                                 jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                                 jo.put("ItemValue", "0");
-                                jo.put("UoM", App.BOTTLES_UOM);
+                                jo.put("UoM", articleHeader.getBaseUOM());
                                 jo.put("Value", "0");
                                 jo.put("Storagelocation", App.STORAGE_LOCATION);
                                 jo.put("Route", Settings.getString(App.ROUTE));
@@ -634,7 +634,6 @@ public class UnloadActivity extends AppCompatActivity {
         return orderID + "," + purchaseNumber;
         //return null;
     }
-
     private boolean unloadVarianceExist(String varianceType){
         HashMap<String,String> map = new HashMap<>();
         map.put(db.KEY_TIME_STAMP,"");

@@ -18,12 +18,12 @@ import gbc.sa.vansales.models.Unload;
 /**
  * Created by Rakshit on 18-Jan-17.
  */
-public class UnloadAdapter extends ArrayAdapter<Unload>{
+public class UnloadBadReasonAdapter extends ArrayAdapter<Unload>{
     private ArrayList<Unload> salesArrayList;
     private int pos;
-    public UnloadAdapter(Context context, ArrayList<Unload> salesArrayList){
+    public UnloadBadReasonAdapter(Context context, ArrayList<Unload> salesArrayList){
 
-        super(context, R.layout.sales_list, salesArrayList);
+        super(context, R.layout.unload_bad_reason, salesArrayList);
         this.salesArrayList = salesArrayList;
     }
 
@@ -34,16 +34,10 @@ public class UnloadAdapter extends ArrayAdapter<Unload>{
         ViewHolder holder;
         if(convertView==null){
             LayoutInflater inflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.sales_list,parent,false);
+            convertView = inflater.inflate(R.layout.unload_bad_reason,parent,false);
             // get all UI view
             holder = new ViewHolder();
             holder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
-            holder.tv_item_code = (TextView)convertView.findViewById(R.id.tv_item_code);
-            holder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
-            holder.tv_cases = (TextView) convertView.findViewById(R.id.tv_cases);
-            holder.tv_cases_value = (TextView) convertView.findViewById(R.id.tv_cases_value);
-            holder.tv_pcs = (TextView) convertView.findViewById(R.id.tv_pcs);
-            holder.tv_pcs_value = (TextView) convertView.findViewById(R.id.tv_pcs_value);
             convertView.setTag(holder);
 
         }
@@ -64,19 +58,10 @@ public class UnloadAdapter extends ArrayAdapter<Unload>{
 
         holder.tv_title.setText(salesArrayList.get(position).getName());
 
-        holder.tv_item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(salesArrayList.get(pos).getMaterial_no(), "0"));
-        //holder.tv_price.setText("Price:54.00/2.25");
-        //holder.tv_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(salesArrayList.get(pos).getPrice())*Float.parseFloat(salesArrayList.get(pos).getCases())));
-        //holder.tv_price.setVisibility(View.GONE);
-        holder.tv_price.setText(getContext().getString(R.string.price) + " - " + salesArrayList.get(position).getPrice());
-        holder.tv_cases.setText("Cases");
-        holder.tv_cases_value.setText(salesArrayList.get(position).getCases());
-        holder.tv_pcs.setText("Pcs");
-        holder.tv_pcs_value.setText(salesArrayList.get(position).getPic());
         return convertView;
     }
 
     public class ViewHolder {
-        TextView tv_title, tv_price, tv_cases, tv_cases_value, tv_pcs, tv_pcs_value, tv_item_code;
+        TextView tv_title;
     }
 }

@@ -254,6 +254,7 @@
 																												android:enabled="false"
 																												android:padding="@dimen/size_five"
 																												android:singleLine="true"
+																												android:textAllCaps="true"
 																												android:text="@string/cases"
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
@@ -268,6 +269,7 @@
 																												android:enabled="false"
 																												android:inputType="number"
 																												android:padding="5dp"
+																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
 																												/>
@@ -278,6 +280,7 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
@@ -289,6 +292,19 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
+																												android:padding="@dimen/size_five"
+																												android:text="@string/_12"
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_good_cases"/>
+
+																								<EditText
+																												android:layout_width="match_parent"
+																												android:layout_height="wrap_content"
+																												android:background="@drawable/light_border"
+																												android:enabled="false"
+																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
@@ -300,21 +316,11 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
-																												/>
-
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
+																												android:id="@+id/et_bad_cases"/>
 
 
 
@@ -340,6 +346,7 @@
 																												android:padding="@dimen/size_five"
 																												android:singleLine="true"
 																												android:text="@string/pcs"
+																												android:textAllCaps="true"
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
@@ -354,6 +361,7 @@
 																												android:padding="5dp"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
+																												android:textColor="@drawable/edit_text_color"
 																												android:id="@+id/et_sales_units"/>
 
 																								<EditText
@@ -363,6 +371,7 @@
 																												android:enabled="false"
 																												android:inputType="number"
 																												android:padding="@dimen/size_five"
+																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"/>
 
@@ -372,7 +381,20 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
+																												android:text="@string/_12"
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_good_units"/>
+
+																								<EditText
+																												android:layout_width="match_parent"
+																												android:layout_height="wrap_content"
+																												android:background="@drawable/light_border"
+																												android:enabled="false"
+																												android:inputType="number"
+																												android:padding="@dimen/size_five"
+																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
 																												/>
@@ -384,20 +406,10 @@
 																												android:enabled="false"
 																												android:inputType="number"
 																												android:padding="@dimen/size_five"
+																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
-																												/>
-
-																								<EditText
-																												android:layout_width="match_parent"
-																												android:layout_height="wrap_content"
-																												android:background="@drawable/light_border"
-																												android:enabled="false"
-																												android:inputType="number"
-																												android:padding="@dimen/size_five"
-																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"
-																												/>
+																												android:id="@+id/et_bad_units"/>
 
 
 
@@ -434,6 +446,7 @@
 																												android:enabled="false"
 																												android:inputType="number"
 																												android:padding="@dimen/size_five"
+																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
 																												android:id="@+id/et_sales_amount"/>
@@ -444,6 +457,7 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"/>
@@ -454,9 +468,11 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_good_amount"/>
 
 																								<EditText
 																												android:layout_width="match_parent"
@@ -464,6 +480,7 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:inputType="number"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"/>
@@ -473,9 +490,11 @@
 																												android:layout_height="wrap_content"
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="0"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_bad_amount"/>
 
 
 
@@ -489,6 +508,7 @@
 																												android:background="@drawable/light_border"
 																												android:enabled="false"
 																												android:gravity="right|center"
+																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12100"
 																												android:textSize="@dimen/label_min"

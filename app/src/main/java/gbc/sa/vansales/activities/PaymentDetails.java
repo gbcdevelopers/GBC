@@ -81,6 +81,8 @@ public class PaymentDetails extends AppCompatActivity {
         setContentView(R.layout.activity_payment_details);
         loadingSpinner = new LoadingSpinner(this);
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
             if (from.equals("collection")) {
@@ -90,12 +92,10 @@ public class PaymentDetails extends AppCompatActivity {
                     tv_due_amt.setText(amountdue);
                 }
             } else {
-                Intent i = this.getIntent();
-                object = (Customer) i.getParcelableExtra("headerObj");
                 delivery = (OrderList) i.getParcelableExtra("delivery");
-                if (object == null) {
+                /*if (object == null) {
                     object = Const.allCustomerdataArrayList.get(Const.customerPosition);
-                }
+                }*/
                 customers = CustomerHeaders.get();
                 articles = ArticleHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
@@ -249,9 +249,10 @@ public class PaymentDetails extends AppCompatActivity {
                             public void onClick(View v) {
                                 dialog.dismiss();
                                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                intent.putExtra("headerObj", object);
+                                intent.putExtra("msg", "visit");
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
-                                finish();
                             }
                         });
                     } else {
@@ -267,7 +268,9 @@ public class PaymentDetails extends AppCompatActivity {
                             public void onClick(View v) {
                                 dialog.dismiss();
                                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("headerObj", object);
+                                intent.putExtra("msg", "visit");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
                             }
@@ -277,7 +280,9 @@ public class PaymentDetails extends AppCompatActivity {
                             public void onClick(View v) {
                                 dialog.dismiss();
                                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("headerObj", object);
+                                intent.putExtra("msg", "visit");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
 //                               dialog.dismiss();
@@ -367,7 +372,7 @@ public class PaymentDetails extends AppCompatActivity {
                 int itemno = 10;
                 do {
                     ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    if (articleHeader.getBaseUOM().equals(App.CASE_UOM)) {
+                    if (articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -375,14 +380,14 @@ public class PaymentDetails extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("UoM", App.CASE_UOM);
+                        jo.put("UoM", articleHeader.getBaseUOM());
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
                     }
-                    if (articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
+                    else {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -390,7 +395,7 @@ public class PaymentDetails extends AppCompatActivity {
                         jo.put("Plant", "");
                         jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        jo.put("UoM", App.BOTTLES_UOM);
+                        jo.put("UoM", articleHeader.getBaseUOM());
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
                         jo.put("Storagelocation", "");
                         jo.put("Route", Settings.getString(App.ROUTE));
@@ -479,7 +484,8 @@ public class PaymentDetails extends AppCompatActivity {
                 }
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PaymentDetails.this);
                 alertDialogBuilder.setTitle("Message")
-                        .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        .setMessage(getString(R.string.request_created))
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
@@ -491,7 +497,13 @@ public class PaymentDetails extends AppCompatActivity {
                                 filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
                                 db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
                                 dialog.dismiss();
+
+                                Intent intent = new Intent(PaymentDetails.this, DeliveryActivity.class);
+                                intent.putExtra("headerObj", object);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
                                 finish();
+                               //  finish();
                             }
                         });
                 // create alert dialog

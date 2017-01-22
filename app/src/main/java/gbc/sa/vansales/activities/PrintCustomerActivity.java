@@ -1,13 +1,16 @@
 package gbc.sa.vansales.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -65,7 +68,25 @@ public class PrintCustomerActivity extends AppCompatActivity {
         btnPrint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final Dialog dialog = new Dialog(PrintCustomerActivity.this);
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                dialog.show();
+                btn_print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+                btn_notprint.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 

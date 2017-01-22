@@ -1,5 +1,7 @@
 package gbc.sa.vansales.data;
 
+import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,4 +37,8 @@ public class Const {
     public static int customerPosition;
 
     public static int id=-1;
+
+    public static Bundle grBundle;
+    public static Bundle brBundle;
+    public static Bundle siBundle;
  }

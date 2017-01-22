@@ -90,7 +90,7 @@ public class GListFragment extends Fragment {
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
         filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-        filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+        filter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
         if(db.checkData(db.RETURNS,filter)){
             Log.e("I am inside","" + "Hello");
             HashMap<String,String>map = new HashMap<>();
@@ -103,16 +103,32 @@ public class GListFragment extends Fragment {
                 new loadGoodReturns(orderID);
             }
         }
+        else{
+            if(savedInstanceState!=null){
+                Log.e("i am here","here");
+                arrProductList = savedInstanceState.getParcelableArrayList("gr");
+                setGoodReturns(arrProductList);
+            }
+        }
 
         ll_top.setVisibility(View.GONE);
         articles = ArticleHeaders.get();
-        fab = (FloatingActionButton) viewmain.findViewById(R.id.fab);
-        addProducts = (FloatingActionButton) viewmain.findViewById(R.id.add);
+       // fab = (FloatingActionButton) viewmain.findViewById(R.id.fab);
+        addProducts = (FloatingActionButton) viewmain.findViewById(R.id.fab);
+        fab = (FloatingActionButton) viewmain.findViewById(R.id.add);
+        /*fab.setImageDrawable(getResources().getDrawable(R.drawable.btn_select_all));
+        fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.btn_select_all));
+        addProducts.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
+        addProducts.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
+        addProducts.setVisibility(View.VISIBLE);*/
+
         fab.setImageDrawable(getResources().getDrawable(R.drawable.btn_select_all));
         fab.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.btn_select_all));
         addProducts.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
         addProducts.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
         addProducts.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.GONE);
+
         String strProductname[] = {"Carton 80*150ml Fayha", "CARTON 48*600ml Fayha", "Shrink berain"};
         arrProductList = new ArrayList<>();
         /*for (int i = 0; i < strProductname.length; i++) {
@@ -147,6 +163,7 @@ public class GListFragment extends Fragment {
                     spin.setSelection(getIndex(sales.getReasonCode()));
                 }
 
+
                 spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -166,10 +183,9 @@ public class GListFragment extends Fragment {
                 ed_pcs_inv.setText("3");
                 ed_cases_inv.setEnabled(false);
                 ed_pcs_inv.setEnabled(false);
-                if(sales.getUom().equals(App.BOTTLES_UOM)){
-                    ed_cases.setEnabled(false);
-                }
-                else if(sales.getUom().equals(App.CASE_UOM)||sales.getUom().equals(App.CASE_UOM_NEW)){
+                if (sales.isAltUOM()) {
+                    ed_pcs.setEnabled(true);
+                } else {
                     ed_pcs.setEnabled(false);
                 }
                 ed_cases.setText(sales.getCases());
@@ -216,12 +232,12 @@ public class GListFragment extends Fragment {
                             int pcsTotal = 0;
                             for(Sales sale:arrProductList){
                                 double itemPrice = 0;
-                                if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)){
+                                if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)||sale.getUom().equals(App.BOTTLES_UOM)){
                                     itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
                                 }
-                                else if(sale.getUom().equals(App.BOTTLES_UOM)){
+                                /*else if(sale.getUom().equals(App.BOTTLES_UOM)){
                                     itemPrice = Double.parseDouble(sale.getPic())*Double.parseDouble(sale.getPrice());
-                                }
+                                }*/
                                 total+=itemPrice;
                                 salesTotal = salesTotal + Integer.parseInt(sale.getCases());
                                 pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
@@ -236,6 +252,7 @@ public class GListFragment extends Fragment {
                             tv.setText(String.valueOf(total));
                             TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
                             tvsales.setText(salesTotal + "/" + pcsTotal);
+                            calculateCost();
                             dialog.dismiss();
                         }
                     }
@@ -320,6 +337,24 @@ public class GListFragment extends Fragment {
         return viewmain;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.e("Step1", "Step1");
+        if(savedInstanceState!=null){
+            Log.e("i am here","here");
+            arrProductList = savedInstanceState.getParcelableArrayList("gr");
+            setGoodReturns(arrProductList);
+        }
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("gr", arrProductList);
+        Const.grBundle = new Bundle();
+        Const.grBundle.putParcelableArrayList("gr",arrProductList);
+    }
     private int getIndex(String myString){
         int index = 0;
         for (int i=0;i<reasonsList.size();i++){
@@ -365,12 +400,31 @@ public class GListFragment extends Fragment {
                     if(priceCursor.getCount()>0){
                         priceCursor.moveToFirst();
                         String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
-                        sale.setPrice(sale.getUom().equals(App.CASE_UOM)?String.valueOf(Float.parseFloat(price)*10):price);
+                        sale.setPrice(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)?price:price);
                     }
                 }
                 else{
                     sale.setPrice("0");
                 }
+
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_UOM, "");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO, articleCursor.getString(articleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter);
+                if (altUOMCursor.getCount() > 0) {
+                    altUOMCursor.moveToFirst();
+                    if (articleCursor.getString(articleCursor.getColumnIndex(db.KEY_BASE_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))
+                            ||articleCursor.getString(articleCursor.getColumnIndex(db.KEY_BASE_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
+                        sale.setIsAltUOM(false);
+                    } else {
+                        sale.setIsAltUOM(true);
+                    }
+                } else {
+                    sale.setIsAltUOM(false);
+                }
+
+
                 arrProductList.add(sale);
             }
         }
@@ -409,7 +463,7 @@ public class GListFragment extends Fragment {
                     if(priceCursor.getCount()>0){
                         priceCursor.moveToFirst();
                         String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
-                        sale.setPrice(sale.getUom().equals(App.CASE_UOM)?String.valueOf(Float.parseFloat(price)*10):price);
+                        sale.setPrice(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM) ? price : price);
                     }
                 }
                 else{
@@ -500,19 +554,18 @@ public class GListFragment extends Fragment {
             calculateCost();
         }
     }
-
     private void calculateCost(){
         int salesTotal = 0;
         int pcsTotal = 0;
         double total = 0;
         for(Sales sale:arrProductList){
             double itemPrice = 0;
-            if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)){
+            if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW) || sale.getUom().equals(App.BOTTLES_UOM)){
                 itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
             }
-            else if(sale.getUom().equals(App.BOTTLES_UOM)){
+            /*else if(sale.getUom().equals(App.BOTTLES_UOM)){
                 itemPrice = Double.parseDouble(sale.getPic())*Double.parseDouble(sale.getPrice());
-            }
+            }*/
             total+=itemPrice;
             salesTotal = salesTotal + Integer.parseInt(sale.getCases());
             pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
@@ -522,7 +575,6 @@ public class GListFragment extends Fragment {
         TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
         tvsales.setText(salesTotal + "/" + pcsTotal);
     }
-
     private void setProductListGR(Cursor cursor){
         Cursor grCursor = cursor;
         grCursor.moveToFirst();
@@ -558,5 +610,11 @@ public class GListFragment extends Fragment {
 
         }
         while (grCursor.moveToNext());
+    }
+    private void setGoodReturns(ArrayList<Sales>arrayList){
+        adapter = new SalesInvoiceAdapter(getActivity(), arrayList);
+        listSales.setAdapter(adapter);
+        calculateCost();
+        adapter.notifyDataSetChanged();
     }
 }
