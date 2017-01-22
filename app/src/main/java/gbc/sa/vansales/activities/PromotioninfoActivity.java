@@ -137,7 +137,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                            /* Intent intent = new Intent(PromotioninfoActivity.this, DashboardActivity.class);
                             startActivity(intent);
                             finish();*/
-                            dialog.dismiss();
+                            if (returnExist("")) {
+                                if (returnExist(App.GOOD_RETURN) && returnExist(App.BAD_RETURN)) {
+                                    referenceCount = 2;
+                                    new postReturns(App.GOOD_RETURN);
+                                    new postReturns(App.BAD_RETURN);
+                                } else if (returnExist(App.GOOD_RETURN)) {
+                                    referenceCount = 1;
+                                    new postReturns(App.GOOD_RETURN);
+                                } else if (returnExist(App.BAD_RETURN)) {
+                                    referenceCount = 1;
+                                    new postReturns(App.BAD_RETURN);
+                                }
+                            } else {
+                                new postData().execute();
+                                dialog.cancel();
+                            }
                         }
                     });
                 } else if (from.equals("delivery")) {
@@ -724,7 +739,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     loadingSpinner.hide();
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
-                alertDialogBuilder.setTitle("Message")
+                alertDialogBuilder/*.setTitle("Message")*/
                         .setMessage(getString(R.string.request_created))
                         //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setCancelable(false)
@@ -737,9 +752,10 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                 intent.putExtra("from", "customerdetail");
                                 intent.putExtra("headerObj", object);*/
 
-                                Intent intent1 = new Intent(PromotioninfoActivity.this, CollectionsActivity.class);
+                                Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
                                 intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent1.putExtra("headerObj", object);
+                                intent1.putExtra("msg", "all");
                                 startActivity(intent1);
                                 finish();
                             }

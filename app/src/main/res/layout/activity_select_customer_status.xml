@@ -3,7 +3,27 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <include layout="@layout/common_header"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/purple"
+                    android:orientation="horizontal"
+                    android:elevation="@dimen/elevation_size"
+
+        >
+
+        <TextView
+            android:id="@+id/tv_top_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/shop_status"
+            android:textColor="@color/white"
+            android:textSize="@dimen/top_header_size"
+            android:visibility="visible"
+
+            />
+    </RelativeLayout>
     <ListView
         android:paddingTop="@dimen/all_padding"
         android:id="@+id/statusList"
@@ -12,6 +32,17 @@
         android:divider="@color/colorPrimary"
         android:dividerHeight="0.3dp"
         android:layout_width="match_parent"
+        android:layout_marginBottom="40dp"
         android:layout_height="wrap_content"
         />
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_marginTop="-40dp"
+        android:background="@color/buttoncolor"
+        android:text="@string/cancel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/label_medium"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"/>
+
 </LinearLayout>

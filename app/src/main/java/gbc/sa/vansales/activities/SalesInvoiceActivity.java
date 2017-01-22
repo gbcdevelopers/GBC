@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.FocFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
@@ -41,8 +42,10 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.ShelfProduct;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
-
+import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.Settings;
 /**
  * Created by eheuristic on 12/5/2016.
  */
@@ -90,6 +93,21 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("Back Clicked","Back Clicked");
+                ArrayList<Sales> salesarrayList = new ArrayList<>();;
+                ArrayList<Sales>goodsReturnList = new ArrayList<>();
+                ArrayList<Sales>badReturnList = new ArrayList<>();
+                try{
+                    salesarrayList = Const.siBundle.getParcelableArrayList("si");
+                    goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
+                    badReturnList = Const.brBundle.getParcelableArrayList("br");
+                    if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
+                        salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
                 finish();
             }
         });
@@ -102,12 +120,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         if (toolbar_iv_back != null) {
             toolbar_iv_back.setVisibility(View.VISIBLE);
         }
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
         if (toolbar_iv_back != null) {
             toolbar_iv_back.setVisibility(View.VISIBLE);
         }
@@ -314,5 +327,121 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             default:
                 return super.onContextItemSelected(item);
         }
+    }
+
+    private void salesInvoiceDataonBack(ArrayList<Sales>salesInvoiceList,ArrayList<Sales>grList,ArrayList<Sales>brList){
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+        if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+
+        }
+        else{
+            boolean value = false;
+            //To check if invoice doesnt contain any data
+            if(salesInvoiceList.size()>0){
+                for (Sales sale : salesInvoiceList){
+                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                        value = true;
+                        break;
+                    }
+                }
+            }
+            String purchaseNumber = "";
+            if(value){
+                purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+            }
+
+            if(salesInvoiceList.size()>0){
+                if(value){
+                    for (Sales sale : salesInvoiceList) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                        map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                        map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP, "");
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_ORG_CASE, sale.getCases());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_ORG_UNITS, sale.getPic());
+                        map.put(db.KEY_AMOUNT, sale.getPrice());
+                        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_ORDER_ID, purchaseNumber);
+                        map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                        if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                            db.addData(db.CAPTURE_SALES_INVOICE, map);
+                        }
+                    }
+                }
+            }
+            if(grList.size()>0){
+                String grPRNo= "";
+                if(value){
+                    grPRNo = purchaseNumber;
+                }
+                else{
+                    grPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
+                }
+                for(Sales sale:grList){
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                    map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                    map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                    map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                    map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                    map.put(db.KEY_MATERIAL_GROUP,"");
+                    map.put(db.KEY_CASE,sale.getCases());
+                    map.put(db.KEY_UNIT,sale.getPic());
+                    map.put(db.KEY_UOM,sale.getUom());
+                    map.put(db.KEY_PRICE,sale.getPrice());
+                    map.put(db.KEY_ORDER_ID,grPRNo);
+                    map.put(db.KEY_PURCHASE_NUMBER,grPRNo);
+                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                        db.addData(db.RETURNS, map);
+                    }
+                }
+            }
+            if(brList.size()>0){
+                String brPRNo= "";
+                if(value){
+                    brPRNo = purchaseNumber;
+                }
+                else{
+                    brPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
+                }
+                for (Sales sale : brList) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    map.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                    map.put(db.KEY_REASON_CODE, sale.getReasonCode());
+                    map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                    map.put(db.KEY_MATERIAL_DESC1, sale.getName());
+                    map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    map.put(db.KEY_MATERIAL_GROUP, "");
+                    map.put(db.KEY_CASE, sale.getCases());
+                    map.put(db.KEY_UNIT, sale.getPic());
+                    map.put(db.KEY_UOM, sale.getUom());
+                    map.put(db.KEY_PRICE, sale.getPrice());
+                    map.put(db.KEY_ORDER_ID, brPRNo);
+                    map.put(db.KEY_PURCHASE_NUMBER, brPRNo);
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                        db.addData(db.RETURNS, map);
+                    }
+                }
+            }
+        }
+
     }
 }

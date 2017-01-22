@@ -1,6 +1,7 @@
 package gbc.sa.vansales.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -61,40 +62,34 @@ public class ManageInventory extends AppCompatActivity {
         unload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(ManageInventory.this);
-                View promptsView = li.inflate(R.layout.password_prompt, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
-                alertDialogBuilder.setView(promptsView);
-                //Reading last save odometer
-                final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editTextDialogUserInput);
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        String input = userInput.getText().toString();
-                                        if (input.equals("")) {
-                                            dialog.cancel();
-                                            Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                                            startActivity(i);
-                                        }
-                                    }
-                                })
-                        .setNegativeButton(getString(R.string.cancel),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
-//                                startActivity(i);
-                                    }
-                                });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
+                final Dialog dialog = new Dialog(ManageInventory.this);
+                View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                final EditText userInput = (EditText) view
+                        .findViewById(R.id.password);
+                Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                btn_continue.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String input = userInput.getText().toString();
+                        if (input.equals("")) {
+                            dialog.cancel();
+                            Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                });
+                btn_cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.setContentView(view);
+                dialog.setCancelable(false);
+                dialog.show();
                 // Toast.makeText(getApplicationContext(), "Unload Popup", Toast.LENGTH_LONG).show();
 
             }
@@ -153,8 +148,9 @@ public class ManageInventory extends AppCompatActivity {
 
         Cursor preSaleCount = db.getData(db.ORDER_REQUEST,map,filter);
         Cursor saleCount = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
+        Cursor deliveryCount = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
 
-        boolean canActivate = preSaleCount.getCount()>0||saleCount.getCount()>0?true:false;
+        boolean canActivate = preSaleCount.getCount()>0||saleCount.getCount()>0||deliveryCount.getCount()>0?true:false;
         return canActivate;
     }
 }

@@ -81,8 +81,13 @@ public class SalesFragment extends Fragment {
             Log.e("i am here","here");
             ArrayList<Sales> temp = new ArrayList<>();
             salesarrayList = savedInstanceState.getParcelableArrayList("si");
-            goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
-            badReturnList = Const.brBundle.getParcelableArrayList("br");
+            try{
+                goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
+                badReturnList = Const.brBundle.getParcelableArrayList("br");
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
             Log.e("GR Count in SI","" + goodsReturnList.size());
             Log.e("BR Count in SI","" + badReturnList.size());
@@ -96,7 +101,7 @@ public class SalesFragment extends Fragment {
         Log.e("Step0", "Step0");
         outState.putParcelableArrayList("si", salesarrayList);
         Const.siBundle = new Bundle();
-        Const.siBundle.putParcelableArrayList("si",salesarrayList);
+        Const.siBundle.putParcelableArrayList("si", salesarrayList);
     }
     @Nullable
     @Override
@@ -141,7 +146,6 @@ public class SalesFragment extends Fragment {
             else{
                 new loadItems("");
             }
-
         }
 
         String strProductname[] = {"A", "B", "c", "D"};

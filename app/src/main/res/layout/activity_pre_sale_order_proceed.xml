@@ -121,7 +121,7 @@
 								android:layout_alignParentBottom="true"
 								android:layout_toEndOf="@+id/ll_common"
 								android:layout_toRightOf="@+id/ll_common"
-								android:background="@color/green"
+								android:background="@color/buttoncolor"
 								android:text="@string/confirmorder"
 								android:textColor="@color/white"
 								android:visibility="gone"

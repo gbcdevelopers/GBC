@@ -85,7 +85,7 @@
         android:textColor="@color/white"
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
-        android:background="@color/green"
+        android:background="@color/buttoncolor"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/h3"
 

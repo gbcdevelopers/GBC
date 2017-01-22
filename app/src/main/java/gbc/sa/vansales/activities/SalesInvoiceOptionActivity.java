@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -24,6 +25,7 @@ import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
+import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -114,6 +116,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 finish();
             }
         });

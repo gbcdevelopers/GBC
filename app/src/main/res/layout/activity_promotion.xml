@@ -209,7 +209,7 @@
         android:id="@+id/ll_bottom"
         android:paddingTop="@dimen/h3"
         android:paddingBottom="@dimen/h3"
-        android:background="@color/green"
+        android:background="@color/buttoncolor"
         android:gravity="center"
 
         >

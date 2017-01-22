@@ -1,5 +1,6 @@
 package gbc.sa.vansales.activities;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -122,42 +124,35 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                 } else if (groupPosition == 3) {
                     if(headerTitle.isEnabled()){
 
+                        final Dialog dialog = new Dialog(mContext);
                         LayoutInflater li = LayoutInflater.from(mContext);
-                        View promptsView = li.inflate(R.layout.password_prompt, null);
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                        alertDialogBuilder.setView(promptsView);
-                        //Reading last save odometer
-                        final EditText userInput = (EditText) promptsView
-                                .findViewById(R.id.editTextDialogUserInput);
-                        // set dialog message
-                        alertDialogBuilder
-                                .setCancelable(false)
-                                .setPositiveButton(mContext.getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                String input = userInput.getText().toString();
-                                                if (input.equals("")) {
-                                                    dialog.cancel();
-                                                    Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Intent i = new Intent(mContext, EndTripActivity.class);
-                                                    mContext.startActivity(i);
-                                                }
-                                            }
-                                        })
-                                .setNegativeButton(mContext.getString(R.string.cancel),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
-//                                startActivity(i);
-                                            }
-                                        });
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
-
-
+                        View view = li.inflate(R.layout.password_prompt, null);
+                        final EditText userInput = (EditText) view
+                                .findViewById(R.id.password);
+                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                        btn_continue.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String input = userInput.getText().toString();
+                                if (input.equals("")) {
+                                    dialog.cancel();
+                                    Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Intent i = new Intent(mContext, EndTripActivity.class);
+                                    mContext.startActivity(i);
+                                }
+                            }
+                        });
+                        btn_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        dialog.setContentView(view);
+                        dialog.setCancelable(false);
+                        dialog.show();
                     }
 
                 } else if (groupPosition == 4) {

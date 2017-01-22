@@ -297,7 +297,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        new postData().execute();
                     }
                 });
             }
@@ -541,7 +541,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     loadingSpinner.hide();
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PreSaleOrderProceedActivity.this);
-                alertDialogBuilder.setTitle(getString(R.string.message))
+                alertDialogBuilder  /*.setTitle(getString(R.string.message))*/
                         //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
                         .setMessage(getString(R.string.request_created))
                                 // .setMessage("Request with reference " + tokens[0].toString() + " has been saved")
@@ -550,6 +550,10 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra("headerObj", object);
+                                startActivity(intent);
                                 finish();
                             }
                         });

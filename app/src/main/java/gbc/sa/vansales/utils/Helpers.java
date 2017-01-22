@@ -41,6 +41,7 @@ import java.util.regex.Pattern;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 
 import android.net.NetworkInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -330,6 +331,7 @@ public class Helpers {
         Log.e("Helper Load","Load Data");
         ArticleHeaders.loadData(context);
         CustomerHeaders.loadData(context);
+        OrderReasons.loadData(context);
     }
 
     public static HashMap<String,String> buildHeaderMap(String function, String orderId, String documentType,String customerId,

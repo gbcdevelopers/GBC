@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/label_medium"
             android:text="@string/am5500_large_swiss_roll_vanila_24x110g"
-            android:textColor="@color/green"
+            android:textColor="@color/colorPrimary"
             android:layout_marginBottom="@dimen/size_five"
             android:id="@+id/tvItemName"
             />

@@ -466,8 +466,10 @@ public class LoadRequestActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!isPutOnHold) {
+                            new postData().execute();
+                        }
                         dialog.dismiss();
-                        finish();
                     }
                 });
                 dialog.setCancelable(false);
@@ -863,7 +865,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                     loadingSpinner.hide();
                 }
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
-                alertDialogBuilder.setTitle("Message")
+                alertDialogBuilder/*.setTitle("Message")*/
                         //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
                         .setMessage(getString(R.string.request_created))
                                 //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")

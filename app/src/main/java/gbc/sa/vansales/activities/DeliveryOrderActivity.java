@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +45,11 @@ import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.DeliveryItemBadgeAdapter;
+import gbc.sa.vansales.adapters.ReasonAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
@@ -54,6 +57,7 @@ import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.PreSaleProceed;
+import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -85,8 +89,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     LinearLayout labelView;
     FloatingActionButton edit;
     FloatingActionButton ok;
+    ArrayAdapter<Reasons> myAdapter;
     boolean canEdit = false;
     public ArrayList<ArticleHeader> articles;
+    private ArrayList<Reasons> reasonsList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +106,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         labelView = (LinearLayout) findViewById(R.id.labelView);
         custLayout.setVisibility(View.GONE);
         labelView.setVisibility(View.GONE);
+        reasonsList = OrderReasons.get();
+        myAdapter = new ReasonAdapter(this, android.R.layout.simple_spinner_item, reasonsList);
         edit = (FloatingActionButton)findViewById(R.id.edit);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
@@ -204,7 +212,12 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
                 final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
                 RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
-                rl_specify.setVisibility(View.GONE);
+                rl_specify.setVisibility(View.VISIBLE);
+                final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                spin.setAdapter(myAdapter);
+                if (item.getReasonCode() != null) {
+                    spin.setSelection(getIndex(item.getReasonCode()));
+                }
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put(db.KEY_REMAINING_QTY_CASE, "");
                 map.put(db.KEY_REMAINING_QTY_UNIT, "");
@@ -308,6 +321,17 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_list, menu);
         }
+    }
+
+    private int getIndex(String myString) {
+        int index = 0;
+        for (int i = 0; i < reasonsList.size(); i++) {
+            Reasons reason = reasonsList.get(i);
+            if (reason.getReasonID().equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
     }
 
     @Override

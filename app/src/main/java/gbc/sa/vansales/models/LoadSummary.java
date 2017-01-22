@@ -12,6 +12,7 @@ public class LoadSummary implements Parcelable {
     private String uom;
     private String price;
     private String materialNo;
+    private String reasonCode;
     private boolean isAltUOM;
     //Get Instance
     public LoadSummary() {
@@ -65,6 +66,12 @@ public class LoadSummary implements Parcelable {
     public void setIsAltUOM(boolean isAltUOM) {
         this.isAltUOM = isAltUOM;
     }
+    public String getReasonCode() {
+        return reasonCode;
+    }
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
+    }
     public static final Parcelable.Creator<LoadSummary> CREATOR = new Parcelable.Creator<LoadSummary>() {
         @Override
         public LoadSummary createFromParcel(Parcel source) {
@@ -76,6 +83,7 @@ public class LoadSummary implements Parcelable {
             loadSummary.materialNo = source.readString();
             loadSummary.uom = source.readString();
             loadSummary.price = source.readString();
+            loadSummary.reasonCode = source.readString();
             loadSummary.isAltUOM = source.readByte()!=0;
             return loadSummary;
         }
@@ -97,6 +105,7 @@ public class LoadSummary implements Parcelable {
         parcel.writeString(materialNo);
         parcel.writeString(uom);
         parcel.writeString(price);
+        parcel.writeString(reasonCode);
         parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
 }

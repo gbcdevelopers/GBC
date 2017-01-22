@@ -483,7 +483,7 @@ public class PaymentDetails extends AppCompatActivity {
                     loadingSpinner.hide();
                 }
                 android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PaymentDetails.this);
-                alertDialogBuilder.setTitle("Message")
+                alertDialogBuilder/*.setTitle("Message")*/
                         //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                         .setMessage(getString(R.string.request_created))
                         .setCancelable(false)

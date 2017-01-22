@@ -330,6 +330,7 @@ public class LoginActivity extends Activity {
                 Messages.load(LoginActivity.this,username,db);*/
                 ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());
+                OrderReasons.loadData(getApplicationContext());
             }
         });
 

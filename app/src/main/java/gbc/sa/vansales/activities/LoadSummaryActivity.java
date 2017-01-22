@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,13 +37,16 @@ import java.util.HashMap;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
+import gbc.sa.vansales.adapters.ReasonAdapter;
 import gbc.sa.vansales.adapters.ShopStatusBadgeAdapter;
 import gbc.sa.vansales.adapters.StockTakeBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
+import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.ShopStatus;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -57,11 +61,13 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private SwipeLayout swipeLayout;
     private ListView listView, loadListView;
     private Button verifyAll;
+    ArrayAdapter<Reasons> myAdapter;
     private int loadSummaryCount = 0;
     private final static String TAG = LoadSummaryActivity.class.getSimpleName();
     LoadDeliveryHeader object;
     public ArrayList<ArticleHeader> articles;
     DatabaseHandler db = new DatabaseHandler(this);
+    private ArrayList<Reasons> reasonsList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +75,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
         Intent i = this.getIntent();
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
         Log.e("Object", "" + object.getDeliveryNo());
+        reasonsList = OrderReasons.get();
+        myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,6 +85,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         loadSummaryUnmodList = new ArrayList<>();
         articles = new ArrayList<>();
         articles = ArticleHeaders.get();
+
+        Log.e("ReasonsList","" + reasonsList.size());
+        addBlank(reasonsList);
         Log.e("Articles", "" + articles.size());
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView) findViewById(R.id.list_item);
@@ -103,11 +114,27 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 LinearLayout ll1 = (LinearLayout)dialog.findViewById(R.id.ll_1);
                 ll1.setVisibility(View.GONE);
                 RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
-                rl_specify.setVisibility(View.GONE);
+                rl_specify.setVisibility(View.VISIBLE);
+                final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                spin.setAdapter(myAdapter);
 
                 /*if(item.getUom().equals(App.CASE_UOM)||item.getUom().equals(App.CASE_UOM_NEW)||item.getUom().equals(App.BOTTLES_UOM)){
                     ed_pcs.setEnabled(false);
                 }*/
+                if (item.getReasonCode() != null) {
+                    spin.setSelection(getIndex(item.getReasonCode()));
+                }
+
+                spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        Reasons reason = myAdapter.getItem(position);
+                        item.setReasonCode(reason.getReasonID());
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
                 if(item.isAltUOM()){
                     ed_pcs.setEnabled(true);
                 }
@@ -127,6 +154,11 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 btn_save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.e("Spin Select","" + spin.getSelectedItem().toString());
+                        if (spin.getSelectedItem().toString().equals("Select Reason")) {
+                            ((TextView) spin.getSelectedView()).setError("select reason");
+                        }
+                        else{
                         String strCase = ed_cases.getText().toString();
                         String strpcs = ed_pcs.getText().toString();
                         String strcaseinv = ed_cases_inv.getText().toString();
@@ -185,7 +217,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                             tvsales.setText(salesTotal + "/" + pcsTotal);*//*
                             dialog.dismiss();
                         }*/
-
+                        }
 
                     }
                 });
@@ -570,5 +602,22 @@ public class LoadSummaryActivity extends AppCompatActivity {
             alertDialog.show();
         }
         // totalClassmates.setText("(" + friendsList.size() + ")"); //update total friends in list
+    }
+    private int getIndex(String myString) {
+        int index = 0;
+        for (int i = 0; i < reasonsList.size(); i++) {
+            Reasons reason = reasonsList.get(i);
+            if (reason.getReasonID().equals(myString)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+    private void addBlank(ArrayList<Reasons>arrayList){
+        Reasons reasons = new Reasons();
+        reasons.setReasonID("99");
+        reasons.setReasonDescription("Select Reason");
+        reasons.setReasonType("");
+        reasonsList.add(0,reasons);
     }
 }

@@ -167,7 +167,11 @@ public class SelectCustomerActivity extends AppCompatActivity {
         toolbar_iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(SelectCustomerActivity.this,DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 finish();
+                /*finish();*/
             }
         });
         et_search.addTextChangedListener(new TextWatcher() {
@@ -288,7 +292,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
                 customer.setCollection(false);
                 customer.setMerchandize(false);
-                customer.setDelivery(false);
+                customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
 
                 data.add(customer);
@@ -316,7 +320,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     customer.setCustomerAddress("");
                 }
                 HashMap<String,String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(db.checkData(db.CUSTOMER_CREDIT,map)){
                     Log.e("Credit Exist", "Credit Exist");
                     customer.setPaymentMethod("Credit");
@@ -324,11 +328,12 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 else {
                     customer.setPaymentMethod("Cash");
                 }
+                Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
                 customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE,map));
                 customer.setCollection(false);
                 customer.setMerchandize(false);
-                customer.setDelivery(false);
+                customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 data.add(customer);
             }
             while (cursor.moveToNext());

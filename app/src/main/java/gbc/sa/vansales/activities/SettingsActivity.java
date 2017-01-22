@@ -29,6 +29,7 @@ import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.Messages;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.models.OfflinePost;
@@ -285,6 +286,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Messages.load(LoginActivity.this,username,db);*/
                 ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());
+                OrderReasons.loadData(getApplicationContext());
             }
         });
 

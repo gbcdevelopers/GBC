@@ -146,8 +146,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new loadOrders().execute();
-        new loadOrdersLocal().execute();
+       // new loadOrders().execute();
+       // new loadOrdersLocal().execute();
 
     }
     public class loadOrders extends AsyncTask<Void, Void, Void> {

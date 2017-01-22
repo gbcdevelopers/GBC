@@ -12,6 +12,7 @@ public class DeliveryItem implements Parcelable{
     private String itemUnits;
     private String itemUom;
     private String amount;
+    private String reasonCode;
     private boolean isAltUOM;
 
     public String getItemUom() {
@@ -62,6 +63,12 @@ public class DeliveryItem implements Parcelable{
     public void setIsAltUOM(boolean isAltUOM) {
         this.isAltUOM = isAltUOM;
     }
+    public String getReasonCode() {
+        return reasonCode;
+    }
+    public void setReasonCode(String reasonCode) {
+        this.reasonCode = reasonCode;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -75,6 +82,7 @@ public class DeliveryItem implements Parcelable{
         parcel.writeString(materialNo);
         parcel.writeString(amount);
         parcel.writeString(itemUom);
+        parcel.writeString(reasonCode);
         parcel.writeByte((byte) (isAltUOM ? 1 : 0));
     }
 
@@ -90,6 +98,7 @@ public class DeliveryItem implements Parcelable{
             item.materialNo = source.readString();
             item.amount = source.readString();
             item.itemUom = source.readString();
+            item.reasonCode = source.readString();
             item.isAltUOM = source.readByte()!=0;
             return item;
         }
