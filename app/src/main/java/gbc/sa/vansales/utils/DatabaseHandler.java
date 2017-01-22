@@ -810,6 +810,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_UNLOAD_VARIANCE = "CREATE TABLE " + UNLOAD_VARIANCE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP + " TEXT,"
+                + KEY_REASON_CODE + " TEXT,"
                 + KEY_VARIANCE_TYPE + " TEXT,"
                 + KEY_TRIP_ID + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"

@@ -1,6 +1,8 @@
 package gbc.sa.vansales.activities;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -8,6 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -32,6 +37,7 @@ import gbc.sa.vansales.adapters.*;
 import gbc.sa.vansales.adapters.UnloadAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.Unload;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -85,6 +91,10 @@ public class UnloadDetailActivity extends AppCompatActivity {
         reasonsArray.add(getString(R.string.truck_damage));
         reasonsArray.add(getString(R.string.theft));
         reasonsArray.add(getString(R.string.excess));
+        if(context.equals("endinginventory")||context.equals("inventoryvariance")||context.equals("truckdamage")){
+            registerForContextMenu(listView);
+        }
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
@@ -155,7 +165,12 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-                dialog.show();
+                if(context.equals("endinginventory")||context.equals("inventoryvariance")||context.equals("truckdamage")){
+                }
+                else{
+                    dialog.show();
+                }
+
                 btn_save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -349,6 +364,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                 for (int i = 0; i < articles.size(); i++) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_REASON_CODE,"");
                     map.put(db.KEY_MATERIAL_DESC1, "");
                     map.put(db.KEY_MATERIAL_NO, "");
                     map.put(db.KEY_MATERIAL_GROUP, "");
@@ -367,6 +383,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                 for (int i = 0; i < articles.size(); i++) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_REASON_CODE,"");
                     map.put(db.KEY_MATERIAL_DESC1, "");
                     map.put(db.KEY_MATERIAL_NO, "");
                     map.put(db.KEY_MATERIAL_GROUP, "");
@@ -720,6 +737,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                     unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
                     unload.setMaterial_no(c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
                     unload.setUom(c.getString(c.getColumnIndex(db.KEY_UOM)));
+                    unload.setReasonCode(c.getString(c.getColumnIndex(db.KEY_REASON_CODE)));
                     HashMap<String, String> altMap = new HashMap<>();
                     altMap.put(db.KEY_UOM, "");
                     HashMap<String, String> filter1 = new HashMap<>();
@@ -1015,6 +1033,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
             map.put(db.KEY_PRICE, unload.getPrice());
             map.put(db.KEY_ORDER_ID, "");
             map.put(db.KEY_PURCHASE_NUMBER, "");
+            map.put(db.KEY_REASON_CODE,unload.getReasonCode());
             map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
             filter.put(db.KEY_MATERIAL_NO, unload.getMaterial_no());
@@ -1060,5 +1079,88 @@ public class UnloadDetailActivity extends AppCompatActivity {
             }
         }
         return varianceType;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.listView) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_list, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove:
+                // add stuff here
+                showReasonDialog(arrayList, info.position);
+                return true;
+            case R.id.cancel:
+                // edit stuff here
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+    private void showReasonDialog(ArrayList<Unload> list, final int position){
+        final int pos = position;
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(UnloadDetailActivity.this);
+        builderSingle.setTitle(getString(R.string.select_reason));
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(UnloadDetailActivity.this, android.R.layout.select_dialog_singlechoice);
+        arrayAdapter.add("Lost Product");
+        arrayAdapter.add("Other Reasons");
+        builderSingle.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                if (context.equals("inventoryvariance")) {
+                    if (arrayList.get(pos).getReasonCode().equals("3")) {
+                        map.put(db.KEY_VARIANCE_TYPE, App.THEFT);
+                    } else {
+                        map.put(db.KEY_VARIANCE_TYPE, App.EXCESS);
+                    }
+                } else {
+                    if (context.equals("endinginventory")) {
+                        map.put(db.KEY_VARIANCE_TYPE, App.ENDING_INVENTORY);
+                    }
+                    if (context.equals("truckdamage")) {
+                        map.put(db.KEY_VARIANCE_TYPE, App.TRUCK_DAMAGE);
+                    }
+                }
+                map.put(db.KEY_MATERIAL_NO, arrayList.get(pos).getMaterial_no());
+                db.deleteData(db.UNLOAD_VARIANCE, map);
+                arrayList.remove(pos);
+                adapter.notifyDataSetChanged();
+                if (arrayList.size() == 0) {
+                    finish();
+                }
+                dialog.dismiss();
+               /* String strName = arrayAdapter.getItem(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(DeliveryOrderActivity.this);
+                builderInner.setMessage(strName);
+                builderInner.setTitle("Your Selected Item is");
+                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();*/
+            }
+        });
+        builderSingle.show();
+
+
     }
 }

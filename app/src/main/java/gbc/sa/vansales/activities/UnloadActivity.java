@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -152,7 +153,7 @@ public class UnloadActivity extends AppCompatActivity {
                                 //Checking does it exist for both
                                 if (unloadVarianceExist(App.THEFT) && unloadVarianceExist(App.TRUCK_DAMAGE)) {
                                     referenceCount++;
-                                    new postData(App.THEFT,App.TRUCK_DAMAGE);
+                                    new postData(App.THEFT, App.TRUCK_DAMAGE);
                                 }
                                 //Check if it exists only for Theft
                                 else if (unloadVarianceExist(App.THEFT)) {
@@ -176,6 +177,10 @@ public class UnloadActivity extends AppCompatActivity {
                                 new postData(App.ENDING_INVENTORY);
                             }
                             //Finally unloading remainder quantity
+                        } else {
+                            referenceCount++;
+                            new postData(App.FRESHUNLOAD);
+                            dialog.dismiss();
                         }
                     }
                 });
@@ -252,6 +257,7 @@ public class UnloadActivity extends AppCompatActivity {
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    clearVanStock();
                                     dialog.dismiss();
                                     Intent intent = new Intent(UnloadActivity.this,ManageInventory.class);
                                     startActivity(intent);
@@ -590,7 +596,7 @@ public class UnloadActivity extends AppCompatActivity {
                     for(Unload unload:dataStoreList){
 
                         ArticleHeader articleHeader = ArticleHeader.getArticle(articles,unload.getMaterial_no());
-                        if(articleHeader.getBaseUOM().equals(App.CASE_UOM)){
+                        if(articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)){
                             JSONObject jo = new JSONObject();
                             jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                             jo.put("Material", unload.getMaterial_no());
@@ -598,14 +604,14 @@ public class UnloadActivity extends AppCompatActivity {
                             jo.put("Plant", App.PLANT);
                             jo.put("Quantity", unload.getCases());
                             jo.put("ItemValue", unload.getPrice());
-                            jo.put("UoM", App.CASE_UOM);
+                            jo.put("UoM",articleHeader.getBaseUOM());
                             jo.put("Value", unload.getPrice());
                             jo.put("Storagelocation", App.STORAGE_LOCATION);
                             jo.put("Route", Settings.getString(App.ROUTE));
                             itemno = itemno + 10;
                             deepEntity.put(jo);
                         }
-                        if(articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)){
+                        else{
                             JSONObject jo = new JSONObject();
                             jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                             jo.put("Material", unload.getMaterial_no());
@@ -613,14 +619,14 @@ public class UnloadActivity extends AppCompatActivity {
                             jo.put("Plant", App.PLANT);
                             jo.put("Quantity", unload.getPic());
                             jo.put("ItemValue", unload.getPrice());
-                            jo.put("UoM", App.BOTTLES_UOM);
+                            jo.put("UoM", articleHeader.getBaseUOM());
                             jo.put("Value", unload.getPrice());
                             jo.put("Storagelocation", App.STORAGE_LOCATION);
                             jo.put("Route", Settings.getString(App.ROUTE));
                             itemno = itemno + 10;
                             deepEntity.put(jo);
                         }
-
+                        Log.e("Got here","" + map + deepEntity);
                     }
                     orderID = IntegrationService.postData(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
 
@@ -629,8 +635,10 @@ public class UnloadActivity extends AppCompatActivity {
             catch (Exception e){
                 e.printStackTrace();
             }
+            Log.e("Step","Step1" + orderID + purchaseNumber);
             return orderID + "," + purchaseNumber;
         }
+        Log.e("Step","Step2" + orderID + purchaseNumber);
         return orderID + "," + purchaseNumber;
         //return null;
     }
@@ -736,5 +744,12 @@ public class UnloadActivity extends AppCompatActivity {
         }
         arrayList = vanData;
         //dataStoreList = vanData;
+    }
+    private void clearVanStock(){
+        for(int i=0;i<articles.size();i++){
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
+            db.deleteData(db.VAN_STOCK_ITEMS,map);
+        }
     }
 }
