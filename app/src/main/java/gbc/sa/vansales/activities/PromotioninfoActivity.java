@@ -74,7 +74,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Promo Details");
+        tv_top_header.setText(getString(R.string.promo_details));
         tv_promotion = (TextView) findViewById(R.id.tv_promotion);
         tv_current_invoice = (TextView) findViewById(R.id.tv_invoice_amount);
         tv_discount = (EditText)findViewById(R.id.et_discount);

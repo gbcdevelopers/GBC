@@ -62,10 +62,10 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
         Log.e("UOM", "" + position + sales.getMaterial_no() + sales.getUom());
         try{
             if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)||salesArrayList.get(pos).getUom().equals(App.BOTTLES_UOM)){
-                holder.tv_price.setText("Price:" + salesArrayList.get(position).getPrice() + "/0.00");
+                holder.tv_price.setText(getContext().getString(R.string.price_lbl) + salesArrayList.get(position).getPrice() + "/0.00");
             }
             else{
-                holder.tv_price.setText("Price: 0.00/" + salesArrayList.get(position).getPrice());
+                holder.tv_price.setText(getContext().getString(R.string.price_lbl) +"0.00/" + salesArrayList.get(position).getPrice());
             }
 
         }
@@ -74,9 +74,9 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
         }
         //holder.tv_price.setText("Price:54.00/2.25");
         holder.tv_item_code.setText(getContext().getString(R.string.item_code) + " - " + StringUtils.stripStart(salesArrayList.get(position).getMaterial_no(), "0"));
-        holder.tv_cases.setText("Cases");
+        holder.tv_cases.setText(getContext().getString(R.string.cases));
         holder.tv_cases_value.setText(salesArrayList.get(position).getCases());
-        holder.tv_pcs.setText("Pcs");
+        holder.tv_pcs.setText(getContext().getString(R.string.pcs));
         holder.tv_pcs_value.setText(salesArrayList.get(position).getPic());
         return convertView;
     }

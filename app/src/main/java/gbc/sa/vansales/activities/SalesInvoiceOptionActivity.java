@@ -34,7 +34,7 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class SalesInvoiceOptionActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = {"Sales Invoice", "Invoice", "End Invoice"};
+    String strText[] = {};/*{"Sales Invoice", "Invoice", "End Invoice"};*/
     int resarr[] = {R.drawable.ic_sales_invoice, R.drawable.ic_invoice, R.drawable.ic_endinvoice};
     ImageView iv_back;
     TextView tv_top_header;
@@ -47,6 +47,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
+        strText = new String[]{getString(R.string.sales_invoice), getString(R.string.invoice_label), getString(R.string.end_invoice)};
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
@@ -67,7 +68,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                 if (!(customerHeader == null)) {
                     tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-                    tv_customer_pobox.setText("PO Code " + customerHeader.getPostCode());
+                    tv_customer_pobox.setText(getString(R.string.pobox) + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 } else {
                     tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
@@ -112,7 +113,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         iv_updown.setVisibility(View.INVISIBLE);
-        tv_top_header.setText("Sales Invoice Opt.");
+        tv_top_header.setText(getString(R.string.sales_invoice_option));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

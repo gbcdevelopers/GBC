@@ -44,7 +44,7 @@ import gbc.sa.vansales.utils.UrlBuilder;
 public class CustomerDetailActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = {"Order request", "Collections", "Sales", "Merchandizing", "Delivery", "Print"};
+    String strText[] = {};/*{getString(R.string.order_request), getString(R.string.order_request), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};*/
     int resarr[] = {R.drawable.ic_order_request, R.drawable.ic_collection, R.drawable.ic_sales, R.drawable.ic_merchandising, R.drawable.ic_distribution, R.drawable.ic_print};
     ImageView iv_back;
     TextView tv_top_header;
@@ -66,6 +66,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         reasonsList = OrderReasons.get();
         statusAdapter = new CustomerStatusAdapter(this,arrayList);
         loadCustomerStatus();
+        strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("msg");
             if (from.equals("visit") || from.equals("all")) {

@@ -35,7 +35,7 @@ public class ProductListActivity extends AppCompatActivity {
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Product");
+        tv_top_header.setText(getString(R.string.product));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -94,6 +94,10 @@ public class PaymentDetails extends AppCompatActivity {
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
         Intent i = this.getIntent();
         bankAdapter = new BankAdapter(this, android.R.layout.simple_spinner_item, banksList);
+        sp_item = (Spinner) findViewById(R.id.sp_item);
+        sp_item.setAdapter(bankAdapter);
+        sp_item.setEnabled(false);
+
         loadBanks();
         object = (Customer) i.getParcelableExtra("headerObj");
         if (getIntent().getExtras() != null) {
@@ -168,9 +172,7 @@ public class PaymentDetails extends AppCompatActivity {
         double checkamt = getcheckamt();
         total_amt = cashamt + checkamt;
         tv_total_amount.setText(String.valueOf(total_amt));
-        sp_item = (Spinner) findViewById(R.id.sp_item);
-        sp_item.setAdapter(bankAdapter);
-        sp_item.setEnabled(false);
+
         btn_edit1 = (Button) findViewById(R.id.btn_edit1);
         btn_edit2 = (Button) findViewById(R.id.btn_edit2);
         btn_edit1.setOnClickListener(new View.OnClickListener() {
@@ -387,6 +389,7 @@ public class PaymentDetails extends AppCompatActivity {
         Banks.loadData(PaymentDetails.this);
         banksList = Banks.get();
         Log.e("Bank List","" + banksList.size());
+        sp_item.setAdapter(bankAdapter);
         bankAdapter.notifyDataSetChanged();
     }
     public void setTotalText() {

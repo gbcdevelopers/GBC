@@ -89,7 +89,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Sales Invoice");
+        tv_top_header.setText(getString(R.string.sales_invoice));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +114,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         if (tv_top_header != null) {
             tv_top_header.setVisibility(View.VISIBLE);
-            tv_top_header.setText("Sales Invoice");
+            tv_top_header.setText(getString(R.string.sales_invoice));
         }
         toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         if (toolbar_iv_back != null) {
