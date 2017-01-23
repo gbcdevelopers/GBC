@@ -96,6 +96,9 @@ public class App extends Application {
     public static final String GOOD_RETURN = "GOOD";
     public static final String BAD_RETURN = "BAD";
 
+    //Reasons
+    public static final String REASON_REJECT = "REJECT";
+
     //Variance for Unload
     public static final String BAD_RETURN_VARIANCE = "BAD_RETURN_VARIANCE";
     public static final String ENDING_INVENTORY = "ENDING_INVENTORY";
@@ -104,6 +107,11 @@ public class App extends Application {
     public static final String THEFT = "THEFT";
     public static final String EXCESS = "EXCESS";
     public static final String FRESHUNLOAD = "FRESHUNLOAD";
+
+    //Invoice Flags
+    public static final String INVOICE_COMPLETE = "C";
+    public static final String INVOICE_INCOMPLETE = "I";
+    public static final String INVOICE_PARTIAL = "P";
 
     //Posting Constants
     public static final String STORAGE_LOCATION = "VAN";

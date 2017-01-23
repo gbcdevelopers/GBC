@@ -37,7 +37,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 
-                android:textColor="@color/green"
+                android:textColor="@color/buttoncolor"
                 android:textSize="@dimen/label_small"
                 />
 
@@ -80,7 +80,7 @@
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
                 android:text="@string/sales_qty"
-                android:textColor="@color/green"
+                android:textColor="@color/buttoncolor"
                 android:textSize="@dimen/label_small"
                 />
 
@@ -156,7 +156,7 @@
             android:text="@string/total_amount"
          
             android:layout_marginBottom="@dimen/size_five"
-            android:textColor="@color/green"
+            android:textColor="@color/buttoncolor"
             android:textSize="@dimen/label_small"
             android:id="@+id/tv_label"/>
             />

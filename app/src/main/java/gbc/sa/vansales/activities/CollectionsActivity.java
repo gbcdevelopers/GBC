@@ -1,5 +1,7 @@
 package gbc.sa.vansales.activities;
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,27 +16,32 @@ import android.widget.Toast;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.CollectionAdapter;
 import gbc.sa.vansales.adapters.ColletionAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.models.Collection;
 import gbc.sa.vansales.models.ColletionData;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.LoadingSpinner;
 public class CollectionsActivity extends AppCompatActivity {
     ListView lv_colletions_view;
     ImageView iv_back;
     TextView tv_top_header;
-    ArrayList<ColletionData> colletionDatas = new ArrayList<>();
-    ColletionAdapter colletionAdapter;
+    ArrayList<Collection> colletionDatas = new ArrayList<>();
+    CollectionAdapter colletionAdapter;
     TextView tv_amt_paid;
     double amount = 0.00;
     int pos = 0;
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
+    LoadingSpinner loadingSpinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +51,7 @@ public class CollectionsActivity extends AppCompatActivity {
         if (object == null) {
             object = Const.allCustomerdataArrayList.get(Const.customerPosition);
         }
+        loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
@@ -59,6 +67,8 @@ public class CollectionsActivity extends AppCompatActivity {
             tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.credit));
         }
         lv_colletions_view = (ListView) findViewById(R.id.lv_colletions_view);
+        colletionAdapter = new CollectionAdapter(CollectionsActivity.this, colletionDatas);
+        lv_colletions_view.setAdapter(colletionAdapter);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
@@ -83,8 +93,11 @@ public class CollectionsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                intent.putExtra("from","collection");
+                intent.putExtra("from", "collection");
                 intent.putExtra("msg", "collection");
+                intent.putExtra("headerObj", object);
+                intent.putExtra("amountdue","0");
+                intent.putExtra("customer",object.getCustomerID());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 //                startActivityForResult(intent, 1);
@@ -92,7 +105,8 @@ public class CollectionsActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             }
         });
-        setData();
+       // setData();
+        new loadCollections().execute();
         lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,6 +114,10 @@ public class CollectionsActivity extends AppCompatActivity {
                 intent.putExtra("msg", "collection");
                 intent.putExtra("from","collection");
                 intent.putExtra("pos", position);
+                intent.putExtra("headerObj", object);
+                float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
+                intent.putExtra("collection",colletionDatas.get(position));
+                intent.putExtra("amountdue",String.valueOf(dueamount));
                 startActivity(intent);
 //                startActivityForResult(intent, 1);
             }
@@ -107,8 +125,13 @@ public class CollectionsActivity extends AppCompatActivity {
     }
     public void setData() {
         for (int i = 0; i < 10; i++) {
-            ColletionData colletionData = new ColletionData();
-            colletionData.setId("16-12-2016/132456458792" + i);
+            Collection colletionData = new Collection();
+            colletionData.setInvoiceNo("132456458792" + i);
+            colletionData.setInvoiceDate("26.12.2016");
+            colletionData.setInvoiceDueDate("28.01.2017");
+            colletionData.setInvoiceAmount(String.valueOf(100 * (i+1)));
+            colletionData.setAmountCleared(String.valueOf(50*(i+1)));
+            /*colletionData.setId("16-12-2016/132456458792" + i);
             colletionData.setSelsemanId("10000241" + i);
             colletionData.setAmoutDue(String.valueOf(100 + i));
 //            if(pos==i)
@@ -118,12 +141,11 @@ public class CollectionsActivity extends AppCompatActivity {
 //            else {
 //                colletionData.setAmoutAde("0.00");
 //            }
-            colletionData.setAmoutAde("0.00");
+            colletionData.setAmoutAde("0.00");*/
             colletionDatas.add(colletionData);
-            Const.colletionDatas = colletionDatas;
+            /*Const.colletionDatas = colletionDatas;*/
         }
-        colletionAdapter = new ColletionAdapter(this, colletionDatas);
-        lv_colletions_view.setAdapter(colletionAdapter);
+
     }
     @Override
     public void onBackPressed() {
@@ -140,14 +162,63 @@ public class CollectionsActivity extends AppCompatActivity {
                     Log.v("pos", amt + "--");
                     tv_amt_paid.setText(amt);
                     amount = Double.parseDouble(amt);
-                    ColletionData colletionData = colletionDatas.get(pos);
+                    /*ColletionData colletionData = colletionDatas.get(pos);
                     colletionData.setAmoutAde(amt);
                     double amountdue = Double.parseDouble(colletionData.getAmoutDue()) - amount;
                     Log.v("amountdue", colletionData.getAmoutDue() + "");
                     colletionData.setAmoutDue(String.valueOf(amountdue));
-                    colletionAdapter.notifyDataSetChanged();
+                    colletionAdapter.notifyDataSetChanged();*/
                 }
             }
         }
+    }
+
+    public class loadCollections extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_INVOICE_NO,"");
+            map.put(db.KEY_INVOICE_AMOUNT,"");
+            map.put(db.KEY_DUE_DATE,"");
+            map.put(db.KEY_INVOICE_DATE,"");
+            map.put(db.KEY_AMOUNT_CLEARED,"");
+            map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+
+            Cursor cursor = db.getData(db.COLLECTION,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                setCollectionData(cursor);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            colletionAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void setCollectionData(Cursor cursor){
+        Cursor c = cursor;
+        do{
+            Collection collection = new Collection();
+            collection.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
+            collection.setInvoiceDate(c.getString(c.getColumnIndex(db.KEY_INVOICE_DATE)));
+            collection.setInvoiceAmount(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+            collection.setAmountCleared(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+            collection.setInvoiceDueDate(c.getString(c.getColumnIndex(db.KEY_DUE_DATE)));
+
+            colletionDatas.add(collection);
+        }
+        while (c.moveToNext());
     }
 }

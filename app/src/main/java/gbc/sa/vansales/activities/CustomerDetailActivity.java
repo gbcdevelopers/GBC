@@ -1,4 +1,5 @@
 package gbc.sa.vansales.activities;
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.usb.UsbInterface;
@@ -9,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,13 +24,18 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
+import gbc.sa.vansales.adapters.CustomerStatusAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
+import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
+import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -45,12 +54,18 @@ public class CustomerDetailActivity extends AppCompatActivity {
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
+    private ArrayList<CustomerStatus> arrayList = new ArrayList<>();
+    private ArrayList<Reasons> reasonsList = new ArrayList<>();
+    private ArrayAdapter<CustomerStatus> statusAdapter;
     String from = "";
     //    LinearLayout tv_order;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
+        reasonsList = OrderReasons.get();
+        statusAdapter = new CustomerStatusAdapter(this,arrayList);
+        loadCustomerStatus();
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("msg");
             if (from.equals("visit") || from.equals("all")) {
@@ -121,9 +136,16 @@ public class CustomerDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
-                startActivity(intent);
-                finish();
+                if(shouldShowDialog()){
+                    showStatusDialog();
+                }
+                else{
+                    Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+
             }
         });
         ll_pricelist = (LinearLayout) findViewById(R.id.ll_pricelist);
@@ -230,6 +252,59 @@ public class CustomerDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void loadCustomerStatus(){
+        for(Reasons reason:reasonsList){
+            CustomerStatus status = new CustomerStatus();
+            if(reason.getReasonType().equals(App.VisitReasons)){
+                status.setReasonCode(reason.getReasonID());
+                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                arrayList.add(status);
+            }
+        }
+        statusAdapter.notifyDataSetChanged();
+    }
+
+    private boolean shouldShowDialog(){
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        if(db.checkData(db.ORDER_REQUEST,map)||db.checkData(db.CAPTURE_SALES_INVOICE, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)){
+            return false;
+        }
+        else{
+            return true;
+        }
+
+    }
+
+    private void showStatusDialog(){
+        final Dialog dialog = new Dialog(CustomerDetailActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+        TextView tv_header = (TextView)view.findViewById(R.id.tv_top_header);
+        tv_header.setText("Non Serviced Reasons");
+        ListView lv = (ListView) view.findViewById(R.id.statusList);
+        Button cancel = (Button)view.findViewById(R.id.btnCancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        lv.setAdapter(statusAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+
+    }
+
     @Override
     protected void onPostResume() {
         super.onPostResume();

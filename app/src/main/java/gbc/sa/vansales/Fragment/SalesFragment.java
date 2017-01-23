@@ -141,7 +141,7 @@ public class SalesFragment extends Fragment {
                 Log.e("i am here","here");
                 salesarrayList = savedInstanceState.getParcelableArrayList("si");
                 setLoadData(salesarrayList);
-                Log.e("salesArray","" + salesarrayList.size() + salesarrayList.get(0).getCases());
+               // Log.e("salesArray","" + salesarrayList.size() + salesarrayList.get(0).getCases());
             }
             else{
                 new loadItems("");

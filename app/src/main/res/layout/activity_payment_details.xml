@@ -210,7 +210,6 @@
                 android:layout_marginLeft="@dimen/h1"
                 android:layout_marginTop="@dimen/size_two"
                 android:text="@string/abn_amro"
-                android:entries="@array/paymentitem"
                 android:id="@+id/sp_item"
                 />
 

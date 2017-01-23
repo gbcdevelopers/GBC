@@ -55,6 +55,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String PRICING = "PRICING";
     public static final String RETURNS = "RETURNS";
     public static final String UNLOAD_VARIANCE = "UNLOAD_VARIANCE";
+    public static final String COLLECTION = "COLLECTION";
+    public static final String BANKS = "BANKS";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -296,6 +298,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_REASON_CODE = "reasonCode";
     public static final String KEY_REASON_DESCRIPTION = "reasonDescription";
 
+    //Banks
+    public static final String KEY_BANK_CODE = "bankCode";
+    public static final String KEY_BANK_NAME = "bankName";
+
     //Promotions
     public static final String KEY_PROMOTION_TYPE = "promotionType";
 
@@ -307,6 +313,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Unload
     public static final String KEY_VARIANCE_TYPE = "varianceType";
+
+    //Collection
+    public static final String KEY_INVOICE_NO = "invoiceNo";
+    public static final String KEY_DUE_DATE = "dueDate";
+    public static final String KEY_INVOICE_DATE = "invoiceDate";
+    public static final String KEY_INVOICE_AMOUNT = "invoiceAmount";
+    public static final String KEY_AMOUNT_CLEARED = "amountCleared";
+    public static final String KEY_CASH_AMOUNT = "cashAmount";
+    public static final String KEY_CHEQUE_AMOUNT = "chequeAmount";
+    public static final String KEY_CHEQUE_NUMBER = "chequeNumber";
+    public static final String KEY_IS_INVOICE_COMPLETE = "isInvoiceComplete";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -826,6 +843,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_COLLECTION = "CREATE TABLE " + COLLECTION + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_INVOICE_NO + " TEXT,"
+                + KEY_INVOICE_AMOUNT + " TEXT,"
+                + KEY_DUE_DATE + " TEXT,"
+                + KEY_INVOICE_DATE + " TEXT,"
+                + KEY_AMOUNT_CLEARED + " TEXT,"
+                + KEY_CASH_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_NUMBER + " TEXT,"
+                + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
+
+        String TABLE_BANKS = "CREATE TABLE " + BANKS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_BANK_CODE + " TEXT,"
+                + KEY_BANK_NAME + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -860,6 +896,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_PRICING);
         db.execSQL(TABLE_RETURNS);
         db.execSQL(TABLE_UNLOAD_VARIANCE);
+        db.execSQL(TABLE_COLLECTION);
+        db.execSQL(TABLE_BANKS);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -895,6 +933,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + PRICING);
         db.execSQL("DROP TABLE IF EXISTS " + RETURNS);
         db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_VARIANCE);
+        db.execSQL("DROP TABLE IF EXISTS " + COLLECTION);
+        db.execSQL("DROP TABLE IF EXISTS " + BANKS);
         onCreate(db);
     }
     //Storing Secured Credentials

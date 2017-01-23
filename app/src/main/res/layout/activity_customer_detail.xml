@@ -290,7 +290,7 @@
 																				android:layout_below="@id/tv_digits"
 																				android:gravity="end"
 																				android:text="@string/days"
-																				android:textColor="@color/btn_positive"
+																				android:textColor="@color/buttoncolor"
 																				android:visibility="invisible"
 																				/>
 												</RelativeLayout>
@@ -336,7 +336,7 @@
 																				android:layout_toRightOf="@+id/tv_digits1"
 																				android:gravity="end"
 																				android:text="@string/currency"
-																				android:textColor="@color/btn_positive"
+																				android:textColor="@color/buttoncolor"
 																				android:textSize="@dimen/label_small"
 																				/>
 												</RelativeLayout>
@@ -381,7 +381,7 @@
 																				android:layout_toRightOf="@+id/tv_digits2"
 																				android:gravity="end"
 																				android:text="@string/currency"
-																				android:textColor="@color/btn_positive"
+																				android:textColor="@color/buttoncolor"
 																				android:textSize="@dimen/label_small"
 																				/>
 												</RelativeLayout>

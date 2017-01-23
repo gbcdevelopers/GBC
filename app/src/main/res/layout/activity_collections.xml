@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey"
     android:fitsSystemWindows="true"
 
     tools:context="gbc.sa.vansales.activities.CollectionsActivity">
@@ -46,6 +47,12 @@
         android:id="@+id/lv_colletions_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="@color/grey"
+        android:dividerHeight="@dimen/h3"
+        android:scrollbars="none"
+        android:paddingLeft="@dimen/all_padding"
+        android:paddingRight="@dimen/all_padding"
+        android:layout_marginTop="@dimen/all_padding"
         android:layout_above="@+id/ll_bottom_colletion"
         android:layout_below="@+id/ll_collation_title" />
 
@@ -64,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/h3"
-            android:textColor="@color/green"
+            android:textColor="@color/buttoncolor"
             android:text="@string/amt_paid" />
 
         <TextView

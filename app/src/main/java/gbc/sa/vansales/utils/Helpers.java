@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.OrderReasons;
 
@@ -332,6 +333,7 @@ public class Helpers {
         ArticleHeaders.loadData(context);
         CustomerHeaders.loadData(context);
         OrderReasons.loadData(context);
+        Banks.loadData(context);
     }
 
     public static HashMap<String,String> buildHeaderMap(String function, String orderId, String documentType,String customerId,

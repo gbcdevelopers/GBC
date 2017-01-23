@@ -1,123 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    android:orientation="vertical">
-
-    <include
-        android:id="@id/inc_common_header"
-        layout="@layout/common_header" />
-
-
-    <LinearLayout
-        android:id="@+id/ll_common"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/inc_common_header"
-        android:background="@drawable/back_radient"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/h1"
-        android:paddingLeft="@dimen/activity_vertical_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
-
-        <TextView
-            android:id="@+id/tv_customer_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_five"
-            android:text="@string/tv_cust_detail"
-            android:textColor="@color/white"
-            android:textSize="@dimen/label_big" />
-
-        <TextView
-            android:id="@+id/tv_customer_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_five"
-            android:text="@string/tv_cust_detail1"
-            android:textColor="@color/white"
-            android:textSize="@dimen/label_medium" />
-
-        <TextView
-            android:id="@+id/tv_customer_pobox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_five"
-            android:text="@string/tv_cust_detail4"
-            android:textColor="@color/white"
-            android:textSize="@dimen/label_small" />
-
-        <TextView
-            android:id="@+id/tv_customer_contact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/size_five"
-            android:text="@string/tv_cust_detail2"
-            android:textColor="@color/white"
-            android:textSize="@dimen/label_min" />
-    </LinearLayout>
-
-
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/flt_presale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/h2"
-        android:src="@drawable/ic_add_black_24dp" />
-
-    <FrameLayout
-        android:id="@+id/frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/inc_common_header"
-        android:layout_marginTop="115dp">
-
-        <ImageView
-            android:id="@+id/img_refresh"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="end"
-            android:layout_marginRight="@dimen/h3"
-            android:src="@drawable/ic_refresh" />
-
-    </FrameLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/frame"
-        android:background="@color/grey"
-        android:paddingBottom="@dimen/h"
-        android:paddingLeft="@dimen/h"
-        android:paddingRight="@dimen/h"
-        android:paddingTop="@dimen/size_five">
-
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-
-            <ListView
-                android:id="@+id/list_delivery"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@color/grey"
-                android:dividerHeight="@dimen/h3" />
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:orientation="vertical">
 
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
+				<include
+								android:id="@id/inc_common_header"
+								layout="@layout/common_header"/>
+
+				<LinearLayout
+								android:id="@+id/ll_common"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:layout_below="@+id/inc_common_header"
+								android:background="@drawable/back_radient"
+								android:orientation="vertical"
+								android:paddingBottom="@dimen/h1"
+								android:paddingLeft="@dimen/activity_vertical_margin"
+								android:paddingTop="@dimen/activity_vertical_margin">
+
+								<TextView
+												android:id="@+id/tv_customer_id"
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_marginBottom="@dimen/size_five"
+												android:text="@string/tv_cust_detail"
+												android:textColor="@color/white"
+												android:textSize="@dimen/label_big"/>
+
+								<TextView
+												android:id="@+id/tv_customer_address"
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_marginBottom="@dimen/size_five"
+												android:text="@string/tv_cust_detail1"
+												android:textColor="@color/white"
+												android:textSize="@dimen/label_medium"/>
+
+								<TextView
+												android:id="@+id/tv_customer_pobox"
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_marginBottom="@dimen/size_five"
+												android:text="@string/tv_cust_detail4"
+												android:textColor="@color/white"
+												android:textSize="@dimen/label_small"/>
+
+								<TextView
+												android:id="@+id/tv_customer_contact"
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_marginBottom="@dimen/size_five"
+												android:text="@string/tv_cust_detail2"
+												android:textColor="@color/white"
+												android:textSize="@dimen/label_min"/>
+				</LinearLayout>
 
 
+
+				<FrameLayout
+								android:id="@+id/frame"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:layout_alignParentLeft="true"
+								android:layout_alignParentStart="true"
+								android:layout_below="@+id/inc_common_header"
+								android:layout_marginTop="115dp">
+
+								<ImageView
+												android:id="@+id/img_refresh"
+												android:layout_width="40dp"
+												android:layout_height="40dp"
+												android:layout_gravity="end"
+												android:layout_marginRight="@dimen/h3"
+												android:src="@drawable/ic_refresh"/>
+				</FrameLayout>
+
+				<LinearLayout
+								android:layout_width="match_parent"
+								android:layout_height="match_parent"
+								android:layout_below="@+id/frame"
+								android:background="@color/grey"
+								android:paddingBottom="@dimen/h"
+								android:paddingLeft="@dimen/h"
+								android:paddingRight="@dimen/h"
+								android:paddingTop="@dimen/size_five">
+
+								<android.support.v4.widget.SwipeRefreshLayout
+												android:id="@+id/swipe_layout"
+												android:layout_width="match_parent"
+												android:layout_height="wrap_content"
+												>
+
+												<ListView
+																android:id="@+id/list_delivery"
+																android:layout_width="match_parent"
+																android:layout_height="wrap_content"
+																android:divider="@color/grey"
+																android:dividerHeight="@dimen/h3"/>
+								</android.support.v4.widget.SwipeRefreshLayout>
+				</LinearLayout>
+				<android.support.design.widget.FloatingActionButton
+								android:id="@+id/flt_presale"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_alignParentBottom="true"
+								android:layout_alignParentRight="true"
+								android:layout_margin="@dimen/h2"
+								android:layout_marginBottom="200dp"
+								android:src="@drawable/ic_add_black_24dp"/>
 </RelativeLayout>

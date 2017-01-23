@@ -49,7 +49,7 @@
     <string name="amount">AMOUNT</string>
     <string name="amount_0_00">amount: 0.00</string>
     <string name="amount_due">AMOUNT DUE</string>
-    <string name="amout_due">Amout Due :</string>
+    <string name="amout_due">Amount Due</string>
     <string name="amt_paid">Amt.Paid</string>
     <string name="app_name">Vansales</string>
     <string name="apply">apply</string>
@@ -173,12 +173,12 @@
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
     <string name="internet_available_title">No Connection</string>
-    <string name="inv_date">Inv Date</string>
+    <string name="inv_date">Invoice Date</string>
     <string name="inv_qty">Inv Qty.</string>
     <string name="inventory_variance">Inventory Variance</string>
     <string name="invoice">INVOICE</string>
     <string name="invoice_discounts">INVOICE DISCOUNTS</string>
-    <string name="invoice_no">Inv No.</string>
+    <string name="invoice_no">Invoice No</string>
     <string name="invoice_not_exist">No invoice or returns exist</string>
     <string name="invoice_summary">Invoice Summary</string>
     <string name="invoice_total">INVOICE TOTAL</string>
@@ -232,6 +232,7 @@
     <string name="ordersummary">Order Summary</string>
     <string name="outlet_inventory">Outlet Inventory</string>
     <string name="outlet_invoice">OUTLET INVOICE</string>
+    <string name="paid">Paid</string>
     <string name="password">PASSWORD</string>
     <string name="payment">payment</string>
     <string-array name="paymentitem">
@@ -326,6 +327,7 @@
     <string name="time">Time </string>
     <string name="today_s_schedule">Today\'s Schedule</string>
     <string name="today_s_unserviced">Today\'s Unserviced</string>
+    <string name="total">Total</string>
     <string name="total_500aed">Total : 500AED</string>
     <string name="total_amount">Total Amount</string>
     <string name="total_promo_amount">Total Promo Amount</string>

@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import gbc.sa.vansales.App;
@@ -506,6 +507,11 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             updateStockinVan(true);
                                         }
                                         dialog.dismiss();
+                                        Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent1.putExtra("headerObj", object);
+                                        intent1.putExtra("msg", "all");
+                                        startActivity(intent1);
                                         finish();
                                     }
                                 });
@@ -734,6 +740,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
                     db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
                 }
+
+                //Creating an invoice for customer
+                if(object.getPaymentMethod().equals("Credit")){
+                    HashMap<String,String>invoiceMap = new HashMap<>();
+                    invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
+                    invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
+                    invoiceMap.put(db.KEY_INVOICE_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                    invoiceMap.put(db.KEY_AMOUNT_CLEARED,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_NUMBER,"0000");
+                    invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                    db.addData(db.COLLECTION,invoiceMap);
+                }
+
 
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();

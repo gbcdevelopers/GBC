@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,16 +35,22 @@ import java.util.Locale;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.BankAdapter;
+import gbc.sa.vansales.adapters.ReasonAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.Bank;
+import gbc.sa.vansales.models.Collection;
 import gbc.sa.vansales.models.ColletionData;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderList;
+import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
@@ -68,9 +75,12 @@ public class PaymentDetails extends AppCompatActivity {
     String amountdue = "0";
     Customer object;
     OrderList delivery;
+    Collection collection;
     String invoiceAmount;
     ArrayList<CustomerHeader> customers;
     ArrayList<ArticleHeader> articles;
+    private ArrayList<Bank> banksList = new ArrayList<>();
+    ArrayAdapter<Bank> bankAdapter;
 
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
@@ -80,17 +90,32 @@ public class PaymentDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_details);
         loadingSpinner = new LoadingSpinner(this);
+        Banks.loadData(this);
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
         Intent i = this.getIntent();
+        bankAdapter = new BankAdapter(this, android.R.layout.simple_spinner_item, banksList);
+        loadBanks();
         object = (Customer) i.getParcelableExtra("headerObj");
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
             if (from.equals("collection")) {
                 pos = getIntent().getIntExtra("pos", 0);
-                if (Const.colletionDatas.size() > 0) {
+                amountdue = getIntent().getStringExtra("amountdue");
+                object = getIntent().getParcelableExtra("headerObj");
+                collection = (Collection) i.getParcelableExtra("collection");
+                tv_due_amt.setText(amountdue);
+                customers = CustomerHeaders.get();
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+                TextView tv_cust_detail = (TextView) findViewById(R.id.tv_cust_detail);
+                if (customerHeader != null) {
+                    tv_cust_detail.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                } else {
+                    tv_cust_detail.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                }
+                /*if (Const.colletionDatas.size() > 0) {
                     amountdue = Const.colletionDatas.get(pos).getAmoutDue();
                     tv_due_amt.setText(amountdue);
-                }
+                }*/
             } else {
                 delivery = (OrderList) i.getParcelableExtra("delivery");
                 /*if (object == null) {
@@ -144,6 +169,7 @@ public class PaymentDetails extends AppCompatActivity {
         total_amt = cashamt + checkamt;
         tv_total_amount.setText(String.valueOf(total_amt));
         sp_item = (Spinner) findViewById(R.id.sp_item);
+        sp_item.setAdapter(bankAdapter);
         sp_item.setEnabled(false);
         btn_edit1 = (Button) findViewById(R.id.btn_edit1);
         btn_edit2 = (Button) findViewById(R.id.btn_edit2);
@@ -255,7 +281,49 @@ public class PaymentDetails extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         });
-                    } else {
+                    }
+
+                    else if (from.equals("collection")){
+                        HashMap<String,String>map = new HashMap<String, String>();
+                        map.put(db.KEY_AMOUNT_CLEARED,"");
+                        map.put(db.KEY_CASH_AMOUNT,"");
+                        map.put(db.KEY_CHEQUE_AMOUNT,"");
+                        map.put(db.KEY_CHEQUE_NUMBER,"");
+                        HashMap<String,String>filter = new HashMap<String, String>();
+                        filter.put(db.KEY_INVOICE_NO,collection.getInvoiceNo());
+                        Cursor c = db.getData(db.COLLECTION,map,filter);
+                        float prevAmount = 0;
+                        float prevCashAmount = 0;
+                        float prevCheqAmount = 0;
+                        String chequeNumber = "";
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                            prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                            prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                            chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
+                        }
+                        prevAmount+=Float.parseFloat(tv_total_amount.getText().toString());
+                        prevCashAmount+= getcashamt();
+                        prevCheqAmount+= getcheckamt();
+                        chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                        HashMap<String,String>updateMap = new HashMap<String, String>();
+                        updateMap.put(db.KEY_AMOUNT_CLEARED,String.valueOf(prevAmount));
+                        updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                        updateMap.put(db.KEY_CASH_AMOUNT,String.valueOf(prevCashAmount));
+                        updateMap.put(db.KEY_CHEQUE_AMOUNT,String.valueOf(prevCheqAmount));
+                        if(Float.parseFloat(tv_total_amount.getText().toString())==Float.parseFloat(amountdue)){
+                            updateMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_COMPLETE);
+                        }
+                        else{
+                            updateMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_PARTIAL);
+                        }
+                        db.updateData(db.COLLECTION, updateMap, filter);
+                        Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
+                        intent1.putExtra("headerObj", object);
+                        startActivity(intent1);
+                    }
+                    else {
                         final Dialog dialog = new Dialog(PaymentDetails.this);
                         dialog.setContentView(R.layout.dialog_doprint);
                         dialog.setCancelable(false);
@@ -282,7 +350,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
                                 intent.putExtra("headerObj", object);
                                 intent.putExtra("msg", "visit");
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
 //                               dialog.dismiss();
@@ -314,6 +382,12 @@ public class PaymentDetails extends AppCompatActivity {
             return 0;
         }
         return Double.parseDouble(edt_check_amt.getText().toString());
+    }
+    private void loadBanks(){
+        Banks.loadData(PaymentDetails.this);
+        banksList = Banks.get();
+        Log.e("Bank List","" + banksList.size());
+        bankAdapter.notifyDataSetChanged();
     }
     public void setTotalText() {
         double cash_amt = getcashamt();

@@ -38,11 +38,13 @@ public class ConfigStore {
     public static final String MessageEntity = "ZSFA_DOWNLOAD_SRV.Messages";
     public static final String DriverRouteEntity = "ZSFA_DOWNLOAD_SRV.RouteFlag";
     public static final String OrderReasonEntity = "ZSFA_DOWNLOAD_SRV.OrderReason";
+    public static final String OrderRejReasonEntity = "ZSFA_DOWNLOAD_SRV.OrderRejReason";
     public static final String VisitReasonEntity = "ZSFA_DOWNLOAD_SRV.VisitReason";
     public static final String PricingEntity = "ZSFA_DOWNLOAD_SRV.Pricing";
     public static final String Promotion02Entity = "ZSFA_DOWNLOAD_SRV.Promotion02";
     public static final String Promotion05Entity = "ZSFA_DOWNLOAD_SRV.Promotion05";
     public static final String Promotion07Entity = "ZSFA_DOWNLOAD_SRV.Promotion07";
+    public static final String BankEntity = "ZSFA_DOWNLOAD_SRV.Bank";
 
     //Functions for Posting
     public static final String LoadRequestFunction = "ORDERREQ";

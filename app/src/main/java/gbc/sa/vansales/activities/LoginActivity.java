@@ -14,6 +14,7 @@ import android.widget.Toast;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.DriverRouteFlags;
@@ -309,11 +310,13 @@ public class LoginActivity extends Activity {
                 CustomerDelivery.load(LoginActivity.this,tripId,db);
                 DriverRouteFlags.load(LoginActivity.this,tripId,db);
                 OrderReasons.load(LoginActivity.this,"",db);
+                OrderReasons.load(LoginActivity.this,App.REASON_REJECT,db);
                 VisitReasons.load(LoginActivity.this, "", db);
                 Promotions02.load(LoginActivity.this,username,db);
                 Promotions05.load(LoginActivity.this, username, db);
                 Promotions07.load(LoginActivity.this, username, db);
                 Pricing.load(LoginActivity.this, username, db);
+                Banks.load(LoginActivity.this,"",db);
                 /*ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());*/
             }

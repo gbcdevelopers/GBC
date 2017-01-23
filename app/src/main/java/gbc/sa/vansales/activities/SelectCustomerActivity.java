@@ -36,6 +36,7 @@ import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
@@ -75,6 +76,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
 
         loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
+        OrderReasons.loadData(getApplicationContext());
         new loadVisitList(Settings.getString(App.TRIP_ID));
         new loadAllCustomers(Settings.getString(App.TRIP_ID));
         /*viewPager = (ViewPager) findViewById(R.id.pager);

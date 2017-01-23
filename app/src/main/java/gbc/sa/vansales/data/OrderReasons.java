@@ -15,6 +15,7 @@ import gbc.sa.vansales.utils.DownloadData;
 public class OrderReasons {
 
     private static final String COLLECTION_NAME = "OrderReasonSet";
+    private static final String COLLECTION_NAME_REJECT = "OrderRejReasonSet";
     private static final String TRIP_ID = "ITripId";
 
     private static ArrayList<Reasons> data = new ArrayList<>();
@@ -23,7 +24,13 @@ public class OrderReasons {
         HashMap<String, String> params = new HashMap<>();
         HashMap<String,String>expansion = new HashMap<>();
 
-        new DownloadData(context,COLLECTION_NAME,params,expansion,db);
+        if(tripId.equals("")){
+            new DownloadData(context,COLLECTION_NAME,params,expansion,db);
+        }
+        else{
+            new DownloadData(context,COLLECTION_NAME_REJECT,params,expansion,db);
+        }
+
     }
 
     public static void loadData(Context context){

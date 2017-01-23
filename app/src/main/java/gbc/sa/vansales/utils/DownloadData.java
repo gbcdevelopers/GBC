@@ -503,6 +503,24 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                 }
 
                 break;
+            case ConfigStore.OrderRejReasonEntity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_REASON_TYPE,App.REASON_REJECT);
+                        params.put(db.KEY_REASON_CODE,object.get("Reason").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        db.addData(db.REASONS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                break;
             case ConfigStore.VisitReasonEntity:
                 for(int i=0;i<jsonArray.length();i++){
                     try{
@@ -612,6 +630,21 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
 
                 }
 
+                break;
+
+            case ConfigStore.BankEntity:
+                for(int i=0;i<jsonArray.length();i++){
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_BANK_CODE,object.get("Bankkey").toString());
+                        params.put(db.KEY_BANK_NAME, object.get("Name").toString());
+                        db.addData(db.BANKS, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 break;
         }
     }

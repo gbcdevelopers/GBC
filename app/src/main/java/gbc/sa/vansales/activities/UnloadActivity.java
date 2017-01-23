@@ -147,40 +147,44 @@ public class UnloadActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //Variances are recorded(Ending Inventory/Theft or Missing/Truck Damage
-                        if (unloadVarianceExist("")) {
-                            //Checking any record exist for ZDRX
-                            if (unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)) {
-                                //Checking does it exist for both
-                                if (unloadVarianceExist(App.THEFT) && unloadVarianceExist(App.TRUCK_DAMAGE)) {
-                                    referenceCount++;
-                                    new postData(App.THEFT, App.TRUCK_DAMAGE);
+                        try {
+                            if (unloadVarianceExist("")) {
+                                //Checking any record exist for ZDRX
+                                if (unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)) {
+                                    //Checking does it exist for both
+                                    if (unloadVarianceExist(App.THEFT) && unloadVarianceExist(App.TRUCK_DAMAGE)) {
+                                        referenceCount++;
+                                        new postData(App.THEFT, App.TRUCK_DAMAGE);
+                                    }
+                                    //Check if it exists only for Theft
+                                    else if (unloadVarianceExist(App.THEFT)) {
+                                        referenceCount++;
+                                        new postData(App.THEFT);
+                                    }
+                                    //It only exist for Truck Damage
+                                    else {
+                                        referenceCount++;
+                                        new postData(App.TRUCK_DAMAGE);
+                                    }
                                 }
-                                //Check if it exists only for Theft
-                                else if (unloadVarianceExist(App.THEFT)) {
+                                //Checking if  Any excess product exist
+                                if (unloadVarianceExist(App.EXCESS)) {
                                     referenceCount++;
-                                    new postData(App.THEFT);
+                                    new postData(App.EXCESS);
                                 }
-                                //It only exist for Truck Damage
-                                else {
+                                //Check if any ending inventory is present
+                                if (unloadVarianceExist(App.ENDING_INVENTORY)) {
                                     referenceCount++;
-                                    new postData(App.TRUCK_DAMAGE);
+                                    new postData(App.ENDING_INVENTORY);
                                 }
-                            }
-                            //Checking if  Any excess product exist
-                            if (unloadVarianceExist(App.EXCESS)) {
+                                //Finally unloading remainder quantity
+                            } else {
                                 referenceCount++;
-                                new postData(App.EXCESS);
+                                new postData(App.FRESHUNLOAD);
+                                dialog.dismiss();
                             }
-                            //Check if any ending inventory is present
-                            if (unloadVarianceExist(App.ENDING_INVENTORY)) {
-                                referenceCount++;
-                                new postData(App.ENDING_INVENTORY);
-                            }
-                            //Finally unloading remainder quantity
-                        } else {
-                            referenceCount++;
-                            new postData(App.FRESHUNLOAD);
-                            dialog.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 });

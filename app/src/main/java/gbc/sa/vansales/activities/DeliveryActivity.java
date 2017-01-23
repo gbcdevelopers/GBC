@@ -38,12 +38,14 @@ import gbc.sa.vansales.adapters.DeliveryListBadgeAdapter;
 import gbc.sa.vansales.adapters.OrderListBadgeAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.OrderList;
+import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -66,6 +68,7 @@ public class DeliveryActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     private ArrayAdapter<CustomerStatus> statusAdapter;
     private ArrayList<CustomerStatus> statusList = new ArrayList<>();
+    private ArrayList<Reasons> reasonsList = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +78,7 @@ public class DeliveryActivity extends AppCompatActivity {
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         new loadDeliveries().execute();
         adapter = new DeliveryListBadgeAdapter(this, arrayList);
+        reasonsList = OrderReasons.get();
         statusAdapter = new CustomerStatusAdapter(this,statusList);
         loadStatus();
         Intent i = this.getIntent();
@@ -270,19 +274,14 @@ public class DeliveryActivity extends AppCompatActivity {
     }
 
     public void loadStatus(){
-        CustomerStatus status = new CustomerStatus();
-        status.setReasonCode("01");
-        status.setReasonDescription("Customer requested delete");
-        statusList.add(status);
-        CustomerStatus status1 = new CustomerStatus();
-        status1.setReasonCode("02");
-        status1.setReasonDescription("Damaged Goods");
-        statusList.add(status1);
-        CustomerStatus status2 = new CustomerStatus();
-        status2.setReasonCode("03");
-        status2.setReasonDescription("Goods Shortage");
-        statusList.add(status2);
-
+        for(Reasons reason:reasonsList){
+            if(reason.getReasonType().equals(App.REASON_REJECT)){
+                CustomerStatus status = new CustomerStatus();
+                status.setReasonCode(reason.getReasonID());
+                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                statusList.add(status);
+            }
+        }
         statusAdapter.notifyDataSetChanged();
     }
 
