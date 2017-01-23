@@ -83,7 +83,7 @@
                 android:layout_marginRight="@dimen/h3"
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
-                />
+                android:id="@+id/tv_cheque_amnt"/>
 
 
 
@@ -113,7 +113,7 @@
                 android:textColor="@color/black"
                 android:paddingRight="@dimen/h3"
                 android:layout_alignParentRight="true"
-                />
+                android:id="@+id/tv_cash_amnt"/>
 
 
 

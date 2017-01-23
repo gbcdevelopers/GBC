@@ -1,4 +1,5 @@
 package gbc.sa.vansales.activities;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +30,8 @@ public class EndTripActivity extends AppCompatActivity {
     LoadingSpinner loadingSpinner;
     float chequeTotal = 0;
     float cashTotal = 0;
+    EditText tv_cheque_amnt;
+    EditText tv_cash_amnt;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,8 @@ public class EndTripActivity extends AppCompatActivity {
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         btn_float = (FloatingActionButton) findViewById(R.id.btn_float);
+        tv_cheque_amnt = (EditText)findViewById(R.id.tv_cheque_amnt);
+        tv_cash_amnt = (EditText)findViewById(R.id.tv_cash_amnt);
         btn_float.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,9 +58,15 @@ public class EndTripActivity extends AppCompatActivity {
                 finish();
             }
         });
+        new loadCollectionData().execute();
+
     }
 
     public class loadCollectionData extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String>map = new HashMap<>();
@@ -72,20 +84,39 @@ public class EndTripActivity extends AppCompatActivity {
             Cursor c = db.getData(db.COLLECTION,map,filter);
             if(c.getCount()>0){
                 c.moveToFirst();
+                setCollection(c);
             }
 
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            startCountAnimation(tv_cheque_amnt, (int) chequeTotal);
+            startCountAnimation(tv_cash_amnt, (int) cashTotal);
         }
     }
 
     private void setCollection(Cursor cursor){
         Cursor c = cursor;
-
-
         do {
             chequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
             cashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
         }
         while(c.moveToNext());
+    }
+
+    private void startCountAnimation(final EditText element,Integer value) {
+        ValueAnimator animator = new ValueAnimator();
+        animator.setObjectValues(0, value);
+        animator.setDuration(5000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                element.setText("" + (int) animation.getAnimatedValue());
+            }
+        });
+        animator.start();
     }
 }
