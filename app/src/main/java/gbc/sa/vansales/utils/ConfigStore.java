@@ -53,6 +53,7 @@ public class ConfigStore {
     public static final String InvoiceRequestFunction = "HHTIV";
     public static final String CustomerDeliveryRequestFunction = "CUSTDEL";
     public static final String BeginDayFunction = "BEGINDAY";
+    public static final String EndDayFunction = "ENDDAY";
     public static final String ReturnsFunction = "RETURNS";
     public static final String UnloadFunction = "ORDERREQ";
 

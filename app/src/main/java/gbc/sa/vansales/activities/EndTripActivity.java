@@ -1,6 +1,8 @@
 package gbc.sa.vansales.activities;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
@@ -22,18 +24,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ExpenseAdapter;
 import gbc.sa.vansales.models.Expense;
+import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
 /**
  * Created by eheuristic on 12/10/2016.
  */
@@ -73,8 +86,21 @@ public class EndTripActivity extends AppCompatActivity {
         btn_float.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
-                startActivity(intent);
+
+                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.EndDay_PR_Type);
+                HashMap<String, String> map = new HashMap<>();
+                String timeStamp = Helpers.getCurrentTimeStamp();
+                map.put(db.KEY_TIME_STAMP, timeStamp);
+                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                map.put(db.KEY_IS_SELECTED, "true");
+                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                db.addData(db.BEGIN_DAY, map);
+
+                new postTrip(purchaseNumber, timeStamp);
+
             }
         });
         iv_back.setVisibility(View.VISIBLE);
@@ -218,7 +244,6 @@ public class EndTripActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
     }
-
     private void calculateDueAmount(){
         float dueAmount = 0;
         for(Expense expense:arrayList){
@@ -226,5 +251,85 @@ public class EndTripActivity extends AppCompatActivity {
         }
         tv_due_amount.setText(String.valueOf(dueAmount));
     }
+    public class postTrip extends AsyncTask<Void, Void, Void> {
+        String orderID = "";
+        String value = "";
+        String purchaseNumber = "";
+        String timeStamp = "";
+        String[] tokens = new String[2];
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingSpinner.show();
+        }
+        private postTrip(String purchaseNumber, String timeStamp) {
+            this.purchaseNumber = purchaseNumber;
+            this.timeStamp = timeStamp;
+            this.tokens = Helpers.parseTimeStamp(this.timeStamp);
+            execute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("Function", ConfigStore.EndDayFunction);
+            map.put("TripId", Settings.getString(App.TRIP_ID));
+            map.put("CreatedBy", Settings.getString(App.DRIVER));
+            map.put("EndDate", tokens[0].toString());
+            map.put("EndTime", tokens[1].toString());
+            JSONArray deepEntity = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            deepEntity.put(jsonObject);
+            this.orderID = IntegrationService.postTrip(EndTripActivity.this, App.POST_COLLECTION, map, deepEntity, purchaseNumber);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (loadingSpinner.isShowing()) {
+                loadingSpinner.hide();
+            }
+            if (!this.orderID.contains("Error") && !this.orderID.equals("")) {
+                if (this.orderID.equals(this.purchaseNumber)) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                    db.updateData(db.BEGIN_DAY, map, filter);
+                } else {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                    db.updateData(db.BEGIN_DAY, map, filter);
+                }
 
+                Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                startActivity(intent);
+
+            } else if (this.orderID.contains("Error")) {
+                Toast.makeText(EndTripActivity.this, this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EndTripActivity.this);
+                alertDialogBuilder.setTitle(R.string.error_title)
+                        .setMessage(R.string.error_message)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (loadingSpinner.isShowing()) {
+                                    loadingSpinner.hide();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+            }
+        }
+    }
 }
