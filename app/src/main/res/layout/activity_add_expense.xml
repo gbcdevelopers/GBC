@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:text="@string/select_category"
+        android:textSize="@dimen/label_small"
+        android:textColor="@color/colorPrimary"
+        android:padding="@dimen/all_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Spinner
+        android:id="@+id/expenseCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </Spinner>
+
+    <TextView
+        android:text="@string/enter_amount"
+        android:textSize="@dimen/label_small"
+        android:textColor="@color/colorPrimary"
+        android:padding="@dimen/all_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/expAmount"
+        android:inputType="numberDecimal"
+        android:background="@drawable/edittext_center_bg"
+        android:padding="@dimen/all_padding"
+        android:layout_marginLeft="@dimen/all_padding"
+        android:layout_marginRight="@dimen/all_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="@string/additional_reason"
+        android:textSize="@dimen/label_small"
+        android:textColor="@color/colorPrimary"
+        android:padding="@dimen/all_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/reason"
+        android:background="@drawable/edittext_center_bg"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginLeft="@dimen/all_padding"
+        android:layout_marginRight="@dimen/all_padding"
+        android:layout_marginTop="@dimen/space"
+        android:maxLines="3" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:weightSum="2"
+        android:layout_marginTop="@dimen/all_padding"
+        android:layout_marginBottom="@dimen/all_padding"
+        android:orientation="horizontal"
+        android:layout_height="40dp">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/btn_ok"
+            android:text="@string/save"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/space"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@color/buttoncolor"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            />
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/btn_cancel"
+            android:text="@string/cancel"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@color/cancelcolor"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            />
+    </LinearLayout>
+
+</LinearLayout>

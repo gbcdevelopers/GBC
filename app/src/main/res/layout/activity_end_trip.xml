@@ -1,206 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey"
-    >
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+				>
 
-    <include layout="@layout/common_header"
-        android:id="@+id/inc_common_header"
-        />
+				<include
+								android:id="@+id/inc_common_header"
+								layout="@layout/common_header"
+								/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/inc_common_header"
-        android:background="@color/white"
-        >
+				<LinearLayout
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:layout_below="@+id/inc_common_header"
+								android:background="@color/white"
+								android:orientation="vertical"
+								>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/lightgray"
-            >
+								<LinearLayout
+												android:orientation="horizontal"
+												android:weightSum="2"
+												android:layout_marginTop="@dimen/all_padding"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="wrap_content"
+												android:background="@color/colorPrimary"
+												>
+												<TextView
+																android:layout_weight="1"
+																android:layout_width="0dp"
+																android:layout_height="wrap_content"
+																android:padding="@dimen/h3"
+																android:text="@string/total_amount"
+																android:textColor="@color/white"
+																android:textSize="@dimen/label_big"
+																android:gravity="center_vertical|center_horizontal"
+																android:layout_gravity="center"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/total_amount"
-            android:padding="@dimen/h3"
-            android:textSize="@dimen/label_big"
-            android:textColor="@color/colorPrimary"
-            />
+												<TextView
+																android:layout_weight="1"
+																android:layout_width="0dp"
+																android:layout_gravity="center"
+																android:layout_height="wrap_content"
+																android:layout_alignParentRight="true"
+																android:padding="@dimen/h1"
+																android:text="255"
+																android:textColor="@color/white"
+																android:textSize="@dimen/label_big"
+																android:gravity="center_vertical|center_horizontal"
+																android:id="@+id/tv_total_amount"/>
+								</LinearLayout>
+								<LinearLayout
+												android:orientation="horizontal"
+												android:weightSum="2"
+												android:layout_marginTop="@dimen/all_padding"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="100dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="255"
-                android:padding="@dimen/h1"
-                android:textSize="@dimen/label_big"
-                android:textColor="@color/black"
-                android:layout_alignParentRight="true"
-                />
+												<LinearLayout
+																android:layout_weight="1"
+																android:orientation="vertical"
+																android:weightSum="3"
+																android:background="@color/buttoncolor"
+																android:layout_width="0dp"
+																android:layout_height="match_parent">
 
+																<TextView
+																				android:layout_weight="1"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:textAllCaps="true"
+																				android:textStyle="bold"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/label_x_min"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+																<TextView
+																				android:id="@+id/tv_cheque_amnt"
+																				android:layout_weight="2"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/big"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
 
+												</LinearLayout>
 
-        </RelativeLayout>
+												<LinearLayout
+																android:layout_weight="1"
+																android:orientation="vertical"
+																android:weightSum="3"
+																android:layout_marginLeft="@dimen/space"
+																android:background="@color/buttoncolor"
+																android:layout_width="0dp"
+																android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+																<TextView
+																				android:layout_weight="1"
+																				android:text="@string/cash"
+																				android:textColor="@color/white"
+																				android:textAllCaps="true"
+																				android:textStyle="bold"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/label_x_min"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+																<TextView
+																				android:id="@+id/tv_cash_amnt"
+																				android:layout_weight="2"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/big"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
 
+												</LinearLayout>
 
+								</LinearLayout>
+								<LinearLayout
+												android:id="@+id/add_expense"
+												android:layout_marginTop="@dimen/size_four"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="45dp"
+												android:background="@color/colorPrimary"
+												android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CHEQUES"
-                    android:paddingTop="@dimen/h3"
-                    android:layout_marginLeft="@dimen/h3"
-                    android:paddingRight="@dimen/h3"
-                    android:textSize="@dimen/label_big"
-                    android:textColor="@color/green"
-                    android:id="@+id/tv_cheque"
+												<ImageView
+																android:src="@drawable/ic_white_add"
+																android:layout_gravity="center_horizontal|center_vertical"
+																android:layout_width="30dp"
+																android:layout_height="30dp"/>
 
-                    />
+												<TextView
+																android:text="@string/add_expense"
+																android:textSize="@dimen/label_small"
+																android:textAllCaps="true"
+																android:textColor="@color/white"
+																android:layout_gravity="center_horizontal|center_vertical"
+																android:gravity="center_horizontal|center_vertical"
+																android:layout_width="wrap_content"
+																android:layout_height="match_parent"/>
+								</LinearLayout>
+								<ListView
+												android:id="@+id/expenseListView"
+												android:layout_marginTop="@dimen/space"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="150dp">
 
+								</ListView>
+				</LinearLayout>
 
+				<LinearLayout
+								android:id="@+id/ll_bottom"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:layout_alignParentBottom="true"
+								android:layout_marginBottom="@dimen/h3"
+								android:layout_marginTop="@dimen/h3"
+								android:background="@drawable/custom_border"
+								android:orientation="vertical"
+								android:paddingBottom="@dimen/h3"
+								android:paddingTop="@dimen/h3"
+								android:weightSum="2"
+								>
 
+								<TextView
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_gravity="center"
+												android:layout_marginBottom="@dimen/size_five"
+												android:text="Due Amt."
+												android:textColor="@color/colorPrimary"
+												android:textSize="@dimen/label_small"
+												/>
 
+								<TextView
+												android:layout_width="wrap_content"
+												android:layout_height="wrap_content"
+												android:layout_gravity="center"
+												android:id="@+id/tv_due_amount"
+												android:text="@string/_0_00"
+												android:textColor="@color/black"
+												android:textSize="@dimen/label_big"
+												/>
+				</LinearLayout>
 
-
-
-
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="255"
-                android:layout_marginRight="@dimen/h3"
-                android:textColor="@color/black"
-                android:layout_alignParentRight="true"
-                android:id="@+id/tv_cheque_amnt"/>
-
-
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CASH PAID"
-                    android:paddingTop="@dimen/h3"
-                    android:layout_marginLeft="@dimen/h3"
-                    android:paddingRight="@dimen/h3"
-                    android:textSize="@dimen/label_big"
-                    android:textColor="@color/green"
-
-
-                    />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="255"
-                android:textColor="@color/black"
-                android:paddingRight="@dimen/h3"
-                android:layout_alignParentRight="true"
-                android:id="@+id/tv_cash_amnt"/>
-
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="EXPENSES"
-                android:padding="@dimen/h3"
-                android:textSize="@dimen/label_big"
-                android:textColor="@color/colorPrimary"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="255"
-                android:padding="@dimen/h3"
-                android:textSize="@dimen/label_big"
-                android:textColor="@color/black"
-                android:layout_alignParentRight="true"
-                />
-
-
-
-        </RelativeLayout>
-
-
-    </LinearLayout>
-
-
-
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/h3"
-        android:layout_marginTop="@dimen/h3"
-        android:id="@+id/ll_bottom"
-        android:paddingTop="@dimen/h3"
-        android:paddingBottom="@dimen/h3"
-        android:background="@drawable/custom_border"
-        >
-
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Due Amt."
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/size_five"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/label_small"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/_0_00"
-            android:layout_gravity="center"
-            android:textSize="@dimen/label_big"
-            android:textColor="@color/black"
-            />
-
-
-
-    </LinearLayout>
-
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/activity_vertical_margin"
-        android:src="@drawable/double_tick"
-        android:id="@+id/btn_float"
-        app:backgroundTint="@color/colorPrimary"
-        />
-
+				<android.support.design.widget.FloatingActionButton
+								android:id="@+id/btn_float"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_alignParentBottom="true"
+								android:layout_alignParentRight="true"
+								android:layout_margin="@dimen/activity_vertical_margin"
+								android:src="@drawable/double_tick"
+								app:backgroundTint="@color/colorPrimary"
+								/>
 </RelativeLayout>

@@ -35,6 +35,8 @@
 				<string name="abn_amro">ABN AMRO</string>
 				<string name="add">إضافة</string>
 				<string name="add_customer">Add Customer</string>
+				<string name="add_expense">Add Expense</string>
+				<string name="additional_reason">Additional Reason</string>
 				<string name="advance_payment">دفعة مقدمة</string>
 				<string name="alert">Alert</string>
 				<string name="all">جميع</string>
@@ -145,6 +147,7 @@
 				<string name="ending_inventory">Ending Inventory</string>
 				<string name="end_invoice">نهاية الفاتورة</string>
 				<string name="english">English</string>
+				<string name="enter_amount">Enter Amount</string>
 				<string name="enter_category">Enter Category</string>
 				<string name="enter_cash_amount">ادخل المبلغ النقدي</string>
 				<string name="enter_employee_id">الرجاء إدخال كود الموظف</string>
@@ -306,6 +309,7 @@
 				<string name="sales_qty">كمية المبيعات</string>
 				<string name="sales_summary">ملخص المبيعات</string>
 				<string name="save">حفظ</string>
+				<string name="select_category">Select Category</string>
 				<string name="select_customer">حدد العملاء</string>
 				<string name="select_customer_status">Select Customer Status</string>
 				<string name="select_item">اختار صنف</string>

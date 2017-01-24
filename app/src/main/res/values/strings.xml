@@ -40,6 +40,8 @@
     <string name="abn_amro">ABN AMRO</string>
     <string name="add">Add</string>
     <string name="add_customer">Add Customer</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="additional_reason">Additional Reason</string>
     <string name="advance_payment">ADVANCE PAYMENT</string>
     <string name="alert">Alert</string>
     <string name="all">All</string>
@@ -150,6 +152,7 @@
     <string name="ending_inventory">Ending Inventory</string>
     <string name="end_invoice">End Invoice</string>
     <string name="english">English</string>
+    <string name="enter_amount">Enter Amount</string>
     <string name="enter_category">Enter Category</string>
     <string name="enter_cash_amount">ENTER CASH AMOUNT:</string>
     <string name="enter_employee_id">Please enter employee ID</string>
@@ -311,6 +314,7 @@
     <string name="sales_qty">Sales Qty</string>
     <string name="sales_summary">SALES SUMMARY</string>
     <string name="save">save</string>
+    <string name="select_category">Select Category</string>
     <string name="select_customer">Select Customer</string>
     <string name="select_customer_status">Select Customer Status</string>
     <string name="select_item">Select Item</string>
