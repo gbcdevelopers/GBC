@@ -75,6 +75,7 @@
 				<string name="changinglanguage">تغيير اللغة</string>
 				<string name="changingstatus">تغيير الحالة؟</string>
 				<string name="changingstatustext">موقعك الحالى لا يتطابع مع بيانات موقع العميل . هل تريد المتابعة؟</string>
+				<string name="cheque">Cheque</string>
 				<string name="cheque_amount">مبلغ الشيك</string>
 				<string name="cheque_no">رقم الشيك</string>
 				<string name="clear_data">Clear Data</string>
@@ -174,6 +175,7 @@
 				<string name="inv_qty">كمية الفاتورة</string>
 				<string name="inventory_variance">Inventory Variance</string>
 				<string name="invoice">فاتورة</string>
+				<string name="invoice_amount">Invoice Amount</string>
 				<string name="invoice_discounts">خصومات فاتورة</string>
 				<string name="invoice_label">فاتورة</string>
 				<string name="invoice_no">رقم الفاتورة</string>
@@ -233,6 +235,7 @@
 				<string name="paid">Paid</string>
 				<string name="password">PASSWORD</string>
 				<string name="payment">دفعة</string>
+				<string name="payment_mode">Pay By</string>
 				<string-array name="paymentitem">
 								<item>ABN AMRO</item>
 								<item>ACN AMRO</item>

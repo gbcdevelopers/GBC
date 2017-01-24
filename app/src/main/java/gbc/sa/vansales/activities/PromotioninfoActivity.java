@@ -744,6 +744,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 //Creating an invoice for customer
                 if(object.getPaymentMethod().equals("Credit")){
                     HashMap<String,String>invoiceMap = new HashMap<>();
+                    invoiceMap.put(db.KEY_COLLECTION_TYPE,App.COLLECTION_INVOICE);
                     invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                     invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
                     invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
@@ -751,6 +752,9 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_AMOUNT_CLEARED,"0");
                     invoiceMap.put(db.KEY_CHEQUE_AMOUNT,"0");
                     invoiceMap.put(db.KEY_CHEQUE_NUMBER,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_DATE,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                     invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
                     invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
                     db.addData(db.COLLECTION,invoiceMap);

@@ -80,6 +80,7 @@
     <string name="changinglanguage">Changing Language</string>
     <string name="changingstatus">Changing Status?</string>
     <string name="changingstatustext">Your current location does not match with Customer Location.Do you want to continue?</string>
+    <string name="cheque">Cheque</string>
     <string name="cheque_amount">CHEQUE AMOUNT:</string>
     <string name="cheque_no">CHEQUE NO:</string>
     <string name="clear_data">Clear Data</string>
@@ -179,6 +180,7 @@
     <string name="inv_qty">Inv Qty.</string>
     <string name="inventory_variance">Inventory Variance</string>
     <string name="invoice">INVOICE</string>
+    <string name="invoice_amount">Invoice Amount</string>
     <string name="invoice_discounts">INVOICE DISCOUNTS</string>
     <string name="invoice_label">Invoice</string>
     <string name="invoice_no">Invoice No</string>
@@ -238,6 +240,7 @@
     <string name="paid">Paid</string>
     <string name="password">PASSWORD</string>
     <string name="payment">payment</string>
+    <string name="payment_mode">Pay By</string>
     <string-array name="paymentitem">
         <item>ABN AMRO</item>
         <item>ACN AMRO</item>

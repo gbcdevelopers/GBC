@@ -93,9 +93,8 @@ public class PaymentDetails extends AppCompatActivity {
         Banks.loadData(this);
         tv_due_amt = (TextView) findViewById(R.id.tv_payment__amout_due_number);
         Intent i = this.getIntent();
-        bankAdapter = new BankAdapter(this, android.R.layout.simple_spinner_item, banksList);
+
         sp_item = (Spinner) findViewById(R.id.sp_item);
-        sp_item.setAdapter(bankAdapter);
         sp_item.setEnabled(false);
 
         loadBanks();
@@ -291,6 +290,8 @@ public class PaymentDetails extends AppCompatActivity {
                         map.put(db.KEY_CASH_AMOUNT,"");
                         map.put(db.KEY_CHEQUE_AMOUNT,"");
                         map.put(db.KEY_CHEQUE_NUMBER,"");
+                        map.put(db.KEY_CHEQUE_DATE,"");
+                        map.put(db.KEY_CHEQUE_BANK_NAME,"");
                         HashMap<String,String>filter = new HashMap<String, String>();
                         filter.put(db.KEY_INVOICE_NO,collection.getInvoiceNo());
                         Cursor c = db.getData(db.COLLECTION,map,filter);
@@ -298,17 +299,22 @@ public class PaymentDetails extends AppCompatActivity {
                         float prevCashAmount = 0;
                         float prevCheqAmount = 0;
                         String chequeNumber = "";
+                        String chequeDate = "";
+                        String bankName = "";
                         if(c.getCount()>0){
                             c.moveToFirst();
                             prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
                             prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
                             prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
                             chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
+                            chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
+                            bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
                         }
                         prevAmount+=Float.parseFloat(tv_total_amount.getText().toString());
                         prevCashAmount+= getcashamt();
                         prevCheqAmount+= getcheckamt();
                         chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                        chequeDate = chequeDate + "," + tv_date.getText().toString();
                         HashMap<String,String>updateMap = new HashMap<String, String>();
                         updateMap.put(db.KEY_AMOUNT_CLEARED,String.valueOf(prevAmount));
                         updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
@@ -388,9 +394,10 @@ public class PaymentDetails extends AppCompatActivity {
     private void loadBanks(){
         Banks.loadData(PaymentDetails.this);
         banksList = Banks.get();
-        Log.e("Bank List","" + banksList.size());
-        sp_item.setAdapter(bankAdapter);
+        Log.e("Bank List", "" + banksList.size());
+        bankAdapter = new BankAdapter(this, android.R.layout.simple_spinner_item, banksList);
         bankAdapter.notifyDataSetChanged();
+        sp_item.setAdapter(bankAdapter);
     }
     public void setTotalText() {
         double cash_amt = getcashamt();

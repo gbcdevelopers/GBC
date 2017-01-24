@@ -99,6 +99,11 @@ public class App extends Application {
     //Reasons
     public static final String REASON_REJECT = "REJECT";
 
+    //Collection Type
+    public static final String COLLECTION_INVOICE = "INVOICE";
+    public static final String COLLECTION_INVOICE_CASH = "INVOICE_CASH";
+    public static final String COLLECTION_DELIVERY = "DELIVERY";
+
     //Variance for Unload
     public static final String BAD_RETURN_VARIANCE = "BAD_RETURN_VARIANCE";
     public static final String ENDING_INVENTORY = "ENDING_INVENTORY";

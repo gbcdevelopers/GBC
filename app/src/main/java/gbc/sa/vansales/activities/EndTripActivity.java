@@ -1,7 +1,9 @@
 package gbc.sa.vansales.activities;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
@@ -32,6 +35,7 @@ public class EndTripActivity extends AppCompatActivity {
     float cashTotal = 0;
     EditText tv_cheque_amnt;
     EditText tv_cash_amnt;
+    Typeface typeface;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,12 +113,15 @@ public class EndTripActivity extends AppCompatActivity {
     }
 
     private void startCountAnimation(final EditText element,Integer value) {
+
+        final Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/counterFont.ttf");
         ValueAnimator animator = new ValueAnimator();
         animator.setObjectValues(0, value);
         animator.setDuration(5000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 element.setText("" + (int) animation.getAnimatedValue());
+                element.setTypeface(custom_font);
             }
         });
         animator.start();

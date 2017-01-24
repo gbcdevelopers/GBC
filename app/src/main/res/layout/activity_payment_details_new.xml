@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/activity_payment_details"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical"
+                tools:context="gbc.sa.vansales.activities.PaymentDetails">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/inc_common_header_payment_details"
+            layout="@layout/common_header"/>
+        <LinearLayout
+            android:id="@+id/ll_payment_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/inc_common_header_payment_details"
+            android:background="@drawable/back_radient"
+            android:orientation="vertical"
+            android:padding="@dimen/h3">
+
+            <TextView
+                android:id="@+id/tv_cust_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/h3"
+                android:layout_marginTop="@dimen/size_five"
+                android:text="@string/tv_cust_detail"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+        <LinearLayout
+            android:background="@drawable/edittext_top_bg"
+            android:layout_gravity="center_vertical"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/all_padding"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/invoice_no"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"/>
+            <TextView
+                android:id="@+id/tv_invoice_number"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/invoice_no"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary"/>
+        <LinearLayout
+            android:background="@drawable/edittext_center_bg"
+            android:layout_gravity="center_vertical"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/invoice_amount"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/tv_invoice_total"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/invoice_no"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary"/>
+        <LinearLayout
+            android:background="@drawable/edittext_bottom_bg"
+            android:layout_gravity="center_vertical"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/amout_due"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/tv_payment__amout_due_number"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:paddingLeft="@dimen/all_padding"
+                android:text="@string/invoice_no"
+                android:textSize="@dimen/label_min"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:weightSum="3"
+            android:layout_marginTop="@dimen/all_padding"
+            android:layout_marginLeft="@dimen/all_padding"
+            android:layout_marginRight="@dimen/all_padding"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="@dimen/label_min"
+                android:text="@string/payment_mode"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <CheckBox
+                android:layout_weight="1"
+                android:id="@+id/cb_cash"
+                android:text="@string/cash"
+                android:textSize="@dimen/label_min"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <CheckBox
+                android:layout_weight="1"
+                android:text="@string/cheque"
+                android:textSize="@dimen/label_min"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_cash_payment"
+            android:layout_width="match_parent"
+            android:weightSum="2"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/all_padding"
+            android:layout_marginLeft="@dimen/all_padding"
+            android:layout_marginRight="@dimen/all_padding"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/enter_cash_amount"
+                android:textColor="@color/buttoncolor"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"/>
+
+            <EditText
+                android:layout_weight="1"
+                android:id="@+id/edt_cash_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/size_two"
+                android:enabled="true"
+                android:inputType="numberDecimal"
+                android:text=""
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_cheque_payment"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:weightSum="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/elevation_size">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_two"
+                        android:text="@string/cheque_no"
+                        android:textColor="@color/buttoncolor"/>
+
+                    <EditText
+                        android:id="@+id/edt_check_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_two"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:text=""
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/cheque_amount"
+                        android:textColor="@color/buttoncolor"/>
+
+                    <EditText
+                        android:id="@+id/edt_check_amt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/size_two"
+                        android:enabled="false"
+                        android:inputType="numberDecimal"
+                        android:text=""
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/h1"
+                    android:layout_marginTop="2dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:text="@string/date"
+                    android:textColor="@color/black"
+                    android:paddingLeft="@dimen/default_padding"/>
+
+                <ImageView
+                    android:id="@+id/image_cal"
+                    android:layout_width="40dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_calendar"
+                    />
+
+                <Spinner
+                    android:id="@+id/sp_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/h1"
+                    android:layout_marginTop="@dimen/size_two"
+                    android:text="@string/abn_amro"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_five"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/h3"
+            android:text="@string/total_amount"
+            android:textColor="@color/buttoncolor"
+            />
+
+        <TextView
+            android:id="@+id/tv_total_amt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_five"
+            android:text="@string/_0_00"
+            android:textColor="@color/black"
+            android:textSize="@dimen/label_big"
+            />
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/double_tick"
+        app:backgroundTint="@color/colorPrimary"/>
+</RelativeLayout>

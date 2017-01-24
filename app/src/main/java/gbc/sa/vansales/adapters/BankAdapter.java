@@ -1,6 +1,7 @@
 package gbc.sa.vansales.adapters;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,20 +17,20 @@ import gbc.sa.vansales.utils.UrlBuilder;
  */
 public class BankAdapter extends ArrayAdapter<Bank> {
     private Context context;
-    private ArrayList<Bank> reasonList;
+    private ArrayList<Bank> bankList;
 
     public BankAdapter(Context context, int textViewResourceId, ArrayList<Bank> values){
         super(context, android.R.layout.simple_spinner_item, values);
         this.context = context;
-        this.reasonList = values;
+        this.bankList = values;
     }
 
     public int getCount(){
-        return this.reasonList.size();
+        return this.bankList.size();
     }
 
     public Bank getItem(int position){
-        return reasonList.get(position);
+        return bankList.get(position);
     }
 
     public long getItemId(int position){
@@ -44,7 +45,7 @@ public class BankAdapter extends ArrayAdapter<Bank> {
         label.setTextColor(Color.BLACK);
         // Then you can get the current item using the values array (Users array) and the current position
         // You can NOW reference each method you has created in your bean object (User class)
-        label.setText(UrlBuilder.decodeString(reasonList.get(position).getBankName()));
+        label.setText(UrlBuilder.decodeString(bankList.get(position).getBankName()));
 
         // And finally return your dynamic (or custom) view for each spinner item
         return label;
@@ -56,7 +57,7 @@ public class BankAdapter extends ArrayAdapter<Bank> {
         TextView label = new TextView(context);
         label.setTextSize(16);
         label.setTextColor(Color.BLACK);
-        label.setText(UrlBuilder.decodeString(reasonList.get(position).getBankName()));
+        label.setText(UrlBuilder.decodeString(bankList.get(position).getBankName()));
         return label;
     }
 }

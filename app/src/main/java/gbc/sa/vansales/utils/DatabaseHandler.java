@@ -323,6 +323,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_CASH_AMOUNT = "cashAmount";
     public static final String KEY_CHEQUE_AMOUNT = "chequeAmount";
     public static final String KEY_CHEQUE_NUMBER = "chequeNumber";
+    public static final String KEY_CHEQUE_DATE = "chequeDate";
+    public static final String KEY_CHEQUE_BANK_NAME = "bankName";
+    public static final String KEY_CHEQUE_BANK_CODE = "bankCode";
+    public static final String KEY_COLLECTION_TYPE = "collectionType";
     public static final String KEY_IS_INVOICE_COMPLETE = "isInvoiceComplete";
 
     private static DatabaseHandler sInstance;
@@ -846,6 +850,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_COLLECTION = "CREATE TABLE " + COLLECTION + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP + " TEXT,"
+                + KEY_COLLECTION_TYPE + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_INVOICE_NO + " TEXT,"
                 + KEY_INVOICE_AMOUNT + " TEXT,"
@@ -855,6 +860,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CASH_AMOUNT + " TEXT,"
                 + KEY_CHEQUE_AMOUNT + " TEXT,"
                 + KEY_CHEQUE_NUMBER + " TEXT,"
+                + KEY_CHEQUE_DATE + " TEXT,"
+                + KEY_CHEQUE_BANK_CODE + " TEXT,"
+                + KEY_CHEQUE_BANK_NAME + " TEXT,"
                 + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
 
         String TABLE_BANKS = "CREATE TABLE " + BANKS + "("
