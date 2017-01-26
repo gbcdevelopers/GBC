@@ -224,6 +224,7 @@
 				<string name="nextload">البدء فى الحمولة التالية</string>
 				<string name="no">لا</string>
 				<string name="no_records">لا توجد بيانات</string>
+				<string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
 				<string name="odometer">آخر قرائة للعداد</string>
 				<string name="odometer_reading">آخر قرائة للعداد</string>
 				<string name="ok">حسنا</string>

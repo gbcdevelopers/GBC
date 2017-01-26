@@ -13,7 +13,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
@@ -27,6 +30,8 @@ import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.Reasons;
+import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
@@ -40,6 +45,7 @@ public class AllCustomerFragment extends Fragment {
     private ArrayAdapter<CustomerStatus> adapter;
     private ArrayList<Reasons> reasonsList = new ArrayList<>();
     ListView listView;
+    DatabaseHandler db;
     View view;
 
     @Override
@@ -47,6 +53,7 @@ public class AllCustomerFragment extends Fragment {
 
         view = inflater.inflate(R.layout.visitall_fragment, container, false);
         reasonsList = OrderReasons.get();
+        db = new DatabaseHandler(getActivity());
 //        dataArrayList =new ArrayList<>();
 //        loadData();
         dataAdapter1 = new DataAdapter(getActivity(), Const.allCustomerdataArrayList);
@@ -66,7 +73,13 @@ public class AllCustomerFragment extends Fragment {
                 intent.putExtra("msg","all");
                 startActivity(intent);*/
                 showStatusDialog(customer);
-
+               /* boolean inSequence = checkIfinSequence(customer);
+                if(inSequence){
+                    showStatusDialog(customer);
+                }
+                else{
+                    Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
+                }*/
             }
         });
         return view;
@@ -88,6 +101,21 @@ public class AllCustomerFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+               /* HashMap<String,String>filter = new HashMap<String, String>();
+                filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                filter.put(db.KEY_IS_VISITED,App.IS_COMPLETE);
+                HashMap<String,String>map = new HashMap<String, String>();
+                map.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
+                map.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_VISITED,App.IS_COMPLETE);
+                if(db.checkData(db.VISIT_LIST,filter)){
+                    db.updateData(db.VISIT_LIST,map,filter);
+                }
+                else{
+                    db.addData(db.VISIT_LIST,map);
+                }*/
+
                 Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg", "visit");
@@ -109,5 +137,25 @@ public class AllCustomerFragment extends Fragment {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+    private boolean checkIfinSequence(Customer customer){
+        String itemNo = customer.getCustomerItemNo();
+        int prevItemNo = Integer.parseInt(itemNo)-1;
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_ITEMNO, StringUtils.leftPad(String.valueOf(prevItemNo), 3, "0"));
+        map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+        if(itemNo.equals("001")){
+            return true;
+        }
+        else{
+            if(db.checkData(db.VISIT_LIST,map)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+       // return false;
     }
 }

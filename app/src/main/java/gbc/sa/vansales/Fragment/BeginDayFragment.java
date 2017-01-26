@@ -379,6 +379,14 @@ public class BeginDayFragment extends Fragment {
                     db.updateData(db.BEGIN_DAY, map, filter);
                 }
                 showDialog();
+                /*if(!App.DriverRouteControl.isPromptOdometer()){
+                    Intent i = new Intent(getActivity(), LoadActivity.class);
+                    startActivity(i);
+                }
+                else{
+                    showDialog();
+                }*/
+
             } else if (this.orderID.contains("Error")) {
                 Toast.makeText(getActivity(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             } else {

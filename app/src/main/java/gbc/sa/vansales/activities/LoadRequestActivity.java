@@ -503,6 +503,8 @@ public class LoadRequestActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence arg0, int arg1, int arg2,
                                       int arg3) {
                 // TODO Auto-generated method stub
+                adapter.getFilter().filter(arg0.toString());
+                Log.e("Filter","" + adapter.getFilter());
             }
         });
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

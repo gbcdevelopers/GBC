@@ -88,6 +88,10 @@ public class SelectCustomerActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         floatButton = (FloatingActionButton) findViewById(R.id.float_map);
         addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
+        /*if(!App.DriverRouteControl.isAddCustomer()){
+            addCustomer.setEnabled(false);
+            addCustomer.setAlpha(0.5f);
+        }*/
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         tv_top_header.setText(getString(R.string.select_customer));
@@ -296,7 +300,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 customer.setMerchandize(false);
                 customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
-
+                customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
                 data.add(customer);
             }
             while (cursor.moveToNext());
@@ -336,6 +340,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 customer.setCollection(false);
                 customer.setMerchandize(false);
                 customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
+               // customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
                 data.add(customer);
             }
             while (cursor.moveToNext());
@@ -400,6 +405,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
+            //dataAdapter.notifyDataSetChanged();
         }
     }
     private class loadAllCustomers extends AsyncTask<Void, Void, Void> {

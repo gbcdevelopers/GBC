@@ -78,7 +78,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
                 params.put(db.KEY_VISITLISTID,Settings.getString(App.TRIP_ID).replaceAll(Settings.getString(App.ROUTE),"").trim());
-                params.put(db.KEY_ITEMNO, StringUtils.leftPad(String.valueOf(cursor.getCount() + 2), 4, "0"));
+                params.put(db.KEY_ITEMNO, StringUtils.leftPad(String.valueOf(cursor.getCount() + 2), 3, "0"));
                 params.put(db.KEY_CUSTOMER_NO, tv_customer_id.getText().toString());
                 params.put(db.KEY_EXEC_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
                 // params.put(db.KEY_EXEC_DATE, object.get("Execdate").toString().substring(0,10));

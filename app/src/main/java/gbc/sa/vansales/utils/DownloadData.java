@@ -443,6 +443,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
             }
 
             case ConfigStore.DriverRouteEntity:{
+                App.DriverRouteControl driverFlag = new App.DriverRouteControl();
                 for(int i=0;i<jsonArray.length();i++){
                     try{
                         JSONObject object = jsonArray.getJSONObject(i);
@@ -450,30 +451,51 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
                         params.put(db.KEY_DRIVER,object.get("DriverNo").toString());
                         params.put(db.KEY_ROUTE_TYPE,object.get("Routetype").toString());
-                        params.put(db.KEY_PROMPT_ODOMETER,object.get("Promptodometer").toString());
-                        params.put(db.KEY_EOD_SALES_REPORT,object.get("Eodsalesrep").toString());
-                        params.put(db.KEY_ENABLE_PVOID,object.get("Enablepvoid").toString());
-                        params.put(db.KEY_ENABLE_NO_SALE,object.get("Enablenosale").toString());
-                        params.put(db.KEY_ENABLE_ADD_CUSTOMER,object.get("Enableaddcustomer").toString());
-                        params.put(db.KEY_DEFAULT_DELIVERY_DAYS,object.get("Defaultdeldays").toString());
-                        params.put(db.KEY_PASSWORD1,object.get("Password1").toString());
-                        params.put(db.KEY_PASSWORD2,object.get("Password2").toString());
-                        params.put(db.KEY_PASSWORD3,object.get("Password3").toString());
-                        params.put(db.KEY_PASSWORD4,object.get("Password4").toString());
+                        driverFlag.setRouteType(object.get("Routetype").toString());
+                        params.put(db.KEY_PROMPT_ODOMETER, object.get("Promptodometer").toString());
+                        driverFlag.setPromptOdometer(object.get("Promptodometer").toString().equals("0") ? false : true);
+                        params.put(db.KEY_EOD_SALES_REPORT, object.get("Eodsalesrep").toString());
+                        driverFlag.setEodSalesReports(object.get("Eodsalesrep").toString().equals("0") ? false : true);
+                        params.put(db.KEY_ENABLE_PVOID, object.get("Enablepvoid").toString());
+                        driverFlag.setIsDeleteInvoice(object.get("Enablepvoid").toString().equals("0") ? false : true);
+                        params.put(db.KEY_ENABLE_NO_SALE, object.get("Enablenosale").toString());
+                        driverFlag.setIsNoSale(object.get("Enablenosale").toString().equals("0") ? false : true);
+                        params.put(db.KEY_ENABLE_ADD_CUSTOMER, object.get("Enableaddcustomer").toString());
+                        driverFlag.setIsAddCustomer(object.get("Enableaddcustomer").toString().equals("0") ? false : true);
+                        params.put(db.KEY_DEFAULT_DELIVERY_DAYS, object.get("Defaultdeldays").toString());
+                        driverFlag.setDefaultDeliveryDays(object.get("Defaultdeldays").toString());
+                        params.put(db.KEY_PASSWORD1, object.get("Password1").toString());
+                        driverFlag.setPassword1(object.get("Password1").toString());
+                        params.put(db.KEY_PASSWORD2, object.get("Password2").toString());
+                        driverFlag.setPassword2(object.get("Password2").toString());
+                        params.put(db.KEY_PASSWORD3, object.get("Password3").toString());
+                        driverFlag.setPassword3(object.get("Password3").toString());
+                        params.put(db.KEY_PASSWORD4, object.get("Password4").toString());
+                        driverFlag.setPassword4(object.get("Password4").toString());
                         params.put(db.KEY_PASSWORD5,object.get("Password5").toString());
+                        driverFlag.setPassword5(object.get("Password5").toString());
                         params.put(db.KEY_DATE_TIME_CHANGE,object.get("Datetimechange").toString());
                         params.put(db.KEY_PRICE_CHANGE,object.get("Pricechange").toString());
                         params.put(db.KEY_PROMO_OVERRIDE,object.get("Promooverride").toString());
                         params.put(db.KEY_ROUTE_SETUP,object.get("Routesetup").toString());
                         params.put(db.KEY_VIEW_STOCK,object.get("Viewstock").toString());
+                        driverFlag.setIsViewVanStock(object.get("Viewstock").toString());
                         params.put(db.KEY_LOAD_SECURITY_GUARD,object.get("Loadsecurityguard").toString());
+                        driverFlag.setIsLoadSecurityGuard(object.get("Loadsecurityguard").toString());
                         params.put(db.KEY_START_OF_DAY,object.get("Startofday").toString());
+                        driverFlag.setIsStartOfDay(object.get("Startofday").toString());
                         params.put(db.KEY_SETTLEMENT,object.get("Settlement").toString());
+                        driverFlag.setIsEndTrip(object.get("Settlement").toString());
                         params.put(db.KEY_LOAD_ADJUST,object.get("Loadadjust").toString());
                         params.put(db.KEY_ENFORCE_CALL_SEQ,object.get("Enforcecallseq").toString());
+                        driverFlag.setIsCallSequence(object.get("Enforcecallseq").equals("0")?false:true);
                         params.put(db.KEY_DISPLAY_IV_SUMMARY,object.get("Displayivsummary").toString());
-                        params.put(db.KEY_ALLOW_RADIUS,object.get("Allowradious").toString());
-                        params.put(db.KEY_ENABLE_GPS ,object.get("Enablegps").toString());
+                        driverFlag.setIsDisplayInvoiceSummary(object.get("Displayivsummary").toString().equals("0")?true:false);
+                        params.put(db.KEY_ALLOW_RADIUS, object.get("Allowradious").toString());
+                        driverFlag.setIsAllowRadius(object.get("Allowradious").toString().equals("0")?true:false);
+                        params.put(db.KEY_ENABLE_GPS, object.get("Enablegps").toString());
+                        driverFlag.setIsEnableGPS(object.get("Enablegps").toString().equals("0")?false:true);
+
                         db.addData(db.DRIVER_FLAGS, params);
                     }
                     catch (Exception e){

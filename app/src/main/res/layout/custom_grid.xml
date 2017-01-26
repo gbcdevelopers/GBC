@@ -1,54 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:elevation="@dimen/size_five"
-   app:cardBackgroundColor="@color/white"
-    android:layout_gravity="center"
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				xmlns:app="http://schemas.android.com/apk/res-auto"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_gravity="center"
+				app:cardBackgroundColor="@color/white"
+				app:elevation="@dimen/size_five"
+				>
 
+				<LinearLayout android:id="@+id/ll_items"
+				              xmlns:android="http://schemas.android.com/apk/res/android"
+				              android:layout_width="match_parent"
+				              android:layout_height="match_parent"
+				              android:background="@color/white"
+				              android:gravity="center"
+				              android:orientation="vertical"
+				              android:padding="@dimen/h2"
+								>
 
-    >
+								<ImageView
+												android:id="@+id/iv_round"
+												android:layout_width="match_parent"
+												android:layout_height="50dp"
+												android:layout_gravity="center"
+												android:scaleType="fitCenter"
+												android:src="@drawable/user"
+												/>
 
-
-
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/h2"
-    android:background="@color/white"
-    android:id="@+id/ll_items"
-    android:gravity="center"
-
-    >
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:src="@drawable/user"
-    android:scaleType="fitCenter"
-    android:layout_gravity="center"
-    android:id="@+id/iv_round"
-
-    />
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/order_request"
-        android:ellipsize="end"
-        android:textSize="12dp"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:textColor="@color/black"
-       android:gravity="center"
-        android:id="@+id/tv_iv_title"
-        />
-
-
-
-</LinearLayout>
+								<TextView
+												android:id="@+id/tv_iv_title"
+												android:layout_width="match_parent"
+												android:layout_height="wrap_content"
+												android:ellipsize="end"
+												android:gravity="center"
+												android:maxLines="1"
+												android:singleLine="true"
+												android:text="@string/order_request"
+												android:textColor="@color/black"
+												android:textSize="12dp"
+												/>
+				</LinearLayout>
 </android.support.v7.widget.CardView>

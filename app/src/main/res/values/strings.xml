@@ -229,6 +229,7 @@
     <string name="nextload">Next Load to Process</string>
     <string name="no">No</string>
     <string name="no_records">No Records</string>
+    <string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
     <string name="odometer">Last Odometer Reading</string>
     <string name="odometer_reading">Last Odometer Reading</string>
     <string name="ok">Ok</string>

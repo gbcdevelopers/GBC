@@ -260,11 +260,11 @@ public class PromotionActivity extends AppCompatActivity {
                 if(ivCursor.getCount()>0){
                     ivCursor.moveToFirst();
                     do{
-                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)){
+                        if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                             float cases = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)))*10);
+                            discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT))));
                         }
-                        else if(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                        else {
                             float bottles = Float.parseFloat(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_ORG_UNITS)));
                             discount += bottles*Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT)));
                         }

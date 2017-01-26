@@ -1,8 +1,10 @@
 package gbc.sa.vansales.adapters;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.utils.RoundedImageView;
@@ -88,6 +92,14 @@ public class CustomerOperationAdapter extends BaseAdapter {
                 layout.setBackgroundColor(Color.WHITE);
 
         } else if (from.equals("SalesInvoiceOptionActivity")) {
+            if(position==1){
+                Log.e("Here LOCK","" + App.DriverRouteControl.isDisplayInvoiceSummary());
+                if(!App.DriverRouteControl.isDisplayInvoiceSummary()){
+                    layout.setEnabled(false);
+                    layout.setOnClickListener(null);
+                    layout.setAlpha(0.5f);
+                }
+            }
 
         }
 

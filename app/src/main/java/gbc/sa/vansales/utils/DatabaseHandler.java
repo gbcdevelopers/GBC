@@ -245,6 +245,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_SALES_POSTED = "isSalesPosted";
     public static final String KEY_IS_COLLECTION_POSTED = "isCollectionPosted";
     public static final String KEY_IS_MERCHANDIZE_POSTED = "isMerchandizePosted";
+    public static final String KEY_VISIT_SERVICED_REASON = "visitServicedReason";
+    public static final String KEY_VISIT_UNSERVICED_REASON = "visitUnServicedReason";
+    public static final String KEY_CUSTOMER_IN_TIMESTAMP = "customerInTimestamp";
+    public static final String KEY_CUSTOMER_OUT_TIMESTAMP = "customerOutTimestamp";
     public static final String KEY_IS_VISITED = "isVisited";
     public static final String KEY_IS_NEW_CUSTOMER = "isNewCustomer";
     public static final String KEY_FUNCTION = "function";
@@ -346,6 +350,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_VISIT_LIST = "CREATE TABLE " + VISIT_LIST + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_IN_TIMESTAMP + " TEXT,"
+                + KEY_CUSTOMER_OUT_TIMESTAMP + " TEXT,"
                 + KEY_VISITLISTID + " TEXT,"
                 + KEY_ITEMNO + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
@@ -361,6 +367,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_SALES_POSTED + " TEXT,"
                 + KEY_IS_COLLECTION_POSTED + " TEXT,"
                 + KEY_IS_MERCHANDIZE_POSTED + " TEXT,"
+                + KEY_VISIT_SERVICED_REASON + " TEXT,"
+                + KEY_VISIT_UNSERVICED_REASON + " TEXT,"
                 + KEY_IS_VISITED + " TEXT,"
                 + KEY_IS_NEW_CUSTOMER + " TEXT,"
                 + KEY_VP_TYPE + " TEXT " + ")";
