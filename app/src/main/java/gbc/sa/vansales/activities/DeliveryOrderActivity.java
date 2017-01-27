@@ -567,12 +567,12 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
                 map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                 map.put(db.KEY_IS_PRINTED, "");
-                Log.e("Map","" + map);
+                //Log.e("Map","" + map);
                 if (Float.parseFloat(item.getItemCase()) > 0 || Float.parseFloat(item.getItemUnits()) > 0) {
                     db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST, map);
                 }
                 else{
-                    Log.e("LOOO","FOOOO");
+                 //   Log.e("LOOO","FOOOO");
                 }
             } catch (Exception e) {
                 e.printStackTrace();

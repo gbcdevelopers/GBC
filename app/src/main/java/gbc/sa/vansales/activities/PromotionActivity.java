@@ -276,7 +276,7 @@ public class PromotionActivity extends AppCompatActivity {
         }
 
 
-        Log.e("Discount","" + discount);
+        //Log.e("Discount","" + discount);
 
     }
     private void calculateTotal(String from){
@@ -302,7 +302,7 @@ public class PromotionActivity extends AppCompatActivity {
                 do{
                     case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                     unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
-                    Log.e("UOM","" + cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    //Log.e("UOM","" + cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                     if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                         amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)))*Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));

@@ -97,12 +97,12 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
 
         headerIcon.setImageResource(headerTitle.getIconImg());
         LinearLayout ll_main = (LinearLayout) convertView.findViewById(R.id.ll_main);
-        Log.e("Header Title","" + headerTitle.isEnabled() + headerTitle.getIconName());
+        //Log.e("Header Title","" + headerTitle.isEnabled() + headerTitle.getIconName());
 
         ll_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("position", groupPosition + "");
+               // Log.e("position", groupPosition + "");
                 if (groupPosition == 0) {
                     if(headerTitle.isEnabled()){
                         Intent i = new Intent(mContext, BeginTripActivity.class);

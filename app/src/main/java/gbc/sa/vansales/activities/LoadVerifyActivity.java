@@ -195,7 +195,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
 
         Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,map,filters);
-        Log.e("Cursorcountcheck", "" + materialno + uom + cursor.getCount());
+        //Log.e("Cursorcountcheck", "" + materialno + uom + cursor.getCount());
         if(cursor.getCount()>0){
             return true;
         }
@@ -280,12 +280,12 @@ public class LoadVerifyActivity extends AppCompatActivity {
             }
             if(!((dataNew.get(i).getQuantityUnits().isEmpty())||(dataNew.get(i).getQuantityUnits().equals(""))
                     ||(dataNew.get(i).getQuantityUnits().equals("0"))||(dataNew.get(i).getQuantityUnits().equals("")))){
-                Log.e("Step 0","Step 0");
+                //Log.e("Step 0","Step 0");
                 if(checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.BOTTLES_UOM)){
 
                     //Logic to read Customer Delivery Item and block material quantity based on UOM
                     int reserved = 0;
-                    Log.e("Step 1","Step 1");
+                    //Log.e("Step 1","Step 1");
                     //Getting old data
                     HashMap<String, String> oldData = new HashMap<>();
                     oldData.put(db.KEY_MATERIAL_NO, "");
@@ -299,7 +299,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     filterOldData.put(db.KEY_UOM_UNIT,App.BOTTLES_UOM);
 
                     Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,oldData,filterOldData);
-                    Log.e("Step 2","Step 2" + cursor.getCount());
+                    //Log.e("Step 2","Step 2" + cursor.getCount());
                     float actualQtyUnit;
                     float reservedQtyUnit;
                     float remainingQtyUnit;
@@ -310,13 +310,13 @@ public class LoadVerifyActivity extends AppCompatActivity {
                             reservedQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)));
                             remainingQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
 
-                            Log.e("Actual Qty Unit1","" + actualQtyUnit);
-                            Log.e("REmaining Qty Unit1","" + remainingQtyUnit);
+                            //Log.e("Actual Qty Unit1","" + actualQtyUnit);
+                            //Log.e("REmaining Qty Unit1","" + remainingQtyUnit);
 
                             actualQtyUnit+=Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
                             remainingQtyUnit+=Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
-                            Log.e("Actual Qty Unit2","" + actualQtyUnit);
-                            Log.e("REmaining Qty Unit2","" + remainingQtyUnit);
+                            //Log.e("Actual Qty Unit2","" + actualQtyUnit);
+                            //Log.e("REmaining Qty Unit2","" + remainingQtyUnit);
                         }
                         while (cursor.moveToNext());
                         map.put(db.KEY_ACTUAL_QTY_UNIT,String.valueOf(actualQtyUnit));
@@ -352,11 +352,11 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
 
             }
-            Log.e("ITEM MAP", "" + map);
+            //Log.e("ITEM MAP", "" + map);
 
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_MATERIAL_NO,dataNew.get(i).getMaterialNo().toString());
-            Log.e("Step 3", "Step 3");
+            //Log.e("Step 3", "Step 3");
             if((checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.CASE_UOM))||(checkMaterialExists(dataNew.get(i).getMaterialNo().toString(),App.BOTTLES_UOM))){
                 db.updateData(db.VAN_STOCK_ITEMS, map, filter);
             }
@@ -561,7 +561,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
                         HashMap<String,String>updateFilter = new HashMap<>();
                         updateFilter.put(db.KEY_MATERIAL_NO,vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        Log.e("Update Map C/S","" + updateMap);
+                        //Log.e("Update Map C/S","" + updateMap);
                         db.updateData(db.VAN_STOCK_ITEMS,updateMap,updateFilter);
                     }
                     else if(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
@@ -575,7 +575,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         updateMap.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf(Float.parseFloat(reservedUnits==null?"0":reservedUnits)+Float.parseFloat(deliveryUnits==null?"0":deliveryUnits)));
                         updateMap.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(remainingUnits==null?"0":remainingUnits)-Float.parseFloat(deliveryUnits==null?"0":deliveryUnits)));
 
-                        Log.e("Update Map B/T", "" + updateMap);
+                        //Log.e("Update Map B/T", "" + updateMap);
                         HashMap<String,String>updateFilter = new HashMap<>();
                         updateFilter.put(db.KEY_MATERIAL_NO,vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
 

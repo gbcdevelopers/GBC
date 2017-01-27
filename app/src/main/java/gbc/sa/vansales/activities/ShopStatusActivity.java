@@ -107,7 +107,7 @@ public class ShopStatusActivity extends AppCompatActivity implements AdapterView
         itemcheck.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Log.e("", "" + ((ShopStatus) object).getStatusText());
+                //Log.e("", "" + ((ShopStatus) object).getStatusText());
             }
         });
 
@@ -173,7 +173,7 @@ public class ShopStatusActivity extends AppCompatActivity implements AdapterView
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("I cam here", "Here");
+            //Log.e("I cam here", "Here");
             adapter = new ShopStatusBadgeAdapter(ShopStatusActivity.this, shopStatusList);
             adapter.notifyDataSetChanged();
             // super.onPostExecute(aVoid);

@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         languageSwitch = (Switch)findViewById(R.id.languageButton);
-        Log.e("Lang in Settings","" + lang);
+        //Log.e("Lang in Settings","" + lang);
         if(lang==null){
             languageSwitch.setChecked(false);
         }
@@ -236,7 +236,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void downloadData(final String tripId, final String username){
-        Log.e("Inside chain", "" + tripId);
+        //Log.e("Inside chain", "" + tripId);
 
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, "false");
@@ -328,7 +328,7 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             for (OfflinePost offlinePost:arrayList){
-                Log.e("Payload Batch","" + offlinePost.getMap());
+                //Log.e("Payload Batch","" + offlinePost.getMap());
             }
             this.data = IntegrationService.batchRequest(SettingsActivity.this, App.POST_COLLECTION, arrayList);
             return null;
@@ -396,19 +396,19 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void createBatch(String collectionName,HashMap<String,String> map, JSONArray deepEntity){
-        Log.e("Map", "" + map);
-        Log.e("Deep Entity", "" + deepEntity);
+        //Log.e("Map", "" + map);
+        //Log.e("Deep Entity", "" + deepEntity);
         OfflinePost object = new OfflinePost();
         object.setCollectionName(collectionName);
         object.setMap(map);
         object.setDeepEntity(deepEntity);
         arrayList.add(object);
         for (OfflinePost offlinePost:arrayList){
-            Log.e("Payload Batch","" + offlinePost.getMap());
+            //Log.e("Payload Batch","" + offlinePost.getMap());
         }
         for(int i=0;i<arrayList.size();i++){
             OfflinePost obj = arrayList.get(i);
-            Log.e("Payload 2","" + obj.getMap());
+            //Log.e("Payload 2","" + obj.getMap());
 
         }
     }

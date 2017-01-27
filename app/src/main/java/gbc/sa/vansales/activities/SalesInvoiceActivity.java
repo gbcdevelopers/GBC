@@ -93,14 +93,20 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("Back Clicked","Back Clicked");
+                //Log.e("Back Clicked","Back Clicked");
                 ArrayList<Sales> salesarrayList = new ArrayList<>();;
                 ArrayList<Sales>goodsReturnList = new ArrayList<>();
                 ArrayList<Sales>badReturnList = new ArrayList<>();
                 try{
-                    salesarrayList = Const.siBundle.getParcelableArrayList("si");
-                    goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
-                    badReturnList = Const.brBundle.getParcelableArrayList("br");
+                    if(Const.siBundle!=null){
+                        salesarrayList = Const.siBundle.getParcelableArrayList("si");
+                    }
+                    if(Const.grBundle!=null){
+                        goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
+                    }
+                    if(Const.brBundle!=null){
+                        badReturnList = Const.brBundle.getParcelableArrayList("br");
+                    }
                     if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
                         salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList);
                     }

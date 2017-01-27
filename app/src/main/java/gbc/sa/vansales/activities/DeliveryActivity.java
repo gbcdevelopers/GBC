@@ -270,7 +270,7 @@ public class DeliveryActivity extends AppCompatActivity {
 
     public void deleteDelivery(int pos){
         new returnDeliveryItems(arrayList.get(pos).getOrderId());
-        Log.e("Delete Deliver","" + arrayList.get(pos).getOrderId());
+        //Log.e("Delete Deliver","" + arrayList.get(pos).getOrderId());
     }
 
     public void loadStatus(){

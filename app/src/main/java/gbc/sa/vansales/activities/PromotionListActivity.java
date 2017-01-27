@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ import gbc.sa.vansales.utils.LoadingSpinner;
  */
 public class PromotionListActivity extends AppCompatActivity implements DataListener{
     ListView list_promotion;
-    PromotionsAdapter adapter;
+    ArrayAdapter<Promotions> adapter;
     PromotionInfoAdapter adapter1;
     ImageView iv_back;
     TextView tv_top_header;
@@ -52,6 +53,7 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
         setContentView(R.layout.activity_promotionlist);
         Intent i = this.getIntent();
         loadingSpinner = new LoadingSpinner(this);
+        loadingSpinner.show();
         object = (Customer) i.getParcelableExtra("headerObj");
         delivery = (OrderList)i.getParcelableExtra("delivery");
         arrayList = new ArrayList<>();
@@ -80,17 +82,23 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
             list_promotion.setAdapter(adapter);
         } else {
-            Log.e("Here","Here");
-            adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
-            list_promotion.setAdapter(adapter);
+            //Log.e("Here","Here");
+                /*adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
+                list_promotion.setAdapter(adapter);*/
         }
 
         /*arrayList.add("50% AMC Invoice Discount");
         arrayList.add("20% FOC Discount");
         arrayList.add("10% Other Discount");*/
-        new loadPromotions(App.Promotions02);
-        new loadPromotions(App.Promotions05);
-        new loadPromotions(App.Promotions07);
+        try{
+            new loadPromotions(App.Promotions02);
+         //   new loadPromotions(App.Promotions05);
+         //   new loadPromotions(App.Promotions07);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         btn_apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,37 +179,76 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
     }
     @Override
     public void onProcessingComplete() {
+        Log.e("I never came","" + "Never Came");
         adapter.notifyDataSetChanged();
     }
+    @Override
+    public void onProcessingComplete(String source) {
+        adapter.notifyDataSetChanged();
+    }
+
+    private void checkPromotions(){
+        String Promotions02 = App.Promotions02;
+        String Promotions05 = App.Promotions05;
+        String Promotions07 = App.Promotions07;
+
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_PROMOTION_TYPE,Promotions02);
+        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        HashMap<String,String>filter1 = new HashMap<>();
+        filter1.put(db.KEY_PROMOTION_TYPE,Promotions05);
+        filter1.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        HashMap<String,String>filter2 = new HashMap<>();
+        filter2.put(db.KEY_PROMOTION_TYPE,Promotions07);
+        filter2.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        if(db.checkData(db.PROMOTIONS,filter)) {
+            setPromotions(Promotions02);
+        }
+        if(db.checkData(db.PROMOTIONS,filter1)) {
+            setPromotions(Promotions05);
+        }
+        if(db.checkData(db.PROMOTIONS,filter2)) {
+            setPromotions(Promotions07);
+        }
+    }
+
     public class loadPromotions extends AsyncTask<Void,Void,Void>{
         String promotionType = "";
+        String Promotions02 = App.Promotions02;
+        String Promotions05 = App.Promotions05;
+        String Promotions07 = App.Promotions07;
         private loadPromotions(String promotionType) {
             this.promotionType = promotionType;
             execute();
         }
         @Override
         protected void onPreExecute() {
-            loadingSpinner.show();
+            if(!loadingSpinner.isShowing()){
+                loadingSpinner.show();
+            }
+
         }
         @Override
         protected Void doInBackground(Void... params) {
-            count++;
-            HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_PROMOTION_TYPE,this.promotionType);
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-            if(db.checkData(db.PROMOTIONS,filter)) {
-                setPromotions(this.promotionType);
-            }
+            checkPromotions();
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
+            list_promotion.setAdapter(adapter);
+          //  adapter.notifyDataSetChanged();
+           // onProcessingComplete();
+            /*count++;
             if(count==3){
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();
                 }
                 onProcessingComplete();
-            }
+            }*/
 
         }
     }

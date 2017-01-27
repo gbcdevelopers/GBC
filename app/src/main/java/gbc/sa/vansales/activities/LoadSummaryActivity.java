@@ -74,7 +74,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_summary);
         Intent i = this.getIntent();
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
-        Log.e("Object", "" + object.getDeliveryNo());
+        //Log.e("Object", "" + object.getDeliveryNo());
         reasonsList = OrderReasons.get();
         myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
@@ -86,9 +86,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         articles = new ArrayList<>();
         articles = ArticleHeaders.get();
 
-        Log.e("ReasonsList","" + reasonsList.size());
+        //Log.e("ReasonsList","" + reasonsList.size());
         addBlank(reasonsList);
-        Log.e("Articles", "" + articles.size());
+        //Log.e("Articles", "" + articles.size());
         adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
         listView = (ListView) findViewById(R.id.list_item);
         verifyAll = (Button) findViewById(R.id.btn_verify_all);
@@ -154,7 +154,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 btn_save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("Spin Select","" + spin.getSelectedItem().toString());
+                        //Log.e("Spin Select","" + spin.getSelectedItem().toString());
                         if (spin.getSelectedItem().toString().equals("Select Reason")) {
                             ((TextView) spin.getSelectedView()).setError("select reason");
                         }
@@ -303,7 +303,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 LoadSummary loadItem = new LoadSummary();
                 loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
                 ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                Log.e("Article IF", "" + article);
+                //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
                 } else {
@@ -500,7 +500,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 LoadSummary loadItem = new LoadSummary();
                 loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
                 ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                Log.e("Article IF", "" + article);
+                //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
                 } else {

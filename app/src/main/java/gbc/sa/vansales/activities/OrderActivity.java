@@ -123,7 +123,7 @@ public class OrderActivity extends AppCompatActivity implements AdapterView.OnIt
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("I cam here", "Here");
+            //Log.e("I cam here", "Here");
             adapter = new StockTakeBadgeAdapter(OrderActivity.this, productList);
             adapter.notifyDataSetChanged();
             // super.onPostExecute(aVoid);

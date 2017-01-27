@@ -169,7 +169,7 @@ public class ReturnsActivity extends AppCompatActivity {
             GoodReturn item = addItemsDropdown(i);
             itemDropDownList.add(item);
         }
-        Log.e("List size1 is", "" + itemDropDownList.size());
+        //Log.e("List size1 is", "" + itemDropDownList.size());
 
     }
 
@@ -258,7 +258,7 @@ public class ReturnsActivity extends AppCompatActivity {
            // List<String> list = new ArrayList<String>();
             // list.add("list 1");
 
-            Log.e("List size is",""+list.size());
+            //Log.e("List size is",""+list.size());
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(ReturnsActivity.this, android.R.layout.simple_spinner_item, list);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

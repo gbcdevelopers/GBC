@@ -334,7 +334,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                             if (cursor.getCount() > 0) {
                                 cursor.moveToFirst();
                                 purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER));
-                                Log.e("My Purchase", "" + purchaseNumber);
+                                //Log.e("My Purchase", "" + purchaseNumber);
                                 for (LoadRequest loadRequest : arraylist) {
                                     try {
                                         if (loadRequest.getCases().equals("") || loadRequest.getCases().isEmpty() || loadRequest.getCases() == null) {
@@ -504,7 +504,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                       int arg3) {
                 // TODO Auto-generated method stub
                 adapter.getFilter().filter(arg0.toString());
-                Log.e("Filter","" + adapter.getFilter());
+                //Log.e("Filter","" + adapter.getFilter());
             }
         });
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -792,7 +792,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             arraylist.add(loadRequest);
         }
         while (cursor.moveToNext());
-        Log.e("Array List zie", "" + arraylist.size());
+        //Log.e("Array List zie", "" + arraylist.size());
         ArrayList<LoadRequest> temp = new ArrayList<>();
         if (putOnHoldExists) {
             for (int i = 0; i < arraylist.size(); i++) {
@@ -812,7 +812,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 filter.put(db.KEY_MATERIAL_NO, loadRequest.getMaterialNo());
                 filter.put(db.KEY_IS_POSTED, App.DATA_PUT_ON_HOLD);
                 Cursor holdCursor = db.getData(db.LOAD_REQUEST, map, filter);
-                Log.e("HOLD Cursor", "" + holdCursor.getCount());
+                //Log.e("HOLD Cursor", "" + holdCursor.getCount());
                 if (holdCursor.getCount() > 0) {
                     holdCursor.moveToFirst();
                     do {
@@ -826,7 +826,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                     arraylist.add(i, loadRequest);
                 }
             }
-            Log.e("Temp", "" + temp.size());
+            //Log.e("Temp", "" + temp.size());
             temp.clear();
         }
         //  adapter.notifyDataSetChanged();
@@ -848,7 +848,7 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("Order ID", "" + this.orderID);
+            //Log.e("Order ID", "" + this.orderID);
             if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
                 for (LoadRequest loadRequest : arraylist) {
                     HashMap<String, String> map = new HashMap<String, String>();

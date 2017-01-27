@@ -132,7 +132,7 @@ public class StockTakeActivity extends AppCompatActivity implements AdapterView.
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("I cam here", "Here");
+            //Log.e("I cam here", "Here");
             adapter = new StockTakeBadgeAdapter(StockTakeActivity.this, productList);
             adapter.notifyDataSetChanged();
             // super.onPostExecute(aVoid);

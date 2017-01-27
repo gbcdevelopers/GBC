@@ -394,7 +394,7 @@ public class PaymentDetails extends AppCompatActivity {
     private void loadBanks(){
         Banks.loadData(PaymentDetails.this);
         banksList = Banks.get();
-        Log.e("Bank List", "" + banksList.size());
+        //Log.e("Bank List", "" + banksList.size());
         bankAdapter = new BankAdapter(this, android.R.layout.simple_spinner_item, banksList);
         bankAdapter.notifyDataSetChanged();
         sp_item.setAdapter(bankAdapter);
@@ -512,7 +512,7 @@ public class PaymentDetails extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("Order ID", "" + this.orderID);
+            //Log.e("Order ID", "" + this.orderID);
 
             HashMap<String,String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, "");

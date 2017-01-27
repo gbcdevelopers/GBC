@@ -29,7 +29,7 @@ public class SelectOperationActivity extends AppCompatActivity {
         TileView tileView = (TileView) view;
 
         String label = tileView.getLabel();
-        Log.e("Here", "Here" + label);
+        //Log.e("Here", "Here" + label);
         Intent intent = null;
 
         if (label.equals(getString(R.string.collection))) {

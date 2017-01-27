@@ -45,7 +45,7 @@ public class TodaysScheduleActivity extends AppCompatActivity {
 
         schedule = getIntent().getExtras().getString("schedule");
         customers = CustomerHeaders.get();
-        Log.e("customers","" + customers.size());
+        //Log.e("customers","" + customers.size());
         loadingSpinner = new LoadingSpinner(this);
       //  CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,object.getCustomerID());
 

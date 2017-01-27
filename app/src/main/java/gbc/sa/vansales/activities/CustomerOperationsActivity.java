@@ -178,10 +178,10 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
 
                         if(Math.abs(deltaX)>0){
                             if(deltaX>=0){
-                                Log.e("SwipeRight","SwipeRight");
+                                //Log.e("SwipeRight","SwipeRight");
                                 return true;
                             }else{
-                                Log.e("SwipeLeft", "SwipeLeft");
+                                //Log.e("SwipeLeft", "SwipeLeft");
                                 return  true;
                             }
                         }
@@ -382,7 +382,7 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         } catch (Exception e) {
             // Ignore exceptions if any
-            Log.e("KeyBoardUtil", e.toString(), e);
+            //Log.e("KeyBoardUtil", e.toString(), e);
         }
     }
 }

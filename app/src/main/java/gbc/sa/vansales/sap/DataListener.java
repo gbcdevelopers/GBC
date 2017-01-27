@@ -4,4 +4,5 @@ package gbc.sa.vansales.sap;
  */
 public interface DataListener {
     void onProcessingComplete();
+    void onProcessingComplete(String source);
 }

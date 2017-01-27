@@ -268,7 +268,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
     public void setVisitList(Cursor visitListCursor,boolean isVisitList) {
         Cursor cursor = visitListCursor;
         cursor.moveToFirst();
-        Log.e("Cursor count", "" + cursor.getCount());
+        //Log.e("Cursor count", "" + cursor.getCount());
         if(isVisitList){
             dataArrayList.clear();
             ArrayList<Customer> data = new ArrayList<>();
@@ -288,7 +288,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(db.checkData(db.CUSTOMER_CREDIT,map)){
-                    Log.e("Credit Exist","Credit Exist");
+                    //Log.e("Credit Exist","Credit Exist");
                     customer.setPaymentMethod("Credit");
                 }
                 else{
@@ -306,14 +306,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
             while (cursor.moveToNext());
 
             Const.dataArrayList = data;
-            Log.e("Data Array","" + Const.dataArrayList.size());
+            //Log.e("Data Array","" + Const.dataArrayList.size());
         }
         else{
             dataArrayList.clear();
             ArrayList<Customer> data = new ArrayList<>();
             do {
                 Customer customer = new Customer();
-                Log.e("Cursor count", "" + cursor.getCount());
+                //Log.e("Cursor count", "" + cursor.getCount());
                 customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
@@ -328,13 +328,13 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 HashMap<String,String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(db.checkData(db.CUSTOMER_CREDIT,map)){
-                    Log.e("Credit Exist", "Credit Exist");
+                    //Log.e("Credit Exist", "Credit Exist");
                     customer.setPaymentMethod("Credit");
                 }
                 else {
                     customer.setPaymentMethod("Cash");
                 }
-                Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
+                //Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
                 customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE,map));
                 customer.setCollection(false);
@@ -346,14 +346,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
             while (cursor.moveToNext());
 
             Const.allCustomerdataArrayList = data;
-            Log.e("All Array","" + Const.allCustomerdataArrayList.size());
+            //Log.e("All Array","" + Const.allCustomerdataArrayList.size());
         }
 
     }
     private class loadVisitList extends AsyncTask<Void, Void, Void> {
         String tripId;
         private loadVisitList(String tripId) {
-            Log.e("CALLED","CALLED");
+            //Log.e("CALLED","CALLED");
             this.tripId = tripId;
             execute();
         }

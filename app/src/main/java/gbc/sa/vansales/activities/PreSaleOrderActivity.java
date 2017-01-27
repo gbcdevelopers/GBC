@@ -207,7 +207,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
-            Log.e("ArrayList","" + arrayList.size());
+            //Log.e("ArrayList","" + arrayList.size());
             adapter.notifyDataSetChanged();
         }
     }
@@ -215,13 +215,13 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         ArrayList<String> temp = new ArrayList<String>();
         temp.clear();
         arrayList.clear();
-        Log.e("Cursor", "" + cursor.getCount());
+        //Log.e("Cursor", "" + cursor.getCount());
         do {
             OrderList orderList = new OrderList();
             //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            Log.e("ORDER1", "" + orderList.getOrderId());
+            //Log.e("ORDER1", "" + orderList.getOrderId());
             if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
@@ -233,7 +233,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         ArrayList<String> temp = new ArrayList<String>();
         temp.clear();
         //arrayList.clear();
-        Log.e("Cursor", "" + cursor.getCount());
+        //Log.e("Cursor", "" + cursor.getCount());
         cursor.moveToFirst();
         do {
             OrderList orderList = new OrderList();
@@ -242,7 +242,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
 
             if (!temp.contains(orderList.getOrderId())) {
-                Log.e("ORDER", "" + orderList.getOrderId());
+                //Log.e("ORDER", "" + orderList.getOrderId());
                 temp.add(orderList.getOrderId());
                 arrayList.add(orderList);
             }

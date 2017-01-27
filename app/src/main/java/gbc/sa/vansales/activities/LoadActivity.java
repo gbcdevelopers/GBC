@@ -120,7 +120,7 @@ public class LoadActivity extends AppCompatActivity {
     public void setLoadDelivery(Cursor loadCursor) {
         Cursor cursor = loadCursor;
         cursor.moveToFirst();
-        Log.e("cursor", "" + cursor.getCount());
+        //Log.e("cursor", "" + cursor.getCount());
         do {
             LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
             loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
@@ -130,9 +130,9 @@ public class LoadActivity extends AppCompatActivity {
             loadDeliveryHeaders.add(loadDeliveryHeader);
         }
         while (cursor.moveToNext());
-        Log.e("loadDeliver", "" + loadDeliveryHeaders.size());
+        //Log.e("loadDeliver", "" + loadDeliveryHeaders.size());
         adapter.notifyDataSetChanged();
-        Log.e("adapter", "" + adapter.getCount());
+        //Log.e("adapter", "" + adapter.getCount());
     }
     private class fetchLoads extends AsyncTask<Void, Void, Void> {
         String tripId;

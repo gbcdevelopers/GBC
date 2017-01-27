@@ -147,7 +147,7 @@ public class LoginActivity extends Activity {
         protected void onPostExecute(Void aVoid) {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
-                Log.e("Return List", "" + this.returnList.size());
+                //Log.e("Return List", "" + this.returnList.size());
                 if(this.returnList.size()>0){
                     if(this.returnList.get(2).contains("Trip")){
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
@@ -249,6 +249,12 @@ public class LoginActivity extends Activity {
                 }
                 else{
                     Toast.makeText(LoginActivity.this,R.string.request_timeout,Toast.LENGTH_SHORT).show();
+                    //For testing Purpose only
+
+                    Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                    startActivityForResult(intent, 0);
+                    finish();
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                 }
 
             }
@@ -274,7 +280,7 @@ public class LoginActivity extends Activity {
     }
 
     public void downloadData(final String tripId){
-        Log.e("Inside chain", "" + tripId);
+        //Log.e("Inside chain", "" + tripId);
 
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, App.FALSE);

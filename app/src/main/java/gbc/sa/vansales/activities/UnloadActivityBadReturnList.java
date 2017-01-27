@@ -57,7 +57,7 @@ public class UnloadActivityBadReturnList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(UnloadActivityBadReturnList.this,UnloadDetailActivity.class);
-                Log.e("Code",arrayList.get(position).getReasonCode());
+                //Log.e("Code",arrayList.get(position).getReasonCode());
                 intent.putExtra("code",arrayList.get(position).getReasonCode());
                 intent.putExtra("context","badreturn");
                 startActivity(intent);
@@ -137,7 +137,7 @@ public class UnloadActivityBadReturnList extends AppCompatActivity {
                 break;
             }
         }
-        Log.e("Reason","" + test);
+        //Log.e("Reason","" + test);
         return test;
     }
 

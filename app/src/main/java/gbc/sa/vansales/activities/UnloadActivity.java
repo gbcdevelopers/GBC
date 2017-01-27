@@ -630,7 +630,7 @@ public class UnloadActivity extends AppCompatActivity {
                             itemno = itemno + 10;
                             deepEntity.put(jo);
                         }
-                        Log.e("Got here","" + map + deepEntity);
+                        //Log.e("Got here","" + map + deepEntity);
                     }
                     orderID = IntegrationService.postData(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
 
@@ -639,10 +639,10 @@ public class UnloadActivity extends AppCompatActivity {
             catch (Exception e){
                 e.printStackTrace();
             }
-            Log.e("Step","Step1" + orderID + purchaseNumber);
+            //Log.e("Step","Step1" + orderID + purchaseNumber);
             return orderID + "," + purchaseNumber;
         }
-        Log.e("Step","Step2" + orderID + purchaseNumber);
+        //Log.e("Step","Step2" + orderID + purchaseNumber);
         return orderID + "," + purchaseNumber;
         //return null;
     }

@@ -92,14 +92,14 @@ public class CustomerOperationAdapter extends BaseAdapter {
                 layout.setBackgroundColor(Color.WHITE);
 
         } else if (from.equals("SalesInvoiceOptionActivity")) {
-            if(position==1){
+           /* if(position==1){
                 Log.e("Here LOCK","" + App.DriverRouteControl.isDisplayInvoiceSummary());
                 if(!App.DriverRouteControl.isDisplayInvoiceSummary()){
                     layout.setEnabled(false);
                     layout.setOnClickListener(null);
                     layout.setAlpha(0.5f);
                 }
-            }
+            }*/
 
         }
 

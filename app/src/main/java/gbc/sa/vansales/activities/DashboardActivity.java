@@ -197,8 +197,8 @@ public class DashboardActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         createPieChart();
         // createLineChart();
-        createBarChart();
-       // new loadBarChartData(App.SALES);
+        //createBarChart();
+        new loadBarChartData(App.SALES);
 
         TextView lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
         TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
@@ -390,6 +390,7 @@ public class DashboardActivity extends AppCompatActivity
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
     void createBarChartFromLiveData(float salesCount,float goodreturnsCount,float badreturnsCount) {
+        Log.e("Count in Live Data","" + salesCount + "/" + goodreturnsCount + "/" + badreturnsCount);
         BarChart barChart = (BarChart) findViewById(R.id.barChart);
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
@@ -397,8 +398,8 @@ public class DashboardActivity extends AppCompatActivity
         barChart.setDrawGridBackground(false);
         ArrayList<BarEntry> entries = new ArrayList<>();
         entries.add(new BarEntry(salesCount,0));
-        entries.add(new BarEntry(goodreturnsCount,0));
-        entries.add(new BarEntry(badreturnsCount,0));
+        entries.add(new BarEntry(goodreturnsCount,1));
+        entries.add(new BarEntry(badreturnsCount,2));
         /*entries.add(new BarEntry(4f, 0));
         entries.add(new BarEntry(8f, 1));
         entries.add(new BarEntry(6f, 2));*/
@@ -448,6 +449,80 @@ public class DashboardActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         return false;
     }
+
+    private void createBarChartData(final String var){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(var.equals(App.SALES)){
+                    HashMap<String, String>map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP,"");
+                    map.put(db.KEY_ORG_CASE,"");
+                    HashMap<String,String>filterPostedSales = new HashMap<>();
+                    filterPostedSales.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED); //Count of all invoices posted in SAP
+                    HashMap<String,String>filterMarkedforPostSales = new HashMap<>();
+                    filterMarkedforPostSales.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    Cursor salesMarkforPostCursor = null;
+                    Cursor salesPostedCursor = null;
+                    if(db.checkData(db.CAPTURE_SALES_INVOICE,filterMarkedforPostSales)){
+                        salesMarkforPostCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filterMarkedforPostSales);
+                        if(salesMarkforPostCursor.getCount()>0){
+                            salesMarkforPostCursor.moveToFirst();
+                        }
+                    }
+                    if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
+                        salesPostedCursor  = db.getData(db.CAPTURE_SALES_INVOICE,map,filterPostedSales);
+                        if(salesPostedCursor.getCount()>0){
+                            salesPostedCursor.moveToFirst();
+                        }
+                    }
+                    salesCount = calculateData(var,salesPostedCursor,salesMarkforPostCursor);
+                }
+                else if(var.equals(App.GOOD_RETURN))
+                {
+                    HashMap<String, String>returnMap = new HashMap<>();
+                    returnMap.put(db.KEY_TIME_STAMP,"");
+                    returnMap.put(db.KEY_CASE,"");
+                    HashMap<String,String>filterPostedGoodReturn = new HashMap<>();
+                    filterPostedGoodReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                    filterPostedGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                    HashMap<String,String>filterMarkedforPostGoodReturn = new HashMap<>();
+                    filterMarkedforPostGoodReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    filterMarkedforPostGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+
+                    Cursor goodReturnPostedCursor = null;
+                    if(db.checkData(db.RETURNS,filterPostedGoodReturn)){
+                        goodReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedGoodReturn);
+                    }
+                    Cursor goodReturnMarkforPostCursor = null;
+                    if(db.checkData(db.RETURNS,filterMarkedforPostGoodReturn)){
+                        goodReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostGoodReturn);
+                    }
+                    goodReturnsCount = calculateData(var,goodReturnPostedCursor,goodReturnMarkforPostCursor);
+                }
+                else if(var.equals(App.BAD_RETURN)){
+                    HashMap<String, String>returnMap = new HashMap<>();
+                    returnMap.put(db.KEY_TIME_STAMP,"");
+                    returnMap.put(db.KEY_CASE,"");
+                    HashMap<String,String>filterPostedBadReturn = new HashMap<>();
+                    filterPostedBadReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                    filterPostedBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                    HashMap<String,String>filterMarkedforPostBadReturn = new HashMap<>();
+                    filterMarkedforPostBadReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    filterMarkedforPostBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                    Cursor badReturnPostedCursor = null;
+                    Cursor badReturnMarkforPostCursor = null;
+                    if(db.checkData(db.RETURNS,filterPostedBadReturn)){
+                        badReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedBadReturn);
+                    }
+                    if(db.checkData(db.RETURNS,filterMarkedforPostBadReturn)){
+                        badReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostBadReturn);
+                    }
+                    badReturnsCount = calculateData(var,badReturnPostedCursor,badReturnMarkforPostCursor);
+                }
+            }
+        });
+    }
     public class loadBarChartData extends AsyncTask<Void, Void, Void> {
 
         private String var;
@@ -457,11 +532,16 @@ public class DashboardActivity extends AppCompatActivity
         }
         @Override
         protected void onPreExecute() {
-            loadingSpinner.show();
+            if(!loadingSpinner.isShowing())
+            {
+                loadingSpinner.show();
+            }
+
         }
         @Override
         protected Void doInBackground(Void... params) {
-            if(var.equals(App.SALES)){
+            createBarChartData(var);
+            /*if(var.equals(App.SALES)){
                 HashMap<String, String>map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP,"");
                 map.put(db.KEY_ORG_CASE,"");
@@ -470,58 +550,16 @@ public class DashboardActivity extends AppCompatActivity
                 HashMap<String,String>filterMarkedforPostSales = new HashMap<>();
                 filterMarkedforPostSales.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                 Cursor salesPostedCursor = null;
-                /*if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
+                *//*if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
                     salesPostedCursor  = db.getData(db.CAPTURE_SALES_INVOICE,map,filterPostedSales);
-                }*/
+                }*//*
                 Cursor salesMarkforPostCursor = null;
                 if(db.checkData(db.CAPTURE_SALES_INVOICE,filterMarkedforPostSales)){
                     salesMarkforPostCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filterMarkedforPostSales);
                 }
                 salesCount = calculateData(var,salesPostedCursor,salesMarkforPostCursor);
-            }
-            else if(var.equals(App.GOOD_RETURN))
-            {
-                HashMap<String, String>returnMap = new HashMap<>();
-                returnMap.put(db.KEY_TIME_STAMP,"");
-                returnMap.put(db.KEY_CASE,"");
-                HashMap<String,String>filterPostedGoodReturn = new HashMap<>();
-                filterPostedGoodReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
-                filterPostedGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
-                HashMap<String,String>filterMarkedforPostGoodReturn = new HashMap<>();
-                filterMarkedforPostGoodReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                filterMarkedforPostGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+            }*/
 
-                Cursor goodReturnPostedCursor = null;
-                /*if(db.checkData(db.RETURNS,filterPostedGoodReturn)){
-                    goodReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedGoodReturn);
-                }*/
-                Cursor goodReturnMarkforPostCursor = null;
-                if(db.checkData(db.RETURNS,filterMarkedforPostGoodReturn)){
-                    goodReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostGoodReturn);
-                }
-                 goodReturnsCount = calculateData(var,goodReturnPostedCursor,goodReturnMarkforPostCursor);
-            }
-            else if(var.equals(App.BAD_RETURN)){
-                HashMap<String, String>returnMap = new HashMap<>();
-                returnMap.put(db.KEY_TIME_STAMP,"");
-                returnMap.put(db.KEY_CASE,"");
-                HashMap<String,String>filterPostedBadReturn = new HashMap<>();
-                filterPostedBadReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
-                filterPostedBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
-                HashMap<String,String>filterMarkedforPostBadReturn = new HashMap<>();
-                filterMarkedforPostBadReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                filterMarkedforPostBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
-                Cursor badReturnPostedCursor = null;
-                Cursor badReturnMarkforPostCursor = null;
-                /*if(db.checkData(db.RETURNS,filterPostedBadReturn)){
-                    badReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedBadReturn);
-                }*/
-                if(db.checkData(db.RETURNS,filterMarkedforPostBadReturn)){
-                    badReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostBadReturn);
-                }
-
-                badReturnsCount = calculateData(var,badReturnPostedCursor,badReturnMarkforPostCursor);
-            }
 
            // badReturnsCount = GoodReturnPostedCursor.getCount() + GoodReturnMarkforPostCursor.getCount();
             return null;

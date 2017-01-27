@@ -331,7 +331,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("Order ID", "" + this.orderID);
+            //Log.e("Order ID", "" + this.orderID);
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, "");
             map.put(db.KEY_ITEM_NO, "");
@@ -465,17 +465,17 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
     }
     public void updateStockinVan() {
         loadingSpinner.show();
-        Log.e("ArrayList Size", "" + arraylist.size());
+        //Log.e("ArrayList Size", "" + arraylist.size());
         for (Sales sale : arraylist) {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO, "");
             map.put(db.KEY_REMAINING_QTY_CASE, "");
             map.put(db.KEY_REMAINING_QTY_UNIT, "");
             HashMap<String, String> filter = new HashMap<>();
-            Log.e("Filter MN", "" + sale.getMaterial_no());
+            //Log.e("Filter MN", "" + sale.getMaterial_no());
             filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
             Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-            Log.e("Cursor count", "" + cursor.getCount());
+            //Log.e("Cursor count", "" + cursor.getCount());
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
             }
@@ -485,8 +485,8 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                 float remainingUnit = 0;
                 remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
                 remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                Log.e("RemainingCs", "" + remainingCase + sale.getCases());
-                Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
                 if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
                     remainingCase = remainingCase - Float.parseFloat(sale.getCases());
                 }

@@ -274,7 +274,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                         map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
                         orderTotalValue = orderTotalValue + Float.parseFloat(loadRequest.getPrice());
                         if (Float.parseFloat(loadRequest.getCases()) > 0 || Float.parseFloat(loadRequest.getUnits()) > 0) {
-                            Log.e("Insert","BROOOOOOO");
+                            //Log.e("Insert","BROOOOOOO");
                             db.addData(db.ORDER_REQUEST, map);
                         }
                     } catch (Exception e) {
@@ -350,7 +350,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         tv_date.setText(sdf.format(myCalendar.getTime()));
         PreSaleProceed proceed = new PreSaleProceed();
         proceed.setDATE(tv_date.getText().toString());
-        Log.e("Date", "" + tv_date.getText().toString());
+        //Log.e("Date", "" + tv_date.getText().toString());
         // Const.proceedArrayList.add(Const.id, proceed);
     }
     @Override
@@ -522,7 +522,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.e("Order id", "" + this.orderId);
+            //Log.e("Order id", "" + this.orderId);
             if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
                 for (OrderRequest loadRequest : arraylist) {
                     HashMap<String, String> map = new HashMap<String, String>();
@@ -636,7 +636,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             Cursor cursor = db.getData(db.ORDER_REQUEST, itemMap, filter);
-            Log.e("Cursor count", "" + cursor.getCount());
+            //Log.e("Cursor count", "" + cursor.getCount());
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
@@ -680,8 +680,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 while (cursor.moveToNext());
                 map.put("OrderValue", String.valueOf(orderTotalValue));
             }
-            Log.e("Map", "" + map);
-            Log.e("Deep Entity", "" + deepEntity);
+            //Log.e("Map", "" + map);
+            //Log.e("Deep Entity", "" + deepEntity);
             orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();

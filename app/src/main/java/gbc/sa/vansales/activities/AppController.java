@@ -80,7 +80,7 @@ public class AppController extends Application {
 
     public static void changeLanguage(Context context,String lang)
     {
-        Log.e("Language", "" + lang);
+        //Log.e("Language", "" + lang);
         if (lang.equalsIgnoreCase(""))
             return;
         Locale myLocale= new Locale(lang);

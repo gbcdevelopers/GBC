@@ -207,7 +207,7 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             else{
                 filter = from;
             }
-            Log.e("From is", "" + from);
+            //Log.e("From is", "" + from);
 
             HashMap<String,String> filterMap = new HashMap<>();
             filterMap.put(db.KEY_USERNAME,filter);
