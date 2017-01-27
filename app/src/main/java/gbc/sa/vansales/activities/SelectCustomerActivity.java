@@ -268,7 +268,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
     public void setVisitList(Cursor visitListCursor,boolean isVisitList) {
         Cursor cursor = visitListCursor;
         cursor.moveToFirst();
-        //Log.e("Cursor count", "" + cursor.getCount());
+        Log.e("Cursor count", "" + cursor.getCount());
         if(isVisitList){
             dataArrayList.clear();
             ArrayList<Customer> data = new ArrayList<>();
@@ -306,7 +306,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
             while (cursor.moveToNext());
 
             Const.dataArrayList = data;
-            //Log.e("Data Array","" + Const.dataArrayList.size());
+            Log.e("Data Array","" + Const.dataArrayList.size());
         }
         else{
             dataArrayList.clear();
@@ -346,7 +346,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
             while (cursor.moveToNext());
 
             Const.allCustomerdataArrayList = data;
-            //Log.e("All Array","" + Const.allCustomerdataArrayList.size());
+            Log.e("All Array","" + Const.allCustomerdataArrayList.size());
         }
 
     }
@@ -437,10 +437,14 @@ public class SelectCustomerActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingSpinner.show();
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
             setTabs();
         }
     }

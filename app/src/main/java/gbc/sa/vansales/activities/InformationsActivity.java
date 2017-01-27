@@ -17,8 +17,8 @@ public class InformationsActivity extends AppCompatActivity {
 
     GridView gridView;
     CustomerOperationAdapter adapter;
-    String strText[] = {"CUSTOMER LIST", "ITEM LIST", "TARGET/GOALS",
-            "ANALYSIS", "TODAY SUMMARY", "REVIEW", "PRINT \n TRANSACTIONS", "PRINT REPORTS"};
+    String strText[] = {};/*{"CUSTOMER LIST", "ITEM LIST", "TARGET/GOALS",
+            "ANALYSIS", "TODAY SUMMARY", "REVIEW", "PRINT \n TRANSACTIONS", "PRINT REPORTS"};*/
     int resarr[] = {R.drawable.info_customer_list, R.drawable.info_item_list, R.drawable.info_target,
             R.drawable.info_analysis, R.drawable.info_todays_summery, R.drawable.info_review,
             R.drawable.info_print_transaction, R.drawable.info_print_reports};
@@ -32,13 +32,15 @@ public class InformationsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informations);
-
+        strText = new String[]{getString(R.string.customer_list), getString(R.string.item_list), getString(R.string.targetgoal),
+                getString(R.string.analysis), getString(R.string.today_summary), getString(R.string.review),
+                getString(R.string.printtransactions), getString(R.string.printreports)};
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         gridView = (GridView) findViewById(R.id.grid_information);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Information");
+        tv_top_header.setText(getString(R.string.information));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

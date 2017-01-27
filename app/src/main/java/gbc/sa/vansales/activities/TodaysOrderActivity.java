@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -125,7 +127,7 @@ public class TodaysOrderActivity extends AppCompatActivity {
             activityCursor.moveToFirst();
             do{
                 TodaysOrder model = new TodaysOrder();
-                model.setCustomer(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                model.setCustomer(StringUtils.stripStart(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_CUSTOMER_NO)), "0"));
                 model.setOrderNo(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 model.setPrice(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_PRICE)));
                 if(!temp.contains(model.getOrderNo())){

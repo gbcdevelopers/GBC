@@ -37,6 +37,7 @@ import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/3/2016.
@@ -295,6 +296,17 @@ public class CustomerDetailActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap<String, String> filter = new HashMap<String, String>();
+                //filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                filter.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(db.KEY_VISIT_UNSERVICED_REASON, arrayList.get(position).getReasonCode());
+                map.put(db.KEY_CUSTOMER_OUT_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
+                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                db.updateData(db.VISIT_LIST, map, filter);
+
                 Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                 startActivity(intent);
                 finish();

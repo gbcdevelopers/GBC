@@ -53,7 +53,7 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
         setContentView(R.layout.activity_promotionlist);
         Intent i = this.getIntent();
         loadingSpinner = new LoadingSpinner(this);
-        loadingSpinner.show();
+        //loadingSpinner.show();
         object = (Customer) i.getParcelableExtra("headerObj");
         delivery = (OrderList)i.getParcelableExtra("delivery");
         arrayList = new ArrayList<>();

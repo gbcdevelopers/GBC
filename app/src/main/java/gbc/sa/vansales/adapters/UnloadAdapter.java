@@ -69,9 +69,9 @@ public class UnloadAdapter extends ArrayAdapter<Unload>{
         //holder.tv_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(salesArrayList.get(pos).getPrice())*Float.parseFloat(salesArrayList.get(pos).getCases())));
         //holder.tv_price.setVisibility(View.GONE);
         holder.tv_price.setText(getContext().getString(R.string.price) + " - " + salesArrayList.get(position).getPrice());
-        holder.tv_cases.setText("Cases");
+        holder.tv_cases.setText(getContext().getString(R.string.cases));
         holder.tv_cases_value.setText(salesArrayList.get(position).getCases());
-        holder.tv_pcs.setText("Pcs");
+        holder.tv_pcs.setText(getContext().getString(R.string.pcs));
         holder.tv_pcs_value.setText(salesArrayList.get(position).getPic());
         return convertView;
     }

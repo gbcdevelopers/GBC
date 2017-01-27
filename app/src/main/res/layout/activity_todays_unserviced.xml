@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_todays_unserviced"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="gbc.sa.vansales.activities.TodaysUnservicedActivity"
-    android:background="@color/grey"
-    >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <include layout="@layout/common_header" />
-
-
-            <ListView
-                android:id="@+id/listView"
-                android:background="@color/white"
-                android:scrollbars="none"
-                android:paddingLeft="@dimen/all_padding"
-                android:paddingRight="@dimen/all_padding"
-                android:layout_marginLeft="@dimen/size_five"
-                android:layout_marginRight="@dimen/size_five"
-                android:divider="@color/colorPrimary"
-                android:dividerHeight="0.5dp"
+<RelativeLayout android:id="@+id/activity_todays_unserviced"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                tools:context="gbc.sa.vansales.activities.TodaysUnservicedActivity"
+				>
 
-                />
+				<LinearLayout
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:background="@color/grey"
+								android:padding="@dimen/h3"
+								android:orientation="vertical">
 
+								<include layout="@layout/common_header"/>
 
-    </LinearLayout>
-
+								<ListView
+												android:id="@+id/listView"
+												android:layout_width="match_parent"
+												android:layout_height="wrap_content"
+												android:background="@color/white"
+												android:divider="@color/grey"
+												android:dividerHeight="@dimen/h3"
+												android:scrollbars="none"
+												/>
+				</LinearLayout>
 </RelativeLayout>

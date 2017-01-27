@@ -7,6 +7,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -40,7 +42,7 @@ public class CustomerInformationAdapter extends ArrayAdapter<Customer> {
             holder = (ViewHolder) convertView.getTag();
         }
         Customer customer = getItem(position);
-        holder.customerID.setText(customer.getCustomerID());
+        holder.customerID.setText(StringUtils.stripStart(customer.getCustomerID(),"0"));
         holder.customerName.setText(customer.getCustomerName());
         holder.customerAddress.setText(customer.getCustomerAddress());
 

@@ -54,6 +54,7 @@ import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.OrderRequest;
 import gbc.sa.vansales.models.PreSaleProceed;
+import gbc.sa.vansales.sap.DataListener;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -61,7 +62,7 @@ import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
-public class PreSaleOrderProceedActivity extends AppCompatActivity {
+public class PreSaleOrderProceedActivity extends AppCompatActivity implements DataListener{
     ArrayList<PreSaleProceed> preSaleProceeds = new ArrayList<>();
     ImageView iv_back;
     TextView tv_top_header;
@@ -87,6 +88,9 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     ArrayList<OrderRequest> arraylist = new ArrayList<>();
     OrderList orderList;
     float orderTotalValue = 0;
+    float totalamnt = 0;
+    float discount = 0;
+    int count=0;
     TextView tv_header;
     public ArrayList<ArticleHeader> articles;
     @Override
@@ -291,13 +295,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new postData().execute();
+                        //new postData().execute();
+                        new loadData().execute();
                     }
                 });
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new postData().execute();
+                        //new postData().execute();
+                        new loadData().execute();
                     }
                 });
             }
@@ -356,6 +362,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+    @Override
+    public void onProcessingComplete() {
+        new postData().execute();
+    }
+    @Override
+    public void onProcessingComplete(String source) {
     }
     public class loadItems extends AsyncTask<Void, Void, Void> {
         ProgressDialog pd;
@@ -678,14 +691,144 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity {
                     }
                 }
                 while (cursor.moveToNext());
-                map.put("OrderValue", String.valueOf(orderTotalValue));
+                //map.put("OrderValue", String.valueOf(orderTotalValue));
+                map.put("OrderValue",discount<=0?String.valueOf(totalamnt+discount):String.valueOf(totalamnt-discount));
+                //map.put("OrderValue", String.valueOf(totalamnt-discount));
             }
-            //Log.e("Map", "" + map);
+            Log.e("Map", "" + map);
             //Log.e("Deep Entity", "" + deepEntity);
+
+
+
             orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
+            //Storing Order Activity for Logging
+            HashMap<String,String>logMap = new HashMap<>();
+            logMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+            logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_ORDER);
+            logMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            logMap.put(db.KEY_ORDER_ID,orderID);
+            logMap.put(db.KEY_PRICE,map.get("OrderValue"));
+            db.addData(db.DAYACTIVITY,logMap);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return orderID + "," + purchaseNumber;
+    }
+    public class loadData extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            recalculateTotal();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            new loadPromotions(App.Promotions02);
+            new loadPromotions(App.Promotions05);
+            new loadPromotions(App.Promotions07);
+        }
+    }
+    public class loadPromotions extends AsyncTask<Void,Void,Void>{
+        private String promoCode;
+        private loadPromotions(String promoCode) {
+            // Log.e("I m in for Load Promotions", "" + source);
+            this.promoCode = promoCode;
+            execute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_AMOUNT,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            if(promoCode.equals(App.Promotions02)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
+            }
+            else if(promoCode.equals(App.Promotions05)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions05);
+            }
+            else if(promoCode.equals(App.Promotions07)){
+                filter.put(db.KEY_PROMOTION_TYPE,App.Promotions07);
+            }
+            Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                applyPromotions(cursor);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            count++;
+            if(count==3){
+                count=0;
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                onProcessingComplete();
+            }
+        }
+    }
+    private void applyPromotions(Cursor cursor){
+        Cursor promotionCursor = cursor;
+        promotionCursor.moveToFirst();
+        do{
+            for(OrderRequest request:arraylist){
+                if(request.getMaterialNo().equals(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)))){
+                    if(request.getUom().equals(App.CASE_UOM)||request.getUom().equals(App.BOTTLES_UOM)){
+                        float cases = Float.parseFloat(request.getCases());
+                        discount += cases*(Float.parseFloat(promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_AMOUNT))));
+                    }
+                }
+            }
+        }
+        while (promotionCursor.moveToNext());
+        Log.e("Discount","" + discount);
+
+    }
+    public void recalculateTotal(){
+        float amount=0;
+        for(OrderRequest order:arraylist){
+            float tempPrice = 0;
+            HashMap<String,String> filterComp = new HashMap<>();
+            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filterComp.put(db.KEY_MATERIAL_NO, order.getMaterialNo());
+            HashMap<String,String> map = new HashMap<>();
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_AMOUNT,"");
+            if(db.checkData(db.PRICING,filterComp)){
+                Cursor customerPriceCursor = db.getData(db.PRICING,map,filterComp);
+                if(customerPriceCursor.getCount()>0){
+                    customerPriceCursor.moveToFirst();
+                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                if(order.getUom().equals(App.CASE_UOM)||order.getUom().equals(App.BOTTLES_UOM)){
+                    amount += tempPrice*Float.parseFloat(order.getCases());
+                }
+                else{
+                    amount += tempPrice*Float.parseFloat(order.getUnits());
+                }
+            }
+            else{
+                if(order.getUom().equals(App.CASE_UOM)||order.getUom().equals(App.BOTTLES_UOM)){
+                    amount += Float.parseFloat(order.getPrice())*Float.parseFloat(order.getCases());
+                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                }
+                else {
+                    amount += Float.parseFloat(order.getPrice())*Float.parseFloat(order.getUnits());
+                }
+            }
+        }
+        totalamnt = amount;
+        Log.e("Total Amount","" + totalamnt);
     }
 }

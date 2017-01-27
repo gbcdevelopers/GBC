@@ -10,6 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -51,10 +53,10 @@ public class PrintAdapter extends ArrayAdapter<Print> {
             holder = (ViewHolder) convertView.getTag();
         }
         Print print = getItem(position);
-        holder.customer_id.setText(print.getCustomer_id());
+        holder.customer_id.setText(StringUtils.stripStart(print.getCustomer_id(),"0"));
         holder.referenceNumber.setText(print.getReferenceNumber());
         holder.transactionType.setText(print.getTransactionType());
-        Log.e("Is checked","" + isChecked);
+        //Log.e("Is checked","" + isChecked);
         holder.checkbox_print_doc.setChecked(isChecked);
 
         return convertView;

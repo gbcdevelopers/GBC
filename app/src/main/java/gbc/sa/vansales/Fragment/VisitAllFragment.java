@@ -97,7 +97,7 @@ public class VisitAllFragment extends Fragment {
 
     private void showStatusDialog(final Customer customer){
         final Dialog dialog = new Dialog(getActivity());
-        dialog.setTitle(getString(R.string.shop_status));
+        //dialog.setTitle(getString(R.string.shop_status));
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         Button cancel = (Button)view.findViewById(R.id.btnCancel);
         cancel.setOnClickListener(new View.OnClickListener() {

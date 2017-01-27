@@ -124,6 +124,10 @@ public class App extends Application {
     public static final String STORAGE_LOCATION = "VAN";
     public static final String PLANT = "1000";
 
+    //Activity Type
+    public static final String ACTIVITY_ORDER = "ORDER";
+    public static final String ACTIVITY_INVOICE = "INVOICE";
+
     @Override
     public void onCreate() {
         super.onCreate();

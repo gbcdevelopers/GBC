@@ -87,7 +87,7 @@ public class AllCustomerFragment extends Fragment {
 
     private void showStatusDialog(final Customer customer){
         final Dialog dialog = new Dialog(getActivity());
-        dialog.setTitle(getString(R.string.shop_status));
+       // dialog.setTitle(getString(R.string.shop_status));
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         ListView lv = (ListView) view.findViewById(R.id.statusList);
         Button cancel = (Button)view.findViewById(R.id.btnCancel);

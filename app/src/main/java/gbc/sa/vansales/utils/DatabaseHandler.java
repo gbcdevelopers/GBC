@@ -57,6 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String UNLOAD_VARIANCE = "UNLOAD_VARIANCE";
     public static final String COLLECTION = "COLLECTION";
     public static final String BANKS = "BANKS";
+    public static final String DAYACTIVITY = "DAYACTIVITY";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -332,6 +333,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_CHEQUE_BANK_CODE = "bankCode";
     public static final String KEY_COLLECTION_TYPE = "collectionType";
     public static final String KEY_IS_INVOICE_COMPLETE = "isInvoiceComplete";
+
+    //Day Activity
+    public static final String KEY_ACTIVITY_TYPE = "activityType";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -815,7 +819,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PRIORITY + " TEXT,"
                 + KEY_DRIVER + " TEXT " + ")";
 
-
         String TABLE_RETURNS = "CREATE TABLE " + RETURNS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP + " TEXT,"
@@ -878,6 +881,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_BANK_CODE + " TEXT,"
                 + KEY_BANK_NAME + " TEXT " + ")";
 
+        String TABLE_ACTIVITY_DAY = "CREATE TABLE " + DAYACTIVITY + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_ACTIVITY_TYPE + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PRICE + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -914,6 +925,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_UNLOAD_VARIANCE);
         db.execSQL(TABLE_COLLECTION);
         db.execSQL(TABLE_BANKS);
+        db.execSQL(TABLE_ACTIVITY_DAY);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -951,6 +963,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_VARIANCE);
         db.execSQL("DROP TABLE IF EXISTS " + COLLECTION);
         db.execSQL("DROP TABLE IF EXISTS " + BANKS);
+        db.execSQL("DROP TABLE IF EXISTS " + DAYACTIVITY);
         onCreate(db);
     }
     //Storing Secured Credentials

@@ -53,6 +53,7 @@
     <string name="amount_due">AMOUNT DUE</string>
     <string name="amout_due">Amount Due</string>
     <string name="amt_paid">Amt.Paid</string>
+    <string name="analysis">ANALYSIS</string>
     <string name="app_name">Vansales</string>
     <string name="apply">apply</string>
     <string name="ar_colletion">AR COLLETION</string>
@@ -113,6 +114,7 @@
     <string name="customer_address2">Address(Line 2)</string>
     <string name="customer_balance_report">CUSTOMER BALANCE REPORT</string>
     <string name="customer_decs">Customer decs</string>
+    <string name="customer_list">CUSTOMER LIST</string>
     <string name="customer_name">Customer Name</string>
     <string name="customerid">Customer ID</string>
     <string name="customeroperation">Customer Operation</string>
@@ -175,7 +177,7 @@
     <string name="hint_customer_phone"><i>eg. 0966xxxxxxx</i></string>
     <string name="hint_customer_fax"><i>eg. 12345678</i></string>
     <string name="image">image</string>
-    <string name="information">Informations</string>
+    <string name="information">Information</string>
     <string name="input_larger">Input Quantity is greater than the available Quantity</string>
     <string name="internet_available_msg">There is no internet connection on the device. Please check the connection and try again.</string>
     <string name="internet_available_title">No Connection</string>
@@ -194,6 +196,7 @@
     <string name="item_code">Item Code</string>
     <string name="item_description">Desc</string>
     <string name="item_discounts">ITEM DISCOUNTS</string>
+    <string name="item_list">ITEM LIST</string>
     <string name="item_no">Item No</string>
     <string name="item_number">Item no</string>
     <string name="item_sales_details">ITEM SALES DETAILS</string>
@@ -265,6 +268,8 @@
     <string name="print">Print</string>
     <string name="printload">Print Load</string>
     <string name="printorder">Print Order</string>
+    <string name="printreports">PRINT REPORTS</string>
+    <string name="printtransactions">PRINT \n TRANSACTIONS</string>
     <string name="proceed">Proceed</string>
     <string name="process_load_request">Process Load Request</string>
     <string name="product">Product</string>
@@ -299,6 +304,7 @@
     <string name="return_reason">Reason</string>
     <string name="returns">Good/Bad Return</string>
     <string name="returntype">Type of Return</string>
+    <string name="review">REVIEW</string>
     <string name="root_active_log">ROOT ACTIVE LOG</string>
     <string name="route_code_101">Route Code: 101</string>
     <string name="route_pro">ROUTE-PRO</string>
@@ -333,6 +339,7 @@
     <string name="stocktake">Berain-Take Stock</string>
     <string name="submit">Submit Order</string>
     <string name="synchronize">Synchronize Data</string>
+    <string name="targetgoal">TARGET/GOALS</string>
     <string name="targetachieved">Achieved/Target</string>
     <string name="tc_sales">TC SALES</string>
     <string name="telephone">Telephone</string>
@@ -340,6 +347,7 @@
     <string name="theft_label"><font fgcolor='#ff0000'>Theft or Missing</font></string>
     <string name="thermal_print">Thermal Print</string>
     <string name="time">Time </string>
+    <string name="today_summary">TODAY SUMMARY</string>
     <string name="today_s_schedule">Today\'s Schedule</string>
     <string name="today_s_unserviced">Today\'s Unserviced</string>
     <string name="total">Total</string>

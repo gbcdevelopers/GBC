@@ -48,6 +48,7 @@
 				<string name="amount_due">المبلغ المستحق</string>
 				<string name="amout_due">المبلغ المستحق</string>
 				<string name="amt_paid">المبلغ المدفوع</string>
+				<string name="analysis">تحليل</string>
 				<string name="app_name">مبيعات السيارات</string>
 				<string name="apply">تطبيق</string>
 				<string name="ar_colletion">مقبوضات</string>
@@ -56,7 +57,7 @@
 				<string name="availableload">التحميل المتاح</string>
 				<string name="bad">سىء</string>
 				<string name="bad_return">مرتجعات سيئة</string>
-				<string name="bad_return_variance">Bad Return(Variance)</string>
+				<string name="bad_return_variance">سيئة العودة (الفروق)</string>
 				<string name="bad_returns">مرتجعات سيئة</string>
 				<string name="balance">الرصيد</string>
 				<string name="beginDay">تبدأ يوم</string>
@@ -108,6 +109,7 @@
 				<string name="customer_address2">Address(Line 2)</string>
 				<string name="customer_balance_report">تقرير حساب العميل</string>
 				<string name="customer_decs">Customer decs</string>
+				<string name="customer_list">قائمة العملاء</string>
 				<string name="customer_name">اسم العميل</string>
 				<string name="customerid">كود العميل</string>
 				<string name="customeroperation">عملية العملاء</string>
@@ -144,7 +146,7 @@
 				<string name="email">البريد الإلكتروني</string>
 				<string name="enableautosync">تمكين المزامنة التلقائية</string>
 				<string name="endtrip">نهاية الرحلة</string>
-				<string name="ending_inventory">Ending Inventory</string>
+				<string name="ending_inventory">إنهاء جرد</string>
 				<string name="end_invoice">نهاية الفاتورة</string>
 				<string name="english">English</string>
 				<string name="enter_amount">Enter Amount</string>
@@ -158,7 +160,7 @@
 				<string name="fax">فاكس</string>
 				<string name="frahn">Frahn</string>
 				<string name="freegoods">بضائع مجانية</string>
-				<string name="fresh_unload">Fresh Unload</string>
+				<string name="fresh_unload">إلغاء تحميل جديدة</string>
 				<string name="good">جيد</string>
 				<string name="good_return">مرتجعات جيدة</string>
 				<string name="good_returns">مرتجعات جيدة</string>
@@ -176,7 +178,7 @@
 				<string name="internet_available_title">لا يوجد اتصال</string>
 				<string name="inv_date">تاريخ الفاتورة</string>
 				<string name="inv_qty">كمية الفاتورة</string>
-				<string name="inventory_variance">Inventory Variance</string>
+				<string name="inventory_variance">تباين المخزون</string>
 				<string name="invoice">فاتورة</string>
 				<string name="invoice_amount">Invoice Amount</string>
 				<string name="invoice_discounts">خصومات فاتورة</string>
@@ -189,6 +191,7 @@
 				<string name="item_code">كود الصنف</string>
 				<string name="item_description">وصف</string>
 				<string name="item_discounts">خصومات الاصناف</string>
+				<string name="item_list">قائمة البند</string>
 				<string name="item_no">كود الصنف</string>
 				<string name="item_number">كود الصنف</string>
 				<string name="item_sales_details">تفاصيل الصنف </string>
@@ -260,6 +263,8 @@
 				<string name="print">طباعه</string>
 				<string name="printload">طباعه الحمولة</string>
 				<string name="printorder">طباعه الامر</string>
+				<string name="printreports">طباعة التقارير</string>
+				<string name="printtransactions">PRINT \n TRANSACTIONS</string>
 				<string name="proceed">تقدم</string>
 				<string name="process_load_request">عمليه طلب حمولة</string>
 				<string name="product">المنتج</string>
@@ -280,7 +285,7 @@
 				<string name="reload_data">Reload Data</string>
 				<string name="remark">تعليق</string>
 				<string name="rental">تاجير</string>
-				<string name="request_created">Request created</string>
+				<string name="request_created">طلب مكون</string>
 				<string name="request_timeout">انتهاء فترة الطلب</string>
 				<string-array name="returnReasons">
 								<item/>
@@ -288,12 +293,13 @@
 								<item>reason two</item>
 								<item>reason three</item>
 				</string-array>
-				<string name="return_applied_promotion">Return Applied Promotion</string>
+				<string name="return_applied_promotion">العودة تعزيز التطبيقية</string>
 				<string name="return_item">الصنف المرتجع</string>
-				<string name="return_qualified_amount">Return Qualified Amount</string>
+				<string name="return_qualified_amount">العودة المبلغ المؤهلين</string>
 				<string name="return_reason">سبب</string>
 				<string name="returns">جيدة / سيئة مرتجع</string>
 				<string name="returntype">انواع المرتجع</string>
+				<string name="review">مراجعة</string>
 				<string name="root_active_log">سجل انشطة خط السير</string>
 				<string name="route_code_101">كود خط السير</string>
 				<string name="route_pro">ROUTE-PRO</string>
@@ -328,6 +334,7 @@
 				<string name="stocktake">Berain-Take Stock</string>
 				<string name="submit">قدم الأمر</string>
 				<string name="synchronize">Synchronize Data</string>
+				<string name="targetgoal">TARGET/GOALS</string>
 				<string name="targetachieved">المحقق/الهدف</string>
 				<string name="tc_sales">TC SALES</string>
 				<string name="telephone">هاتف</string>
@@ -335,6 +342,7 @@
 				<string name="theft_label"><font fgcolor='#ff0000'>Theft or Missing</font></string>
 				<string name="thermal_print">الطابعه الحرارية</string>
 				<string name="time">وقت</string>
+				<string name="today_summary">ملخص اليوم</string>
 				<string name="today_s_schedule">جدول اليوم</string>
 				<string name="today_s_unserviced">عملاء غير مخدومين اليوم</string>
 				<string name="total">Total</string>
@@ -344,7 +352,7 @@
 				<string name="total_receipt">إجمالي المقبوضات</string>
 				<string name="total_sales">إجمالي المبيعات</string>
 				<string name="trade_price">سعر تداول</string>
-				<string name="truck_damage">Truck Damage</string>
+				<string name="truck_damage">الأضرار شاحنة</string>
 				<string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>
 				<string name="tv_cust_detail1">MOP:TC(CASH or CHEQUE)</string>
 				<string name="tv_cust_detail2">PO box</string>
