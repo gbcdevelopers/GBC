@@ -37,6 +37,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/6/2016.
  */
@@ -617,7 +618,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             map.put(db.KEY_TRIP_ID,"");
             map.put(db.KEY_CUSTOMER_NO,"");
             map.put(db.KEY_REASON_TYPE, "");
-            map.put(db.KEY_REASON_CODE,"");
+            map.put(db.KEY_REASON_CODE, "");
             map.put(db.KEY_ITEM_NO,"");
             map.put(db.KEY_MATERIAL_DESC1,"");
             map.put(db.KEY_MATERIAL_NO,"");
@@ -640,6 +641,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 do {
                     Sales sale = new Sales();
                     sale.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    sale.setMaterial_description(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                     sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                     sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                     sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
@@ -898,6 +900,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 do {
                     Sales sale = new Sales();
                     sale.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    sale.setMaterial_description(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                     sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
                     sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
                     sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
@@ -1111,28 +1114,63 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 //Log.e("Cursor count", "" + cursor.getCount());
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
+                    do {
+                        HashMap<String, String> updateDataMap = new HashMap<>();
+                        float remainingCase = 0;
+                        float remainingUnit = 0;
+                        remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                        remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                        //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                        //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                        if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                            remainingCase = remainingCase + Float.parseFloat(sale.getCases());
+                        }
+                        if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                            remainingUnit = remainingUnit + Float.parseFloat(sale.getPic());
+                        }
+                        updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                        updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                        HashMap<String, String> filterInter = new HashMap<>();
+                        filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                    }
+                    while (cursor.moveToNext());
                 }
-                do {
-                    HashMap<String, String> updateDataMap = new HashMap<>();
-                    float remainingCase = 0;
-                    float remainingUnit = 0;
-                    remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                    remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                    //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
-                    //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                //If there is no item present in van stock for that material add it
+                else{
+                    HashMap<String,String>addMap = new HashMap<>();
+                    addMap.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
+                    addMap.put(db.KEY_DELIVERY_NO,"");
+                    addMap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    addMap.put(db.KEY_ITEM_NO, sale.getItem_code());
+                    addMap.put(db.KEY_MATERIAL_DESC1, sale.getMaterial_description());
                     if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
-                        remainingCase = remainingCase + Float.parseFloat(sale.getCases());
+                        addMap.put(db.KEY_ACTUAL_QTY_CASE,sale.getCases());
+                        addMap.put(db.KEY_RESERVED_QTY_CASE,"0");
+                        addMap.put(db.KEY_REMAINING_QTY_CASE,sale.getCases());
+                    }
+                    else{
+                        addMap.put(db.KEY_ACTUAL_QTY_CASE,"0");
+                        addMap.put(db.KEY_RESERVED_QTY_CASE,"0");
+                        addMap.put(db.KEY_REMAINING_QTY_CASE,"0");
                     }
                     if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
-                        remainingUnit = remainingUnit + Float.parseFloat(sale.getPic());
+                        addMap.put(db.KEY_ACTUAL_QTY_UNIT,sale.getPic());
+                        addMap.put(db.KEY_RESERVED_QTY_UNIT,"0");
+                        addMap.put(db.KEY_REMAINING_QTY_UNIT,sale.getPic());
                     }
-                    updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
-                    updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
-                    HashMap<String, String> filterInter = new HashMap<>();
-                    filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                    else{
+                        addMap.put(db.KEY_ACTUAL_QTY_UNIT,"0");
+                        addMap.put(db.KEY_RESERVED_QTY_UNIT,"0");
+                        addMap.put(db.KEY_REMAINING_QTY_UNIT,"0");
+                    }
+                    if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)||sale.getUom().equals(App.BOTTLES_UOM)){
+                        addMap.put(db.KEY_UOM_CASE,App.CASE_UOM);
+                        addMap.put(db.KEY_UOM_UNIT,App.BOTTLES_UOM);
+                    }
+                    db.addData(db.VAN_STOCK_ITEMS,addMap);
                 }
-                while (cursor.moveToNext());
+
             }
             loadingSpinner.hide();
         }
@@ -1151,28 +1189,29 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                // Log.e("Cursor count", "" + cursor.getCount());
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
-                }
-                do {
-                    HashMap<String, String> updateDataMap = new HashMap<>();
-                    float remainingCase = 0;
-                    float remainingUnit = 0;
-                    remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                    remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                    //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
-                    //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
-                    if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
-                        remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+                    do {
+                        HashMap<String, String> updateDataMap = new HashMap<>();
+                        float remainingCase = 0;
+                        float remainingUnit = 0;
+                        remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                        remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                        //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                        //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                        if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                            remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+                        }
+                        if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                            remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                        }
+                        updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                        updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                        HashMap<String, String> filterInter = new HashMap<>();
+                        filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
                     }
-                    if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
-                        remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
-                    }
-                    updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
-                    updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
-                    HashMap<String, String> filterInter = new HashMap<>();
-                    filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                    while (cursor.moveToNext());
                 }
-                while (cursor.moveToNext());
+
             }
             loadingSpinner.hide();
         }

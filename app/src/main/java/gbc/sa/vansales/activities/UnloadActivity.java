@@ -248,6 +248,7 @@ public class UnloadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             postCount++;
+            Log.e("Refernce Count","" + postCount + referenceCount);
             if(postCount==referenceCount){
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();
@@ -288,8 +289,12 @@ public class UnloadActivity extends AppCompatActivity {
                                 .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        /*dialog.dismiss();
+                                        finish();*/
+                                        clearVanStock();
                                         dialog.dismiss();
-                                        finish();
+                                        Intent intent = new Intent(UnloadActivity.this,ManageInventory.class);
+                                        startActivity(intent);
                                     }
                                 });
                         // create alert dialog
@@ -750,6 +755,7 @@ public class UnloadActivity extends AppCompatActivity {
         //dataStoreList = vanData;
     }
     private void clearVanStock(){
+        Log.e("Tst","Test");
         for(int i=0;i<articles.size();i++){
             HashMap<String,String>map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
