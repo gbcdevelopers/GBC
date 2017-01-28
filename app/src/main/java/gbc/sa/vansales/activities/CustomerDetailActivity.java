@@ -65,7 +65,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
         reasonsList = OrderReasons.get();
-        statusAdapter = new CustomerStatusAdapter(this,arrayList);
+        statusAdapter = new CustomerStatusAdapter(this, arrayList);
         loadCustomerStatus();
         strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
         if (getIntent().getExtras() != null) {
@@ -91,7 +91,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 } else {
-                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
+                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
                     tv_customer_address.setText(object.getCustomerAddress().toString());
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
@@ -138,16 +138,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(shouldShowDialog()){
+                if (shouldShowDialog()) {
                     showStatusDialog();
-                }
-                else{
+                } else {
                     Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                     startActivity(intent);
                     finish();
                 }
-
-
             }
         });
         ll_pricelist = (LinearLayout) findViewById(R.id.ll_pricelist);
@@ -254,11 +251,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void loadCustomerStatus(){
-        for(Reasons reason:reasonsList){
+    private void loadCustomerStatus() {
+        for (Reasons reason : reasonsList) {
             CustomerStatus status = new CustomerStatus();
-            if(reason.getReasonType().equals(App.VisitReasons)){
+            if (reason.getReasonType().equals(App.VisitReasons)) {
                 status.setReasonCode(reason.getReasonID());
                 status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
                 arrayList.add(status);
@@ -266,26 +262,22 @@ public class CustomerDetailActivity extends AppCompatActivity {
         }
         statusAdapter.notifyDataSetChanged();
     }
-
-    private boolean shouldShowDialog(){
+    private boolean shouldShowDialog() {
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        if(db.checkData(db.ORDER_REQUEST,map)||db.checkData(db.CAPTURE_SALES_INVOICE, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)){
+        if (db.checkData(db.ORDER_REQUEST, map) || db.checkData(db.CAPTURE_SALES_INVOICE, map) || db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
-
     }
-
-    private void showStatusDialog(){
+    private void showStatusDialog() {
         final Dialog dialog = new Dialog(CustomerDetailActivity.this);
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-        TextView tv_header = (TextView)view.findViewById(R.id.tv_top_header);
+        TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
         tv_header.setText("Non Serviced Reasons");
         ListView lv = (ListView) view.findViewById(R.id.statusList);
-        Button cancel = (Button)view.findViewById(R.id.btnCancel);
+        Button cancel = (Button) view.findViewById(R.id.btnCancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -306,7 +298,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
                 map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 db.updateData(db.VISIT_LIST, map, filter);
-
                 Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                 startActivity(intent);
                 finish();
@@ -315,9 +306,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         dialog.setContentView(view);
         dialog.setCancelable(false);
         dialog.show();
-
     }
-
     @Override
     protected void onPostResume() {
         super.onPostResume();

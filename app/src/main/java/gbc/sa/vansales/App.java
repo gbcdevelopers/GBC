@@ -372,4 +372,126 @@ public class App extends Application {
         }
 
     }
+    public static class CustomerRouteControl implements Parcelable{
+        private static String thresholdLimit;
+        private static boolean isVerifyGPS;
+        private static boolean isEnableIVCopy;
+        private static boolean isDelayPrint;
+        private static boolean isEditOrders;
+        private static boolean isEditInvoice;
+        private static boolean isReturns;
+        private static boolean isDamaged;
+        private static boolean isSignCapture;
+        private static boolean isReturnCustomer;
+        private static boolean isCollection;
+
+        public boolean isCollection() {
+            return isCollection;
+        }
+        public void setIsCollection(boolean isCollection) {
+            this.isCollection = isCollection;
+        }
+        public boolean isDamaged() {
+            return isDamaged;
+        }
+        public void setIsDamaged(boolean isDamaged) {
+            this.isDamaged = isDamaged;
+        }
+        public boolean isDelayPrint() {
+            return isDelayPrint;
+        }
+        public void setIsDelayPrint(boolean isDelayPrint) {
+            this.isDelayPrint = isDelayPrint;
+        }
+        public boolean isEditInvoice() {
+            return isEditInvoice;
+        }
+        public void setIsEditInvoice(boolean isEditInvoice) {
+            this.isEditInvoice = isEditInvoice;
+        }
+        public boolean isEditOrders() {
+            return isEditOrders;
+        }
+        public void setIsEditOrders(boolean isEditOrders) {
+            this.isEditOrders = isEditOrders;
+        }
+        public boolean isEnableIVCopy() {
+            return isEnableIVCopy;
+        }
+        public void setIsEnableIVCopy(boolean isEnableIVCopy) {
+            this.isEnableIVCopy = isEnableIVCopy;
+        }
+        public boolean isReturnCustomer() {
+            return isReturnCustomer;
+        }
+        public void setIsReturnCustomer(boolean isReturnCustomer) {
+            this.isReturnCustomer = isReturnCustomer;
+        }
+        public boolean isReturns() {
+            return isReturns;
+        }
+        public void setIsReturns(boolean isReturns) {
+            this.isReturns = isReturns;
+        }
+        public boolean isSignCapture() {
+            return isSignCapture;
+        }
+        public void setIsSignCapture(boolean isSignCapture) {
+            this.isSignCapture = isSignCapture;
+        }
+        public boolean isVerifyGPS() {
+            return isVerifyGPS;
+        }
+        public void setIsVerifyGPS(boolean isVerifyGPS) {
+            this.isVerifyGPS = isVerifyGPS;
+        }
+        public String getThresholdLimit() {
+            return thresholdLimit;
+        }
+        public void setThresholdLimit(String thresholdLimit) {
+            this.thresholdLimit = thresholdLimit;
+        }
+
+        public static final Creator<CustomerRouteControl> CREATOR = new Creator<CustomerRouteControl>() {
+            @Override
+            public CustomerRouteControl createFromParcel(Parcel source) {
+                CustomerRouteControl customerFlag = new CustomerRouteControl();
+                customerFlag.thresholdLimit = source.readString();
+                customerFlag.isVerifyGPS = source.readByte() != 0;
+                customerFlag.isEnableIVCopy = source.readByte() != 0;
+                customerFlag.isDelayPrint = source.readByte() != 0;
+                customerFlag.isEditOrders = source.readByte() != 0;
+                customerFlag.isEditInvoice = source.readByte() != 0;
+                customerFlag.isReturns = source.readByte() != 0;
+                customerFlag.isDamaged = source.readByte() != 0;
+                customerFlag.isSignCapture = source.readByte() != 0;
+                customerFlag.isReturnCustomer = source.readByte() != 0;
+                customerFlag.isCollection = source.readByte() != 0;
+                return customerFlag;
+            }
+            @Override
+            public CustomerRouteControl[] newArray(int size) {
+                return new CustomerRouteControl[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+        @Override
+        public void writeToParcel(Parcel parcel, int flags) {
+            parcel.writeString(thresholdLimit);
+            parcel.writeByte((byte) (isVerifyGPS ? 1 : 0));
+            parcel.writeByte((byte) (isEnableIVCopy ? 1 : 0));
+            parcel.writeByte((byte) (isDelayPrint ? 1 : 0));
+            parcel.writeByte((byte) (isEditOrders ? 1 : 0));
+            parcel.writeByte((byte) (isEditInvoice ? 1 : 0));
+            parcel.writeByte((byte) (isReturns ? 1 : 0));
+            parcel.writeByte((byte) (isDamaged ? 1 : 0));
+            parcel.writeByte((byte) (isSignCapture ? 1 : 0));
+            parcel.writeByte((byte) (isReturnCustomer ? 1 : 0));
+            parcel.writeByte((byte) (isCollection ? 1 : 0));
+        }
+    }
 }

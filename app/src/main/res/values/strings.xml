@@ -103,6 +103,7 @@
     <string name="credit_available">Avail. Limit</string>
     <string name="credit_days">Credit Days</string>
     <string name="credit_limit">Credit Limit</string>
+    <string name="crno">CR No</string>
     <string name="currency">SAR</string>
     <string name="current_invoice_amount">Current Invoice Amount</string>
     <string name="cust_ID">Cust ID</string>
@@ -110,8 +111,8 @@
     <string name="customer">Customer</string>
     <string name="customer_1">Customer 1</string>
     <string name="customer_address">Address</string>
-    <string name="customer_address1">Address(Line 1)</string>
-    <string name="customer_address2">Address(Line 2)</string>
+    <string name="customer_address1">Area</string>
+    <string name="customer_address2">Street</string>
     <string name="customer_balance_report">CUSTOMER BALANCE REPORT</string>
     <string name="customer_decs">Customer decs</string>
     <string name="customer_list">CUSTOMER LIST</string>
@@ -169,6 +170,7 @@
     <string name="good">Good</string>
     <string name="good_return">Good Return</string>
     <string name="good_returns">GOOD RETURNS</string>
+    <string name="hint_cr_no"><i>eg. 12345</i></string>
     <string name="hint_customer_name"><i>eg. John Doe</i></string>
     <string name="hint_customer_address1"><i>eg. 144 Baker Street</i></string>
     <string name="hint_customer_address2"><i>eg. London City</i></string>
@@ -231,6 +233,7 @@
     <string name="new_invoice_amount">New Invoice Amount</string>
     <string name="nextload">Next Load to Process</string>
     <string name="no">No</string>
+    <string name="no_data">Please input data before creating request</string>
     <string name="no_records">No Records</string>
     <string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
     <string name="odometer">Last Odometer Reading</string>
@@ -244,6 +247,7 @@
     <string name="ordersummary">Order Summary</string>
     <string name="outlet_inventory">Outlet Inventory</string>
     <string name="outlet_invoice">OUTLET INVOICE</string>
+    <string name="owner_name">Owner Name</string>
     <string name="paid">Paid</string>
     <string name="password">PASSWORD</string>
     <string name="payment">payment</string>
@@ -356,6 +360,7 @@
     <string name="total_promo_amount">Total Promo Amount</string>
     <string name="total_receipt">Total Receipt</string>
     <string name="total_sales">Total Sales</string>
+    <string name="trade_name">Trade Name</string>
     <string name="trade_price">Trade Price</string>
     <string name="truck_damage">Truck Damage</string>
     <string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>

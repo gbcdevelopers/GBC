@@ -98,6 +98,7 @@
 				<string name="credit_available">الحد الائتماني المتاح</string>
 				<string name="credit_days">ايام الإئتمان</string>
 				<string name="credit_limit">الحد الائتماني</string>
+				<string name="crno">CR No</string>
 				<string name="currency">ريال</string>
 				<string name="current_invoice_amount">مبلغ الفاتورة الحالية</string>
 				<string name="cust_ID">كود العميل</string>
@@ -164,6 +165,7 @@
 				<string name="good">جيد</string>
 				<string name="good_return">مرتجعات جيدة</string>
 				<string name="good_returns">مرتجعات جيدة</string>
+				<string name="hint_cr_no"><i>eg. 12345</i></string>
 				<string name="hint_customer_name"><i>eg. John Doe</i></string>
 				<string name="hint_customer_address1"><i>eg. 144 Baker Street</i></string>
 				<string name="hint_customer_address2"><i>eg. London City</i></string>
@@ -226,6 +228,7 @@
 				<string name="new_invoice_amount">القيمة الجديدة للفاتورة</string>
 				<string name="nextload">البدء فى الحمولة التالية</string>
 				<string name="no">لا</string>
+				<string name="no_data">Please input data before creating request</string>
 				<string name="no_records">لا توجد بيانات</string>
 				<string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
 				<string name="odometer">آخر قرائة للعداد</string>
@@ -239,6 +242,7 @@
 				<string name="ordersummary">ملخص الطلب</string>
 				<string name="outlet_inventory">Outlet Inventory</string>
 				<string name="outlet_invoice">OUTLET INVOICE</string>
+				<string name="owner_name">Owner Name</string>
 				<string name="paid">Paid</string>
 				<string name="password">PASSWORD</string>
 				<string name="payment">دفعة</string>
@@ -351,6 +355,7 @@
 				<string name="total_promo_amount">إجمالى قيمه العرض</string>
 				<string name="total_receipt">إجمالي المقبوضات</string>
 				<string name="total_sales">إجمالي المبيعات</string>
+				<string name="trade_name">Trade Name</string>
 				<string name="trade_price">سعر تداول</string>
 				<string name="truck_damage">الأضرار شاحنة</string>
 				<string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>

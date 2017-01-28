@@ -457,7 +457,15 @@ public class LoadRequestActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (!isPutOnHold) {
-                            new postData().execute();
+                            if(!checkforNullBeforePost()){
+                                dialog.dismiss();
+                                Toast.makeText(LoadRequestActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                dialog.dismiss();
+                                new postData().execute();
+                            }
+
                         }
                         dialog.dismiss();
                         //finish();
@@ -467,7 +475,14 @@ public class LoadRequestActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (!isPutOnHold) {
-                            new postData().execute();
+                            if(!checkforNullBeforePost()){
+                                dialog.dismiss();
+                                Toast.makeText(LoadRequestActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                dialog.dismiss();
+                                new postData().execute();
+                            }
                         }
                         dialog.dismiss();
                     }
@@ -925,5 +940,13 @@ public class LoadRequestActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    public boolean checkforNullBeforePost(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+        Log.e("Return Data","" + db.checkData(db.LOAD_REQUEST,map));
+        return db.checkData(db.LOAD_REQUEST,map);
     }
 }

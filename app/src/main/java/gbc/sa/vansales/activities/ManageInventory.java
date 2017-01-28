@@ -9,9 +9,11 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -78,6 +80,7 @@ public class ManageInventory extends AppCompatActivity {
                         } else {
                             Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
                             startActivity(i);
+                            dialog.dismiss();
                         }
                     }
                 });
@@ -87,6 +90,12 @@ public class ManageInventory extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(dialog.getWindow().getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.gravity = Gravity.CENTER;
+                dialog.getWindow().setAttributes(lp);
                 dialog.setContentView(view);
                 dialog.setCancelable(false);
                 dialog.show();

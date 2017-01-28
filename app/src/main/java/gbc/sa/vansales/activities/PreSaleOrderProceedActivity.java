@@ -296,14 +296,26 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                     @Override
                     public void onClick(View v) {
                         //new postData().execute();
-                        new loadData().execute();
+                        if (!checkforNullBeforePost()) {
+                            dialog.dismiss();
+                            Toast.makeText(PreSaleOrderProceedActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
+                        } else {
+                            dialog.dismiss();
+                            new loadData().execute();
+                        }
                     }
                 });
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //new postData().execute();
-                        new loadData().execute();
+                        if (!checkforNullBeforePost()) {
+                            dialog.dismiss();
+                            Toast.makeText(PreSaleOrderProceedActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
+                        } else {
+                            dialog.dismiss();
+                            new loadData().execute();
+                        }
                     }
                 });
             }
@@ -830,5 +842,12 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         totalamnt = amount;
         Log.e("Total Amount","" + totalamnt);
+    }
+    public boolean checkforNullBeforePost(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+        return db.checkData(db.ORDER_REQUEST,map);
     }
 }

@@ -51,7 +51,7 @@ public class AddCustomerActivity extends AppCompatActivity {
         addCustomer = (Button)findViewById(R.id.btn_add_customer);
 
         tv_customer_id = (TextView)findViewById(R.id.tv_customer_id);
-        et_customer_name = (EditText)findViewById(R.id.et_customer_name);
+        et_customer_name = (EditText)findViewById(R.id.et_owner_name);
         et_customer_address1 = (EditText)findViewById(R.id.et_customer_address1);
         et_customer_address2 = (EditText)findViewById(R.id.et_customer_address2);
         et_customer_pobox = (EditText)findViewById(R.id.et_customer_pobox);
