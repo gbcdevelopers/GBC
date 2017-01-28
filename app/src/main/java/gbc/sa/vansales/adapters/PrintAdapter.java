@@ -24,9 +24,11 @@ import gbc.sa.vansales.models.Print;
 public class PrintAdapter extends ArrayAdapter<Print> {
     private LayoutInflater mInflater;
     private boolean isChecked = false;
+    ArrayList<Print> arrayList = new ArrayList<>();
 
     public PrintAdapter(Context context, ArrayList<Print> prints) {
         super(context, R.layout.item_print_document, prints);
+        this.arrayList = prints;
         mInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     public PrintAdapter(Context context, ArrayList<Print> prints, boolean isChecked) {
@@ -36,7 +38,7 @@ public class PrintAdapter extends ArrayAdapter<Print> {
         mInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_print_document, null);
@@ -53,11 +55,17 @@ public class PrintAdapter extends ArrayAdapter<Print> {
             holder = (ViewHolder) convertView.getTag();
         }
         Print print = getItem(position);
-        holder.customer_id.setText(StringUtils.stripStart(print.getCustomer_id(),"0"));
+        holder.customer_id.setText(StringUtils.stripStart(print.getCustomer_id(), "0"));
         holder.referenceNumber.setText(print.getReferenceNumber());
         holder.transactionType.setText(print.getTransactionType());
         //Log.e("Is checked","" + isChecked);
-        holder.checkbox_print_doc.setChecked(isChecked);
+        holder.checkbox_print_doc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                arrayList.get(position).setIsChecked(isChecked);
+            }
+        });
+        holder.checkbox_print_doc.setChecked(arrayList.get(position).isChecked());
 
         return convertView;
     }

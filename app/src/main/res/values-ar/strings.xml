@@ -63,6 +63,7 @@
 				<string name="beginDay">تبدأ يوم</string>
 				<string name="beginday_route">خط سير</string>
 				<string name="begintrip">بداية الرحلة</string>
+				<string name="br">B.R</string>
 				<string name="buyback_free">إعادة شراء مجانية</string>
 				<string name="calendar">تقويم</string>
 				<string name="cancel">إلغاء</string>
@@ -122,6 +123,7 @@
 				<string name="day">يوم</string>
 				<string name="days">ايام</string>
 				<string name="delete">الغاء</string>
+				<string name="delete_msg">Are you sure you want to delete?</string>
 				<string name="delivery">خدمه توصيل</string>
 				<string name="delivery_1234">Delivery# 1234</string>
 				<string name="delivery_date">تاريخ التسليم</string>
@@ -165,6 +167,7 @@
 				<string name="good">جيد</string>
 				<string name="good_return">مرتجعات جيدة</string>
 				<string name="good_returns">مرتجعات جيدة</string>
+				<string name="gr">G.R</string>
 				<string name="hint_cr_no"><i>eg. 12345</i></string>
 				<string name="hint_customer_name"><i>eg. John Doe</i></string>
 				<string name="hint_customer_address1"><i>eg. 144 Baker Street</i></string>
@@ -269,11 +272,14 @@
 				<string name="printorder">طباعه الامر</string>
 				<string name="printreports">طباعة التقارير</string>
 				<string name="printtransactions">PRINT \n TRANSACTIONS</string>
+				<string name="print_transactions_lbl">Print Transactions</string>
+				<string name="print_items_lbl">Print Items</string>
 				<string name="proceed">تقدم</string>
 				<string name="process_load_request">عمليه طلب حمولة</string>
 				<string name="product">المنتج</string>
 				<string name="product_description">Product description</string>
 				<string name="product_number">رقم المنتج</string>
+				<string name="promo">Promo</string>
 				<string name="promotion">عرض تسويقى</string>
 				<string name="promo_details">تفاصيل الترويج</string>
 				<string name="put_on_hold">ضعه على الانتظار</string>

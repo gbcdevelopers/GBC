@@ -3,16 +3,19 @@ package gbc.sa.vansales.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 import gbc.sa.vansales.adapters.PrintDocumentAdapter;
-
+import gbc.sa.vansales.google.Location;
+import gbc.sa.vansales.utils.Callback;
 public class InformationsActivity extends AppCompatActivity {
 
     GridView gridView;
@@ -67,7 +70,17 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(itemlist);
                         break;
                     case 2:
-
+                        new Location(InformationsActivity.this, new Callback() {
+                            @Override
+                            public void callbackSuccess(android.location.Location location) {
+                                Log.e("COORDUNATES",String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
+                                Toast.makeText(getBaseContext(),String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()),Toast.LENGTH_SHORT).show();
+                            }
+                            @Override
+                            public void callbackFailure() {
+                                Toast.makeText(getBaseContext(), "Failure", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         break;
                     case 3:
 

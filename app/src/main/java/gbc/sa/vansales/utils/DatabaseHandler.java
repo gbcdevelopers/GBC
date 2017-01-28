@@ -47,6 +47,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String CUSTOMER_DELIVERY_HEADER = "CUSTOMER_DELIVERY_HEADER";
     public static final String CUSTOMER_DELIVERY_ITEMS = "CUSTOMER_DELIVERY_ITEMS";
     public static final String CUSTOMER_DELIVERY_ITEMS_POST = "CUSTOMER_DELIVERY_ITEMS_POST";
+    public static final String CUSTOMER_DELIVERY_ITEMS_DELETE_POST = "CUSTOMER_DELIVERY_ITEMS_DELETE_POST";
     public static final String ORDER_REQUEST = "ORDER_REQUEST";
     public static final String MESSAGES = "MESSAGES";
     public static final String ODOMETER = "ODOMETER";
@@ -643,6 +644,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_AMOUNT + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
+        String TABLE_CUSTOMER_DELIVERY_ITEMS_DELETE_POST = "CREATE TABLE " + CUSTOMER_DELIVERY_ITEMS_DELETE_POST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_DELIVERY_NO + " TEXT,"
+                + KEY_ITEM_NO + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_CASE + " TEXT,"
+                + KEY_UNIT + " TEXT,"
+                + KEY_UOM + " TEXT,"
+                + KEY_REASON_CODE + " TEXT,"
+                + KEY_REASON_DESCRIPTION + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
         String TABLE_BEGIN_DAY = "CREATE TABLE " + BEGIN_DAY + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP + " TEXT,"
@@ -906,6 +925,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_CUSTOMER_DELIVERY_HEADER);
         db.execSQL(TABLE_CUSTOMER_DELIVERY_ITEMS);
         db.execSQL(TABLE_CUSTOMER_DELIVERY_ITEMS_POST);
+        db.execSQL(TABLE_CUSTOMER_DELIVERY_ITEMS_DELETE_POST);
         db.execSQL(TABLE_BEGIN_DAY);
         db.execSQL(TABLE_CAPTURE_CUSTOMER_STOCK);
         db.execSQL(TABLE_CAPTURE_SALES_INVOICE);
@@ -945,6 +965,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_ITEMS_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_DELIVERY_ITEMS_DELETE_POST);
         db.execSQL("DROP TABLE IF EXISTS " + BEGIN_DAY);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_CUSTOMER_STOCK);
         db.execSQL("DROP TABLE IF EXISTS " + CAPTURE_SALES_INVOICE);

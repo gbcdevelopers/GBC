@@ -14,6 +14,7 @@
     <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/cardView"
         android:layout_below="@+id/inc_comman_header_poustind_audit"
         card_view:cardCornerRadius="@dimen/list_space"
         card_view:cardElevation="@dimen/size_four"
@@ -23,7 +24,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,7 +120,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:divider="@null" />
-
+            <Button
+                android:id="@+id/btn_print_printer_report"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/buttoncolor"
+                android:text="@string/print"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

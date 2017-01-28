@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -44,6 +45,7 @@ import gbc.sa.vansales.App;
 import gbc.sa.vansales.Fragment.BListFragment;
 import gbc.sa.vansales.Fragment.GListFragment;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.adapters.CustomerStatusAdapter;
 import gbc.sa.vansales.adapters.DeliveryItemBadgeAdapter;
 import gbc.sa.vansales.adapters.ReasonAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
@@ -53,6 +55,7 @@ import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
+import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
@@ -63,6 +66,7 @@ import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class DeliveryOrderActivity extends AppCompatActivity {
     ArrayList<PreSaleProceed> preSaleProceeds = new ArrayList<>();
@@ -89,10 +93,11 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     LinearLayout labelView;
     FloatingActionButton edit;
     FloatingActionButton ok;
-    ArrayAdapter<Reasons> myAdapter;
+    ArrayAdapter<CustomerStatus> myAdapter;
     boolean canEdit = false;
     public ArrayList<ArticleHeader> articles;
     private ArrayList<Reasons> reasonsList = new ArrayList<>();
+    private ArrayList<CustomerStatus> rejectReasonList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +112,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         custLayout.setVisibility(View.GONE);
         labelView.setVisibility(View.GONE);
         reasonsList = OrderReasons.get();
-        myAdapter = new ReasonAdapter(this, android.R.layout.simple_spinner_item, reasonsList);
-        edit = (FloatingActionButton)findViewById(R.id.edit);
+        myAdapter = new CustomerStatusAdapter(this, rejectReasonList);
+        loadRejectReasons();
+        edit = (FloatingActionButton) findViewById(R.id.edit);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
         delivery = (OrderList) i.getParcelableExtra("delivery");
@@ -124,7 +130,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -162,10 +168,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveData();
-               // Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
+                // Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
                 Intent intent = new Intent(DeliveryOrderActivity.this, PromotionListActivity.class);
                 intent.putExtra("msg", "delivery");
-                intent.putExtra("from","delivery");
+                intent.putExtra("from", "delivery");
                 intent.putExtra("headerObj", object);
                 intent.putExtra("delivery", delivery);
                 intent.putExtra("invoiceamount", tv_amt.getText().toString());
@@ -304,16 +310,14 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(canEdit){
-                    canEdit=false;
-                }
-                else{
+                if (canEdit) {
+                    canEdit = false;
+                } else {
                     canEdit = true;
                 }
             }
         });
     }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -322,7 +326,6 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             inflater.inflate(R.menu.menu_list, menu);
         }
     }
-
     private int getIndex(String myString) {
         int index = 0;
         for (int i = 0; i < reasonsList.size(); i++) {
@@ -333,29 +336,129 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         }
         return index;
     }
-
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DeliveryOrderActivity.this);
+                alertDialogBuilder.setTitle(getString(R.string.message))
+                        .setMessage(getString(R.string.delete_msg))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                showReasonDialog(arrayList, info.position);
 
-                showReasonDialog(arrayList, info.position);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
 
                 return true;
             case R.id.cancel:
                 // edit stuff here
                 return true;
-
             default:
                 return super.onContextItemSelected(item);
         }
     }
-
-    private void showReasonDialog(ArrayList<DeliveryItem>list, final int position){
+    private void loadRejectReasons() {
+        for (Reasons reason : reasonsList) {
+            CustomerStatus status = new CustomerStatus();
+            if (reason.getReasonType().equals(App.REASON_REJECT)) {
+                status.setReasonCode(reason.getReasonID());
+                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                rejectReasonList.add(status);
+            }
+        }
+        myAdapter.notifyDataSetChanged();
+    }
+    private void showReasonDialog(ArrayList<DeliveryItem> list, final int position) {
         final int pos = position;
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(DeliveryOrderActivity.this);
+        final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
+        //dialog.setTitle(getString(R.string.shop_status));
+        View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+        TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
+        tv_header.setText(getString(R.string.select_reason));
+        Button cancel = (Button) view.findViewById(R.id.btnCancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ListView lv = (ListView) view.findViewById(R.id.statusList);
+        lv.setAdapter(myAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                //Check if there is any existing entry for same delivery no for deletion for purchase number
+                String purchaseNumber = "";
+                HashMap<String,String>filter = new HashMap<String, String>();
+                filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                if(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,filter)){
+                    HashMap<String,String>map = new HashMap<String, String>();
+                    map.put(db.KEY_ORDER_ID,"");
+                    Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map,filter);
+                    cursor.moveToFirst();
+                    purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                }
+
+                DeliveryItem deliveryItem = arrayList.get(pos);
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                map.put(db.KEY_ITEM_NO,deliveryItem.getItemCode());
+                map.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
+                map.put(db.KEY_MATERIAL_DESC1,deliveryItem.getItemDescription());
+                map.put(db.KEY_CASE,deliveryItem.getItemCase());
+                map.put(db.KEY_UNIT,deliveryItem.getItemUnits());
+                map.put(db.KEY_UOM,deliveryItem.getItemUom());
+                map.put(db.KEY_REASON_CODE,rejectReasonList.get(pos).getReasonCode());
+                map.put(db.KEY_REASON_DESCRIPTION,rejectReasonList.get(pos).getReasonDescription());
+                map.put(db.KEY_ORDER_ID,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
+                map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
+                map.put(db.KEY_AMOUNT,deliveryItem.getAmount());
+                map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                //Adding item for delete in post
+                db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map);
+                //Update the same in delivery items table
+                HashMap<String,String>updateMap = new HashMap<String, String>();
+                updateMap.put(db.KEY_IS_DELIVERED, App.DELETED);
+                HashMap<String,String>filterMap = new HashMap<String, String>();
+                filterMap.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
+                filterMap.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,updateMap,filterMap);
+
+                arrayList.remove(pos);
+                dialog.dismiss();
+                adapter.notifyDataSetChanged();
+                calculatePrice();
+                if (arrayList.size() == 0) {
+                    finish();
+                }
+            }
+        });
+        dialog.setContentView(view);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        /*AlertDialog.Builder builderSingle = new AlertDialog.Builder(DeliveryOrderActivity.this);
         builderSingle.setTitle(getString(R.string.select_reason));
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DeliveryOrderActivity.this, android.R.layout.select_dialog_singlechoice);
@@ -379,7 +482,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 if(arrayList.size()==0){
                     finish();
                 }
-               /* String strName = arrayAdapter.getItem(which);
+               *//* String strName = arrayAdapter.getItem(which);
                 AlertDialog.Builder builderInner = new AlertDialog.Builder(DeliveryOrderActivity.this);
                 builderInner.setMessage(strName);
                 builderInner.setTitle("Your Selected Item is");
@@ -389,14 +492,11 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
-                builderInner.show();*/
+                builderInner.show();*//*
             }
         });
-        builderSingle.show();
-
-
+        builderSingle.show();*/
     }
-
     public void setData(Cursor cursor) {
         if (preSaleProceeds != null) {
             preSaleProceeds.clear();
@@ -473,7 +573,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         //tv_date.setText(sdf.format(myCalendar.getTime()));
     }
-//    private void setLayout() {
+    //    private void setLayout() {
 //        double totalamt = 0;
 //        LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
 //        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -570,9 +670,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 //Log.e("Map","" + map);
                 if (Float.parseFloat(item.getItemCase()) > 0 || Float.parseFloat(item.getItemUnits()) > 0) {
                     db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST, map);
-                }
-                else{
-                 //   Log.e("LOOO","FOOOO");
+                } else {
+                    //   Log.e("LOOO","FOOOO");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -613,6 +712,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             map.put(db.KEY_IS_DELIVERED, "");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+            filter.put(db.KEY_IS_DELIVERED,App.FALSE);
             Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

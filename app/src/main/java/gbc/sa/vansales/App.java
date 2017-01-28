@@ -83,6 +83,7 @@ public class App extends Application {
 
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+    public static final String DELETED = "deleted";
 
     //Reason Types
     public static final String OrderReasons = "ORDER";

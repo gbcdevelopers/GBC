@@ -79,10 +79,10 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         button1.setVisibility(View.GONE);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Sales"));
-        tabLayout.addTab(tabLayout.newTab().setText("Foc"));
-        tabLayout.addTab(tabLayout.newTab().setText("G.R"));
-        tabLayout.addTab(tabLayout.newTab().setText("B.R"));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sales)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.promo)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.gr)));
+        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.br)));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         et_search = (EditText) findViewById(R.id.et_search_customer);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);

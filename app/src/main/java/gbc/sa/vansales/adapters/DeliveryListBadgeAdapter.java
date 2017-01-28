@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
@@ -46,7 +48,7 @@ public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
 
         OrderList order = getItem(position);
 
-        holder.order_id.setText("Delivery No : " + order.getOrderId());
+        holder.order_id.setText("Delivery No : " + StringUtils.stripStart(order.getOrderId(),"0"));
         holder.order_date.setText("Delivery Date : " + order.getOrderDate());
 
         return convertView;

@@ -52,6 +52,7 @@ public class ConfigStore {
     public static final String LoadConfirmationFunction = "LCON";
     public static final String InvoiceRequestFunction = "HHTIV";
     public static final String CustomerDeliveryRequestFunction = "CUSTDEL";
+    public static final String CustomerDeliveryDeleteRequestFunction = "CUSTDELDELETE";
     public static final String BeginDayFunction = "BEGINDAY";
     public static final String EndDayFunction = "ENDDAY";
     public static final String ReturnsFunction = "RETURNS";
@@ -99,6 +100,8 @@ public class ConfigStore {
     public static final String EndingInventory_PR = "10";
     public static final String FreshUnload_PR_Type = "FRESHUNLOAD";
     public static final String FreshUnload_PR = "11";
+    public static final String CustomerDeliveryDelete_PR_Type = "CUSTOMERDELIVERYDELETE";
+    public static final String CustomerDeliveryDelete_PR = "12";
 
     //Connectivity Messages
     public static final String WIFI_CONNECTED = "Wifi Enabled";

@@ -10,7 +10,14 @@ public class Print implements Parcelable{
     private String referenceNumber;
     private String transactionType;
     private boolean isPosted;
+    private boolean isChecked;
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+    public void setIsChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
     public boolean isPosted() {
         return isPosted;
     }
@@ -52,6 +59,7 @@ public class Print implements Parcelable{
         parcel.writeString(referenceNumber);
         parcel.writeString(transactionType);
         parcel.writeByte((byte)(isPosted?1:0));
+        parcel.writeByte((byte)(isChecked?1:0));
     }
 
     public static final Creator<Print> CREATOR = new Creator<Print>() {
@@ -64,6 +72,7 @@ public class Print implements Parcelable{
             print.referenceNumber = source.readString();
             print.transactionType = source.readString();
             print.isPosted = source.readByte()!=0;
+            print.isChecked = source.readByte()!=0;
             return print;
         }
         @Override

@@ -46,6 +46,7 @@ import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.Reasons;
+import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -79,7 +80,7 @@ public class DeliveryActivity extends AppCompatActivity {
         new loadDeliveries().execute();
         adapter = new DeliveryListBadgeAdapter(this, arrayList);
         reasonsList = OrderReasons.get();
-        statusAdapter = new CustomerStatusAdapter(this,statusList);
+        statusAdapter = new CustomerStatusAdapter(this, statusList);
         loadStatus();
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
@@ -163,14 +164,34 @@ public class DeliveryActivity extends AppCompatActivity {
             inflater.inflate(R.menu.menu_delivery, menu);
         }
     }
-
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
-                showReasonDialog(arrayList, info.position);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DeliveryActivity.this);
+                alertDialogBuilder.setTitle(getString(R.string.message))
+                        .setMessage(getString(R.string.delete_msg))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                showReasonDialog(arrayList, info.position);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+                // showReasonDialog(arrayList, info.position);
                 return true;
             case R.id.cancel:
                 // edit stuff here
@@ -179,7 +200,6 @@ public class DeliveryActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
-
     public class loadDeliveries extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -223,8 +243,6 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         }
         while (cursor.moveToNext());
-        Log.v("arraylistsize", arrayList.size() + " -" +
-                "");
     }
     public void dispatchRefresh() {
         refreshLayout.setRefreshing(true);
@@ -239,16 +257,15 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
-    private void showReasonDialog(ArrayList<OrderList>list, final int position){
+    private void showReasonDialog(ArrayList<OrderList> list, final int position) {
         final int pos = position;
         final Dialog dialog = new Dialog(DeliveryActivity.this);
         dialog.setTitle(getString(R.string.shop_status));
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-        TextView tv = (TextView)view.findViewById(R.id.tv_top_header);
+        TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
         tv.setText(getString(R.string.select_reason));
         ListView lv = (ListView) view.findViewById(R.id.statusList);
-        Button cancel = (Button)view.findViewById(R.id.btnCancel);
+        Button cancel = (Button) view.findViewById(R.id.btnCancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,6 +276,7 @@ public class DeliveryActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                deleteDeliveryItems(arrayList.get(pos).getOrderId(), statusList.get(pos).getReasonCode(), statusList.get(pos).getReasonDescription());
                 deleteDelivery(pos);
                 dialog.dismiss();
             }
@@ -267,15 +285,74 @@ public class DeliveryActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
     }
-
-    public void deleteDelivery(int pos){
+    private void deleteDeliveryItems(String deliveryNo, String reasonCode, String reasonDescription) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_ID, "");
+        map.put(db.KEY_DELIVERY_NO, "");
+        map.put(db.KEY_ITEM_NO, "");
+        map.put(db.KEY_ITEM_CATEGORY, "");
+        map.put(db.KEY_CREATED_BY, "");
+        map.put(db.KEY_ENTRY_TIME, "");
+        map.put(db.KEY_DATE, "");
+        map.put(db.KEY_MATERIAL_NO, "");
+        map.put(db.KEY_MATERIAL_ENTERED, "");
+        map.put(db.KEY_MATERIAL_GROUP, "");
+        map.put(db.KEY_PLANT, "");
+        map.put(db.KEY_STORAGE_LOCATION, "");
+        map.put(db.KEY_BATCH, "");
+        map.put(db.KEY_ACTUAL_QTY, "");
+        map.put(db.KEY_REMAINING_QTY, "");
+        map.put(db.KEY_UOM, "");
+        map.put(db.KEY_DIST_CHANNEL, "");
+        map.put(db.KEY_DIVISION, "");
+        map.put(db.KEY_IS_DELIVERED, "");
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_DELIVERY_NO, deliveryNo);
+        filter.put(db.KEY_IS_DELIVERED, App.FALSE);
+        Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
+        if (cursor.getCount() > 0) {
+            String purchaseNumber = "";
+            HashMap<String, String> filter1 = new HashMap<String, String>();
+            filter1.put(db.KEY_DELIVERY_NO, deliveryNo);
+            filter1.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+            if (db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, filter)) {
+                HashMap<String, String> map1 = new HashMap<String, String>();
+                map1.put(db.KEY_ORDER_ID, "");
+                Cursor cursor1 = db.getData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map1, filter1);
+                cursor1.moveToFirst();
+                purchaseNumber = cursor1.getString(cursor1.getColumnIndex(db.KEY_ORDER_ID));
+            }
+            do {
+                HashMap<String, String> deleteMap = new HashMap<String, String>();
+                deleteMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                deleteMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                deleteMap.put(db.KEY_DELIVERY_NO, deliveryNo);
+                deleteMap.put(db.KEY_ITEM_NO, cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                deleteMap.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                //deleteMap.put(db.KEY_MATERIAL_DESC1,deliveryItem.getItemDescription());
+                deleteMap.put(db.KEY_CASE, cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+                deleteMap.put(db.KEY_UNIT, cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
+                deleteMap.put(db.KEY_UOM, cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                deleteMap.put(db.KEY_REASON_CODE, reasonCode);
+                deleteMap.put(db.KEY_REASON_DESCRIPTION, reasonDescription);
+                deleteMap.put(db.KEY_ORDER_ID, purchaseNumber.equals("") ? Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type) : purchaseNumber);
+                deleteMap.put(db.KEY_PURCHASE_NUMBER, purchaseNumber.equals("") ? Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type) : purchaseNumber);
+                deleteMap.put(db.KEY_AMOUNT, "");
+                deleteMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                deleteMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                //Adding item for delete in post
+                db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map);
+            }
+            while (cursor.moveToNext());
+        }
+    }
+    public void deleteDelivery(int pos) {
         new returnDeliveryItems(arrayList.get(pos).getOrderId());
         //Log.e("Delete Deliver","" + arrayList.get(pos).getOrderId());
     }
-
-    public void loadStatus(){
-        for(Reasons reason:reasonsList){
-            if(reason.getReasonType().equals(App.REASON_REJECT)){
+    public void loadStatus() {
+        for (Reasons reason : reasonsList) {
+            if (reason.getReasonType().equals(App.REASON_REJECT)) {
                 CustomerStatus status = new CustomerStatus();
                 status.setReasonCode(reason.getReasonID());
                 status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
@@ -284,12 +361,9 @@ public class DeliveryActivity extends AppCompatActivity {
         }
         statusAdapter.notifyDataSetChanged();
     }
-
-    public class returnDeliveryItems extends AsyncTask<Void,Void,Void>{
-
+    public class returnDeliveryItems extends AsyncTask<Void, Void, Void> {
         private String deliveryID = "";
-
-        private returnDeliveryItems(String deliveryID){
+        private returnDeliveryItems(String deliveryID) {
             this.deliveryID = deliveryID;
             execute();
         }
@@ -330,7 +404,7 @@ public class DeliveryActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
+            if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
             HashMap<String, String> map = new HashMap<String, String>();
@@ -339,12 +413,10 @@ public class DeliveryActivity extends AppCompatActivity {
             filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
             filter.put(db.KEY_DELIVERY_NO, this.deliveryID);
             db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
-
             new loadDeliveries().execute();
         }
     }
-
-    private void returnData(Cursor cursor){
+    private void returnData(Cursor cursor) {
         do {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO, "");
@@ -371,8 +443,6 @@ public class DeliveryActivity extends AppCompatActivity {
                 }
                 while (c.moveToNext());
             }
-
-
         }
         while (cursor.moveToNext());
     }

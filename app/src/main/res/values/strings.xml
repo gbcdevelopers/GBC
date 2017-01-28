@@ -68,6 +68,7 @@
     <string name="beginDay">Begin Day</string>
     <string name="beginday_route">Route # </string>
     <string name="begintrip">Begin Trip</string>
+    <string name="br">B.R</string>
     <string name="buyback_free">BUYBACK FREE</string>
     <string name="cancel">Cancel</string>
     <string name="calendar">Calendar</string>
@@ -127,6 +128,7 @@
     <string name="day">Day </string>
     <string name="days">Days</string>
     <string name="delete">Delete</string>
+    <string name="delete_msg">Are you sure you want to delete?</string>
     <string name="delivery">Delivery</string>
     <string name="delivery_1234">Delivery# 1234</string>
     <string name="delivery_date">Delivery Date </string>
@@ -170,6 +172,7 @@
     <string name="good">Good</string>
     <string name="good_return">Good Return</string>
     <string name="good_returns">GOOD RETURNS</string>
+    <string name="gr">G.R</string>
     <string name="hint_cr_no"><i>eg. 12345</i></string>
     <string name="hint_customer_name"><i>eg. John Doe</i></string>
     <string name="hint_customer_address1"><i>eg. 144 Baker Street</i></string>
@@ -274,11 +277,14 @@
     <string name="printorder">Print Order</string>
     <string name="printreports">PRINT REPORTS</string>
     <string name="printtransactions">PRINT \n TRANSACTIONS</string>
+    <string name="print_transactions_lbl">Print Transactions</string>
+    <string name="print_items_lbl">Print Items</string>
     <string name="proceed">Proceed</string>
     <string name="process_load_request">Process Load Request</string>
     <string name="product">Product</string>
     <string name="product_description">Desc</string>
     <string name="product_number">Product no</string>
+    <string name="promo">Promo</string>
     <string name="promotion">Promotion</string>
     <string name="promo_details">Promo Details</string>
     <string name="put_on_hold">Put on Hold</string>

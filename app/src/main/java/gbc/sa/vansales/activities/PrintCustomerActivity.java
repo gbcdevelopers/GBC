@@ -56,7 +56,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Print Items");
+        tv_top_header.setText(getString(R.string.print_items_lbl));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,7 +168,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
                 print.setCustomer_name(object.getCustomerName());
                 print.setReferenceNumber(orderRequest.getString(orderRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.OrderRequest_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);
@@ -189,7 +189,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
                 print.setCustomer_name(object.getCustomerName());
                 print.setReferenceNumber(salesRequest.getString(salesRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.SalesInvoice_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);
@@ -209,7 +209,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
                 print.setCustomer_name(object.getCustomerName());
                 print.setReferenceNumber(deliveryRequest.getString(deliveryRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.DeliveryRequest_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);

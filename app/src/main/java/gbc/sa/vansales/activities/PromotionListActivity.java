@@ -83,8 +83,8 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             list_promotion.setAdapter(adapter);
         } else {
             //Log.e("Here","Here");
-                /*adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
-                list_promotion.setAdapter(adapter);*/
+                adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
+                list_promotion.setAdapter(adapter);
         }
 
         /*arrayList.add("50% AMC Invoice Discount");

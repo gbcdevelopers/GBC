@@ -4,7 +4,9 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ public class PrintDocumentActivity extends AppCompatActivity {
     PrintAdapter adapter;
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
+    Button btn_print_printer_report;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +47,18 @@ public class PrintDocumentActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Print Transactions");
+        tv_top_header.setText(getString(R.string.print_transactions_lbl));
+        btn_print_printer_report = (Button)findViewById(R.id.btn_print_printer_report);
+        btn_print_printer_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(Print print:arrayList){
+                    if(print.isChecked()){
+
+                    }
+                }
+            }
+        });
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +141,7 @@ public class PrintDocumentActivity extends AppCompatActivity {
               //  print.setCustomer_name(object.getCustomerName());
                 print.setReferenceNumber(orderRequest.getString(orderRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.OrderRequest_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);
@@ -146,7 +160,7 @@ public class PrintDocumentActivity extends AppCompatActivity {
                 print.setCustomer_id(salesRequest.getString(salesRequest.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 print.setReferenceNumber(salesRequest.getString(salesRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.SalesInvoice_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);
@@ -164,7 +178,7 @@ public class PrintDocumentActivity extends AppCompatActivity {
                 print.setCustomer_id(deliveryRequest.getString(deliveryRequest.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 print.setReferenceNumber(deliveryRequest.getString(deliveryRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.DeliveryRequest_TR);
-
+                print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
                     temp.add(print.getReferenceNumber());
                     arrayList.add(print);

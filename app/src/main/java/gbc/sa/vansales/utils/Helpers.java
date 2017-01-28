@@ -1,6 +1,4 @@
 package gbc.sa.vansales.utils;
-
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -45,263 +43,237 @@ import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.OrderReasons;
 
 import android.net.NetworkInfo;
+
 import org.apache.commons.lang3.StringUtils;
 /**
  * Created by Rakshit on 17-Dec-16.
  */
 public class Helpers {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-
     public static String formatDate(Date date, String format) {
         if (date == null) return null;
-
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return dateFormat.format(date);
     }
-
-    public static String getCurrentTimeStamp(){
+    public static String getCurrentTimeStamp() {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         return timeStamp;
     }
-
-    public static String[]parseTimeStamp(String timeStamp){
+    public static String[] parseTimeStamp(String timeStamp) {
         //This method is used for parsing the timestamp and format to send to SAP
-        String date = timeStamp.substring(0,8);
-        date = date.substring(0,4)+"-"+date.substring(4,6)+"-"+date.substring(6,8)+"T00:00:00";//+"-"+date.substring(8,10);
-        String time = timeStamp.substring(8,timeStamp.length());
-        time = "PT"+time.substring(0,2)+"H"+time.substring(2,4)+"M"+time.substring(4,6)+"S";
-        String[] tokens = new String[]{date,time};
+        String date = timeStamp.substring(0, 8);
+        date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8) + "T00:00:00";//+"-"+date.substring(8,10);
+        String time = timeStamp.substring(8, timeStamp.length());
+        time = "PT" + time.substring(0, 2) + "H" + time.substring(2, 4) + "M" + time.substring(4, 6) + "S";
+        String[] tokens = new String[]{date, time};
         return tokens;
     }
-
-    public static String parseDateforPost(String date){
+    public static String parseDateforPost(String date) {
         String[] dateArr = date.split("\\-");
-        String dateStr = dateArr[2]+"-"+dateArr[1]+"-"+dateArr[0]+"T00:00:00";
+        String dateStr = dateArr[2] + "-" + dateArr[1] + "-" + dateArr[0] + "T00:00:00";
         return dateStr;
     }
-
-    public static void backupDatabase(){
+    public static void backupDatabase() {
         File dbFile = new File(App.APP_DB_PATH);
         FileInputStream inputStream = null;
         FileOutputStream outputStream = null;
-
-        try{
+        try {
             inputStream = new FileInputStream(dbFile);
             outputStream = new FileOutputStream(App.APP_DB_BACKUP_PATH);
-            while (true){
-                int i=inputStream.read();
-                if(i!=-1){
+            while (true) {
+                int i = inputStream.read();
+                if (i != -1) {
                     outputStream.write(i);
-                }
-                else{
+                } else {
                     break;
                 }
             }
             outputStream.flush();
-            Log.e("Backup ok","Backup ok");
-        }
-        catch (Exception e){
+            Log.e("Backup ok", "Backup ok");
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
-            try{
+        } finally {
+            try {
                 inputStream.close();
                 outputStream.close();
-            }
-            catch (IOException  e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
-
-    public void restoreDatabase(){
+    public void restoreDatabase() {
         File file = new File(App.APP_DB_BACKUP_PATH);
         Date lastModDate = new Date(file.lastModified());
-        Log.e("Last modified date","" + lastModDate);
+        Log.e("Last modified date", "" + lastModDate);
     }
-
-    public static Date formatDate(String date){
+    public static Date formatDate(String date) {
         Date formatDate = null;
         String pattern1 = "/Date(";
         String pattern2 = ")/";
         Pattern p = Pattern.compile(Pattern.quote(pattern1) + "(.*?)" + Pattern.quote(pattern2));
         Matcher m = p.matcher(date);
-        while(m.find()){
+        while (m.find()) {
             long milli = Long.parseLong(m.group(1));
             formatDate = new Date(milli);
         }
         return formatDate;
     }
-
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
-    public static String generateNumber(DatabaseHandler db, String documentType){
-
+    public static String generateNumber(DatabaseHandler db, String documentType) {
         String route = Settings.getString(App.ROUTE);
-       // int routeId = Integer.parseInt(route);
+        // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 0;
-        int length =5;
+        int length = 5;
         HashMap<String, String> search = new HashMap<>();
-        search.put(db.KEY_DOC_TYPE,documentType);
+        search.put(db.KEY_DOC_TYPE, documentType);
         boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION, search);
-        if(checkPRNo){
+        if (checkPRNo) {
             HashMap<String, String> prData = new HashMap<>();
-            prData.put(db.KEY_PURCHASE_NUMBER,"");
-
-            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION,prData,search);
-            if(cursor.getCount()>0){
+            prData.put(db.KEY_PURCHASE_NUMBER, "");
+            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION, prData, search);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-
                 numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-                Log.e("Num Range From DB","" + numRange);
+                Log.e("Num Range From DB", "" + numRange);
                 numRange = numRange + 1;
-
                 HashMap<String, String> valueMap = new HashMap<>();
                 valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
                 db.updateData(db.PURCHASE_NUMBER_GENERATION, valueMap, search);
             }
-        }
-        else{
-            numRange = numRange<=0?numRange+1:numRange;
+        } else {
+            numRange = numRange <= 0 ? numRange + 1 : numRange;
             HashMap<String, String> valueMap = new HashMap<>();
-            valueMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-            valueMap.put(db.KEY_ROUTE,Settings.getString(App.ROUTE));
+            valueMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+            valueMap.put(db.KEY_ROUTE, Settings.getString(App.ROUTE));
             valueMap.put(db.KEY_DOC_TYPE, documentType);
             valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
-            Log.e("Adding Data Num Range","" + valueMap);
-            db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
+            Log.e("Adding Data Num Range", "" + valueMap);
+            db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
-        return route+String.valueOf(docTypeId)+StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        return route + String.valueOf(docTypeId) + StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
-
-    public static String generateCustomer(DatabaseHandler db, String documentType){
-
+    public static String generateCustomer(DatabaseHandler db, String documentType) {
         String route = Settings.getString(App.ROUTE);
         String customer = "CUS";
         // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 0;
-        int length =4;
+        int length = 4;
         HashMap<String, String> search = new HashMap<>();
-        search.put(db.KEY_DOC_TYPE,documentType);
-        boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION,search);
-        if(checkPRNo){
+        search.put(db.KEY_DOC_TYPE, documentType);
+        boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION, search);
+        if (checkPRNo) {
             HashMap<String, String> prData = new HashMap<>();
-            prData.put(db.KEY_PURCHASE_NUMBER,"");
-
-            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION,prData,search);
-            if(cursor.getCount()>0){
+            prData.put(db.KEY_PURCHASE_NUMBER, "");
+            Cursor cursor = db.getData(db.PURCHASE_NUMBER_GENERATION, prData, search);
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-
                 numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-                Log.e("Num Range From DB","" + numRange);
+                Log.e("Num Range From DB", "" + numRange);
                 numRange = numRange + 1;
-
                 HashMap<String, String> valueMap = new HashMap<>();
                 valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
                 db.updateData(db.PURCHASE_NUMBER_GENERATION, valueMap, search);
             }
-        }
-        else{
-            numRange = numRange<=0?numRange+1:numRange;
+        } else {
+            numRange = numRange <= 0 ? numRange + 1 : numRange;
             HashMap<String, String> valueMap = new HashMap<>();
-            valueMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-            valueMap.put(db.KEY_ROUTE,Settings.getString(App.ROUTE));
+            valueMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+            valueMap.put(db.KEY_ROUTE, Settings.getString(App.ROUTE));
             valueMap.put(db.KEY_DOC_TYPE, documentType);
             valueMap.put(db.KEY_PURCHASE_NUMBER, String.valueOf(numRange));
-            Log.e("Adding Data Num Range","" + valueMap);
-            db.addData(db.PURCHASE_NUMBER_GENERATION,valueMap);
+            Log.e("Adding Data Num Range", "" + valueMap);
+            db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
-        return customer + route +StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        return customer + route + StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
-
-    public static String getDocumentTypeNo(String documentType){
+    public static String getDocumentTypeNo(String documentType) {
         String docTypeNo = "";
-        switch (documentType){
-            case ConfigStore.LoadRequest_PR_Type:{
+        switch (documentType) {
+            case ConfigStore.LoadRequest_PR_Type: {
                 docTypeNo = ConfigStore.LoadRequest_PR;
                 break;
             }
-            case ConfigStore.OrderRequest_PR_Type:{
+            case ConfigStore.OrderRequest_PR_Type: {
                 docTypeNo = ConfigStore.OrderRequest_PR;
                 break;
             }
-            case ConfigStore.InvoiceRequest_PR_Type:{
+            case ConfigStore.InvoiceRequest_PR_Type: {
                 docTypeNo = ConfigStore.InvoiceRequest_PR;
                 break;
             }
-            case ConfigStore.CustomerDeliveryRequest_PR_Type:{
+            case ConfigStore.CustomerDeliveryRequest_PR_Type: {
                 docTypeNo = ConfigStore.CustomerDeliveryRequest_PR;
                 break;
             }
-            case ConfigStore.CustomerNew_PR_Type:{
+            case ConfigStore.CustomerNew_PR_Type: {
                 docTypeNo = ConfigStore.CustomerNew_PR;
                 break;
             }
-            case ConfigStore.BeginDay_PR_Type:{
+            case ConfigStore.BeginDay_PR_Type: {
                 docTypeNo = ConfigStore.BeginDay_PR;
                 break;
             }
-            case ConfigStore.EndDay_PR_Type:{
+            case ConfigStore.EndDay_PR_Type: {
                 docTypeNo = ConfigStore.EndDay_PR;
                 break;
             }
-            case ConfigStore.Odometer_PR_Type:{
+            case ConfigStore.Odometer_PR_Type: {
                 docTypeNo = ConfigStore.Odometer_PR;
                 break;
             }
-            case ConfigStore.GoodReturns_PR_Type:{
+            case ConfigStore.GoodReturns_PR_Type: {
                 docTypeNo = ConfigStore.GoodReturns_PR;
                 break;
             }
-            case ConfigStore.BadReturns_PR_Type:{
+            case ConfigStore.BadReturns_PR_Type: {
                 docTypeNo = ConfigStore.BadReturns_PR;
                 break;
             }
-            case ConfigStore.TheftorTruck_PR_Type:{
+            case ConfigStore.TheftorTruck_PR_Type: {
                 docTypeNo = ConfigStore.TheftorTruck_PR;
                 break;
             }
-            case ConfigStore.Excess_PR_Type:{
+            case ConfigStore.Excess_PR_Type: {
                 docTypeNo = ConfigStore.Excess_PR;
                 break;
             }
-            case ConfigStore.EndingInventory_PR_Type:{
+            case ConfigStore.EndingInventory_PR_Type: {
                 docTypeNo = ConfigStore.EndingInventory_PR;
                 break;
             }
-            case ConfigStore.FreshUnload_PR_Type:{
+            case ConfigStore.FreshUnload_PR_Type: {
                 docTypeNo = ConfigStore.FreshUnload_PR;
                 break;
             }
-
+            case ConfigStore.CustomerDeliveryDelete_PR_Type:{
+                docTypeNo = ConfigStore.CustomerDeliveryDelete_PR;
+                break;
+            }
         }
         return docTypeNo;
     }
-
-    public static  String getDayofWeek(String dateString){
-        int dayOfWeek=0;
-        String day="";
-        try{
+    public static String getDayofWeek(String dateString) {
+        int dayOfWeek = 0;
+        String day = "";
+        try {
             Calendar c = Calendar.getInstance();
             c.setTime(new SimpleDateFormat("yyyy.MM.dd").parse(dateString));
-            dayOfWeek =c.get(Calendar.DAY_OF_WEEK);
-            Log.e("Day of Week","" + dayOfWeek);
-        }
-        catch (Exception e){
+            dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+            Log.e("Day of Week", "" + dayOfWeek);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        switch (dayOfWeek){
+        switch (dayOfWeek) {
             case 1:
                 day = "Sunday";
-            break;
+                break;
             case 2:
                 day = "Monday";
                 break;
@@ -323,24 +295,21 @@ public class Helpers {
         }
         return day;
     }
-
-    public static String getMaskedValue(String value, int length){
+    public static String getMaskedValue(String value, int length) {
         return StringUtils.leftPad(value, length, "0");
     }
-
-    public static void loadData(Context context){
-        Log.e("Helper Load","Load Data");
+    public static void loadData(Context context) {
+        Log.e("Helper Load", "Load Data");
         ArticleHeaders.loadData(context);
         CustomerHeaders.loadData(context);
         OrderReasons.loadData(context);
         Banks.loadData(context);
     }
-
-    public static HashMap<String,String> buildHeaderMap(String function, String orderId, String documentType,String customerId,
-                                                        String orderValue,String purchaseNumber){
-        HashMap<String,String> map = new HashMap<>();
+    public static HashMap<String, String> buildHeaderMap(String function, String orderId, String documentType, String customerId,
+                                                         String orderValue, String purchaseNumber) {
+        HashMap<String, String> map = new HashMap<>();
         map.put("Function", function);
-        map.put("OrderId", orderId.equals("")?"":orderId);
+        map.put("OrderId", orderId.equals("") ? "" : orderId);
         map.put("DocumentType", documentType);
         // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
         // map.put("DocumentDate", null);
@@ -350,10 +319,9 @@ public class Helpers {
         map.put("SalesOrg", Settings.getString(App.SALES_ORG));
         map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
         map.put("Division", Settings.getString(App.DIVISION));
-        map.put("OrderValue", orderValue.equals("")?"2000":orderValue);
+        map.put("OrderValue", orderValue.equals("") ? "2000" : orderValue);
         map.put("Currency", App.CURRENCY);
         map.put("PurchaseNum", purchaseNumber);
         return map;
     }
-
 }
