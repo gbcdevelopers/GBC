@@ -57,12 +57,14 @@ public class ConfigStore {
     public static final String EndDayFunction = "ENDDAY";
     public static final String ReturnsFunction = "RETURNS";
     public static final String UnloadFunction = "ORDERREQ";
+    public static final String LoadVarianceFunction = "RETURNS";
 
     //Document Types
     public static final String DocumentType = "ZVDL";
-    public static final String LoadRequestDocumentType = "ZPRE";
+    public static final String LoadRequestDocumentType = "ZVDL";
     public static final String CustomerOrderRequestDocumentType = "ZPRE";
-    public static final String DeliveryDocumentType = "ZVAN";
+    public static final String DeliveryDocumentType = "ZDLV";
+    public static final String InvoiceDocumentType = "ZVAN";
     public static final String GoodReturnType = "ZGRN";
     public static final String BadReturnType = "ZEXP";
     public static final String OrderRequestType = "ZPRE";
@@ -70,6 +72,8 @@ public class ConfigStore {
     public static final String TheftorTruckDocumentType = "ZDRX";
     public static final String ExcessDocumentType = "ZCRX";
     public static final String FreshUnload = "ZVLO";
+    public static final String LoadVarianceDebit = "ZDRB";
+    public static final String LoadVarianceCredit = "ZDCR";
 
     //DocumentTypes for PR Number Generation
     public static final String LoadRequest_PR_Type = "LOAD";
@@ -102,6 +106,10 @@ public class ConfigStore {
     public static final String FreshUnload_PR = "11";
     public static final String CustomerDeliveryDelete_PR_Type = "CUSTOMERDELIVERYDELETE";
     public static final String CustomerDeliveryDelete_PR = "12";
+    public static final String LoadVarianceDebit_PR_Type = "LOADVARIANCEDEBIT";
+    public static final String LoadVarianceDebit_PR = "13";
+    public static final String LoadVarianceCredit_PR_Type = "LOADVARIANCECREDIT";
+    public static final String LoadVarianceCredit_PR = "14";
 
     //Connectivity Messages
     public static final String WIFI_CONNECTED = "Wifi Enabled";

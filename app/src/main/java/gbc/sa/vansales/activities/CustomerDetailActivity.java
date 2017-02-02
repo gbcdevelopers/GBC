@@ -38,6 +38,7 @@ import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/3/2016.
@@ -67,6 +68,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         reasonsList = OrderReasons.get();
         statusAdapter = new CustomerStatusAdapter(this, arrayList);
         loadCustomerStatus();
+
+        Log.e("Flag Test","" + App.CustomerRouteControl.getThresholdLimit());
         strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("msg");
@@ -86,7 +89,12 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
                 TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
                 if (!(customerHeader == null)) {
-                    tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
+                    if(Settings.getString(App.LANGUAGE).equals("en")){
+                        tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
+                    }
+                    else{
+                        tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName3());
+                    }
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
                     tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
@@ -232,7 +240,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     case 3:
                         Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);
                         intent3.putExtra("headerObj", object);
-                        startActivity(intent3);
+                        //startActivity(intent3);
                         break;
                     case 4:
                         Intent intent4 = new Intent(CustomerDetailActivity.this, DeliveryActivity.class);

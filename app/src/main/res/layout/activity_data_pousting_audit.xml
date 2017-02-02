@@ -86,7 +86,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="Transaction"
+                        android:text="@string/transaction"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 
@@ -105,7 +105,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="Type"
+                        android:text="@string/type"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 

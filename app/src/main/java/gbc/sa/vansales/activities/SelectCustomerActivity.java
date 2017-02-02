@@ -280,20 +280,49 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 if(!(customerHeader==null)){
                     customer.setCustomerName(customerHeader.getName1());
                     customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
+                    customer.setLatitude(customerHeader.getLatitude());
+                    customer.setLongitude(customerHeader.getLongitude());
                 }
                 else{
                     customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                     customer.setCustomerAddress("");
+                    customer.setLatitude("0.000000");
+                    customer.setLongitude("0.000000");
                 }
+
+                HashMap<String,String>newMap = new HashMap<>();
+                newMap.put(db.KEY_TERMS,"");
+                HashMap<String,String>newFilter = new HashMap<>();
+                newFilter.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
+                String paymentTerm = "";
+                if(c.getCount()>0){
+                    c.moveToFirst();
+                    paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
+                }
+                Log.e("Payment Term1","" + paymentTerm);
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                if(db.checkData(db.CUSTOMER_CREDIT,map)){
-                    //Log.e("Credit Exist","Credit Exist");
-                    customer.setPaymentMethod("Credit");
+                if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
+                    customer.setPaymentMethod(App.CASH_CUSTOMER);
+                }
+                else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
+                    customer.setPaymentMethod(App.TC_CUSTOMER);
+                }
+                else if(!paymentTerm.equals("")){
+                    Log.e("Here","Here");
+                    if (db.checkData(db.CUSTOMER_CREDIT,map)){
+                        Log.e("Credit Exist","Credit Exist");
+                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                    }
+                    else{
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                    }
                 }
                 else{
-                    customer.setPaymentMethod("Cash");
+                    customer.setPaymentMethod(App.CASH_CUSTOMER);
                 }
+
                 customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
                 customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
                 customer.setCollection(false);
@@ -320,19 +349,44 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 if(!(customerHeader==null)){
                     customer.setCustomerName(customerHeader.getName1());
                     customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
+                    customer.setLatitude(customerHeader.getLatitude());
+                    customer.setLongitude(customerHeader.getLongitude());
                 }
                 else{
                     customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                     customer.setCustomerAddress("");
+                    customer.setLatitude("0.000000");
+                    customer.setLongitude("0.000000");
                 }
-                HashMap<String,String> map = new HashMap<>();
+                HashMap<String,String>newMap = new HashMap<>();
+                newMap.put(db.KEY_TERMS,"");
+                HashMap<String,String>newFilter = new HashMap<>();
+                newFilter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
+                String paymentTerm = "";
+                if(c.getCount()>0){
+                    c.moveToFirst();
+                    paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
+                }
+                HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                if(db.checkData(db.CUSTOMER_CREDIT,map)){
-                    //Log.e("Credit Exist", "Credit Exist");
-                    customer.setPaymentMethod("Credit");
+                if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
+                    customer.setPaymentMethod(App.CASH_CUSTOMER);
                 }
-                else {
-                    customer.setPaymentMethod("Cash");
+                else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
+                    customer.setPaymentMethod(App.TC_CUSTOMER);
+                }
+                else if(!paymentTerm.equals("")){
+                    if (db.checkData(db.CUSTOMER_CREDIT,map)){
+                        Log.e("Credit Exist","Credit Exist");
+                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                    }
+                    else{
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                    }
+                }
+                else{
+                    customer.setPaymentMethod(App.CASH_CUSTOMER);
                 }
                 //Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setOrder(db.checkData(db.ORDER_REQUEST,map));

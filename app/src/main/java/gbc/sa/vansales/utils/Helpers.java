@@ -1,5 +1,8 @@
 package gbc.sa.vansales.utils;
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,6 +44,7 @@ import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.OrderReasons;
+import gbc.sa.vansales.sap.BackgroundJob;
 
 import android.net.NetworkInfo;
 
@@ -49,6 +53,7 @@ import org.apache.commons.lang3.StringUtils;
  * Created by Rakshit on 17-Dec-16.
  */
 public class Helpers {
+    private static int kJobId = 0;
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
     public static String formatDate(Date date, String format) {
         if (date == null) return null;
@@ -256,6 +261,14 @@ public class Helpers {
                 docTypeNo = ConfigStore.CustomerDeliveryDelete_PR;
                 break;
             }
+            case ConfigStore.LoadVarianceDebit_PR_Type:{
+                docTypeNo = ConfigStore.LoadVarianceDebit_PR;
+                break;
+            }
+            case ConfigStore.LoadVarianceCredit_PR_Type:{
+                docTypeNo = ConfigStore.LoadVarianceCredit_PR;
+                break;
+            }
         }
         return docTypeNo;
     }
@@ -323,5 +336,20 @@ public class Helpers {
         map.put("Currency", App.CURRENCY);
         map.put("PurchaseNum", purchaseNumber);
         return map;
+    }
+    public static void createBackgroundJob(Context context){
+        ComponentName mServiceComponent = new ComponentName(context, BackgroundJob.class);
+        JobInfo.Builder builder = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+            builder.setMinimumLatency(2 * 1000); // wait at least
+            builder.setOverrideDeadline(50 * 1000); // maximum delay
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // require unmetered network
+            builder.setRequiresDeviceIdle(false); // device should be idle
+            builder.setRequiresCharging(false); // we don't care if the device is charging or not
+            JobScheduler jobScheduler = (JobScheduler) context.getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(builder.build());
+        }
+
     }
 }

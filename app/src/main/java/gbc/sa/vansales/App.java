@@ -129,6 +129,18 @@ public class App extends Application {
     public static final String ACTIVITY_ORDER = "ORDER";
     public static final String ACTIVITY_INVOICE = "INVOICE";
 
+    //Access code range
+    public static final String CUSTOMER_OUT_OF_RANGE = "20";
+    public static final String CUSTOMER_CREDIT_OUT_OF_RANGE = "21";
+
+    //Customer Payment Term Codes
+    public static final String CASH_CUSTOMER_CODE = "Z001";
+    public static final String TC_CUSTOMER_CODE = "Z002";
+    public static final String CASH_CUSTOMER = "cash";
+    public static final String TC_CUSTOMER = "tc";
+    public static final String CREDIT_CUSTOMER = "credit";
+    public static final String NOT_VALID_CUSTOMER = "notvalid";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -386,67 +398,67 @@ public class App extends Application {
         private static boolean isReturnCustomer;
         private static boolean isCollection;
 
-        public boolean isCollection() {
+        public static boolean isCollection() {
             return isCollection;
         }
         public void setIsCollection(boolean isCollection) {
             this.isCollection = isCollection;
         }
-        public boolean isDamaged() {
+        public static boolean isDamaged() {
             return isDamaged;
         }
         public void setIsDamaged(boolean isDamaged) {
             this.isDamaged = isDamaged;
         }
-        public boolean isDelayPrint() {
+        public static boolean isDelayPrint() {
             return isDelayPrint;
         }
         public void setIsDelayPrint(boolean isDelayPrint) {
             this.isDelayPrint = isDelayPrint;
         }
-        public boolean isEditInvoice() {
+        public static boolean isEditInvoice() {
             return isEditInvoice;
         }
         public void setIsEditInvoice(boolean isEditInvoice) {
             this.isEditInvoice = isEditInvoice;
         }
-        public boolean isEditOrders() {
+        public static boolean isEditOrders() {
             return isEditOrders;
         }
         public void setIsEditOrders(boolean isEditOrders) {
             this.isEditOrders = isEditOrders;
         }
-        public boolean isEnableIVCopy() {
+        public static boolean isEnableIVCopy() {
             return isEnableIVCopy;
         }
         public void setIsEnableIVCopy(boolean isEnableIVCopy) {
             this.isEnableIVCopy = isEnableIVCopy;
         }
-        public boolean isReturnCustomer() {
+        public static boolean isReturnCustomer() {
             return isReturnCustomer;
         }
         public void setIsReturnCustomer(boolean isReturnCustomer) {
             this.isReturnCustomer = isReturnCustomer;
         }
-        public boolean isReturns() {
+        public static boolean isReturns() {
             return isReturns;
         }
         public void setIsReturns(boolean isReturns) {
             this.isReturns = isReturns;
         }
-        public boolean isSignCapture() {
+        public static boolean isSignCapture() {
             return isSignCapture;
         }
         public void setIsSignCapture(boolean isSignCapture) {
             this.isSignCapture = isSignCapture;
         }
-        public boolean isVerifyGPS() {
+        public static boolean isVerifyGPS() {
             return isVerifyGPS;
         }
         public void setIsVerifyGPS(boolean isVerifyGPS) {
             this.isVerifyGPS = isVerifyGPS;
         }
-        public String getThresholdLimit() {
+        public static String getThresholdLimit() {
             return thresholdLimit;
         }
         public void setThresholdLimit(String thresholdLimit) {

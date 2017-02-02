@@ -689,12 +689,25 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             updateStockinVan(true);
                                         }
                                         dialog.dismiss();
-                                        Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
-                                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        intent1.putExtra("headerObj", object);
-                                        intent1.putExtra("msg", "all");
-                                        startActivity(intent1);
-                                        finish();
+                                        if(object.getPaymentMethod().equalsIgnoreCase("credit")){
+                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent1.putExtra("headerObj", object);
+                                            intent1.putExtra("msg", "all");
+                                            startActivity(intent1);
+                                            finish();
+                                        }
+                                        else{
+                                            //Go to payment details screen
+                                            Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                            intent.putExtra("msg", str_promotion_message);
+                                            intent.putExtra("from",from);
+                                            intent.putExtra("headerObj", object);
+                                            intent.putExtra("amountdue", tv_net_invoice.getText().toString());
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
                                     }
                                 });
                         // create alert dialog
@@ -959,13 +972,19 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                /* Intent intent = new Intent(PromotioninfoActivity.this,SalesInvoiceOptionActivity.class);
                                 intent.putExtra("from", "customerdetail");
                                 intent.putExtra("headerObj", object);*/
+                                if(object.getPaymentMethod().equalsIgnoreCase("credit")){
+                                    Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent1.putExtra("headerObj", object);
+                                    intent1.putExtra("msg", "all");
+                                    startActivity(intent1);
+                                    finish();
+                                }
+                                else{
+                                    //go to payment details screen
 
-                                Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
-                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                intent1.putExtra("headerObj", object);
-                                intent1.putExtra("msg", "all");
-                                startActivity(intent1);
-                                finish();
+                                }
+
                             }
                         });
                 // create alert dialog
@@ -1029,7 +1048,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.InvoiceRequestFunction);
             map.put("OrderId", "");
-            map.put("DocumentType", ConfigStore.DeliveryDocumentType);
+            map.put("DocumentType", ConfigStore.InvoiceDocumentType);
             // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
             // map.put("DocumentDate", null);
             map.put("CustomerId", object.getCustomerID());

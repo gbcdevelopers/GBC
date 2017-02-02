@@ -223,7 +223,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
                     headerParams.put(db.KEY_MATERIAL_GROUPA_DESC  ,headerObj.get("MatGroupADesc").toString());
                     headerParams.put(db.KEY_MATERIAL_GROUPB_DESC ,headerObj.get("MatGroupDesc").toString());
-                    headerParams.put(db.KEY_MATERIAL_DESC2,headerObj.get("MatDesc2").toString());
+                   // headerParams.put(db.KEY_MATERIAL_DESC2,headerObj.get("MatDesc2").toString());
+                    headerParams.put(db.KEY_MATERIAL_DESC2,headerObj.get("Mat_Desc1_AR").toString());
                     headerParams.put(db.KEY_BATCH_MANAGEMENT,headerObj.get("Batchmgmt").toString());
                     headerParams.put(db.KEY_PRODUCT_HIERARCHY,headerObj.get("ProdHier").toString());
                     headerParams.put(db.KEY_VOLUME_UOM ,headerObj.get("VolumeUom").toString());
@@ -351,7 +352,10 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_POST_CODE ,headerObj.get("PostCode").toString());
                     headerParams.put(db.KEY_PHONE_NO ,headerObj.get("PhoneNumber").toString());
                     headerParams.put(db.KEY_COMPANY_CODE, headerObj.get("CompanyCode").toString());
-
+                    headerParams.put(db.KEY_LATITUDE ,headerObj.get("Latitude").toString());
+                    headerParams.put(db.KEY_LONGITUDE ,headerObj.get("Longitude").toString());
+                    headerParams.put(db.KEY_TERMS ,headerObj.get("Terms").toString());
+                    headerParams.put(db.KEY_TERMS_DESCRIPTION ,headerObj.get("TermDesc").toString());
                     db.addData(db.CUSTOMER_HEADER, headerParams);
 
                     for(int j=0;j<customerCreditArray.length();j++){
@@ -394,6 +398,28 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         db.addData(db.CUSTOMER_SALES_AREAS,params);
                     }
 
+                    for(int m=0;m<customerOpenItems.length();m++){
+                        JSONObject customerOpenItemsObj = customerOpenItems.getJSONObject(m);
+                        HashMap<String,String>params = new HashMap<>();
+                        params.put(db.KEY_COLLECTION_TYPE,customerOpenItemsObj.get("DocType").toString());
+                        params.put(db.KEY_CUSTOMER_NO,customerOpenItemsObj.get("CustNo").toString());
+                        params.put(db.KEY_SAP_INVOICE_NO,customerOpenItemsObj.get("DocNum").toString());
+                        params.put(db.KEY_INVOICE_NO, customerOpenItemsObj.get("DocNo").toString());
+                        params.put(db.KEY_INVOICE_AMOUNT,customerOpenItemsObj.get("Amount").toString());
+                        params.put(db.KEY_INVOICE_DATE,customerOpenItemsObj.get("DocDate").toString());
+                        params.put(db.KEY_INVOICE_DAYS,customerOpenItemsObj.get("Days").toString());
+                        params.put(db.KEY_DUE_DATE,customerOpenItemsObj.get("DueDate").toString());
+                        params.put(db.KEY_AMOUNT_CLEARED,"0");
+                        params.put(db.KEY_CHEQUE_AMOUNT,"0");
+                        params.put(db.KEY_CHEQUE_NUMBER,"0000");
+                        params.put(db.KEY_CHEQUE_DATE,"0000");
+                        params.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                        params.put(db.KEY_CHEQUE_BANK_NAME,"0000");
+                        params.put(db.KEY_CASH_AMOUNT,"0");
+                        params.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                        db.addData(db.COLLECTION,params);
+                    }
+
                     for(int l=0;l<customerFlags.length();l++){
                         JSONObject customerFlagObject = customerFlags.getJSONObject(l);
                         HashMap<String, String> params = new HashMap<>();
@@ -413,7 +439,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_ENABLE_AR_COLLECTION,customerFlagObject.get("Enablearcoll").toString());
                         params.put(db.KEY_ENABLE_POS_EQUI,customerFlagObject.get("Enableposequi").toString());
                         params.put(db.KEY_ENABLE_SUR_AUDIT,customerFlagObject.get("Enablesuraudit").toString());
-
                         db.addData(db.CUSTOMER_FLAGS,params);
                     }
                 }

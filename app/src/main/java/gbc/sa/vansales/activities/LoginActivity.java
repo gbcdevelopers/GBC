@@ -161,13 +161,13 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("GBC012000000004")){
+                                if(!checkTripID("Y000010000000002")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "GBC012000000004");
+                                    Settings.setString(TRIP_ID, "Y000010000000002");
                                     Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("GBC012000000004");
+                                    downloadData("Y000010000000002");
                                 }
                                 else{
                                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
@@ -250,11 +250,10 @@ public class LoginActivity extends Activity {
                 else{
                     Toast.makeText(LoginActivity.this,R.string.request_timeout,Toast.LENGTH_SHORT).show();
                     //For testing Purpose only
-
-                    Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                    /*Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                     startActivityForResult(intent, 0);
                     finish();
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
                 }
 
             }

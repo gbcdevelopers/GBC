@@ -267,7 +267,7 @@ public class IntegrationService extends IntentService {
             HttpPost post = new HttpPost(postUrl(collection));
             String authString = "ecs" + ":" + "sap123";
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+          //  post.addHeader("Authorization", "Basic " + new String(authEncBytes));
             post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
             post.addHeader(ACCEPT, APPLICATION_JSON);
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
@@ -302,7 +302,7 @@ public class IntegrationService extends IntentService {
             HttpPost post = new HttpPost(postUrl(collection));
             String authString = "ecs" + ":" + "sap123";
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+           // post.addHeader("Authorization", "Basic " + new String(authEncBytes));
             post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
             post.addHeader(ACCEPT, APPLICATION_JSON);
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
@@ -351,7 +351,7 @@ public class IntegrationService extends IntentService {
             HttpPost post = new HttpPost(postUrl(collection));
             String authString = "ecs" + ":" + "sap123";
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+            //post.addHeader("Authorization", "Basic " + new String(authEncBytes));
             post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
             post.addHeader(ACCEPT, APPLICATION_JSON);
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
@@ -394,7 +394,7 @@ public class IntegrationService extends IntentService {
             HttpPost post = new HttpPost(postUrlOdometer(collection));
             String authString = "ecs" + ":" + "sap123";
             byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
-            post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+           // post.addHeader("Authorization", "Basic " + new String(authEncBytes));
             post.addHeader(CONTENT_TYPE, APPLICATION_JSON);
             post.addHeader(ACCEPT, APPLICATION_JSON);
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);

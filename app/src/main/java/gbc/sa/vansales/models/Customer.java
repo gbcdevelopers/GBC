@@ -13,6 +13,8 @@ public class Customer implements Parcelable{
     private String credit_days;
     private String credit_available;
     private String customerItemNo;
+    private String latitude;
+    private String longitude;
     private boolean order;
     private boolean sale;
     private boolean delivery;
@@ -24,6 +26,18 @@ public class Customer implements Parcelable{
 
     //Get Instance of the Customer
     public Customer(){
+    }
+    public String getLatitude() {
+        return latitude;
+    }
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+    public String getLongitude() {
+        return longitude;
+    }
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
     public String getCustomerItemNo() {
         return customerItemNo;
@@ -142,6 +156,8 @@ public class Customer implements Parcelable{
             customer.order = source.readByte()!=0;
             customer.newcustomer = source.readByte()!=0;
             customer.customerItemNo = source.readString();
+            customer.latitude = source.readString();
+            customer.longitude = source.readString();
             return customer;
         }
         @Override
@@ -169,5 +185,7 @@ public class Customer implements Parcelable{
         parcel.writeByte((byte)(order ? 1:0));
         parcel.writeByte((byte)(newcustomer ? 1:0));
         parcel.writeString(customerItemNo);
+        parcel.writeString(latitude);
+        parcel.writeString(longitude);
     }
 }

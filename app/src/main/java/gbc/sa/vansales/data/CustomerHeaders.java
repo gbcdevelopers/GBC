@@ -23,7 +23,6 @@ public class CustomerHeaders {
     private static final String TRIP_ID = "ITripId";
 
     private static ArrayList<CustomerHeader> data = new ArrayList<>();
-
     public static void load(Context context,String tripId, DatabaseHandler db){
         HashMap<String, String> params = new HashMap<>();
         params.put(TRIP_ID,tripId);
@@ -35,7 +34,6 @@ public class CustomerHeaders {
         expansion.put(CUSTOMER_FLAGS,CUSTOMER_FLAGS);
         new DownloadData(context,COLLECTION_NAME,params,expansion,db);
     }
-
     public static void loadData(Context context){
         data.clear();
         DatabaseHandler db = new DatabaseHandler(context);
@@ -68,6 +66,10 @@ public class CustomerHeaders {
         map.put(db.KEY_POST_CODE,"");
         map.put(db.KEY_PHONE_NO,"");
         map.put(db.KEY_COMPANY_CODE,"");
+        map.put(db.KEY_LATITUDE,"");
+        map.put(db.KEY_LONGITUDE,"");
+        map.put(db.KEY_TERMS,"");
+        map.put(db.KEY_TERMS_DESCRIPTION,"");
 
         HashMap<String, String> filters = new HashMap<>();
         Cursor cursor = db.getData(db.CUSTOMER_HEADER,map,filters);
@@ -103,6 +105,10 @@ public class CustomerHeaders {
                 customerHeader.setStreet5(cursor.getString(cursor.getColumnIndex(db.KEY_STREET5)));
                 customerHeader.setStreet(cursor.getString(cursor.getColumnIndex(db.KEY_STREET)));
                 customerHeader.setTripId(cursor.getString(cursor.getColumnIndex(db.KEY_TRIP_ID)));
+                customerHeader.setLatitude(cursor.getString(cursor.getColumnIndex(db.KEY_LATITUDE)));
+                customerHeader.setLongitude(cursor.getString(cursor.getColumnIndex(db.KEY_LONGITUDE)));
+                customerHeader.setTerms(cursor.getString(cursor.getColumnIndex(db.KEY_TERMS)));
+                customerHeader.setTermDescription(cursor.getString(cursor.getColumnIndex(db.KEY_TERMS_DESCRIPTION)));
                 data.add(customerHeader);
 
             }
@@ -111,7 +117,6 @@ public class CustomerHeaders {
         }
 
     }
-
     public static ArrayList<CustomerHeader> get() {
         return data;
     }

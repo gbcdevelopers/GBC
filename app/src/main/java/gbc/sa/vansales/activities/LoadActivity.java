@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import gbc.sa.vansales.adapters.LoadDeliveryHeaderAdapter;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Settings;
@@ -36,6 +37,7 @@ public class LoadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
         setTitle(getString(R.string.load));
+        OrderReasons.loadData(getApplicationContext());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadDeliveryHeaders = new ArrayList<>();
         // searchResults= GetSearchResults();

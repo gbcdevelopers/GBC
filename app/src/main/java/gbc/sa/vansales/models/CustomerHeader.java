@@ -35,6 +35,10 @@ public class CustomerHeader implements Parcelable {
     private String siteCode;
     private String postCode;
     private String phone;
+    private String longitude;
+    private String latitude;
+    private String terms;
+    private String termDescription;
 
     public String getAddress() {
         return address;
@@ -198,6 +202,30 @@ public class CustomerHeader implements Parcelable {
     public void setTripId(String tripId) {
         this.tripId = tripId;
     }
+    public String getLatitude() {
+        return latitude;
+    }
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+    public String getLongitude() {
+        return longitude;
+    }
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+    public String getTermDescription() {
+        return termDescription;
+    }
+    public void setTermDescription(String termDescription) {
+        this.termDescription = termDescription;
+    }
+    public String getTerms() {
+        return terms;
+    }
+    public void setTerms(String terms) {
+        this.terms = terms;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -231,6 +259,10 @@ public class CustomerHeader implements Parcelable {
         parcel.writeString(siteCode);
         parcel.writeString(postCode);
         parcel.writeString(phone);
+        parcel.writeString(latitude);
+        parcel.writeString(longitude);
+        parcel.writeString(terms);
+        parcel.writeString(termDescription);
     }
 
     public static final Creator<CustomerHeader> CREATOR = new Creator<CustomerHeader>() {
@@ -264,6 +296,10 @@ public class CustomerHeader implements Parcelable {
             customerHeader.siteCode= source.readString();
             customerHeader.postCode= source.readString();
             customerHeader.phone= source.readString();
+            customerHeader.terms = source.readString();
+            customerHeader.termDescription = source.readString();
+            customerHeader.latitude = source.readString();
+            customerHeader.longitude = source.readString();
 
             return customerHeader;
         }

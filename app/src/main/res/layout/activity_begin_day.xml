@@ -3,19 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true"
     android:background="#fff"
     >
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnBack">
+        android:layout_above="@+id/btnBack"
+        android:layout_alignParentTop="true">
 
      <LinearLayout
          android:weightSum="2"
          android:orientation="horizontal"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+         android:layout_height="match_parent"
          android:paddingLeft="10dp">
 
          <LinearLayout
@@ -23,7 +23,7 @@
              android:orientation="vertical"
              android:layout_weight="1"
              android:layout_width="0dp"
-             android:weightSum="9"
+             android:weightSum="7"
              android:layout_height="match_parent">
 
              <TextView
@@ -111,7 +111,7 @@
                  android:layout_height="1dp"
                  android:background="@color/colorPrimary"/>
 
-             <TextView
+             <!--<TextView
                  android:id="@+id/tvdelieveryDate"
                  android:layout_width="wrap_content"
                  android:textSize="@dimen/label_big"
@@ -143,7 +143,7 @@
                  android:layout_marginTop="@dimen/h3"
                  android:layout_width="match_parent"
                  android:layout_height="1dp"
-                 android:background="@color/colorPrimary"/>
+                 android:background="@color/colorPrimary"/>-->
 
              <TextView
                  android:id="@+id/tvvehicleNo"
@@ -190,7 +190,7 @@
              android:orientation="vertical"
              android:layout_weight="1"
              android:layout_width="0dp"
-             android:weightSum="9"
+             android:weightSum="7"
              android:layout_height="match_parent">
 
              <TextView
@@ -278,7 +278,7 @@
                  android:layout_height="1dp"
                  android:background="@color/colorPrimary"/>
 
-             <TextView
+             <!--<TextView
                  android:id="@+id/delieveryDate"
                  android:layout_width="wrap_content"
                  android:textSize="@dimen/label_big"
@@ -310,7 +310,7 @@
                  android:layout_marginTop="@dimen/h3"
                  android:layout_width="match_parent"
                  android:layout_height="1dp"
-                 android:background="@color/colorPrimary"/>
+                 android:background="@color/colorPrimary"/>-->
 
              <TextView
                  android:id="@+id/vehicleNo"

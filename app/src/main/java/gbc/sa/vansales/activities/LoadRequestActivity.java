@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -55,6 +59,7 @@ import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderRequest;
 import gbc.sa.vansales.models.PreSaleProceed;
+import gbc.sa.vansales.sap.BackgroundJob;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -82,6 +87,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     CheckBox putOnHold;
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
+    private static int kJobId = 0;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_request);
@@ -890,6 +896,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Helpers.createBackgroundJob(LoadRequestActivity.this);
                                 dialog.dismiss();
                                 finish();
                             }
@@ -948,5 +955,22 @@ public class LoadRequestActivity extends AppCompatActivity {
         map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
         Log.e("Return Data","" + db.checkData(db.LOAD_REQUEST,map));
         return db.checkData(db.LOAD_REQUEST,map);
+    }
+    public void createBackgroundJob(){
+
+        BackgroundJob backgroundJob = new BackgroundJob(LoadRequestActivity.this);
+        ComponentName mServiceComponent = new ComponentName(this, BackgroundJob.class);
+        JobInfo.Builder builder = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+            builder.setMinimumLatency(2 * 1000); // wait at least
+            builder.setOverrideDeadline(50 * 1000); // maximum delay
+            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // require unmetered network
+            builder.setRequiresDeviceIdle(false); // device should be idle
+            builder.setRequiresCharging(false); // we don't care if the device is charging or not
+            JobScheduler jobScheduler = (JobScheduler) getApplication().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(builder.build());
+        }
+
     }
 }

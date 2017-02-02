@@ -136,7 +136,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         } else {
             adapter = new OrderRequestBadgeAdapter(this, arraylist, from, "yes");
         }
-        list.setAdapter(adapter);
+
         setTitle(getString(R.string.presalesorder));
         //  list.setItemsCanFocus(true);
         if (from.equalsIgnoreCase("button")) {
@@ -386,15 +386,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         ProgressDialog pd;
         @Override
         protected void onPreExecute() {
-            try {
-                pd = new ProgressDialog(PreSaleOrderProceedActivity.this);
-                pd.setMessage("Please Wait..");
-                pd.setCancelable(false);
-                pd.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                pd.cancel();
-            }
+            loadingSpinner.show();
         }
         @Override
         protected Void doInBackground(Void... params) {
@@ -427,10 +419,11 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (pd != null && pd.isShowing()) {
-                pd.cancel();
-                adapter.notifyDataSetChanged();
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
             }
+            list.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
     public class loadItemsOrder extends AsyncTask<Void, Void, Void> {
@@ -461,6 +454,12 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 setLoadItems(cursor, true);
             }
             return null;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            list.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
     public void setLoadItems(Cursor loadItemsCursor, Boolean isPosted) {

@@ -90,7 +90,9 @@
 				<string name="confirmload">تأكيد التحميل</string>
 				<string name="confirmorder">أكد الطلب</string>
 				<string name="confirmreturn">تأكيد العودة</string>
+				<string name="code_mismatch">Code does not match. Try again</string>
 				<string name="continue_lbl">Continue</string>
+				<string name="coordinate_mismatch_msg">Your coordinates is not within customer threshold limit.To still proceed provide an access code provided by helpdesk</string>
 				<string name="cradit_sales">مبيعات آجلة</string>
 				<string name="credit">آجل</string>
 				<string name="credit_1">10007665</string>
@@ -119,6 +121,7 @@
 				<string name="damage_expiry_report">تقرير المنتهى الصلاحية و التالف</string>
 				<string name="dashboard">لوحة المعلومات</string>
 				<string name="data_loss_msg">All your data will be deleted. Do you want to continue?</string>
+				<string name="data_posting_audit">DATA POSTING \n AUDIT</string>
 				<string name="date">تاريخ التحميل</string>
 				<string name="day">يوم</string>
 				<string name="days">ايام</string>
@@ -144,7 +147,7 @@
 				<string name="dismiss">رفض/انهاء</string>
 				<string name="do_not_print">لا تطبع</string>
 				<string name="due_date">تاريخ الاستحقاق</string>
-				<string name="e2000">E2000</string>
+				<string name="e2000">E200000</string>
 				<string name="edit">تعديل</string>
 				<string name="email">البريد الإلكتروني</string>
 				<string name="enableautosync">تمكين المزامنة التلقائية</string>
@@ -152,6 +155,7 @@
 				<string name="ending_inventory">إنهاء جرد</string>
 				<string name="end_invoice">نهاية الفاتورة</string>
 				<string name="english">English</string>
+				<string name="enter_access_code">Enter Access Code</string>
 				<string name="enter_amount">Enter Amount</string>
 				<string name="enter_category">Enter Category</string>
 				<string name="enter_cash_amount">ادخل المبلغ النقدي</string>
@@ -229,6 +233,7 @@
 				<string name="navigation_drawer_close">اغلاق نظام الملاحة</string>
 				<string name="navigation_drawer_open">تشغيل نظام الملاحة</string>
 				<string name="new_invoice_amount">القيمة الجديدة للفاتورة</string>
+				<string name="next_load_lbl">NEXT LOAD</string>
 				<string name="nextload">البدء فى الحمولة التالية</string>
 				<string name="no">لا</string>
 				<string name="no_data">Please input data before creating request</string>
@@ -267,6 +272,7 @@
 				<string name="price_54_00_2_25">Price :54.00/2.25</string>
 				<string name="price_items">Price Items</string>
 				<string name="price_list">قائمه اسعار</string>
+				<string name="price_list_lbl">قائمه اسعار</string>
 				<string name="print">طباعه</string>
 				<string name="printload">طباعه الحمولة</string>
 				<string name="printorder">طباعه الامر</string>
@@ -281,6 +287,7 @@
 				<string name="product_number">رقم المنتج</string>
 				<string name="promo">Promo</string>
 				<string name="promotion">عرض تسويقى</string>
+				<string name="promotionlist">PROMOTION LIST</string>
 				<string name="promo_details">تفاصيل الترويج</string>
 				<string name="put_on_hold">ضعه على الانتظار</string>
 				<string name="q_btl">Q/BTL</string>
@@ -310,7 +317,9 @@
 				<string name="returns">جيدة / سيئة مرتجع</string>
 				<string name="returntype">انواع المرتجع</string>
 				<string name="review">مراجعة</string>
+				<string name="review_lbl">مراجعة</string>
 				<string name="root_active_log">سجل انشطة خط السير</string>
+				<string name="route_book">ROUTE BOOK</string>
 				<string name="route_code_101">كود خط السير</string>
 				<string name="route_pro">ROUTE-PRO</string>
 				<string name="route_summary">ملخص خط السير</string>
@@ -352,6 +361,7 @@
 				<string name="theft_label"><font fgcolor='#ff0000'>Theft or Missing</font></string>
 				<string name="thermal_print">الطابعه الحرارية</string>
 				<string name="time">وقت</string>
+				<string name="today_order">TODAYS ORDER</string>
 				<string name="today_summary">ملخص اليوم</string>
 				<string name="today_s_schedule">جدول اليوم</string>
 				<string name="today_s_unserviced">عملاء غير مخدومين اليوم</string>
@@ -363,6 +373,7 @@
 				<string name="total_sales">إجمالي المبيعات</string>
 				<string name="trade_name">Trade Name</string>
 				<string name="trade_price">سعر تداول</string>
+				<string name="transaction">Transaction</string>
 				<string name="truck_damage">الأضرار شاحنة</string>
 				<string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>
 				<string name="tv_cust_detail1">MOP:TC(CASH or CHEQUE)</string>
@@ -391,6 +402,7 @@
 				<string name="variance_load">فروقات الحمولة</string>
 				<string name="vehicle_no">كود السيارة</string>
 				<string name="view">منظر</string>
+				<string name="warehouse_stock">WAREHOUSE \n STOCK</string>
 				<string name="welcome_john_doe_1000002445">اهلا بك</string>
 				<string name="yes">نعم</string>
 </resources>

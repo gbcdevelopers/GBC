@@ -2,8 +2,10 @@ package gbc.sa.vansales.Fragment;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.Reasons;
+import gbc.sa.vansales.utils.Callback;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -47,11 +50,20 @@ public class AllCustomerFragment extends Fragment {
     ListView listView;
     DatabaseHandler db;
     View view;
-
+    android.location.Location myLocation = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.visitall_fragment, container, false);
+        new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
+            @Override
+            public void callbackSuccess(android.location.Location location) {
+                myLocation = location;
+            }
+            @Override
+            public void callbackFailure() {
+            }
+        });
         reasonsList = OrderReasons.get();
         db = new DatabaseHandler(getActivity());
 //        dataArrayList =new ArrayList<>();
@@ -115,7 +127,22 @@ public class AllCustomerFragment extends Fragment {
                 else{
                     db.addData(db.VISIT_LIST,map);
                 }*/
-
+                if (customerFlagExist(customer)) {
+                    loadCustomerFlag(customer);
+                } else {
+                    App.CustomerRouteControl obj = new App.CustomerRouteControl();
+                    obj.setThresholdLimit("99");
+                    obj.setIsVerifyGPS(false);
+                    obj.setIsEnableIVCopy(true);
+                    obj.setIsDelayPrint(true);
+                    obj.setIsEditOrders(true);
+                    obj.setIsEditInvoice(true);
+                    obj.setIsReturns(true);
+                    obj.setIsDamaged(true);
+                    obj.setIsSignCapture(true);
+                    obj.setIsReturnCustomer(true);
+                    obj.setIsCollection(true);
+                }
                 Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg", "visit");
@@ -158,4 +185,72 @@ public class AllCustomerFragment extends Fragment {
 
        // return false;
     }
+    public boolean customerFlagExist(Customer customer){
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
+        return db.checkData(db.CUSTOMER_FLAGS,filter);
+    }
+    public void loadCustomerFlag(Customer customer){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_TRIP_ID,"");
+        map.put(db.KEY_CUSTOMER_NO,"");
+        map.put(db.KEY_THRESHOLD_LIMIT,"");
+        map.put(db.KEY_VERIFYGPS,"");
+        map.put(db.KEY_GPS_SAVE,"");
+        map.put(db.KEY_ENABLE_INVOICE,"");
+        map.put(db.KEY_ENABLE_DELAY_PRINT,"");
+        map.put(db.KEY_ENABLE_EDIT_ORDERS,"");
+        map.put(db.KEY_ENABLE_EDIT_INVOICE,"");
+        map.put(db.KEY_ENABLE_RETURNS,"");
+        map.put(db.KEY_ENABLE_DAMAGED,"");
+        map.put(db.KEY_ENABLE_SIGN_CAPTURE,"");
+        map.put(db.KEY_ENABLE_RETURN,"");
+        map.put(db.KEY_ENABLE_AR_COLLECTION,"");
+        map.put(db.KEY_ENABLE_POS_EQUI,"");
+        map.put(db.KEY_ENABLE_SUR_AUDIT,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+        Cursor cursor = db.getData(db.CUSTOMER_FLAGS,map,filter);
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            App.CustomerRouteControl obj = new App.CustomerRouteControl();
+            obj.setThresholdLimit(cursor.getString(cursor.getColumnIndex(db.KEY_THRESHOLD_LIMIT)));
+            obj.setIsVerifyGPS(cursor.getString(cursor.getColumnIndex(db.KEY_VERIFYGPS)).equals("0") ? false : true);
+            obj.setIsEnableIVCopy(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_INVOICE)).equals("0") ? false : true);
+            obj.setIsDelayPrint(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DELAY_PRINT)).equals("0") ? false : true);
+            obj.setIsEditOrders(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_ORDERS)).equals("0") ? false : true);
+            obj.setIsEditInvoice(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_INVOICE)).equals("0") ? false : true);
+            obj.setIsReturns(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURNS)).equals("0") ? false : true);
+            obj.setIsDamaged(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DAMAGED)).equals("0") ? false : true);
+            obj.setIsSignCapture(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_SIGN_CAPTURE)).equals("0")?false:true);
+            obj.setIsReturnCustomer(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURN)).equals("0")?false:true);
+            obj.setIsCollection(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_AR_COLLECTION)).equals("0")?false:true);
+        }
+
+    }
+    public boolean verifyGPS(){
+
+       /* String customerLatitude = "24.942091";
+        String customerLongitude = "46.712125";*/
+
+        String customerLatitude = "25.042429";
+        String customerLongitude = "55.137817";
+
+        String outlet_georadius = "5500"; //Distance is in metres(5445.938)
+
+        android.location.Location customerLocation = new android.location.Location("");
+        customerLocation.setLatitude(Double.parseDouble(customerLatitude));
+        customerLocation.setLongitude(Double.parseDouble(customerLongitude));
+        double radius = Double.parseDouble(outlet_georadius);
+        float distance = myLocation.distanceTo(customerLocation);
+        Log.e("Distance", "" + distance);
+        if(distance<radius){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
 }

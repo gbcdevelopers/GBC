@@ -139,6 +139,7 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                                     dialog.cancel();
                                     Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
                                 } else {
+                                    dialog.dismiss();
                                     Intent i = new Intent(mContext, EndTripActivity.class);
                                     mContext.startActivity(i);
                                 }

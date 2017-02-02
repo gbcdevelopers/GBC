@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_access_code"
+        android:textStyle="bold"
+        android:textSize="@dimen/label_medium"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/all_padding"
+        android:layout_marginBottom="@dimen/all_padding"
+        />
+    <LinearLayout
+        android:id="@+id/pin_layout"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/pin_first_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+
+        <EditText
+            android:id="@+id/pin_second_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+
+        <EditText
+            android:id="@+id/pin_third_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+        <EditText
+            android:id="@+id/pin_forth_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+
+        <EditText
+            android:id="@+id/pin_fifth_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+        <EditText
+            android:id="@+id/pin_sixth_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/pin_edittext_style"
+            />
+
+    </LinearLayout>
+    <EditText
+        android:id="@+id/pin_hidden_edittext"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:password="true"
+        android:maxLength="6"
+        android:textColor="#00000000"
+        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/all_padding"
+        android:layout_marginBottom="@dimen/all_padding"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/btn_ok"
+            android:text="@string/Continue_text"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/space"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@color/buttoncolor"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            />
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/btn_cancel"
+            android:text="@string/cancel"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/space"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@color/cancelcolor"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            />
+
+    </LinearLayout>
+</LinearLayout>

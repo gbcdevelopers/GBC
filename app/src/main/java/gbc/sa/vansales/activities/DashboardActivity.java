@@ -71,17 +71,21 @@ public class DashboardActivity extends AppCompatActivity
     float goodReturnsCount = 0;
     float badReturnsCount = 0;
     int postCount = 0;
+    TextView lbl_totalsales;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         /*ArticleHeaders.loadData(getApplicationContext());
         CustomerHeaders.loadData(getApplicationContext());*/
-        loadingSpinner = new LoadingSpinner(this, getString(R.string.changinglanguage));
+        //loadingSpinner = new LoadingSpinner(this, getString(R.string.changinglanguage));
+        loadingSpinner = new LoadingSpinner(this, "");
         Helpers.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
+        lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
+        loadTotalSales();
         iv_drawer = (ImageView) findViewById(R.id.iv_drawer);
         btn_message = (Button) findViewById(R.id.btn_messages);
         btn_message.setOnClickListener(new View.OnClickListener() {
@@ -200,12 +204,31 @@ public class DashboardActivity extends AppCompatActivity
         //createBarChart();
         new loadBarChartData(App.SALES);
 
-        TextView lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
+
         TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         TextView lbl_targetachieved = (TextView) findViewById(R.id.lbl_targetachieved);
-        lbl_totalsales.setText("0.00" + getString(R.string.currency));
+
+       // lbl_totalsales.setText("0.00" + getString(R.string.currency));
         lbl_totalreceipt.setText("0.00 " + getString(R.string.currency));
         lbl_targetachieved.setText("594.00/75000.00");
+    }
+    private void loadTotalSales(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_ACTIVITY_TYPE,"");
+        map.put(db.KEY_CUSTOMER_NO,"");
+        map.put(db.KEY_ORDER_ID,"");
+        map.put(db.KEY_PRICE,"");
+        HashMap<String,String>filter = new HashMap<>();
+        Cursor c = db.getData(db.DAYACTIVITY,map,filter);
+        double totalSales = 0;
+        if(c.getCount()>0){
+            c.moveToFirst();
+            do{
+                totalSales+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_PRICE)));
+            }
+            while (c.moveToNext());
+        }
+        lbl_totalsales.setText(String.valueOf(totalSales) + " " + getString(R.string.currency));
     }
     private void setBeginDayVisibility() {
         HashMap<String, String> map = new HashMap<>();

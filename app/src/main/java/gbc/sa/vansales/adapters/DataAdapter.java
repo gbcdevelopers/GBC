@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
@@ -91,11 +92,17 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         holder.customer_name.setText(UrlBuilder.decodeString(customer.getCustomerName()));
         holder.customer_address.setText(customer.getCustomerAddress());
 
-        if(customer.getPaymentMethod().equals("Credit")){
+        if(customer.getPaymentMethod().equals(App.TC_CUSTOMER)){
+            holder.horizontal_view.setBackgroundColor(Color.YELLOW);
+        }
+        else if(customer.getPaymentMethod().equals(App.CASH_CUSTOMER)){
+            holder.horizontal_view.setBackgroundColor(Color.BLUE);
+        }
+        else if(customer.getPaymentMethod().equals(App.CREDIT_CUSTOMER)){
             holder.horizontal_view.setBackgroundColor(Color.RED);
         }
         else{
-            holder.horizontal_view.setBackgroundColor(Color.BLUE);
+            holder.horizontal_view.setBackgroundColor(Color.TRANSPARENT);
         }
         holder.orderFlag.setAlpha(customer.isOrder()?1f:.3f);
         holder.saleflag.setAlpha(customer.isSale()?1f:.3f);

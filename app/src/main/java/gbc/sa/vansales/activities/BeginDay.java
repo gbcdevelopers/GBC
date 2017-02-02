@@ -68,8 +68,8 @@ public class BeginDay extends Activity
         salesDate=(TextView)findViewById(R.id.salesDate);
         time=(TextView)findViewById(R.id.time);
 
-        deliveryDate=(TextView)findViewById(R.id.delieveryDate);
-        delieveryRoute=(TextView)findViewById(R.id.delieveryRoute);
+        /*deliveryDate=(TextView)findViewById(R.id.delieveryDate);
+        delieveryRoute=(TextView)findViewById(R.id.delieveryRoute);*/
 
         vehicleNo=(TextView)findViewById(R.id.vehicleNo);
         day=(TextView)findViewById(R.id.day);

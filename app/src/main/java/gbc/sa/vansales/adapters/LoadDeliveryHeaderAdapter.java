@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> {
     ArrayList<LoadDeliveryHeader> searchArrayList;
 
@@ -59,7 +60,7 @@ public class LoadDeliveryHeaderAdapter extends ArrayAdapter<LoadDeliveryHeader> 
             holder = (ViewHolder) convertView.getTag();
         }
         LoadDeliveryHeader load = getItem(position);
-        holder.deliveryNo.setText(getContext().getString(R.string.loadno) + " : " + load.getDeliveryNo());
+        holder.deliveryNo.setText(getContext().getString(R.string.loadno) + " : " + StringUtils.stripStart(load.getDeliveryNo(),"0"));
         holder.loadingDate.setText(getContext().getString(R.string.delivery_date) + " : " + load.getLoadingDate());
 
         if(load.isLoadVerified()){

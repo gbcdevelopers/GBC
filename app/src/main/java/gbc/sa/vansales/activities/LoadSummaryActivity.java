@@ -76,6 +76,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
         //Log.e("Object", "" + object.getDeliveryNo());
         reasonsList = OrderReasons.get();
+        Log.e("Reasons List","" + reasonsList.size());
         myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -115,7 +116,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 ll1.setVisibility(View.GONE);
                 RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
                 rl_specify.setVisibility(View.VISIBLE);
+                //
                 final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                Log.e("Adapter","" + myAdapter.getCount());
                 spin.setAdapter(myAdapter);
 
                 /*if(item.getUom().equals(App.CASE_UOM)||item.getUom().equals(App.CASE_UOM_NEW)||item.getUom().equals(App.BOTTLES_UOM)){
@@ -283,6 +286,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         TextView tv = (TextView) findViewById(R.id.tv_amt);
         tv.setText(String.valueOf(total));
+        adapter.notifyDataSetChanged();//update adapter
     }
     private ArrayList<LoadSummary> loadDataOld() {
         // adapter.clear();

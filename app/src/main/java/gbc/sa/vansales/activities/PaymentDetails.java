@@ -119,7 +119,21 @@ public class PaymentDetails extends AppCompatActivity {
                     amountdue = Const.colletionDatas.get(pos).getAmoutDue();
                     tv_due_amt.setText(amountdue);
                 }*/
-            } else {
+            }
+            else if (from.equals("Final Invoice")){
+                amountdue = getIntent().getStringExtra("amountdue");
+                object = getIntent().getParcelableExtra("headerObj");
+                tv_due_amt.setText(amountdue);
+                customers = CustomerHeaders.get();
+                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+                TextView tv_cust_detail = (TextView) findViewById(R.id.tv_cust_detail);
+                if (customerHeader != null) {
+                    tv_cust_detail.setText(customerHeader.getCustomerNo() + " " + customerHeader.getName1());
+                } else {
+                    tv_cust_detail.setText(object.getCustomerID().toString() + " " + object.getCustomerName().toString());
+                }
+            }
+            else {
                 delivery = (OrderList) i.getParcelableExtra("delivery");
                 /*if (object == null) {
                     object = Const.allCustomerdataArrayList.get(Const.customerPosition);
@@ -148,7 +162,11 @@ public class PaymentDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (from.equals("collection")) {
-                } else {
+                }
+                else if(from.equals("Final Invoice")){
+
+                }
+                else {
                     HashMap<String, String> filter = new HashMap<String, String>();
                     filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
                     db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST, filter);
@@ -283,7 +301,6 @@ public class PaymentDetails extends AppCompatActivity {
                             }
                         });
                     }
-
                     else if (from.equals("collection")){
                         HashMap<String,String>map = new HashMap<String, String>();
                         map.put(db.KEY_AMOUNT_CLEARED,"");

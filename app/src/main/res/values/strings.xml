@@ -95,7 +95,9 @@
     <string name="confirmload">Confirm Load</string>
     <string name="confirmorder">Confirm Order</string>
     <string name="confirmreturn">Confirm Returns</string>
+    <string name="code_mismatch">Code does not match. Try again</string>
     <string name="continue_lbl">Continue</string>
+    <string name="coordinate_mismatch_msg">Your coordinates is not within customer threshold limit.To still proceed provide an access code provided by helpdesk</string>
     <string name="cradit_sales">CRADIT SALES</string>
     <string name="credit">Credit</string>
     <string name="credit_1">10007665</string>
@@ -124,6 +126,7 @@
     <string name="damage_expiry_report">DAMAGE/EXPIRY REPORT</string>
     <string name="dashboard">Dashboard</string>
     <string name="data_loss_msg">All your data will be deleted. Do you want to continue?</string>
+    <string name="data_posting_audit">DATA POSTING \n AUDIT</string>
     <string name="date">16/01/2017</string>
     <string name="day">Day </string>
     <string name="days">Days</string>
@@ -149,7 +152,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="do_not_print">Do Not Print</string>
     <string name="due_date">Due Date</string>
-    <string name="e2000">E2000</string>
+    <string name="e2000">E200000</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
     <string name="enableautosync">Enable Auto Sync</string>
@@ -157,6 +160,7 @@
     <string name="ending_inventory">Ending Inventory</string>
     <string name="end_invoice">End Invoice</string>
     <string name="english">English</string>
+    <string name="enter_access_code">Enter Access Code</string>
     <string name="enter_amount">Enter Amount</string>
     <string name="enter_category">Enter Category</string>
     <string name="enter_cash_amount">ENTER CASH AMOUNT:</string>
@@ -234,6 +238,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="new_invoice_amount">New Invoice Amount</string>
+    <string name="next_load_lbl">NEXT LOAD</string>
     <string name="nextload">Next Load to Process</string>
     <string name="no">No</string>
     <string name="no_data">Please input data before creating request</string>
@@ -272,6 +277,7 @@
     <string name="price_54_00_2_25">Price :54.00/2.25</string>
     <string name="price_items">Price Items</string>
     <string name="price_list">Price List</string>
+    <string name="price_list_lbl">PRICE LIST</string>
     <string name="print">Print</string>
     <string name="printload">Print Load</string>
     <string name="printorder">Print Order</string>
@@ -286,6 +292,7 @@
     <string name="product_number">Product no</string>
     <string name="promo">Promo</string>
     <string name="promotion">Promotion</string>
+    <string name="promotionlist">PROMOTION LIST</string>
     <string name="promo_details">Promo Details</string>
     <string name="put_on_hold">Put on Hold</string>
     <string name="q_btl">Q/BTL</string>
@@ -315,7 +322,9 @@
     <string name="returns">Good/Bad Return</string>
     <string name="returntype">Type of Return</string>
     <string name="review">REVIEW</string>
+    <string name="review_lbl">Review</string>
     <string name="root_active_log">ROOT ACTIVE LOG</string>
+    <string name="route_book">ROUTE BOOK</string>
     <string name="route_code_101">Route Code: 101</string>
     <string name="route_pro">ROUTE-PRO</string>
     <string name="route_summary">ROUTE SUMMARY</string>
@@ -357,6 +366,7 @@
     <string name="theft_label"><font fgcolor='#ff0000'>Theft or Missing</font></string>
     <string name="thermal_print">Thermal Print</string>
     <string name="time">Time </string>
+    <string name="today_order">TODAYS ORDER</string>
     <string name="today_summary">TODAY SUMMARY</string>
     <string name="today_s_schedule">Today\'s Schedule</string>
     <string name="today_s_unserviced">Today\'s Unserviced</string>
@@ -368,6 +378,7 @@
     <string name="total_sales">Total Sales</string>
     <string name="trade_name">Trade Name</string>
     <string name="trade_price">Trade Price</string>
+    <string name="transaction">Transaction</string>
     <string name="truck_damage">Truck Damage</string>
     <string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>
     <string name="tv_cust_detail1">MOP:TC(CASH or CHEQUE)</string>
@@ -396,6 +407,7 @@
     <string name="variance_load">Load Variance</string>
     <string name="vehicle_no">Vehicle No. </string>
     <string name="view">VIEW</string>
+    <string name="warehouse_stock">WAREHOUSE \n STOCK</string>
     <string name="welcome_john_doe_1000002445">Welcome John Doe:1000002445</string>
     <string name="yes">Yes</string>
 </resources>

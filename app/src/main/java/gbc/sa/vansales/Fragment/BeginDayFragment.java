@@ -99,11 +99,11 @@ public class BeginDayFragment extends Fragment {
         loadingSpinner = new LoadingSpinner(getActivity());
         salesDate = (TextView) view.findViewById(R.id.salesDate);
         time = (TextView) view.findViewById(R.id.time);
-        delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
+        //delieveryDate = (TextView) view.findViewById(R.id.delieveryDate);
         route = (TextView) view.findViewById(R.id.route);
         salesManNo = (TextView) view.findViewById(R.id.salesManNo);
         salesManName = (TextView) view.findViewById(R.id.salesManName);
-        deliveryRoute = (TextView) view.findViewById(R.id.delieveryRoute);
+       // deliveryRoute = (TextView) view.findViewById(R.id.delieveryRoute);
         vehicleNo = (TextView) view.findViewById(R.id.vehicleNo);
         day = (TextView) view.findViewById(R.id.day);
         try {
@@ -113,8 +113,8 @@ public class BeginDayFragment extends Fragment {
             salesManNo.setText(data.getString("driver1"));
             salesManName.setText(data.getString("driver1"));
             salesDate.setText(data.getString("psDate"));
-            delieveryDate.setText(data.getString("asDate"));
-            deliveryRoute.setText(data.getString("route"));
+           // delieveryDate.setText(data.getString("asDate"));
+           // deliveryRoute.setText(data.getString("route"));
             vehicleNo.setText(data.getString("truck"));
             day.setText(Helpers.getDayofWeek(data.getString("psDate")));
             time.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
