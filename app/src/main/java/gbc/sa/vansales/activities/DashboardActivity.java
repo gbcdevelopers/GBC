@@ -44,6 +44,8 @@ import java.util.List;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -70,11 +72,18 @@ public class DashboardActivity extends AppCompatActivity
     float salesCount = 0;
     float goodReturnsCount = 0;
     float badReturnsCount = 0;
+    int cashCustomerCount = 0;
+    int creditCustomerCount = 0;
+    int tcCustomerCount = 0;
     int postCount = 0;
     TextView lbl_totalsales;
+    ArrayList<CustomerHeader> customers;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        CustomerHeaders.loadData(getApplicationContext());
+        customers = CustomerHeaders.get();
         /*ArticleHeaders.loadData(getApplicationContext());
         CustomerHeaders.loadData(getApplicationContext());*/
         //loadingSpinner = new LoadingSpinner(this, getString(R.string.changinglanguage));
@@ -199,7 +208,7 @@ public class DashboardActivity extends AppCompatActivity
         NavigationView navigationView2 = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
-        createPieChart();
+        //createPieChart();
         // createLineChart();
         //createBarChart();
         new loadBarChartData(App.SALES);
@@ -445,6 +454,39 @@ public class DashboardActivity extends AppCompatActivity
         barChart.getLegend().setEnabled(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
+    void createPieChartFromLiveData(int cashCustomerCount,int creditCustomerCount,int tcCustomerCount) {
+        PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
+        ArrayList<Entry> entries = new ArrayList<>();
+        entries.add(new Entry(cashCustomerCount, 0));
+        entries.add(new Entry(creditCustomerCount, 1));
+        entries.add(new Entry(tcCustomerCount, 2));
+        PieDataSet dataset = new PieDataSet(entries, "");
+        dataset.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return String.valueOf((int) value);
+            }
+        });
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add(getString(R.string.cash));
+        labels.add(getString(R.string.credit));
+        labels.add("TC");
+        PieData data = new PieData(labels, dataset);
+        List<Integer> colorCodes = new ArrayList<Integer>();
+        colorCodes.add(Color.parseColor("#c15525"));
+        colorCodes.add(Color.parseColor("#ffc502"));
+        colorCodes.add(Color.parseColor("#ff9201"));
+        dataset.setColors(colorCodes); //
+        //  pieChart.setDescription("Description");
+        pieChart.setDrawSliceText(false);
+        pieChart.setData(data);
+        pieChart.setHoleRadius(50f);
+        pieChart.setTransparentCircleRadius(50f);
+        pieChart.setDescription("");
+        pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+        // pieChart.setUsePercentValues(true);
+        pieChart.animateY(3000);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return true;
@@ -603,11 +645,72 @@ public class DashboardActivity extends AppCompatActivity
                         loadingSpinner.hide();
                     }
                     createBarChartFromLiveData(salesCount,goodReturnsCount,badReturnsCount);
+                    new loadPieChartData().execute();
                 }
             }
 
 
         }
+    }
+    public class loadPieChartData extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            if(!loadingSpinner.isShowing()){
+                loadingSpinner.show();
+            }
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put(db.KEY_CUSTOMER_OUT_TIMESTAMP, "");
+            map.put(db.KEY_CUSTOMER_NO, "");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+            Cursor c = db.getData(db.VISIT_LIST,map,filter);
+            if(c.getCount()>0){
+                c.moveToFirst();
+                createPieChart(c);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            createPieChartFromLiveData(cashCustomerCount,creditCustomerCount,tcCustomerCount);
+        }
+    }
+
+    private void createPieChart(final Cursor c){
+        c.moveToFirst();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                do{
+                    CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    HashMap<String,String>filter = new HashMap<String, String>();
+                    filter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    if(customerHeader!=null){
+                        if(customerHeader.getTerms().equals(App.CASH_CUSTOMER_CODE)){
+                            cashCustomerCount++;
+                        }
+                        else if(customerHeader.getTerms().equals(App.TC_CUSTOMER_CODE)){
+                            tcCustomerCount++;
+                        }
+
+                        else if(!customerHeader.getTerms().equals("")&&db.checkData(db.CUSTOMER_CREDIT,filter)){
+                            creditCustomerCount++;
+                        }
+                        else{
+                            cashCustomerCount++;
+                        }
+                    }
+
+                }
+                while (c.moveToNext());
+            }
+        });
     }
 
     private float calculateData(String var,Cursor c1,Cursor c2){

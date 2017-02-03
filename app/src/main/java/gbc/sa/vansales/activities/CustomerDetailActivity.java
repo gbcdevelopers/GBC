@@ -149,6 +149,16 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 if (shouldShowDialog()) {
                     showStatusDialog();
                 } else {
+                    HashMap<String, String> filter = new HashMap<String, String>();
+                    //filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filter.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_CUSTOMER_OUT_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    db.updateData(db.VISIT_LIST, map, filter);
+
                     Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                     startActivity(intent);
                     finish();

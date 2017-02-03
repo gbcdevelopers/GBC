@@ -534,7 +534,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
-                        jo.put("RejReason",cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
+                        //jo.put("RejReason",cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
@@ -550,7 +550,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         jo.put("UoM", cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                         jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_PRICE)));
                         jo.put("Storagelocation", "");
-                        jo.put("RejReason",cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
+                        //jo.put("RejReason",cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
@@ -731,68 +731,76 @@ public class LoadVerifyActivity extends AppCompatActivity {
         map.put(db.KEY_IS_DELIVERED, "");
         HashMap<String, String> filter = new HashMap<>();
         Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
-        do {
-            HashMap<String, String> mapVanStock = new HashMap<>();
-            mapVanStock.put(db.KEY_DELIVERY_NO, "");
-            mapVanStock.put(db.KEY_ITEM_NO, "");
-            mapVanStock.put(db.KEY_ITEM_CATEGORY, "");
-            mapVanStock.put(db.KEY_CREATED_BY, "");
-            mapVanStock.put(db.KEY_ENTRY_TIME, "");
-            mapVanStock.put(db.KEY_DATE, "");
-            mapVanStock.put(db.KEY_MATERIAL_NO, "");
-            mapVanStock.put(db.KEY_MATERIAL_DESC1, "");
-            mapVanStock.put(db.KEY_MATERIAL_ENTERED, "");
-            mapVanStock.put(db.KEY_MATERIAL_GROUP, "");
-            mapVanStock.put(db.KEY_PLANT, "");
-            mapVanStock.put(db.KEY_STORAGE_LOCATION, "");
-            mapVanStock.put(db.KEY_BATCH, "");
-            mapVanStock.put(db.KEY_ACTUAL_QTY_CASE, "");
-            mapVanStock.put(db.KEY_ACTUAL_QTY_UNIT, "");
-            mapVanStock.put(db.KEY_RESERVED_QTY_CASE, "");
-            mapVanStock.put(db.KEY_RESERVED_QTY_UNIT, "");
-            mapVanStock.put(db.KEY_REMAINING_QTY_CASE, "");
-            mapVanStock.put(db.KEY_REMAINING_QTY_UNIT, "");
-            mapVanStock.put(db.KEY_UOM_CASE, "");
-            mapVanStock.put(db.KEY_UOM_UNIT, "");
-            mapVanStock.put(db.KEY_DIST_CHANNEL, "");
-            mapVanStock.put(db.KEY_DIVISION, "");
-            mapVanStock.put(db.KEY_IS_VERIFIED, "");
-            HashMap<String, String> filterVanStock = new HashMap<>();
-            Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS, mapVanStock, filterVanStock);
+        if(deliveryCursor.getCount()>0){
+            deliveryCursor.moveToFirst();
             do {
-                if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
-                    if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)) {
-                        String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
-                        String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
-                        String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
-                        String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
-                        HashMap<String, String> updateMap = new HashMap<>();
-                        updateMap.put(db.KEY_ACTUAL_QTY_CASE, actualCase);
-                        updateMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(Float.parseFloat(reservedCase == null ? "0" : reservedCase) + Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
-                        updateMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(remainingCase == null ? "0" : remainingCase) - Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
-                        HashMap<String, String> updateFilter = new HashMap<>();
-                        updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        //Log.e("Update Map C/S","" + updateMap);
-                        db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
-                    } else if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                        String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
-                        String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
-                        String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));
-                        String remainingUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT));
-                        HashMap<String, String> updateMap = new HashMap<>();
-                        updateMap.put(db.KEY_ACTUAL_QTY_UNIT, actualUnits);
-                        updateMap.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(Float.parseFloat(reservedUnits == null ? "0" : reservedUnits) + Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
-                        updateMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(remainingUnits == null ? "0" : remainingUnits) - Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
-                        //Log.e("Update Map B/T", "" + updateMap);
-                        HashMap<String, String> updateFilter = new HashMap<>();
-                        updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+                HashMap<String, String> mapVanStock = new HashMap<>();
+                mapVanStock.put(db.KEY_DELIVERY_NO, "");
+                mapVanStock.put(db.KEY_ITEM_NO, "");
+                mapVanStock.put(db.KEY_ITEM_CATEGORY, "");
+                mapVanStock.put(db.KEY_CREATED_BY, "");
+                mapVanStock.put(db.KEY_ENTRY_TIME, "");
+                mapVanStock.put(db.KEY_DATE, "");
+                mapVanStock.put(db.KEY_MATERIAL_NO, "");
+                mapVanStock.put(db.KEY_MATERIAL_DESC1, "");
+                mapVanStock.put(db.KEY_MATERIAL_ENTERED, "");
+                mapVanStock.put(db.KEY_MATERIAL_GROUP, "");
+                mapVanStock.put(db.KEY_PLANT, "");
+                mapVanStock.put(db.KEY_STORAGE_LOCATION, "");
+                mapVanStock.put(db.KEY_BATCH, "");
+                mapVanStock.put(db.KEY_ACTUAL_QTY_CASE, "");
+                mapVanStock.put(db.KEY_ACTUAL_QTY_UNIT, "");
+                mapVanStock.put(db.KEY_RESERVED_QTY_CASE, "");
+                mapVanStock.put(db.KEY_RESERVED_QTY_UNIT, "");
+                mapVanStock.put(db.KEY_REMAINING_QTY_CASE, "");
+                mapVanStock.put(db.KEY_REMAINING_QTY_UNIT, "");
+                mapVanStock.put(db.KEY_UOM_CASE, "");
+                mapVanStock.put(db.KEY_UOM_UNIT, "");
+                mapVanStock.put(db.KEY_DIST_CHANNEL, "");
+                mapVanStock.put(db.KEY_DIVISION, "");
+                mapVanStock.put(db.KEY_IS_VERIFIED, "");
+                HashMap<String, String> filterVanStock = new HashMap<>();
+                Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS, mapVanStock, filterVanStock);
+                if(vanStockCursor.getCount()>0){
+                    vanStockCursor.moveToFirst();
+                    do {
+                        if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
+                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)) {
+                                String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                                String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
+                                String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
+                                String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
+                                HashMap<String, String> updateMap = new HashMap<>();
+                                updateMap.put(db.KEY_ACTUAL_QTY_CASE, actualCase);
+                                updateMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(Float.parseFloat(reservedCase == null ? "0" : reservedCase) + Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
+                                updateMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(remainingCase == null ? "0" : remainingCase) - Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
+                                HashMap<String, String> updateFilter = new HashMap<>();
+                                updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                //Log.e("Update Map C/S","" + updateMap);
+                                db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+                            } else if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                                String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
+                                String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));
+                                String remainingUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT));
+                                HashMap<String, String> updateMap = new HashMap<>();
+                                updateMap.put(db.KEY_ACTUAL_QTY_UNIT, actualUnits);
+                                updateMap.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(Float.parseFloat(reservedUnits == null ? "0" : reservedUnits) + Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
+                                updateMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(remainingUnits == null ? "0" : remainingUnits) - Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
+                                //Log.e("Update Map B/T", "" + updateMap);
+                                HashMap<String, String> updateFilter = new HashMap<>();
+                                updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+                            }
+                            break;
+                        }
                     }
-                    break;
+                    while (vanStockCursor.moveToNext());
                 }
+
             }
-            while (vanStockCursor.moveToNext());
+            while (deliveryCursor.moveToNext());
         }
-        while (deliveryCursor.moveToNext());
+
     }
 }

@@ -132,7 +132,13 @@ public class VanStockActivity extends AppCompatActivity {
             vanStock.setItem_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
             vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
             vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-            arraylist.add(vanStock);
+            if(vanStock.getItem_case().equals("0.0")&&vanStock.getItem_units().equals("0.0")){
+
+            }
+            else{
+                arraylist.add(vanStock);
+            }
+
         }
         while (cursor.moveToNext());
     }
