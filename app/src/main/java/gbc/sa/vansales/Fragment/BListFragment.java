@@ -60,7 +60,7 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/5/2016.
  */
-public class BListFragment extends Fragment {
+public class  BListFragment extends Fragment {
     View viewmain;
     ListView listSales;
     public static SalesInvoiceAdapter adapter;
@@ -125,6 +125,13 @@ public class BListFragment extends Fragment {
         addProducts.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
         addProducts.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
         addProducts.setVisibility(View.VISIBLE);
+        if(App.CustomerRouteControl.isDamaged()){
+            addProducts.setEnabled(true);
+        }
+        else{
+            addProducts.setEnabled(false);
+            addProducts.setAlpha(.5f);
+        }
         fab.setVisibility(View.GONE);
         String strProductname[] = {"Carton 80*150ml Fayha", "CARTON 48*600ml Fayha", "Shrink berain"};
         arrProductList = new ArrayList<>();

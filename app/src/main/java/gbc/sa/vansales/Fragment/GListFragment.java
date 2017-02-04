@@ -127,6 +127,13 @@ public class GListFragment extends Fragment {
         addProducts.setImageDrawable(getResources().getDrawable(R.drawable.ic_white_add));
         addProducts.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_white_add));
         addProducts.setVisibility(View.VISIBLE);
+        if(App.CustomerRouteControl.isReturns()){
+            addProducts.setEnabled(true);
+        }
+        else{
+            addProducts.setEnabled(false);
+            addProducts.setAlpha(.5f);
+        }
         fab.setVisibility(View.GONE);
 
         String strProductname[] = {"Carton 80*150ml Fayha", "CARTON 48*600ml Fayha", "Shrink berain"};

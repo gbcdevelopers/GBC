@@ -161,116 +161,126 @@ public class SalesFragment extends Fragment {
         }*/
        // adapter = new SalesAdapter(getActivity(), salesarrayList);
         myAdapter = new SalesInvoiceAdapter(getActivity(), salesarrayList);
-        listSales.setAdapter(myAdapter);
-        listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-                final Sales sales = salesarrayList.get(position);
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.dialog_with_crossbutton);
-                dialog.setCancelable(false);
-                TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
-                tv.setText(sales.getName());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
-                Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
-                final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
-                final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
-                final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
-                final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-
-                RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
-                rl_specify.setVisibility(View.GONE);
-
-                ed_cases_inv.setText(sales.getInv_cases());
-                ed_pcs_inv.setText(sales.getInv_piece());
-                ed_cases_inv.setEnabled(false);
-                ed_pcs_inv.setEnabled(false);
-                if (sales.isAltUOM()) {
-                    ed_pcs.setEnabled(true);
-                } else {
-                    ed_pcs.setEnabled(false);
+        if(!App.CustomerRouteControl.isEnableIVCopy()){
+            listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(getActivity(), getString(R.string.feature_blocked), Toast.LENGTH_SHORT).show();
                 }
+            });
+        }
+        else{
+            listSales.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                    final Sales sales = salesarrayList.get(position);
+                    final Dialog dialog = new Dialog(getActivity());
+                    dialog.setContentView(R.layout.dialog_with_crossbutton);
+                    dialog.setCancelable(false);
+                    TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
+                    tv.setText(sales.getName());
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
+                    Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+                    final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
+                    final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
+                    final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
+                    final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
+
+                    RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
+                    rl_specify.setVisibility(View.GONE);
+
+                    ed_cases_inv.setText(sales.getInv_cases());
+                    ed_pcs_inv.setText(sales.getInv_piece());
+                    ed_cases_inv.setEnabled(false);
+                    ed_pcs_inv.setEnabled(false);
+                    if (sales.isAltUOM()) {
+                        ed_pcs.setEnabled(true);
+                    } else {
+                        ed_pcs.setEnabled(false);
+                    }
                 /*if(sales.getUom().equals(App.BOTTLES_UOM)){
                     ed_cases.setEnabled(false);
                 }
                 else if(sales.getUom().equals(App.CASE_UOM)||sales.getUom().equals(App.CASE_UOM_NEW)){
                     ed_pcs.setEnabled(false);
                 }*/
-                ed_cases.setText(sales.getCases());
-                ed_pcs.setText(sales.getPic());
-                LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
-                iv_cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.cancel();
-                    }
-                });
-                dialog.show();
-                btn_save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String strCase = ed_cases.getText().toString();
-                        String strpcs = ed_pcs.getText().toString();
-                        String strcaseinv = ed_cases_inv.getText().toString();
-                        String strpcsinv = ed_pcs_inv.getText().toString();
-                        TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
-                        TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                        tv_cases.setText(strCase);
-                        tv_pcs.setText(strpcs);
-                        if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
-                            strCase = String.valueOf(0);
+                    ed_cases.setText(sales.getCases());
+                    ed_pcs.setText(sales.getPic());
+                    LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
+                    iv_cancle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.cancel();
                         }
-                        if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
-                            strpcs = String.valueOf(0);
-                        }
-                        if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
-                            strcaseinv = String.valueOf(0);
-                        }
-                        if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
-                            strpcsinv = String.valueOf(0);
-                        }
-                        sales.setCases(strCase);
-                        sales.setPic(strpcs);
-                        if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
-                            Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                            strCase = "0";
+                    });
+                    dialog.show();
+                    btn_save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String strCase = ed_cases.getText().toString();
+                            String strpcs = ed_pcs.getText().toString();
+                            String strcaseinv = ed_cases_inv.getText().toString();
+                            String strpcsinv = ed_pcs_inv.getText().toString();
+                            TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
+                            TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
+                            tv_cases.setText(strCase);
+                            tv_pcs.setText(strpcs);
+                            if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
+                                strCase = String.valueOf(0);
+                            }
+                            if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
+                                strpcs = String.valueOf(0);
+                            }
+                            if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
+                                strcaseinv = String.valueOf(0);
+                            }
+                            if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
+                                strpcsinv = String.valueOf(0);
+                            }
                             sales.setCases(strCase);
-                        } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
-                            Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                            strpcs = "0";
                             sales.setPic(strpcs);
-                        } else {
-                            int salesTotal = 0;
-                            int pcsTotal = 0;
-                            double total = 0;
+                            if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
+                                Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                strCase = "0";
+                                sales.setCases(strCase);
+                            } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
+                                Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                strpcs = "0";
+                                sales.setPic(strpcs);
+                            } else {
+                                int salesTotal = 0;
+                                int pcsTotal = 0;
+                                double total = 0;
 
-                            for(Sales sale:salesarrayList){
-                                double itemPrice = 0;
-                                if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)||sale.getUom().equals(App.BOTTLES_UOM)){
-                                    itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
-                                }
+                                for(Sales sale:salesarrayList){
+                                    double itemPrice = 0;
+                                    if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)||sale.getUom().equals(App.BOTTLES_UOM)){
+                                        itemPrice = Double.parseDouble(sale.getCases())*Double.parseDouble(sale.getPrice());
+                                    }
                                 /*else if(sale.getUom().equals(App.BOTTLES_UOM)){
                                     itemPrice = Double.parseDouble(sale.getPic())*Double.parseDouble(sale.getPrice());
                                 }*/
-                                total+=itemPrice;
-                                salesTotal = salesTotal + Integer.parseInt(sale.getCases());
-                                pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
+                                    total+=itemPrice;
+                                    salesTotal = salesTotal + Integer.parseInt(sale.getCases());
+                                    pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
+                                }
+                                TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
+                                tv.setText(String.valueOf(total));
+                                TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
+                                tvsales.setText(salesTotal + "/" + pcsTotal);
+                                calculateCost();
+                                setFOC(salesarrayList);
+                                dialog.dismiss();
                             }
-                            TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
-                            tv.setText(String.valueOf(total));
-                            TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
-                            tvsales.setText(salesTotal + "/" + pcsTotal);
-                            calculateCost();
-                            setFOC(salesarrayList);
-                            dialog.dismiss();
+
+
                         }
+                    });
+                }
+            });
+        }
 
-
-                    }
-                });
-            }
-        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -488,6 +498,7 @@ public class SalesFragment extends Fragment {
                 loadingSpinner.hide();
             }
             myAdapter.notifyDataSetChanged();
+            listSales.setAdapter(myAdapter);
             calculateCost();
         }
     }

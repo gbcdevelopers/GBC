@@ -135,7 +135,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
         }
-        deliveryItemsList.setAdapter(adapter);
+
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         tv_date = (TextView) findViewById(R.id.tv_date);
@@ -727,6 +727,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             }
             calculatePrice();
             adapter.notifyDataSetChanged();
+            deliveryItemsList.setAdapter(adapter);
         }
     }
 }

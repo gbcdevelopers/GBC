@@ -136,7 +136,7 @@ public class App extends Application {
 
     //Customer Payment Term Codes
     public static final String CASH_CUSTOMER_CODE = "Z001";
-    public static final String TC_CUSTOMER_CODE = "Z002";
+    public static final String TC_CUSTOMER_CODE = "Z003";
     public static final String CASH_CUSTOMER = "cash";
     public static final String TC_CUSTOMER = "tc";
     public static final String CREDIT_CUSTOMER = "credit";

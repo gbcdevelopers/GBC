@@ -118,31 +118,54 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg","visit");
                 startActivity(intent);*/
-                if (verifyGPS(customer)) {
-                    showStatusDialog(customer);
+                if (customerFlagExist(customer)) {
+                    loadCustomerFlag(customer);
+                    if (App.CustomerRouteControl.isVerifyGPS()) {
+                        if (verifyGPS(customer, App.CustomerRouteControl.getThresholdLimit())) {
+                            showStatusDialog(customer);
+                        } else {
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                            alertDialogBuilder.setTitle("Message")
+                                    .setMessage(getString(R.string.coordinate_mismatch_msg))
+                                    .setCancelable(false)
+                                    .setPositiveButton(getString(R.string.continue_lbl), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                            showAccessCode(customer);
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            // show it
+                            alertDialog.show();
+                        }
+                    } else {
+                        showStatusDialog(customer);
+                    }
                 } else {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                    alertDialogBuilder.setTitle("Message")
-                            .setMessage(getString(R.string.coordinate_mismatch_msg))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.continue_lbl), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                    showAccessCode(customer);
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            });
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    // show it
-                    alertDialog.show();
+                    Log.e("I dont have Flag","Flag");
+                    App.CustomerRouteControl obj = new App.CustomerRouteControl();
+                    obj.setThresholdLimit("99");
+                    obj.setIsVerifyGPS(false);
+                    obj.setIsEnableIVCopy(true);
+                    obj.setIsDelayPrint(true);
+                    obj.setIsEditOrders(true);
+                    obj.setIsEditInvoice(true);
+                    obj.setIsReturns(true);
+                    obj.setIsDamaged(true);
+                    obj.setIsSignCapture(true);
+                    obj.setIsReturnCustomer(true);
+                    obj.setIsCollection(true);
+                    showStatusDialog(customer);
                 }
+
 
 
                 /*boolean inSequence = checkIfinSequence(customer);
@@ -160,7 +183,6 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     }
 
     private void showStatusDialog(final Customer customer){
-
         final Dialog dialog = new Dialog(getActivity());
         //dialog.setTitle(getString(R.string.shop_status));
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
@@ -190,7 +212,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                 } else {
                     db.addData(db.VISIT_LIST, map);
                 }*/
-                if (customerFlagExist(customer)) {
+                /*if (customerFlagExist(customer)) {
                     loadCustomerFlag(customer);
                 } else {
                     App.CustomerRouteControl obj = new App.CustomerRouteControl();
@@ -205,7 +227,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                     obj.setIsSignCapture(true);
                     obj.setIsReturnCustomer(true);
                     obj.setIsCollection(true);
-                }
+                }*/
                 Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg", "visit");
@@ -291,7 +313,50 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
         }
 
     }
-    public boolean verifyGPS(Customer customer){
+    public boolean verifyGPS(Customer customer,String thresHoldLimit){
+
+        String customerLatitude = UrlBuilder.decodeString(customer.getLatitude()).equals("")?"0.000000":UrlBuilder.decodeString(customer.getLatitude());
+        String customerLongitude = UrlBuilder.decodeString(customer.getLongitude()).equals("")?"0.000000":UrlBuilder.decodeString(customer.getLongitude());
+
+        LocationManager lm = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled && !network_enabled){
+            Toast.makeText(getActivity(),"Location turned off",Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else{
+            String outlet_georadius = thresHoldLimit; //Distance is in metres(5445.938)
+            android.location.Location customerLocation = new android.location.Location("");
+            customerLocation.setLatitude(Double.parseDouble(customerLatitude));
+            customerLocation.setLongitude(Double.parseDouble(customerLongitude));
+            double radius = Double.parseDouble(outlet_georadius);
+            try{
+                float distance = myLocation.distanceTo(customerLocation);
+                Log.e("Distance", "" + distance);
+                Log.e("My Location", "" + myLocation.getLatitude() + "," + myLocation.getLongitude() + "/" + outlet_georadius);
+                if(distance<radius){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                return false;
+            }
+
+        }
 
        /* String customerLatitude = "24.942091";
         String customerLongitude = "46.712125";*/
@@ -331,7 +396,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                 return false;
             }
         }*/
-        return true;
+        //return true;
 
 
     }
@@ -375,8 +440,9 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                     }
                     else{
                         dialog1.dismiss();
-                        Toast.makeText(getActivity(),getString(R.string.code_mismatch),Toast.LENGTH_SHORT).show();
-                        showAccessCode(customer);
+                        showStatusDialog(customer);
+                       /* Toast.makeText(getActivity(),getString(R.string.code_mismatch),Toast.LENGTH_SHORT).show();
+                        showAccessCode(customer);*/
                     }
                     dialog1.dismiss();
                 }

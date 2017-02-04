@@ -93,7 +93,7 @@ public class DataAdapter extends BaseAdapter implements Filterable {
         holder.customer_address.setText(customer.getCustomerAddress());
 
         if(customer.getPaymentMethod().equals(App.TC_CUSTOMER)){
-            holder.horizontal_view.setBackgroundColor(Color.YELLOW);
+            holder.horizontal_view.setBackgroundColor(Color.rgb(255,194,0));
         }
         else if(customer.getPaymentMethod().equals(App.CASH_CUSTOMER)){
             holder.horizontal_view.setBackgroundColor(Color.BLUE);

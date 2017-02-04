@@ -165,6 +165,7 @@
 				<string name="error_title">خطأ</string>
 				<string name="excess">Excess</string>
 				<string name="fax">فاكس</string>
+				<string name="feature_blocked">Option currently disabled for customer</string>
 				<string name="frahn">Frahn</string>
 				<string name="freegoods">بضائع مجانية</string>
 				<string name="fresh_unload">إلغاء تحميل جديدة</string>

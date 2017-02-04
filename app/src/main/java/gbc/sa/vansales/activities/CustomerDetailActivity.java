@@ -248,10 +248,17 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case 1:
-                        Intent intent1 = new Intent(CustomerDetailActivity.this, CollectionsActivity.class);
-                        intent1.putExtra("headerObj", object);
-                        startActivity(intent1);
-                        break;
+                        if(App.CustomerRouteControl.isCollection()){
+                            Intent intent1 = new Intent(CustomerDetailActivity.this, CollectionsActivity.class);
+                            intent1.putExtra("headerObj", object);
+                            startActivity(intent1);
+                            break;
+                        }
+                        else{
+                            Toast.makeText(CustomerDetailActivity.this,getString(R.string.feature_blocked),Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+
                     case 2:
                         if(canPerformSale()&&isLimitAvailable){
                             Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
@@ -267,6 +274,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     case 3:
                         Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);
                         intent3.putExtra("headerObj", object);
+                        Toast.makeText(CustomerDetailActivity.this,getString(R.string.feature_blocked),Toast.LENGTH_SHORT).show();
                         //startActivity(intent3);
                         break;
                     case 4:
@@ -330,7 +338,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put(db.KEY_VISIT_UNSERVICED_REASON, arrayList.get(position).getReasonCode());
                 map.put(db.KEY_CUSTOMER_OUT_TIMESTAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
+                map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
                 map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 db.updateData(db.VISIT_LIST, map, filter);
                 Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
@@ -390,7 +398,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
             limit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
 
         }
-
         HashMap<String,String> map1 = new HashMap<>();
         map1.put(db.KEY_CUSTOMER_NO,"");
         map1.put(db.KEY_INVOICE_NO,"");

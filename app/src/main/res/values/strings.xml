@@ -170,6 +170,7 @@
     <string name="error_title">Error</string>
     <string name="excess">Excess</string>
     <string name="fax">Fax</string>
+    <string name="feature_blocked">Option currently disabled for customer</string>
     <string name="frahn">Frahn</string>
     <string name="freegoods">FREEGOODS</string>
     <string name="fresh_unload">Fresh Unload</string>
