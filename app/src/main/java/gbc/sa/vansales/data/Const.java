@@ -26,6 +26,7 @@ public class Const {
 
     public static List<LoadRequestConstants> loadRequestConstantsList=new ArrayList<>();
     public static HashMap<Integer,List<LoadRequestConstants>> constantsHashMap=new HashMap<>();
+    public static ArrayList<Sales> focList = new ArrayList<>();
 
 
     public static ArrayList<ColletionData> colletionDatas = new ArrayList<>();
@@ -41,4 +42,6 @@ public class Const {
     public static Bundle grBundle;
     public static Bundle brBundle;
     public static Bundle siBundle;
+    public static Bundle focBundle;
+    public static Customer customer;
  }

@@ -28,9 +28,9 @@ public class ItemListActivity extends AppCompatActivity {
     View view1;
 
     ListView list;
-    VanStockBadgeAdapter adapter;
+    ItemListAdapter adapter;
     FloatingActionButton printVanStock;
-    ArrayList<VanStock> arraylist = new ArrayList<>();
+    ArrayList<ItemList> arraylist = new ArrayList<>();
     LoadingSpinner loadingSpinner;
     DatabaseHandler db = new DatabaseHandler(this);
 
@@ -52,9 +52,9 @@ public class ItemListActivity extends AppCompatActivity {
         });
 
         new loadItems().execute();
-        adapter = new VanStockBadgeAdapter(this,arraylist);
+        adapter = new ItemListAdapter(this,arraylist);
         list = (ListView) findViewById(R.id.listview);
-        list.setAdapter(adapter);
+
 
     }
 
@@ -66,16 +66,14 @@ public class ItemListActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String> map = new HashMap<>();
-            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_ARTICLE_NO,"");
+            map.put(db.KEY_MATERIAL_NO,"");
             map.put(db.KEY_MATERIAL_DESC1,"");
-            map.put(db.KEY_RESERVED_QTY_CASE,"");
-            map.put(db.KEY_RESERVED_QTY_UNIT,"");
-            map.put(db.KEY_REMAINING_QTY_CASE,"");
-            map.put(db.KEY_REMAINING_QTY_UNIT,"");
+            map.put(db.KEY_BASE_UOM,"");
 
             HashMap<String,String> filter = new HashMap<>();
 
-            Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,map,filter);
+            Cursor cursor = db.getData(db.ARTICLE_HEADER,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
                 setLoadItems(cursor);
@@ -89,17 +87,27 @@ public class ItemListActivity extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
         }
     }
 
     private void setLoadItems(Cursor cursor){
         do{
-            VanStock vanStock = new VanStock();
-            vanStock.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            vanStock.setItem_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-            vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-            vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-            arraylist.add(vanStock);
+            ItemList itemList = new ItemList();
+            itemList.setItem_number(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            itemList.setItem_des(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+            itemList.setCase_price(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_NUMERATOR,"");
+            map.put(db.KEY_DENOMINATOR, "");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+            Cursor c = db.getData(db.ARTICLE_UOM,map,filter);
+            if(c.getCount()>0){
+                c.moveToFirst();
+                itemList.setUpc(c.getString(c.getColumnIndex(db.KEY_NUMERATOR))+"/"+c.getString(c.getColumnIndex(db.KEY_DENOMINATOR)));
+            }
+            arraylist.add(itemList);
         }
         while (cursor.moveToNext());
     }

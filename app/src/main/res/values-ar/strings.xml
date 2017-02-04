@@ -261,6 +261,7 @@
 				</string-array>
 				<string name="pcs">عدد(حبات)</string>
 				<string name="pcs_100">PCS : 100</string>
+				<string name="pending_invoice">Operation cannot be performed as there are due invoices. Please clear the pending invoices</string>
 				<string name="please_enter_odometer">برجاء ادخال عداد السيارة</string>
 				<string name="pobox">PO Box</string>
 				<string name="posting">Posting Data</string>
@@ -394,6 +395,7 @@
 				<string name="upc">UPC</string>
 				<string name="update">تحديث</string>
 				<string name="updatingdata">تاريخ التحديث</string>
+				<string name="uom">UoM</string>
 				<string name="usedload">حمولة مستعملة</string>
 				<string name="valid_value">برجاء ادخل القيمة بشكل صحيح</string>
 				<string name="value_greater">يجب ان تكون قراءة العداد أكبر من المرة السابقة</string>

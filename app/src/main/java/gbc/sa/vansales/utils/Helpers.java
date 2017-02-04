@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -351,5 +352,15 @@ public class Helpers {
             jobScheduler.schedule(builder.build());
         }
 
+    }
+    public static Date stringToDate(String strDate,String format){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        Date date = null;
+        try{
+            date = simpleDateFormat.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

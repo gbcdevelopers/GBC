@@ -77,6 +77,7 @@ public class DashboardActivity extends AppCompatActivity
     int tcCustomerCount = 0;
     int postCount = 0;
     TextView lbl_totalsales;
+    TextView lbl_totalreceipt;
     ArrayList<CustomerHeader> customers;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,7 @@ public class DashboardActivity extends AppCompatActivity
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
         lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
-        loadTotalSales();
+        lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         iv_drawer = (ImageView) findViewById(R.id.iv_drawer);
         btn_message = (Button) findViewById(R.id.btn_messages);
         btn_message.setOnClickListener(new View.OnClickListener() {
@@ -214,11 +215,11 @@ public class DashboardActivity extends AppCompatActivity
         new loadBarChartData(App.SALES);
 
 
-        TextView lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
+
         TextView lbl_targetachieved = (TextView) findViewById(R.id.lbl_targetachieved);
 
        // lbl_totalsales.setText("0.00" + getString(R.string.currency));
-        lbl_totalreceipt.setText("0.00 " + getString(R.string.currency));
+        //lbl_totalreceipt.setText("0.00 " + getString(R.string.currency));
         lbl_targetachieved.setText("594.00/75000.00");
     }
     private void loadTotalSales(){
@@ -238,6 +239,26 @@ public class DashboardActivity extends AppCompatActivity
             while (c.moveToNext());
         }
         lbl_totalsales.setText(String.valueOf(totalSales) + " " + getString(R.string.currency));
+    }
+    private void loadTotalReceipt(){
+        HashMap<String,String>map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO,"");
+        map.put(db.KEY_INVOICE_NO,"");
+        map.put(db.KEY_INVOICE_AMOUNT,"");
+        map.put(db.KEY_DUE_DATE,"");
+        map.put(db.KEY_INVOICE_DATE,"");
+        map.put(db.KEY_AMOUNT_CLEARED,"");
+        map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+        HashMap<String,String>filter = new HashMap<>();
+        double totalReceipt = 0;
+        Cursor c = db.getData(db.COLLECTION,map,filter);
+        if(c.getCount()>0){
+            do{
+                totalReceipt+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+            }
+            while (c.moveToNext());
+        }
+        lbl_totalreceipt.setText(String.valueOf(totalReceipt) + " " + getString(R.string.currency));
     }
     private void setBeginDayVisibility() {
         HashMap<String, String> map = new HashMap<>();
@@ -678,7 +699,9 @@ public class DashboardActivity extends AppCompatActivity
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
+            loadTotalSales();
             createPieChartFromLiveData(cashCustomerCount,creditCustomerCount,tcCustomerCount);
+            loadTotalReceipt();
         }
     }
 

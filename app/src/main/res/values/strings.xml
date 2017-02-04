@@ -266,6 +266,7 @@
     </string-array>
     <string name="pcs">Pcs</string>
     <string name="pcs_100">PCS : 100</string>
+    <string name="pending_invoice">Operation cannot be performed as there are due invoices. Please clear the pending invoices</string>
     <string name="please_enter_odometer">Please enter Odometer :</string>
     <string name="pobox">PO Box</string>
     <string name="posting">Posting Data</string>
@@ -366,7 +367,7 @@
     <string name="theft_label"><font fgcolor='#ff0000'>Theft or Missing</font></string>
     <string name="thermal_print">Thermal Print</string>
     <string name="time">Time </string>
-    <string name="today_order">TODAYS ORDER</string>
+    <string name="today_order">Todays Order</string>
     <string name="today_summary">TODAY SUMMARY</string>
     <string name="today_s_schedule">Today\'s Schedule</string>
     <string name="today_s_unserviced">Today\'s Unserviced</string>
@@ -399,6 +400,7 @@
     <string name="upc">UPC</string>
     <string name="update">Update</string>
     <string name="updatingdata">Updating Data</string>
+    <string name="uom">UoM</string>
     <string name="usedload">Used Load</string>
     <string name="valid_value">Please enter some valid value</string>
     <string name="value_greater">Value should be greater than last saved reading</string>

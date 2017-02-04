@@ -17,6 +17,8 @@ import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 import gbc.sa.vansales.adapters.PrintDocumentAdapter;
 import gbc.sa.vansales.google.Location;
 import gbc.sa.vansales.utils.Callback;
+import gbc.sa.vansales.utils.PrinterHelper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -70,6 +72,8 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
+                        /*PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.print();*/
                         Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
                         startActivity(itemlist);
                         break;

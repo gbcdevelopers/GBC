@@ -43,7 +43,7 @@ public class TodaysOrderActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Todays Order");
+        tv_top_header.setText(getString(R.string.today_order));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,24 +84,12 @@ public class TodaysOrderActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             HashMap<String,String>map = new HashMap<>();
             map.put(db.KEY_TIME_STAMP,"");
-            map.put(db.KEY_TRIP_ID,"");
-            map.put(db.KEY_DATE,"");
-            map.put(db.KEY_ORDER_ID,"");
-            map.put(db.KEY_PURCHASE_NUMBER,"");
-            map.put(db.KEY_ITEM_NO,"");
-            map.put(db.KEY_MATERIAL_DESC1,"");
-            map.put(db.KEY_MATERIAL_NO,"");
-            map.put(db.KEY_MATERIAL_GROUP,"");
-            map.put(db.KEY_CASE,"");
-            map.put(db.KEY_UNIT,"");
-            map.put(db.KEY_UOM,"");
-            map.put(db.KEY_PRICE,"");
             map.put(db.KEY_CUSTOMER_NO,"");
-            map.put(db.KEY_IS_POSTED,"");
-            map.put(db.KEY_IS_PRINTED,"");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PRICE,"");
             HashMap<String,String > filter = new HashMap<>();
-            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-            Cursor cursor = db.getData(db.ORDER_REQUEST,map,filter);
+            filter.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_ORDER);
+            Cursor cursor = db.getData(db.DAYACTIVITY,map,filter);
             if(cursor.getCount()>0){
                 cursor.moveToFirst();
                 setTodaysActivity(cursor);
@@ -120,31 +108,13 @@ public class TodaysOrderActivity extends AppCompatActivity {
 
     public void setTodaysActivity(Cursor cursor){
         Cursor activityCursor = cursor;
-        ArrayList<String> temp=new ArrayList<String>();
-        temp.clear();
-        arrayList.clear();
-        if(activityCursor.getCount()>0){
-            activityCursor.moveToFirst();
-            do{
-                TodaysOrder model = new TodaysOrder();
-                model.setCustomer(StringUtils.stripStart(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_CUSTOMER_NO)), "0"));
-                model.setOrderNo(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-                model.setPrice(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_PRICE)));
-                if(!temp.contains(model.getOrderNo())){
-                    temp.add(model.getOrderNo());
-                    arrayList.add(model);
-                }
-               // arrayList.add(model);
-
-            }
-            while (activityCursor.moveToNext());
-
+        do{
+            TodaysOrder todaysOrder = new TodaysOrder();
+            todaysOrder.setOrderNo(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_ORDER_ID)));
+            todaysOrder.setCustomer(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+            todaysOrder.setPrice(activityCursor.getString(activityCursor.getColumnIndex(db.KEY_PRICE)));
+            arrayList.add(todaysOrder);
         }
-
-
-        /*if(!temp.contains(model.getOrderNo())){
-            temp.add(model.getOrderNo());
-            arrayList.add(model);
-        }*/
+        while (activityCursor.moveToNext());
     }
 }

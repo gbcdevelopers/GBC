@@ -45,7 +45,6 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
 
-
         adapter = new CustomerOperationAdapter(ReviewActivity.this, strText, resarr, "ReviewActivity");
         gridView.setAdapter(adapter);
 
@@ -58,7 +57,7 @@ public class ReviewActivity extends AppCompatActivity {
                     case 0:
                         Intent promolist = new Intent(ReviewActivity.this, PromotionListActivity.class);
                         promolist.putExtra("from","review");
-                        startActivity(promolist);
+                       // startActivity(promolist);
                         break;
                     case 1:
 

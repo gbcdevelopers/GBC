@@ -284,7 +284,7 @@
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
 																												android:textSize="@dimen/label_min"
-																												/>
+																												android:id="@+id/et_foc_cases"/>
 
 																								<EditText
 																												android:layout_width="match_parent"
@@ -373,7 +373,8 @@
 																												android:padding="@dimen/size_five"
 																												android:textColor="@drawable/edit_text_color"
 																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_foc_units"/>
 
 																								<EditText
 																												android:layout_width="match_parent"
@@ -460,7 +461,8 @@
 																												android:textColor="@drawable/edit_text_color"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/_12"
-																												android:textSize="@dimen/label_min"/>
+																												android:textSize="@dimen/label_min"
+																												android:id="@+id/et_foc_amount"/>
 
 																								<EditText
 																												android:layout_width="match_parent"

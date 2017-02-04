@@ -97,6 +97,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                 ArrayList<Sales> salesarrayList = new ArrayList<>();;
                 ArrayList<Sales>goodsReturnList = new ArrayList<>();
                 ArrayList<Sales>badReturnList = new ArrayList<>();
+                ArrayList<Sales>focList = new ArrayList<>();
                 try{
                     if(Const.siBundle!=null){
                         salesarrayList = Const.siBundle.getParcelableArrayList("si");
@@ -107,8 +108,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     if(Const.brBundle!=null){
                         badReturnList = Const.brBundle.getParcelableArrayList("br");
                     }
+                    if(Const.focBundle!=null){
+                        focList = Const.focBundle.getParcelableArrayList("foc");
+                    }
                     if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
-                        salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList);
+                        salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList,focList);
                     }
                 }
                 catch (Exception e){
@@ -254,7 +258,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 //                }
                 break;
             case 1:
-                if (FocFragment.salesarrayList != null && FocFragment.adapter != null) {
+                /*if (FocFragment.salesarrayList != null && FocFragment.adapter != null) {
                     ArrayList<Sales> productArrayList = new ArrayList<>();
                     for (int i = 0; i < Const.addlist.size(); i++) {
                         Sales sales = new Sales();
@@ -265,7 +269,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     }
                     FocFragment.salesarrayList.addAll(productArrayList);
                     FocFragment.adapter.notifyDataSetChanged();
-                }
+                }*/
                 break;
             case 2:
                 if (GListFragment.arrProductList != null && GListFragment.adapter != null) {
@@ -335,7 +339,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         }
     }
 
-    private void salesInvoiceDataonBack(ArrayList<Sales>salesInvoiceList,ArrayList<Sales>grList,ArrayList<Sales>brList){
+    private void salesInvoiceDataonBack(ArrayList<Sales>salesInvoiceList,ArrayList<Sales>grList,ArrayList<Sales>brList,ArrayList<Sales>focList){
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
         filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
@@ -380,6 +384,30 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                             db.addData(db.CAPTURE_SALES_INVOICE, map);
                         }
+                    }
+                }
+            }
+            if(focList.size()>0){
+                if(value){
+                    for (Sales sale:focList){
+                        HashMap<String,String>map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_ORDER_ID,purchaseNumber);
+                        map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                        map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                        map.put(db.KEY_ITEM_CATEGORY,sale.getItem_category());
+                        map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getMaterial_description());
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_ORG_CASE,sale.getCases());
+                        map.put(db.KEY_ORG_UNITS,sale.getPic());
+                        map.put(db.KEY_AMOUNT,sale.getPrice());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                        db.addData(db.FOC_INVOICE,map);
                     }
                 }
             }

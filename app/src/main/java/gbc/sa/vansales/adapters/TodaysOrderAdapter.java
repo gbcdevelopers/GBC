@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -43,9 +47,14 @@ public class TodaysOrderAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
+
+
         if (view == null) {
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
             view = inflater.inflate(R.layout.item_price_list, viewGroup, false);
+            Animation animation = AnimationUtils.loadAnimation(activity, R.anim.listitem_up);
+            animation.setStartOffset(i * 100);
+            view.startAnimation(animation);
         }
 
         TodaysOrder itemListModel = arrayList.get(i);
@@ -55,9 +64,9 @@ public class TodaysOrderAdapter extends BaseAdapter {
         TextView txt_item_case_price = (TextView) view.findViewById(R.id.txt_item_case_price);
 
 
-        txt_item_number.setText("" + itemListModel.getCustomer());
-        txt_item_dec.setText(itemListModel.getOrderNo());
-        txt_item_case_price.setText("" + itemListModel.getPrice());
+        txt_item_number.setText(itemListModel.getCustomer());
+        txt_item_dec.setText(StringUtils.stripStart(itemListModel.getOrderNo(),"0"));
+        txt_item_case_price.setText(itemListModel.getPrice());
 
 
         return view;

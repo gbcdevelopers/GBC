@@ -18,6 +18,7 @@ import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.DriverRouteFlags;
+import gbc.sa.vansales.data.FOCData;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.Messages;
 import gbc.sa.vansales.data.OrderReasons;
@@ -161,13 +162,13 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("Y000010000000002")){
+                                if(!checkTripID("Y000010000000003")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "Y000010000000002");
+                                    Settings.setString(TRIP_ID, "Y000010000000003");
                                     Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("Y000010000000002");
+                                    downloadData("Y000010000000003");
                                 }
                                 else{
                                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
@@ -259,7 +260,6 @@ public class LoginActivity extends Activity {
             }
         }
     }
-
     public boolean checkTripID(String trip_Id){
 
         String tripID = "";
@@ -277,7 +277,6 @@ public class LoginActivity extends Activity {
 
         return returnVal;
     }
-
     public void downloadData(final String tripId){
         //Log.e("Inside chain", "" + tripId);
 
@@ -287,7 +286,6 @@ public class LoginActivity extends Activity {
         map.put(db.KEY_IS_END_DAY,App.FALSE);
         map.put(db.KEY_IS_UNLOAD,App.FALSE);
         db.addData(db.LOCK_FLAGS, map);
-
 
         Chain chain = new Chain(new Chain.Link(){
             @Override
@@ -322,6 +320,7 @@ public class LoginActivity extends Activity {
                 Promotions07.load(LoginActivity.this, username, db);
                 Pricing.load(LoginActivity.this, username, db);
                 Banks.load(LoginActivity.this,"",db);
+                FOCData.load(LoginActivity.this,"",db);
                 /*ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());*/
             }

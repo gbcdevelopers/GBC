@@ -72,6 +72,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                     return tab1;
                 case 1:
                     FocFragment tab2 = new FocFragment();
+                    if (bundle != null) {
+                        tab2.setArguments(this.bundle);
+                    }
                     return tab2;
                 case 2:
                     GListFragment tab3 = new GListFragment();

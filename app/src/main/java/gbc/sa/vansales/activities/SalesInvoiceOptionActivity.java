@@ -43,6 +43,12 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
     String from = "";
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
+    boolean isLimitAvailable = true;
+    double totalInvoiceAmount = 0;
+    double limit = 0;
+    TextView tv_credit_days;
+    TextView tv_credit_limit;
+    TextView tv_available_limit;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +58,9 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
-        TextView tv_credit_days = (TextView) findViewById(R.id.tv_digits);
-        TextView tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
-        TextView tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
+        tv_credit_days = (TextView) findViewById(R.id.tv_digits);
+        tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
+        tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
             if (from.equals("customerdetail")) {
@@ -66,12 +72,12 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                 customers = CustomerHeaders.get();
                 CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
                 if (!(customerHeader == null)) {
-                    tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
+                    tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
                     tv_customer_pobox.setText(getString(R.string.pobox) + customerHeader.getPostCode());
                     tv_customer_contact.setText(customerHeader.getPhone());
                 } else {
-                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + object.getCustomerName().toString());
+                    tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
                     tv_customer_address.setText(object.getCustomerAddress().toString());
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
@@ -81,7 +87,8 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                     tv_credit_limit.setText("0");
                     tv_available_limit.setText("0");
                 } else {
-                    try {
+                    calculateAvailableLimit();
+                    /*try {
                         HashMap<String, String> map = new HashMap<>();
                         map.put(db.KEY_CUSTOMER_NO, "");
                         map.put(db.KEY_CREDIT_LIMIT, "");
@@ -100,7 +107,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         e.printStackTrace();
                     } finally {
                         db.close();
-                    }
+                    }*/
                 }
             }
         }
@@ -173,5 +180,45 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         else{
             return false;
         }
+    }
+    private void calculateAvailableLimit(){
+        HashMap<String, String> map = new HashMap<>();
+        map.put(db.KEY_CUSTOMER_NO, "");
+        map.put(db.KEY_CREDIT_LIMIT, "");
+        HashMap<String, String> filters = new HashMap<>();
+        filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            tv_credit_days.setText("0");
+            tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+            limit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+
+        }
+
+        HashMap<String,String> map1 = new HashMap<>();
+        map1.put(db.KEY_CUSTOMER_NO,"");
+        map1.put(db.KEY_INVOICE_NO,"");
+        map1.put(db.KEY_INVOICE_AMOUNT,"");
+        map1.put(db.KEY_DUE_DATE,"");
+        map1.put(db.KEY_INVOICE_DATE,"");
+        map1.put(db.KEY_AMOUNT_CLEARED,"");
+        map1.put(db.KEY_IS_INVOICE_COMPLETE,"");
+        HashMap<String,String>filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        Cursor c = db.getData(db.COLLECTION,map1,filter);
+        if(c.getCount()>0){
+            c.moveToFirst();
+            do{
+                totalInvoiceAmount+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+            }
+            while (c.moveToNext());
+        }
+        Log.e("Total Invoice", "" + totalInvoiceAmount);
+        if(limit-totalInvoiceAmount==0){
+            isLimitAvailable = false;
+        }
+        tv_available_limit.setText(String.valueOf(limit-totalInvoiceAmount));
+        Const.availableLimit = String.valueOf(limit-totalInvoiceAmount);
     }
 }

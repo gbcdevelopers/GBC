@@ -58,6 +58,10 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
     EditText et_bad_units;
     EditText et_bad_amount;
 
+    EditText et_foc_cases;
+    EditText et_foc_units;
+    EditText et_foc_amount;
+
     TextView tv_total_amount;
     float totalamnt = 0;
     @Override
@@ -96,12 +100,14 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         et_bad_units = (EditText) findViewById(R.id.et_bad_units);
         et_bad_amount = (EditText) findViewById(R.id.et_bad_amount);
 
+        et_foc_cases = (EditText) findViewById(R.id.et_foc_cases);
+        et_foc_units = (EditText) findViewById(R.id.et_foc_units);
+        et_foc_amount = (EditText) findViewById(R.id.et_foc_amount);
+
         tv_total_amount = (TextView) findViewById(R.id.tv_total_amount);
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
         map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-
-
 
         if (db.checkData(db.CAPTURE_SALES_INVOICE, map)) {
             new loadData().execute();
@@ -216,6 +222,10 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             et_sales_amount.setText(String.valueOf(amount));
             tv_total_amount.setText(String.valueOf(totalamnt));
 
+            HashMap<String,String>focMap = new HashMap<>();
+            focMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            focMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+
             HashMap<String,String> gRMap = new HashMap<>();
             gRMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             gRMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
@@ -236,6 +246,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                 bRexists = true;
 
             }
+            if(db.checkData(db.FOC_INVOICE,focMap)){
+                new loadFOC().execute();
+            }
             if(gRexists&&bRexists){
                 new loadReturns(App.GOOD_RETURN);
                 new loadReturns(App.BAD_RETURN);
@@ -247,6 +260,45 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                 new loadReturns(App.BAD_RETURN);
             }
 
+
+        }
+    }
+    public class loadFOC extends AsyncTask<Void,Void,Void>{
+        float case_sale = 0;
+        float unit_sale = 0;
+        float amount = 0;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            map.put(db.KEY_ORG_CASE, "");
+            map.put(db.KEY_ORG_UNITS, "");
+            map.put(db.KEY_AMOUNT, "");
+            map.put(db.KEY_UOM, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            Cursor cursor = db.getData(db.FOC_INVOICE, map, filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                do{
+                    case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                    unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                }
+                while (cursor.moveToNext());
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            et_foc_cases.setText(String.valueOf(case_sale));
+            et_foc_units.setText(String.valueOf(unit_sale));
+            et_foc_amount.setText("N/A");
         }
     }
     public class loadReturns extends AsyncTask<Void, Void, Void>{

@@ -31,30 +31,12 @@
                 android:orientation="horizontal"
                 android:weightSum="5">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:orientation="vertical">
 
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:gravity="center"
-                        android:padding="@dimen/space"
-                        android:text="Cust"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        />
-
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.5"
                     android:orientation="vertical">
 
 
@@ -74,7 +56,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
 
@@ -83,7 +65,7 @@
                         android:layout_height="70dp"
                         android:gravity="center"
                         android:padding="@dimen/size_four"
-                        android:text="Amt"
+                        android:text="@string/amount"
                         android:textAllCaps="true"
                         android:textStyle="bold" />
 

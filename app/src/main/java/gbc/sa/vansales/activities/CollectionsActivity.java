@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CollectionAdapter;
 import gbc.sa.vansales.adapters.ColletionAdapter;
@@ -29,6 +30,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.UrlBuilder;
 public class CollectionsActivity extends AppCompatActivity {
     ListView lv_colletions_view;
     ImageView iv_back;
@@ -57,11 +59,11 @@ public class CollectionsActivity extends AppCompatActivity {
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_method_of_payment = (TextView) findViewById(R.id.tv_method_of_payment);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
+            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
         } else {
-            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
         }
-        if (object.getPaymentMethod().equalsIgnoreCase("cash")) {
+        if (object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER_CODE)) {
             tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.cash));
         } else {
             tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.credit));

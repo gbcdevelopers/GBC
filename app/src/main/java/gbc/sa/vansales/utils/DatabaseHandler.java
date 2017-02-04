@@ -352,6 +352,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_CASE_DIFF = "caseDiff";
     public static final String KEY_UNIT_DIFF = "unitDiff";
 
+    //FOC Rules
+    public static final String KEY_FOC_QUALIFYING_ITEM = "qualifyingItem";
+    public static final String KEY_FOC_ASSIGNING_ITEM = "assigningItem";
+    public static final String KEY_FOC_QUALIFYING_QUANTITY = "qualifyingQuantity";
+    public static final String KEY_FOC_ASSIGNING_QUANTITY = "assigningQuantity";
+    public static final String KEY_FOC_DATE_FROM = "dateFrom";
+    public static final String KEY_FOC_DATE_TO = "dateTo";
+
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -952,6 +960,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_FOC_RULES = "CREATE TABLE " + FOC_RULES + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_FOC_QUALIFYING_ITEM + " TEXT,"
+                + KEY_FOC_ASSIGNING_ITEM + " TEXT,"
+                + KEY_FOC_QUALIFYING_QUANTITY + " TEXT,"
+                + KEY_FOC_ASSIGNING_QUANTITY + " TEXT,"
+                + KEY_FOC_DATE_FROM + " TEXT,"
+                + KEY_FOC_DATE_TO + " TEXT " + ")";
+
+        String TABLE_CAPTURE_FOC_SALES = "CREATE TABLE " + FOC_INVOICE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_ITEM_NO + " TEXT,"
+                + KEY_ITEM_CATEGORY + " TEXT,"
+                + KEY_MATERIAL_NO + " TEXT,"
+                + KEY_MATERIAL_DESC1 + " TEXT,"
+                + KEY_MATERIAL_GROUP + " TEXT,"
+                + KEY_ORG_CASE + " TEXT,"
+                + KEY_ORG_UNITS + " TEXT,"
+                + KEY_AMOUNT + " TEXT,"
+                + KEY_UOM + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -991,6 +1029,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_BANKS);
         db.execSQL(TABLE_ACTIVITY_DAY);
         db.execSQL(TABLE_LOAD_VARIANCE_POST);
+        db.execSQL(TABLE_FOC_RULES);
+        db.execSQL(TABLE_CAPTURE_FOC_SALES);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1031,6 +1071,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + BANKS);
         db.execSQL("DROP TABLE IF EXISTS " + DAYACTIVITY);
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_VARIANCE_ITEMS_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + FOC_RULES);
+        db.execSQL("DROP TABLE IF EXISTS " + FOC_INVOICE);
         onCreate(db);
     }
     //Storing Secured Credentials
