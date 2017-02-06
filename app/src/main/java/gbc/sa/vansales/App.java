@@ -142,6 +142,11 @@ public class App extends Application {
     public static final String CREDIT_CUSTOMER = "credit";
     public static final String NOT_VALID_CUSTOMER = "notvalid";
 
+    //Printing
+    public static final String REQUEST = "REQUEST";
+    public static final String LOAD_SUMMARY_REQUEST = "LoadSummaryRequest";
+
+
     @Override
     public void onCreate() {
         super.onCreate();

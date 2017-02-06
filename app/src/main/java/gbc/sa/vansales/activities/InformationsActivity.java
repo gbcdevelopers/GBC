@@ -12,16 +12,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 import gbc.sa.vansales.adapters.PrintDocumentAdapter;
 import gbc.sa.vansales.google.Location;
 import gbc.sa.vansales.utils.Callback;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.PrinterHelper;
+import gbc.sa.vansales.utils.Settings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Date;
 public class InformationsActivity extends AppCompatActivity {
 
     GridView gridView;
@@ -73,7 +80,7 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 1:
                         PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.print();
+                        object.execute("",createDataForPrint());
                        /* Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
                         startActivity(itemlist);*/
                         break;
@@ -132,244 +139,100 @@ public class InformationsActivity extends AppCompatActivity {
         finish();
     }
 
-    /*private void generateInvoicePDF() throws DocumentException {
-        PrintActivity printActivityObject = new PrintActivity();
-        String FILE = Environment.getExternalStorageDirectory().toString()
-                + "/PDF/" + "Invoice.pdf";
-        Document document = new Document(PageSize.A4);
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/PDF");
-        double left=1.27,right=1.27,top=3.81,bottom=5.08; // page margins in cm's
-        if (!myDir.exists())
-            myDir.mkdir();
-        try
-        {
-            PdfWriter.getInstance(document, new FileOutputStream(FILE));
-            document.open();
-            document.setMargins(((float) left),((float) right) ,((float) top),((float) bottom));
-            printActivityObject.addMetaData(document);
-            addTitlePage(document,printActivityObject);
+    public JSONArray createDataForPrint(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.LOAD_SUMMARY_REQUEST);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TourID",Settings.getString(App.TRIP_ID));
+            mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            /*obj.put("Item#","14000000");
+            obj.put("Description","Carton 48*48 200ML");
+            obj.put("UPO","1");
+            obj.put("Open Qty","0");
+            obj.put("Load Qty","100");
+            obj.put("Adjust Qty","0");
+            obj.put("Net Qty","100");
+            obj.put("VALUE","1200");
+            obj.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj1 = new JSONObject();
+            obj1.put("Sl#","0010");
+            obj1.put("Item#","14000000");
+            obj1.put("Description","Carton 48*48 200ML");
+            obj1.put("UPO","1");
+            obj1.put("Open Qty","0");
+            obj1.put("Load Qty","100");
+            obj1.put("Adjust Qty","0");
+            obj1.put("Net Qty","100");
+            obj1.put("VALUE","1200");
+            obj1.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj2 = new JSONObject();
+            obj2.put("Sl#","0010");
+            obj2.put("Item#","14000000");
+            obj2.put("Description","Carton 48*48 200ML");
+            obj2.put("UPO","1");
+            obj2.put("Open Qty","0");
+            obj2.put("Load Qty","100");
+            obj2.put("Adjust Qty","0");
+            obj2.put("Net Qty","100");
+            obj2.put("VALUE","1200");
+            obj2.put("Description","Carton 48*48 100ML");*/
+            HEADERS.put("ITEM#");
+            HEADERS.put("ENGLISH DESCRIPTION");
+            HEADERS.put("ARABIC DESCRIPTION");
+            HEADERS.put("UPC");
+            HEADERS.put("BEGIN INV");
+            HEADERS.put("LOAD");
+            HEADERS.put("ADJUST");
+            HEADERS.put("NET LOAD");
+            HEADERS.put("VALUE");
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+           // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+
+            JSONArray jData = new JSONArray();
+            jData.put("100001");
+            jData.put("Material 1");
+            jData.put("Material 2");
+            jData.put("1");
+            jData.put("+0");
+            jData.put("+100");
+            jData.put("+0");
+            jData.put("+100");
+            jData.put("+1200.00");
+            JSONArray jData1 = new JSONArray();
+            jData1.put(jData);
+            mainArr.put("data",jData1);
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+
+            jArr.put(HEADERS);
+
+
+
         }
-        catch (FileNotFoundException e)
-        {
+        catch (Exception e){
             e.printStackTrace();
         }
-        catch (DocumentException e)
-        {
-            e.printStackTrace();
-        }
-        document.close();
-        Toast.makeText(this, "PDF Generated : Local Storage/DownLoads/PDF/",
-                Toast.LENGTH_LONG).show();
+        return jArr;
     }
-
-    private void addTitlePage(Document document,PrintActivity printActivityObject) throws DocumentException
-    {
-        Paragraph prHead = new Paragraph();
-        PdfPTable myTable = new PdfPTable(1);
-        myTable.setWidthPercentage(100.0f);
-
-        PdfPCell myCell = new PdfPCell(new Paragraph(""));
-        myCell.setBorder(Rectangle.BOTTOM);
-        myTable.addCell(myCell);
-
-        prHead.setFont(printActivityObject.categoryFont());
-        prHead.add("Invoice ");
-
-        prHead.add("\nDelievery for : ---");
-
-        prHead.add("\nDelievery route :  ---");
-
-        prHead.setAlignment(Element.ALIGN_CENTER);
-
-
-
-        float[] columnWidthsRouteTable = {5f,5f, 8f, 6f, 5f,5f,8f,8f};
-        PdfPTable table2 = new PdfPTable(columnWidthsRouteTable);
-        table2.setWidthPercentage(90f);
-
-        printActivityObject.insertCell(table2, "Route#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Salesman#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Salesman name", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Doc#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Sales date",Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Customer#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Customer name(EN)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table2, "Customer name(AR)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        table2.setHeaderRows(1);
-
-        for(int x=1; x<2; x++)
-        {
-
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2,"---" , Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2,"---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table2, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-        }
-
-        float[] columnWidths = {1.5f,4f, 4f, 2f, 2f,2f};
-        PdfPTable table = new PdfPTable(columnWidths);
-        table.setWidthPercentage(90f);
-
-        printActivityObject.insertCell(table, "Item#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table, "Description(EN)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table, "Description(AR)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table, "Total units", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table, "Unit price",Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(table, "Amount", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        table.setHeaderRows(1);
-
-
-
-        for(int i=0; i<5; i++)
-        {
-
-            printActivityObject.insertCell(table,"---",Element.ALIGN_CENTER,1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table, "---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(table,"---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            if(i==4)
-            {
-                printActivityObject.insertCell(table, "", Element.ALIGN_CENTER, 4, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(table,"Total : ", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(table, "0.000", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-            }
-        }
-
-
-
-
-
-
-        float[] columnWidthsGoodReturns = {1.5f,4f, 4f, 2f, 2f,2f};
-        PdfPTable tableGoodReturns = new PdfPTable(columnWidthsGoodReturns);
-        tableGoodReturns.setWidthPercentage(90f);
-
-        printActivityObject.insertCell(tableGoodReturns, "Item#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableGoodReturns, "Description(EN)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableGoodReturns, "Description(AR)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableGoodReturns, "Total units", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableGoodReturns, "Unit price",Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableGoodReturns, "Amount", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        tableGoodReturns.setHeaderRows(1);
-
-
-
-        for(int i=0; i<5; i++)
-        {
-
-            printActivityObject.insertCell(tableGoodReturns,"---",Element.ALIGN_CENTER,1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableGoodReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableGoodReturns, "---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableGoodReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableGoodReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableGoodReturns,"---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            if(i==4)
-            {
-                printActivityObject.insertCell(tableGoodReturns, "", Element.ALIGN_CENTER, 4, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(tableGoodReturns,"Total : ", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(tableGoodReturns, "0.000", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-            }
-        }
-
-
-
-        float[] columnWidthsBadReturns = {1.5f,4f, 4f, 2f, 2f,2f};
-        PdfPTable tableBadReturns = new PdfPTable(columnWidthsBadReturns);
-        tableBadReturns.setWidthPercentage(90f);
-
-        printActivityObject.insertCell(tableBadReturns, "Item#", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableBadReturns, "Description(EN)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableBadReturns, "Description(AR)", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableBadReturns, "Total units", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableBadReturns, "Unit price",Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        printActivityObject.insertCell(tableBadReturns, "Amount", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-        tableBadReturns.setHeaderRows(1);
-
-        for(int i=0; i<5; i++)
-        {
-
-            printActivityObject.insertCell(tableBadReturns,"---",Element.ALIGN_CENTER,1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableBadReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableBadReturns, "---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableBadReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableBadReturns, "---", Element.ALIGN_CENTER, 1, printActivityObject.tabelRowFont());
-            printActivityObject.insertCell(tableBadReturns,"---", Element.ALIGN_CENTER, 1,printActivityObject.tabelRowFont());
-            if(i==4)
-            {
-                printActivityObject.insertCell(tableBadReturns, "", Element.ALIGN_CENTER, 4, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(tableBadReturns,"Total : ", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-                printActivityObject.insertCell(tableBadReturns, "0.000", Element.ALIGN_CENTER, 1, printActivityObject.tableRowHeadingFont());
-            }
-        }
-
-        Paragraph prNewLine = new Paragraph();
-        prNewLine.setFont(printActivityObject.smallNormalFont());
-        prNewLine.add("\n");
-
-        Paragraph prList = new Paragraph();
-        prList.setFont(printActivityObject.smallNormalFont());
-        prList.add("Sales : ---");
-        prList.add("\nGood returns : ---");
-        prList.add("\nBad returns : ---");
-        prList.add("\nNet sales : ---");
-        prList.add("\nNet sales due invoice : ---");
-
-        Paragraph prTableHeading = new Paragraph();
-        prTableHeading.setFont(printActivityObject.categoryFont());
-        prTableHeading.add("\nSales\n");
-        prTableHeading.setAlignment(Element.ALIGN_CENTER);
-
-        Paragraph prTableHeadingGoodReturn = new Paragraph();
-        prTableHeadingGoodReturn.setFont(printActivityObject.categoryFont());
-        prTableHeadingGoodReturn.add("Good returns\n");
-        prTableHeadingGoodReturn.setAlignment(Element.ALIGN_CENTER);
-
-        Paragraph prTableHeadingBadReturns = new Paragraph();
-        prTableHeadingBadReturns.setFont(printActivityObject.categoryFont());
-        prTableHeadingBadReturns.add("Bad returns\n");
-        prTableHeadingBadReturns.setAlignment(Element.ALIGN_CENTER);
-
-        Paragraph prDate = new Paragraph();
-        prDate.setFont(printActivityObject.normalFont());
-        prDate.add("Date/Time");
-        prDate.add(" : "+printActivityObject.currentDate()+" / "+printActivityObject.currentTime());
-        prDate.setAlignment(Element.ALIGN_RIGHT);
-
-        Chunk glue = new Chunk(new VerticalPositionMark());
-        Paragraph pSignature = new Paragraph("\nSalesman signature");
-        pSignature.add(new Chunk(glue));
-        pSignature.add("Customer signature");
-
-        Chunk glue2 = new Chunk(new VerticalPositionMark());
-        Paragraph pSignature2 = new Paragraph("\n---------------------");
-        pSignature2.add(new Chunk(glue2));
-        pSignature2.add("----------------------");
-
-        Paragraph prPageNo = new Paragraph();
-        prPageNo.setFont(printActivityObject.normalFont());
-        prPageNo.setAlignment(Element.ALIGN_CENTER);
-        document.add(prHead);
-        document.add(prDate);
-        document.add(table2);
-        document.add(prTableHeading);
-        document.add(prNewLine);
-        document.add(table);
-        document.add(prTableHeadingGoodReturn);
-        document.add(prNewLine);
-        document.add(tableGoodReturns);
-        document.add(prTableHeadingBadReturns);
-        document.add(prNewLine);
-        document.add(tableBadReturns);
-        document.add(prList);
-        document.add(pSignature);
-        document.add(pSignature2);
-        document.newPage();
-    }*/
 }

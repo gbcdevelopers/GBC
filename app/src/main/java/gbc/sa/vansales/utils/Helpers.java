@@ -61,6 +61,11 @@ public class Helpers {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return dateFormat.format(date);
     }
+    public static String formatTime(Date date, String format) {
+        if (date == null) return null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
+        return dateFormat.format(date);
+    }
     public static String getCurrentTimeStamp() {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         return timeStamp;

@@ -99,6 +99,10 @@ public class LoginActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                             if(loadingSpinner.isShowing()){
                                 loadingSpinner.hide();
+                                Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                                startActivityForResult(intent, 0);
+                                finish();
+                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             }
                             dialog.dismiss();
                             }

@@ -36,8 +36,12 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
+import gbc.sa.vansales.App;
+import gbc.sa.vansales.R;
 import gbc.sa.vansales.models.DevicesData;
 import gbc.sa.vansales.printer.Arabic6822;
+import gbc.sa.vansales.printer.JsonRpcUtil;
+import gbc.sa.vansales.printer.LinePrinterException;
 import gbc.sa.vansales.utils.StringUtilities;
 public class PrinterHelper {
     private static final UUID MY_UUID;
@@ -138,6 +142,17 @@ public class PrinterHelper {
         this.mPairReceiver = new C04663();
         this.context = context;
         this.activity = activity;
+    }
+
+    public void execute(String request,JSONArray jsonArray){
+        try{
+            this.jArr = jsonArray;
+            this.arrData = new ArrayList();
+            print();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     class C04641 extends BroadcastReceiver {
@@ -344,9 +359,20 @@ public class PrinterHelper {
 
     @SuppressLint({"NewApi"})
     void printReports(String address) throws JSONException {
-//        Log.e("Print Report",""+ this.jArr.toString());
+        Log.e("Print Report",""+ this.jArr.toString());
  //       Log.d("Print Report", this.jArr.toString());
-        printVanStockReport();
+        //printVanStockReport();
+        for(int j=0; j<this.jArr.length();j++){
+            JSONArray jInner = this.jArr.getJSONArray(j);
+            for (int i = 0; i < jInner.length(); i++) {
+                JSONObject jDict = jInner.getJSONObject(i);
+                String request = jDict.getString(App.REQUEST);
+                JSONObject jsnData = jDict.getJSONObject("mainArr");
+                if(request.equals(App.LOAD_SUMMARY_REQUEST)){
+                    parseLoadSummaryResponse(jsnData, address);
+                }
+            }
+        }
         if (this.outStream != null) {
             try {
                 this.outStream.flush();
@@ -540,7 +566,6 @@ public class PrinterHelper {
         return seprator;
     }
 
-
     private void printArabic(String data) {
         try {
             if (data.indexOf("*") == -1 || data.indexOf("!") == -1) {
@@ -597,7 +622,6 @@ public class PrinterHelper {
             }
         }
     }
-
 
     private String getAccurateText(String text, int width, int position) {
         String finalText = "";
@@ -683,5 +707,243 @@ public class PrinterHelper {
         }
     }
 
+    //Parsing Data
+    void parseLoadSummaryResponse(JSONObject object,String args){
+        StringBuffer s1 = new StringBuffer();
+        try{
+            int i;
+            StringBuilder stringBuilder;
+            String string;
+            int j;
+            this.hashValues = new HashMap();
+            //this.hashValues.put("ITEM#", Integer.valueOf(4));
+            this.hashValues.put("ITEM#", Integer.valueOf(10));
+            this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(35));
+            this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(35));
+            this.hashValues.put("UPC", Integer.valueOf(7));
+            this.hashValues.put("BEGIN INV", Integer.valueOf(8));
+            this.hashValues.put("LOAD", Integer.valueOf(8));
+            this.hashValues.put("ADJUST", Integer.valueOf(8));
+            this.hashValues.put("NET LOAD", Integer.valueOf(8));
+            this.hashValues.put("VALUE", Integer.valueOf(8));
+            //this.hashValues.put("Description", Integer.valueOf(40));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("ITEM#", Integer.valueOf(0));
+           // this.hashPositions.put("Item#", Integer.valueOf(0));
+            this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("UPC", Integer.valueOf(2));
+            this.hashPositions.put("BEGIN INV", Integer.valueOf(2));
+            this.hashPositions.put("LOAD", Integer.valueOf(2));
+            this.hashPositions.put("ADJUST", Integer.valueOf(2));
+            this.hashPositions.put("NET LOAD", Integer.valueOf(2));
+            this.hashPositions.put("VALUE", Integer.valueOf(2));
+            this.hashPositions.put("Description", Integer.valueOf(0));
+            line(this.startln);
+            //headerinvprint(object, 1);  //Uncomment to print header
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            //int MAXLEngth = 137;
+            int MAXLEngth = 137;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            for (i = 0; i < headers.length(); i++) {
+                stringBuilder = new StringBuilder(String.valueOf(strheader));
+                string = headers.getString(i);
+                /*if (headers.getString(i).indexOf(" ") == -1) {
+                    string = headers.getString(i);
+                } else {
+                    string = headers.getString(i).substring(0, headers.getString(i).indexOf(" "));
+                }*/
+                strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                if (headers.getString(i).indexOf(" ") == -1) {
+                    string = "";
+                } else {
+                    string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length()).trim();
+                }
+               // strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 1);
+           // printlines1(strHeaderBottom, 1, object, 1, args, 1);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for(i =0;i<jData.length();i++){
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    if (j == 0) {
+                        itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 9) {
+                        itemDescrion = "                 *" + jArr.getString(j) + "!";
+                    }
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 9) {
+                        i2 = 60;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 9) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    //Printing Headers
+
+    private void printlines1(String data, int ln, JSONObject object, int sts, String adr, int tp) throws JSONException, IOException, LinePrinterException {
+        int i;
+        this.count += ln;
+        boolean isEnd = false;
+        if (sts == 2 && this.count != 0) {
+            printArabic(data);
+            isEnd = true;
+            int lnno = (48 - this.count) + this.endln;
+            for (i = 0; i < lnno; i++) {
+                try {
+                    if (i % 10 == 0) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    this.outStream.write(this.NewLine);
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
+            this.outStream.write(this.CarriageReturn);
+            this.count = 0;
+            try {
+                Thread.sleep(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+            } catch (InterruptedException e3) {
+                e3.printStackTrace();
+            }
+            this.status.put("status", true);
+            this.status.put("isconnected", 0);
+            sendUpdate(this.status, true);
+        }
+        if (!isEnd) {
+            printArabic(data);
+            for (i = 0; i < ln; i++) {
+                try {
+                    this.outStream.write(this.NewLine);
+                } catch (IOException e22) {
+                    e22.printStackTrace();
+                }
+            }
+            if (this.count % 10 == 0) {
+                try {
+                    Thread.sleep(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+                } catch (InterruptedException e32) {
+                    e32.printStackTrace();
+                }
+            }
+            if (this.count > 48) {
+                Log.e("Count 1 time", "Count " + this.count);
+                this.outStream.write(this.CompressOff);
+                this.count = 0;
+                try {
+                    line(this.cnln);
+                    if (tp == 4) {
+                        headervanstockprint(object, tp);
+                    } else if (tp == 6 || tp == 25) {
+                        headervanstockprint(object, tp);
+                    } else {
+                        headerinvprint(object, tp);
+                    }
+                    this.outStream.write(printSeprator().getBytes());
+                    this.count++;
+                } catch (Exception e4) {
+                    e4.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void headerinvprint(JSONObject object, int invtype) throws JSONException {
+        try {
+            this.outStream.write(this.BoldOn);
+            printheaders(getAccurateText("ROUTE#: " + object.getString("ROUTE"), 26, 0) + getAccurateText("SMAN#: " + object.getString("SALESMAN"), 26, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " " + object.getString("TIME"), 26, 2), false, 1);
+            this.outStream.write(this.NewLine);
+            printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE") + " " + "*" + ArabicLabels.Date, 26, 0) + "!" + getAccurateText(object.getString("SALESMAN") + " " + "*" + ArabicLabels.SalesMan, 26, 1) + "!", true, 1);
+            printheaders(getAccurateText(object.getString("ROUTE") + "*" + ArabicLabels.Route, 26, 2)+"!" + " ",true,1);
+            this.outStream.write(this.NewLine);
+           // printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN"), 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), false, 1);
+           // this.outStream.write(this.NewLine);
+            try {
+                printheaders(getAccurateText("DOCUMENT NO: " + object.getString("DOCUMENT NO"), 40, 0) + getAccurateText("TRIP START DATE:" + object.getString("TRIP START DATE"), 40, 2), false, 1);
+                this.outStream.write(this.NewLine);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), true, 1);
+            this.outStream.write(this.NewLine);
+            printheaders(getAccurateText("TOUR ID:" + object.getString("TourID"), 80, 0), false, 2);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            if (invtype == 1) {
+                printheaders(getAccurateText("LOAD SUMMARY ", 40, 1), false, 1);
+                printheaders(getAccurateText("LOAD NUMBER: " + object.getString("Load Number"), 40, 1), false, 1);
+            } else if (invtype == 2) {
+                printheaders(getAccurateText("LOAD TRANSFER SUMMARY", 40, 1), false, 1);
+            } else if (invtype == 3) {
+                printheaders(getAccurateText("END INVENTORY SUMMARY", 40, 1), false, 2);
+            } else if (invtype == 5) {
+                printheaders(getAccurateText("LOAD REQUEST", 40, 1), false, 1);
+            } else if (invtype == 6) {
+                printheaders(getAccurateText("COMPANY CREDIT SUMMARY", 40, 1), false, 1);
+            }
+            this.outStream.write(this.DoubleWideOff);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            /*if (invtype == 2) {
+                JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+                if (jData.getJSONObject(0).getJSONArray("DATA").length() > 0 && (jData.getJSONObject(1).getJSONArray("DATA").length() > 0 || jData.getJSONObject(2).getJSONArray("DATA").length() > 0)) {
+                    printheaders(getAccurateText("FROM & TO ROUTE: " + object.getString("TO ROUTE"), 80, 0), false, 1);
+                    this.outStream.write(this.NewLine);
+                } else if (jData.getJSONObject(0).getJSONArray("DATA").length() > 0) {
+                    printheaders(getAccurateText("FROM ROUTE: " + object.getString("TO ROUTE"), 80, 0), false, 1);
+                    this.outStream.write(this.NewLine);
+                } else if (jData.getJSONObject(1).getJSONArray("DATA").length() > 0) {
+                    printheaders(getAccurateText("TO ROUTE: " + object.getString("TO ROUTE"), 80, 0), false, 1);
+                    this.outStream.write(this.NewLine);
+                } else if (jData.getJSONObject(2).getJSONArray("DATA").length() > 0) {
+                    printheaders(getAccurateText("TO ROUTE: " + object.getString("TO ROUTE"), 80, 0), false, 1);
+                    this.outStream.write(this.NewLine);
+                }
+            }
+            if (invtype == 5) {
+                printheaders(getAccurateText("Requested Delivery Date : " + object.getString("Requestdate"), 80, 0), false, 1);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            }*/
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
+    }
 }
