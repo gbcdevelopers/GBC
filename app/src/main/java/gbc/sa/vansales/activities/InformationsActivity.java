@@ -195,7 +195,7 @@ public class InformationsActivity extends AppCompatActivity {
             HEADERS.put("ITEM#");
             HEADERS.put("ENGLISH DESCRIPTION");
             HEADERS.put("ARABIC DESCRIPTION");
-            HEADERS.put("UPC");
+            HEADERS.put("UPC ");
             HEADERS.put("BEGIN INV");
             HEADERS.put("LOAD");
             HEADERS.put("ADJUST");
@@ -207,22 +207,85 @@ public class InformationsActivity extends AppCompatActivity {
            // HEADERS.put(obj2);
             mainArr.put("HEADERS",HEADERS);
 
-            JSONArray jData = new JSONArray();
-            jData.put("100001");
-            jData.put("Material 1");
-            jData.put("Material 2");
-            jData.put("1");
-            jData.put("+0");
-            jData.put("+100");
-            jData.put("+0");
-            jData.put("+100");
-            jData.put("+1200.00");
             JSONArray jData1 = new JSONArray();
-            jData1.put(jData);
-            mainArr.put("data",jData1);
+            jData1.put("14020106");
+            jData1.put("Carton 48*200ml Berain Krones");
+            jData1.put("شد 48*200مل بيرين PH8");
+            jData1.put("1");
+            jData1.put("+0");
+            jData1.put("+100");
+            jData1.put("+0");
+            jData1.put("+100");
+            jData1.put("+1200.00");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("Carton 30*330ml Berain Krones");
+            jData2.put("شد 30*330مل بيرين PH8");
+            jData2.put("1");
+            jData2.put("+0");
+            jData2.put("+100");
+            jData2.put("+0");
+            jData2.put("+100");
+            jData2.put("+1200.00");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020123");
+            jData3.put("Carton 24*600 Berain PH8 Krones");
+            jData3.put("شد 24*600مل بيرين PH8");
+            jData3.put("1");
+            jData3.put("+0");
+            jData3.put("+150");
+            jData3.put("+0");
+            jData3.put("+150");
+            jData3.put("+2200.00");
+
+            JSONArray jData4 = new JSONArray();
+            jData4.put("14020124");
+            jData4.put("Carton 40*330 Berain PH8 Krones");
+            jData4.put("شد 40*330مل بيرين PH8");
+            jData4.put("1");
+            jData4.put("+0");
+            jData4.put("+200");
+            jData4.put("+0");
+            jData4.put("+200");
+            jData4.put("+2250.00");
+
+            JSONArray jData5 = new JSONArray();
+            jData5.put("14020125");
+            jData5.put("Carton 12*1.5ltr Berain PH8 Krones");
+            jData5.put("شد 12*1.5 لتر بيرين PH8");
+            jData5.put("1");
+            jData5.put("+0");
+            jData5.put("+200");
+            jData5.put("+0");
+            jData5.put("+200");
+            jData5.put("+2250.00");
+
+            JSONArray jData6 = new JSONArray();
+            jData6.put("14020126");
+            jData6.put("Carton 24*500 ml Berain PH8 Krones");
+            jData6.put("شد 24*500مل بيرين PH8");
+            jData6.put("1");
+            jData6.put("+0");
+            jData6.put("+200");
+            jData6.put("+0");
+            jData6.put("+200");
+            jData6.put("+2250.00");
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData4);
+            jData.put(jData5);
+            jData.put(jData6);
+
+            mainArr.put("data",jData);
             jDict.put("mainArr",mainArr);
             jInter.put(jDict);
             jArr.put(jInter);
+
 
 
             jArr.put(HEADERS);

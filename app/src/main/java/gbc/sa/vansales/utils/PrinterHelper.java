@@ -568,12 +568,12 @@ public class PrinterHelper {
 
     private void printArabic(String data) {
         try {
-            if (data.indexOf("*") == -1 || data.indexOf("!") == -1) {
+            if (data.indexOf("@") == -1 || data.indexOf("!") == -1) {
                 this.outStream.write(data.getBytes());
                 return;
             }
-            String start = data.substring(0, data.indexOf("*"));
-            String middle = data.substring(data.indexOf("*") + 1, data.indexOf("!"));
+            String start = data.substring(0, data.indexOf("@"));
+            String middle = data.substring(data.indexOf("@") + 1, data.indexOf("!"));
             String end = data.substring(data.indexOf("!") + 1, data.length());
             Log.e("start", start);
             Log.e("middle", middle);
@@ -583,12 +583,12 @@ public class PrinterHelper {
             this.outStream.write(start.getBytes());
             this.outStream.write(printbyte);
             this.outStream.write("  ".getBytes());
-            if (end.indexOf("*") == -1 || end.indexOf("!") == -1) {
+            if (end.indexOf("@") == -1 || end.indexOf("!") == -1) {
                 this.outStream.write(end.getBytes());
                 return;
             }
-            String startbet = end.substring(0, end.indexOf("*"));
-            String middlebet = end.substring(end.indexOf("*") + 1, end.indexOf("!"));
+            String startbet = end.substring(0, end.indexOf("@"));
+            String middlebet = end.substring(end.indexOf("@") + 1, end.indexOf("!"));
             String endbet = end.substring(end.indexOf("!") + 1, end.length());
             byte[] printmidbyte = Arabic.Convert(middlebet, true);
             this.outStream.write(startbet.getBytes());
@@ -720,7 +720,7 @@ public class PrinterHelper {
             this.hashValues.put("ITEM#", Integer.valueOf(10));
             this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(35));
             this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(35));
-            this.hashValues.put("UPC", Integer.valueOf(7));
+            this.hashValues.put("UPC ", Integer.valueOf(7));
             this.hashValues.put("BEGIN INV", Integer.valueOf(8));
             this.hashValues.put("LOAD", Integer.valueOf(8));
             this.hashValues.put("ADJUST", Integer.valueOf(8));
@@ -732,7 +732,7 @@ public class PrinterHelper {
            // this.hashPositions.put("Item#", Integer.valueOf(0));
             this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
             this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
-            this.hashPositions.put("UPC", Integer.valueOf(2));
+            this.hashPositions.put("UPC ", Integer.valueOf(2));
             this.hashPositions.put("BEGIN INV", Integer.valueOf(2));
             this.hashPositions.put("LOAD", Integer.valueOf(2));
             this.hashPositions.put("ADJUST", Integer.valueOf(2));
@@ -740,7 +740,7 @@ public class PrinterHelper {
             this.hashPositions.put("VALUE", Integer.valueOf(2));
             this.hashPositions.put("Description", Integer.valueOf(0));
             line(this.startln);
-            //headerinvprint(object, 1);  //Uncomment to print header
+            headerinvprint(object, 1);  //Uncomment to print header
             JSONArray headers = object.getJSONArray("HEADERS");
             String strheader = "";
             String strHeaderBottom = "";
@@ -783,13 +783,15 @@ public class PrinterHelper {
                     Object obj;
                     String itemDescrion = jArr.getString(j);
                     if (j == 0) {
-                        itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
-                    } else if (j == 9) {
-                        itemDescrion = "                 *" + jArr.getString(j) + "!";
+                        //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 2) {
+                        //itemDescrion = "                 *" + jArr.getString(j) + "!";
+                        itemDescrion = "          @" + jArr.getString(j) + "!";
                     }
                     stringBuilder = new StringBuilder(String.valueOf(strData));
-                    if (j == 9) {
-                        i2 = 60;
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
                     } else {
                         i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
                     }
@@ -801,7 +803,31 @@ public class PrinterHelper {
                     }
                     strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
                 }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                //printlines1(strData, 1, object, 1, args, 1);
+                printlines1(strData, 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
             }
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+
+            //Logic for Total
+
+            //Logic Ends Here
+            this.outStream.write(this.CompressOff);
+            printlines1(" ", 1, object, 1, args, 1);
+            this.outStream.write(this.BoldOn);
+            JSONObject jSONObject = object;
+            //printlines1(getAccurateText("Load Value : ", 50, 2) + getAccurateText(object.getString("LoadValue"), 12, 2), 1, jSONObject, 1, args, 2);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOff);
+            printlines1(getAccurateText("_____________", 26, 1) + getAccurateText("____________", 27, 1) + getAccurateText("____________", 27, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.NewLine);
+            printlines1(getAccurateText("STORE KEEPER", 26, 1) + getAccurateText("SUPERVISOR", 26, 1) + getAccurateText("SALESMAN", 26, 1), 2, object, 1, args, 1);
+            jSONObject = object;
+            printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 1);
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -815,6 +841,7 @@ public class PrinterHelper {
         this.count += ln;
         boolean isEnd = false;
         if (sts == 2 && this.count != 0) {
+            Log.e("Going for Arabic1","Arabic" + data);
             printArabic(data);
             isEnd = true;
             int lnno = (48 - this.count) + this.endln;
@@ -845,6 +872,7 @@ public class PrinterHelper {
         }
         if (!isEnd) {
             printArabic(data);
+            Log.e("Going for Arabic", "Arabic" + data);
             for (i = 0; i < ln; i++) {
                 try {
                     this.outStream.write(this.NewLine);
@@ -886,8 +914,8 @@ public class PrinterHelper {
             this.outStream.write(this.BoldOn);
             printheaders(getAccurateText("ROUTE#: " + object.getString("ROUTE"), 26, 0) + getAccurateText("SMAN#: " + object.getString("SALESMAN"), 26, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " " + object.getString("TIME"), 26, 2), false, 1);
             this.outStream.write(this.NewLine);
-            printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE") + " " + "*" + ArabicLabels.Date, 26, 0) + "!" + getAccurateText(object.getString("SALESMAN") + " " + "*" + ArabicLabels.SalesMan, 26, 1) + "!", true, 1);
-            printheaders(getAccurateText(object.getString("ROUTE") + "*" + ArabicLabels.Route, 26, 2)+"!" + " ",true,1);
+            printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE") + " " + "@" + ArabicLabels.Date, 26, 0) + "!" + getAccurateText(object.getString("SALESMAN") + " " + "@" + ArabicLabels.SalesMan, 26, 1) + "!", true, 1);
+            printheaders(getAccurateText(object.getString("ROUTE") + "@" + ArabicLabels.Route, 26, 2)+"!" + " ",true,1);
             this.outStream.write(this.NewLine);
            // printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN"), 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), false, 1);
            // this.outStream.write(this.NewLine);
