@@ -51,6 +51,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
     ArrayList<LoadSummary> dataNew;
     ArrayList<LoadSummary> dataOld;
     LoadingSpinner loadingSpinner;
+    private String tempOrderID = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,10 +111,28 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
                 LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                HashMap<String, String> searchMap = new HashMap<>();
+                searchMap.put(db.KEY_ORDER_ID, "");
+                HashMap<String, String> filterMap = new HashMap<>();
+                filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
+                Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, searchMap, filterMap);
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                }
+
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
+                map.put(db.KEY_ORDER_ID, tempOrderID);
+                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                db.addData(db.LOAD_CONFIRMATION_HEADER, map);
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new postData().execute();
+                        new postData(tempOrderID);
                         dialog.dismiss();
                         //finish();
                     }
@@ -121,7 +140,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new postData().execute();
+                        new postData(tempOrderID);
                         dialog.dismiss();
                     }
                 });
@@ -131,6 +150,26 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 startActivity(intent);*/
             }
         } else {
+
+            HashMap<String, String> searchMap = new HashMap<>();
+            searchMap.put(db.KEY_ORDER_ID, "");
+            HashMap<String, String> filterMap = new HashMap<>();
+            filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
+            Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, searchMap, filterMap);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+            }
+            //tempOrderID = "0000000075";
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+            map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
+            map.put(db.KEY_ORDER_ID, tempOrderID);
+            map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+            map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+            db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+
             Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
             startActivity(intent);
         }
@@ -353,100 +392,94 @@ public class LoadVerifyActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         return loadSummaryList;
     }
-    private boolean addVarianceforPost(ArrayList<LoadSummary>dataNew, ArrayList<LoadSummary>dataOld){
+    private boolean addVarianceforPost(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
         for (int i = 0; i < dataNew.size(); i++) {
             LoadSummary loadSummary = new LoadSummary();
             loadSummary.setItemCode(dataNew.get(i).getItemCode());
             loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
             loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
             if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                if(dataNew.get(i).getQuantityCases().equals(dataOld.get(i).getQuantityCases())){
+                if (dataNew.get(i).getQuantityCases().equals(dataOld.get(i).getQuantityCases())) {
                     loadSummary.setQuantityCases("0");
-                }
-                else{
-                    String code = Double.parseDouble(dataNew.get(i).getQuantityCases())>Double.parseDouble(dataOld.get(i).getQuantityCases())?"C":"D";
+                } else {
+                    String code = Double.parseDouble(dataNew.get(i).getQuantityCases()) > Double.parseDouble(dataOld.get(i).getQuantityCases()) ? "C" : "D";
                     String quantity = code.equals("C")
-                            ?String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases())-Double.parseDouble(dataOld.get(i).getQuantityCases()))
-                            :String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityCases())-Double.parseDouble(dataNew.get(i).getQuantityCases()));
-                    loadSummary.setQuantityCases(quantity+code);
+                            ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(dataOld.get(i).getQuantityCases()))
+                            : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityCases()) - Double.parseDouble(dataNew.get(i).getQuantityCases()));
+                    loadSummary.setQuantityCases(quantity + code);
                 }
                 //loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
             }
             if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                if(dataNew.get(i).getQuantityUnits().equals(dataOld.get(i).getQuantityUnits())){
+                if (dataNew.get(i).getQuantityUnits().equals(dataOld.get(i).getQuantityUnits())) {
                     loadSummary.setQuantityUnits("0");
-                }
-                else{
-                    String code = Double.parseDouble(dataNew.get(i).getQuantityUnits())>Double.parseDouble(dataOld.get(i).getQuantityUnits())?"C":"D";
+                } else {
+                    String code = Double.parseDouble(dataNew.get(i).getQuantityUnits()) > Double.parseDouble(dataOld.get(i).getQuantityUnits()) ? "C" : "D";
                     String quantity = code.equals("C")
-                            ?String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityUnits())-Double.parseDouble(dataOld.get(i).getQuantityUnits()))
-                            :String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityUnits())-Double.parseDouble(dataNew.get(i).getQuantityUnits()));
+                            ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityUnits()) - Double.parseDouble(dataOld.get(i).getQuantityUnits()))
+                            : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityUnits()) - Double.parseDouble(dataNew.get(i).getQuantityUnits()));
                     loadSummary.setQuantityUnits(quantity + code);
                 }
                 //loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
             }
             loadSummary.setPrice(dataNew.get(i).getPrice());
             loadSummary.setReasonCode(dataNew.get(i).getReasonCode());
-            if(loadSummary.getQuantityCases().equals("0")&&loadSummary.getQuantityUnits().equals("0")){
-
-            }
-            else{
+            if (loadSummary.getQuantityCases().equals("0") && loadSummary.getQuantityUnits().equals("0")) {
+            } else {
                 varianceLoadSummaryList.add(loadSummary);
             }
             //loadSummaryList.add(loadSummary);
         }
-
-        if(varianceLoadSummaryList.size()>0){
+        if (varianceLoadSummaryList.size() > 0) {
             String debitPRNo = "";
             String creditPRNo = "";
-            for(int i=0;i<varianceLoadSummaryList.size();i++){
+            for (int i = 0; i < varianceLoadSummaryList.size(); i++) {
                 LoadSummary loadSummary = varianceLoadSummaryList.get(i);
-                HashMap<String,String>map = new HashMap<>();
-                map.put(db.KEY_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
-                map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-                map.put(db.KEY_ITEM_NO,loadSummary.getItemCode());
-                map.put(db.KEY_MATERIAL_DESC1,loadSummary.getItemDescription());
-                map.put(db.KEY_MATERIAL_NO,loadSummary.getMaterialNo());
-                map.put(db.KEY_MATERIAL_GROUP,"");
-                map.put(db.KEY_CASE,loadSummary.getQuantityCases().contains("D")
-                        ?loadSummary.getQuantityCases().replaceAll("D", "").trim()
-                        :loadSummary.getQuantityCases().replaceAll("C","").trim());
-               // map.put(db.KEY_CASE_DIFF,"");
-                map.put(db.KEY_UNIT,loadSummary.getQuantityUnits().contains("D")
-                        ?loadSummary.getQuantityUnits().replaceAll("D", "").trim()
-                        :loadSummary.getQuantityUnits().replaceAll("C","").trim());
-               // map.put(db.KEY_UNIT,"");
-               // map.put(db.KEY_UNIT_DIFF,"");
-                if(loadSummary.getQuantityCases().contains("D")||loadSummary.getQuantityUnits().contains("D")){
-                    if(debitPRNo.equals("")){
-                        debitPRNo = Helpers.generateNumber(db,ConfigStore.LoadVarianceDebit_PR_Type);
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                map.put(db.KEY_ITEM_NO, loadSummary.getItemCode());
+                map.put(db.KEY_MATERIAL_DESC1, loadSummary.getItemDescription());
+                map.put(db.KEY_MATERIAL_NO, loadSummary.getMaterialNo());
+                map.put(db.KEY_MATERIAL_GROUP, "");
+                map.put(db.KEY_CASE, loadSummary.getQuantityCases().contains("D")
+                        ? loadSummary.getQuantityCases().replaceAll("D", "").trim()
+                        : loadSummary.getQuantityCases().replaceAll("C", "").trim());
+                // map.put(db.KEY_CASE_DIFF,"");
+                map.put(db.KEY_UNIT, loadSummary.getQuantityUnits().contains("D")
+                        ? loadSummary.getQuantityUnits().replaceAll("D", "").trim()
+                        : loadSummary.getQuantityUnits().replaceAll("C", "").trim());
+                // map.put(db.KEY_UNIT,"");
+                // map.put(db.KEY_UNIT_DIFF,"");
+                if (loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D")) {
+                    if (debitPRNo.equals("")) {
+                        debitPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceDebit_PR_Type);
                     }
                 }
-                if(loadSummary.getQuantityCases().contains("C")||loadSummary.getQuantityUnits().contains("C")){
-                    if(creditPRNo.equals("")){
-                        creditPRNo = Helpers.generateNumber(db,ConfigStore.LoadVarianceCredit_PR_Type);
+                if (loadSummary.getQuantityCases().contains("C") || loadSummary.getQuantityUnits().contains("C")) {
+                    if (creditPRNo.equals("")) {
+                        creditPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceCredit_PR_Type);
                     }
                 }
-                map.put(db.KEY_UOM,loadSummary.getUom());
-                map.put(db.KEY_PRICE,loadSummary.getPrice());
-                map.put(db.KEY_ORDER_ID,loadSummary.getQuantityCases().contains("D")||loadSummary.getQuantityUnits().contains("D")?debitPRNo:creditPRNo);
-                map.put(db.KEY_REASON_CODE,loadSummary.getReasonCode());
-                map.put(db.KEY_REASON_DESCRIPTION,"");
-                map.put(db.KEY_DOCUMENT_TYPE,loadSummary.getQuantityCases().contains("D")||loadSummary.getQuantityUnits().contains("D") ? ConfigStore.LoadVarianceDebit:ConfigStore.LoadVarianceCredit);
-                map.put(db.KEY_PURCHASE_NUMBER,loadSummary.getQuantityCases().contains("D")||loadSummary.getQuantityUnits().contains("D")?debitPRNo:creditPRNo);
-                map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                map.put(db.KEY_IS_PRINTED,"");
-                db.addData(db.LOAD_VARIANCE_ITEMS_POST,map);
+                map.put(db.KEY_UOM, loadSummary.getUom());
+                map.put(db.KEY_PRICE, loadSummary.getPrice());
+                map.put(db.KEY_ORDER_ID, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
+                map.put(db.KEY_REASON_CODE, loadSummary.getReasonCode());
+                map.put(db.KEY_REASON_DESCRIPTION, "");
+                map.put(db.KEY_DOCUMENT_TYPE, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? ConfigStore.LoadVarianceDebit : ConfigStore.LoadVarianceCredit);
+                map.put(db.KEY_PURCHASE_NUMBER, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
+                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                map.put(db.KEY_IS_PRINTED, "");
+                db.addData(db.LOAD_VARIANCE_ITEMS_POST, map);
             }
         }
         return true;
     }
-    private String postData() {
+    private String postData(String tempOrderID) {
         String orderID = "";
-        String tempOrderID = "";
-        HashMap<String, String> searchMap = new HashMap<>();
+        /*HashMap<String, String> searchMap = new HashMap<>();
         searchMap.put(db.KEY_ORDER_ID, "");
         HashMap<String, String> filterMap = new HashMap<>();
         filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
@@ -454,7 +487,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
-        }
+        }*/
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put("Function", ConfigStore.LoadConfirmationFunction);
@@ -464,44 +497,42 @@ public class LoadVerifyActivity extends AppCompatActivity {
             JSONArray deepEntity = new JSONArray();
             JSONObject obj = new JSONObject();
             deepEntity.put(obj);
-            orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+            orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return orderID;
+        return orderID + "," + tempOrderID;
     }
     private String postDataVariance(String varianceType) {
         String orderID = "";
         String purchaseNumber = "";
-
-        HashMap<String,String>dataMap = new HashMap<>();
-        dataMap.put(db.KEY_DATE,"");
-        dataMap.put(db.KEY_TIME_STAMP,"");
-        dataMap.put(db.KEY_TRIP_ID,"");
-        dataMap.put(db.KEY_CUSTOMER_NO,"");
-        dataMap.put(db.KEY_ITEM_NO,"");
-        dataMap.put(db.KEY_MATERIAL_DESC1,"");
-        dataMap.put(db.KEY_MATERIAL_NO,"");
-        dataMap.put(db.KEY_MATERIAL_GROUP,"");
-        dataMap.put(db.KEY_CASE,"");
-        dataMap.put(db.KEY_UNIT,"");
-        dataMap.put(db.KEY_UOM,"");
-        dataMap.put(db.KEY_PRICE,"");
-        dataMap.put(db.KEY_ORDER_ID,"");
-        dataMap.put(db.KEY_REASON_CODE,"");
-        dataMap.put(db.KEY_REASON_DESCRIPTION,"");
-        dataMap.put(db.KEY_DOCUMENT_TYPE,"");
-        dataMap.put(db.KEY_PURCHASE_NUMBER,"");
-        dataMap.put(db.KEY_IS_POSTED,"");
-        dataMap.put(db.KEY_IS_PRINTED,"");
-        HashMap<String,String>filter = new HashMap<>();
-        filter.put(db.KEY_DOCUMENT_TYPE,varianceType);
-
-        Cursor cursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,dataMap,filter);
-        Log.e("Cursor count","" + cursor.getCount());
-        if(cursor.getCount()>0){
+        HashMap<String, String> dataMap = new HashMap<>();
+        dataMap.put(db.KEY_DATE, "");
+        dataMap.put(db.KEY_TIME_STAMP, "");
+        dataMap.put(db.KEY_TRIP_ID, "");
+        dataMap.put(db.KEY_CUSTOMER_NO, "");
+        dataMap.put(db.KEY_ITEM_NO, "");
+        dataMap.put(db.KEY_MATERIAL_DESC1, "");
+        dataMap.put(db.KEY_MATERIAL_NO, "");
+        dataMap.put(db.KEY_MATERIAL_GROUP, "");
+        dataMap.put(db.KEY_CASE, "");
+        dataMap.put(db.KEY_UNIT, "");
+        dataMap.put(db.KEY_UOM, "");
+        dataMap.put(db.KEY_PRICE, "");
+        dataMap.put(db.KEY_ORDER_ID, "");
+        dataMap.put(db.KEY_REASON_CODE, "");
+        dataMap.put(db.KEY_REASON_DESCRIPTION, "");
+        dataMap.put(db.KEY_DOCUMENT_TYPE, "");
+        dataMap.put(db.KEY_PURCHASE_NUMBER, "");
+        dataMap.put(db.KEY_IS_POSTED, "");
+        dataMap.put(db.KEY_IS_PRINTED, "");
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_DOCUMENT_TYPE, varianceType);
+        Cursor cursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST, dataMap, filter);
+        Log.e("Cursor count", "" + cursor.getCount());
+        if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            try{
+            try {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("Function", ConfigStore.LoadVarianceFunction);
                 map.put("OrderId", "");
@@ -519,11 +550,11 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put("Currency", "SAR");
                 map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
                 purchaseNumber = map.get("PurchaseNum");
-              //  map.put("DocumentDate", Helpers.parseDateforPost(cursor.getString(cursor.getColumnIndex(db.KEY_DATE))));
+                //  map.put("DocumentDate", Helpers.parseDateforPost(cursor.getString(cursor.getColumnIndex(db.KEY_DATE))));
                 JSONArray deepEntity = new JSONArray();
                 int itemno = 10;
-                do{
-                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                do {
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -538,8 +569,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         jo.put("Route", Settings.getString(App.ROUTE));
                         itemno = itemno + 10;
                         deepEntity.put(jo);
-                    }
-                    else {
+                    } else {
                         JSONObject jo = new JSONObject();
                         jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                         jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -557,20 +587,24 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     }
                 }
                 while (cursor.moveToNext());
-                Log.e("Variance","" + map + deepEntity);
-                orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
-            }
-            catch (Exception e){
-                Log.e("Variance Error","Variance Error");
+                Log.e("Variance", "" + map + deepEntity);
+                orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+            } catch (Exception e) {
+                Log.e("Variance Error", "Variance Error");
                 e.printStackTrace();
             }
-
         }
-        Log.e("ORDERID","" + orderID);
+        Log.e("ORDERID", "" + orderID);
         return orderID + "," + purchaseNumber;
     }
     public class postData extends AsyncTask<Void, Void, Void> {
         String orderID = "";
+        String tempOrderID = "";
+        private String[] tokens = new String[2];
+        private postData(String tempOrderID) {
+            this.tempOrderID = tempOrderID;
+            execute();
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -578,86 +612,74 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            this.orderID = postData();
+            this.orderID = postData(tempOrderID);
+            this.tokens = orderID.split(",");
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (loadingSpinner.isShowing()) {
-                loadingSpinner.hide();
-            }
-            if (this.orderID.contains("Error")) {
-                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
-                boolean test = addVarianceforPost(dataNew,dataOld);
-                HashMap<String,String>checkMap = new HashMap<>();
-                checkMap.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
-
-                HashMap<String,String>checkMapCredit = new HashMap<>();
+            if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                db.updateData(db.LOAD_CONFIRMATION_HEADER, map, filter);
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                boolean test = addVarianceforPost(dataNew, dataOld);
+                HashMap<String, String> checkMap = new HashMap<>();
+                checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
+                HashMap<String, String> checkMapCredit = new HashMap<>();
                 checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
-
-                if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)||db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
-                    if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
+                if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
                         new postDataVariance(ConfigStore.LoadVarianceDebit);
-                    }
-                    else if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)){
+                    } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
                         new postDataVariance(ConfigStore.LoadVarianceCredit);
                     }
-                }
-                else{
+                } else {
                     new updateStockforCustomer().execute();
                 }
             } else if (this.orderID != null && !(this.orderID.equalsIgnoreCase(""))) {
-                boolean test = addVarianceforPost(dataNew,dataOld);
-                HashMap<String,String>checkMap = new HashMap<>();
-                checkMap.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
-
-                HashMap<String,String>checkMapCredit = new HashMap<>();
-                checkMapCredit.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
-
-                if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)||db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
-                    if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                boolean test = addVarianceforPost(dataNew, dataOld);
+                HashMap<String, String> checkMap = new HashMap<>();
+                checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
+                HashMap<String, String> checkMapCredit = new HashMap<>();
+                checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
+                if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
                         new postDataVariance(ConfigStore.LoadVarianceDebit);
-                    }
-                    else if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)){
+                    } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
                         new postDataVariance(ConfigStore.LoadVarianceCredit);
                     }
-                }
-                else{
+                } else {
                     new updateStockforCustomer().execute();
                 }
-
                /* Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);*/
-            } else {
-                boolean test = addVarianceforPost(dataNew,dataOld);
-                HashMap<String,String>checkMap = new HashMap<>();
-                checkMap.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
-
-                HashMap<String,String>checkMapCredit = new HashMap<>();
-                checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
-
-                if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)||db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
-                    if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMap)){
-                        new postDataVariance(ConfigStore.LoadVarianceDebit);
-                    }
-                    else if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)){
-                        new postDataVariance(ConfigStore.LoadVarianceCredit);
-                    }
+            } else if (this.orderID.contains("Error")) {
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
                 }
-                else{
-                    new updateStockforCustomer().execute();
-                }
+                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             }
         }
     }
-    public class postDataVariance extends AsyncTask<Void,Void,Void>{
+    public class postDataVariance extends AsyncTask<Void, Void, Void> {
         String varianceType = "";
         String orderID = "";
-        private postDataVariance(String varianceType){
+        private String[] tokens = new String[2];
+
+        private postDataVariance(String varianceType) {
             this.varianceType = varianceType;
             execute();
         }
-
         @Override
         protected void onPreExecute() {
             loadingSpinner.show();
@@ -665,27 +687,62 @@ public class LoadVerifyActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             this.orderID = postDataVariance(this.varianceType);
+            this.tokens = orderID.split(",");
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
+            if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
-            if(varianceType.equals(ConfigStore.LoadVarianceDebit)){
+            if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+                if(varianceType.equals(ConfigStore.LoadVarianceDebit)){
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
 
-                HashMap<String,String>checkMapCredit = new HashMap<>();
-                checkMapCredit.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
-                if(db.checkData(db.LOAD_VARIANCE_ITEMS_POST,checkMapCredit)){
-                    new postDataVariance(ConfigStore.LoadVarianceCredit);
+                    db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
+                    HashMap<String, String> checkMapCredit = new HashMap<>();
+                    checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
+                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
+                        new postDataVariance(ConfigStore.LoadVarianceCredit);
+                    } else {
+                        new updateStockforCustomer().execute();
+                    }
                 }
                 else{
+
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
+
+                    db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+
                     new updateStockforCustomer().execute();
                 }
             }
-            else{
+            /*if (varianceType.equals(ConfigStore.LoadVarianceDebit)) {
+                HashMap<String, String> checkMapCredit = new HashMap<>();
+                checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
+                if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
+                    new postDataVariance(ConfigStore.LoadVarianceCredit);
+                } else {
+                    new updateStockforCustomer().execute();
+                }
+            } else {
                 new updateStockforCustomer().execute();
-            }
+            }*/
         }
     }
     public class updateStockforCustomer extends AsyncTask<Void, Void, Void> {
@@ -702,6 +759,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(Helpers.isNetworkAvailable(getApplicationContext())){
+                Helpers.createBackgroundJob(getApplicationContext());
+            }
             if (updateSpinner.isShowing()) {
                 updateSpinner.hide();
             }
@@ -731,7 +791,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         map.put(db.KEY_IS_DELIVERED, "");
         HashMap<String, String> filter = new HashMap<>();
         Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
-        if(deliveryCursor.getCount()>0){
+        if (deliveryCursor.getCount() > 0) {
             deliveryCursor.moveToFirst();
             do {
                 HashMap<String, String> mapVanStock = new HashMap<>();
@@ -761,7 +821,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 mapVanStock.put(db.KEY_IS_VERIFIED, "");
                 HashMap<String, String> filterVanStock = new HashMap<>();
                 Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS, mapVanStock, filterVanStock);
-                if(vanStockCursor.getCount()>0){
+                if (vanStockCursor.getCount() > 0) {
                     vanStockCursor.moveToFirst();
                     do {
                         if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
@@ -797,10 +857,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     }
                     while (vanStockCursor.moveToNext());
                 }
-
             }
             while (deliveryCursor.moveToNext());
         }
-
     }
 }

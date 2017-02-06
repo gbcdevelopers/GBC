@@ -428,8 +428,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 map.put(db.KEY_CASE,deliveryItem.getItemCase());
                 map.put(db.KEY_UNIT,deliveryItem.getItemUnits());
                 map.put(db.KEY_UOM,deliveryItem.getItemUom());
-                map.put(db.KEY_REASON_CODE,rejectReasonList.get(pos).getReasonCode());
-                map.put(db.KEY_REASON_DESCRIPTION,rejectReasonList.get(pos).getReasonDescription());
+                Log.e("Reject Reason","" + rejectReasonList.get(position).getReasonCode() + rejectReasonList.get(pos).getReasonCode());
+                map.put(db.KEY_REASON_CODE,rejectReasonList.get(position).getReasonCode());
+                map.put(db.KEY_REASON_DESCRIPTION,rejectReasonList.get(position).getReasonDescription());
                 map.put(db.KEY_ORDER_ID,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
                 map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
                 map.put(db.KEY_AMOUNT,deliveryItem.getAmount());
@@ -443,10 +444,13 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 HashMap<String,String>filterMap = new HashMap<String, String>();
                 filterMap.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
                 filterMap.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
-                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,updateMap,filterMap);
+                db.updateData(db.CUSTOMER_DELIVERY_ITEMS,updateMap,filterMap);
 
                 arrayList.remove(pos);
                 dialog.dismiss();
+                if(Helpers.isNetworkAvailable(DeliveryOrderActivity.this)){
+                    Helpers.createBackgroundJob(DeliveryOrderActivity.this);
+                }
                 adapter.notifyDataSetChanged();
                 calculatePrice();
                 if (arrayList.size() == 0) {

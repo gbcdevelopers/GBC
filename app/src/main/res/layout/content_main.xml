@@ -153,7 +153,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/idd"
-            android:layout_gravity="center"
             android:id="@+id/btnBeginDay"
             android:text="@string/beginDay"
             android:background="@color/buttoncolor"

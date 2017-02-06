@@ -22,6 +22,13 @@ public class Customer implements Parcelable{
     private boolean merchandize;
     private boolean newcustomer;
 
+    public String getVisitListID() {
+        return visitListID;
+    }
+    public void setVisitListID(String visitListID) {
+        this.visitListID = visitListID;
+    }
+    private String visitListID;
     private boolean isCredit;
 
     //Get Instance of the Customer
@@ -158,6 +165,7 @@ public class Customer implements Parcelable{
             customer.customerItemNo = source.readString();
             customer.latitude = source.readString();
             customer.longitude = source.readString();
+            customer.visitListID = source.readString();
             return customer;
         }
         @Override
@@ -187,5 +195,6 @@ public class Customer implements Parcelable{
         parcel.writeString(customerItemNo);
         parcel.writeString(latitude);
         parcel.writeString(longitude);
+        parcel.writeString(visitListID);
     }
 }

@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import gbc.sa.vansales.models.DevicesData;
+import gbc.sa.vansales.printer.Arabic6822;
 import gbc.sa.vansales.utils.StringUtilities;
 public class PrinterHelper {
     private static final UUID MY_UUID;
@@ -343,8 +344,9 @@ public class PrinterHelper {
 
     @SuppressLint({"NewApi"})
     void printReports(String address) throws JSONException {
-        Log.e("Print Report",""+ this.jArr.toString());
-        Log.d("Print Report", this.jArr.toString());
+//        Log.e("Print Report",""+ this.jArr.toString());
+ //       Log.d("Print Report", this.jArr.toString());
+        printVanStockReport();
         if (this.outStream != null) {
             try {
                 this.outStream.flush();
@@ -362,6 +364,46 @@ public class PrinterHelper {
         }
     }
 
+    void printVanStockReport(){
+        try{
+            int i;
+            StringBuilder stringBuilder;
+            this.hashValues = new HashMap();
+            this.hashValues.put("Item#", Integer.valueOf(7));
+            this.hashValues.put("Description", Integer.valueOf(37));
+            this.hashValues.put("Loaded Qty", Integer.valueOf(8));
+            this.hashValues.put("Transfer Qty", Integer.valueOf(0));
+            this.hashValues.put("Sale Qty", Integer.valueOf(6));
+            this.hashValues.put("Return Qty", Integer.valueOf(6));
+            this.hashValues.put("Truck Stock", Integer.valueOf(7));
+            this.hashValues.put("Total", Integer.valueOf(9));
+            this.hashValues.put("Description", Integer.valueOf(37));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("Item#", Integer.valueOf(0));
+            this.hashPositions.put("Description", Integer.valueOf(0));
+            this.hashPositions.put("Loaded Qty", Integer.valueOf(2));
+            this.hashPositions.put("Transfer Qty", Integer.valueOf(2));
+            this.hashPositions.put("Sale Qty", Integer.valueOf(2));
+            this.hashPositions.put("Return Qty", Integer.valueOf(2));
+            this.hashPositions.put("Truck Stock", Integer.valueOf(2));
+            this.hashPositions.put("Total", Integer.valueOf(1));
+            this.hashPositions.put("Description", Integer.valueOf(0));
+            line(this.startln);
+            JSONObject object = new JSONObject();
+            object.put("ROUTE","1234");
+            object.put("DOC DATE","06-02-2017");
+            object.put("TIME","12:12:12");
+            object.put("SALESMAN","هذا هو الاختبار العربية");
+            object.put("CONTACTNO","01234567");
+            object.put("supervisorname","No Supervisor");
+            object.put("supervisorno","12389930");
+            object.put("TourID","1235");
+            headervanstockprint(object, 4);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     private class asyncgetDevices extends AsyncTask<Void, Set<BluetoothDevice>, Set<BluetoothDevice>> {
         private asyncgetDevices() {
         }
@@ -496,6 +538,149 @@ public class PrinterHelper {
             seprator = new StringBuilder(String.valueOf(seprator)).append("-").toString();
         }
         return seprator;
+    }
+
+
+    private void printArabic(String data) {
+        try {
+            if (data.indexOf("*") == -1 || data.indexOf("!") == -1) {
+                this.outStream.write(data.getBytes());
+                return;
+            }
+            String start = data.substring(0, data.indexOf("*"));
+            String middle = data.substring(data.indexOf("*") + 1, data.indexOf("!"));
+            String end = data.substring(data.indexOf("!") + 1, data.length());
+            Log.e("start", start);
+            Log.e("middle", middle);
+            Log.e("end", end);
+            Arabic6822 Arabic = new Arabic6822();
+            byte[] printbyte = Arabic.Convert(middle, true);
+            this.outStream.write(start.getBytes());
+            this.outStream.write(printbyte);
+            this.outStream.write("  ".getBytes());
+            if (end.indexOf("*") == -1 || end.indexOf("!") == -1) {
+                this.outStream.write(end.getBytes());
+                return;
+            }
+            String startbet = end.substring(0, end.indexOf("*"));
+            String middlebet = end.substring(end.indexOf("*") + 1, end.indexOf("!"));
+            String endbet = end.substring(end.indexOf("!") + 1, end.length());
+            byte[] printmidbyte = Arabic.Convert(middlebet, true);
+            this.outStream.write(startbet.getBytes());
+            this.outStream.write(printmidbyte);
+            this.outStream.write("  ".getBytes());
+            this.outStream.write(endbet.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printheaders(String line, boolean isArabic, int pluscount) {
+        if (isArabic) {
+            printArabic(line);
+        } else {
+            try {
+                this.outStream.write(line.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        this.count += pluscount;
+    }
+
+    private void line(int ln) {
+        for (int i = 0; i < ln; i++) {
+            try {
+                this.outStream.write(this.NewLine);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private String getAccurateText(String text, int width, int position) {
+        String finalText = "";
+        if (text.length() == width) {
+            Log.d("Matched String", text);
+            return text;
+        } else if (text.length() > width) {
+            return text.substring(0, width);
+        } else {
+            finalText = text;
+            Log.d("String", finalText);
+            int i;
+            switch (position) {
+                case 0:
+                    for (i = 0; i < width - text.length(); i++) {
+                        finalText = finalText.concat(" ");
+                    }
+                    return finalText;
+                case 1 :
+                    for (i = 0; i < width - text.length(); i++) {
+                        if (i < (width - text.length()) / 2) {
+                            finalText = " " + finalText;
+                        } else {
+                            finalText = new StringBuilder(String.valueOf(finalText)).append(" ").toString();
+                        }
+                    }
+                    return finalText;
+                case 2 :
+                    for (i = 0; i < width - text.length(); i++) {
+                        finalText = " " + finalText;
+                    }
+                    return finalText;
+                default:
+                    return finalText;
+            }
+        }
+    }
+
+    private void headervanstockprint(JSONObject object, int type) throws JSONException {
+        try {
+            this.outStream.write(this.BoldOn);
+           /* printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), false, 1);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);*/
+            printheaders(getAccurateText("SALESMAN: *" + object.getString("SALESMAN")+"!", 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), true, 1);
+            this.outStream.write(this.NewLine);
+           /* printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), false, 1);
+            this.outStream.write(this.NewLine);
+            printheaders(getAccurateText("TOUR ID:" + object.getString("TourID"), 80, 0), false, 2);*/
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.count++;
+            if (type == 4) {
+                /*this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("VAN STOCK SUMMARY ", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);*/
+            } else if (type == 10) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("ITEM SALES SUMMARY ", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+            } else if (type == 6) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("COMPANY CREDIT SUMMARY", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+            } else if (type == 25) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("TEMPORARY CREDIT SUMMARY", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+            }
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

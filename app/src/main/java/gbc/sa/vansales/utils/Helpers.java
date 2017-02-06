@@ -130,6 +130,35 @@ public class Helpers {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+    public static String generateVisitList(DatabaseHandler db){
+        int numRange = 100;
+        int length = 3;
+        HashMap<String, String> search = new HashMap<>();
+        search.put(db.KEY_DOC_TYPE, "VISITLIST");
+        boolean checkPRNo = db.checkData(db.VISIT_LIST_ID_GENERATE, search);
+        if (checkPRNo) {
+            HashMap<String, String> prData = new HashMap<>();
+            prData.put(db.KEY_VISITLISTID, "");
+            Cursor cursor = db.getData(db.VISIT_LIST_ID_GENERATE, prData, search);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                Log.e("Num Range From DB", "" + numRange);
+                numRange = numRange + 1;
+                HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
+                db.updateData(db.VISIT_LIST_ID_GENERATE, valueMap, search);
+            }
+        } else {
+            numRange = numRange <= 100 ? numRange + 1 : numRange;
+            HashMap<String, String> valueMap = new HashMap<>();
+            valueMap.put(db.KEY_DOC_TYPE, "VISITLIST");
+            valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
+            Log.e("Adding Data Num Range", "" + valueMap);
+            db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
+        }
+        return StringUtils.leftPad(String.valueOf(numRange), length, "0");
+    }
     public static String generateNumber(DatabaseHandler db, String documentType) {
         String route = Settings.getString(App.ROUTE);
         // int routeId = Integer.parseInt(route);
@@ -197,7 +226,7 @@ public class Helpers {
             Log.e("Adding Data Num Range", "" + valueMap);
             db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
-        return customer + route + StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        return customer + route + StringUtils.leftPad(String.valueOf(numRange), length-(customer.length()+route.length()), "0");
     }
     public static String getDocumentTypeNo(String documentType) {
         String docTypeNo = "";
@@ -270,6 +299,10 @@ public class Helpers {
                 docTypeNo = ConfigStore.LoadVarianceCredit_PR;
                 break;
             }
+            case ConfigStore.Collection_PR_Type:{
+                docTypeNo = ConfigStore.Collection_PR;
+                break;
+            }
         }
         return docTypeNo;
     }
@@ -320,11 +353,18 @@ public class Helpers {
         Banks.loadData(context);
     }
     public static HashMap<String, String> buildHeaderMap(String function, String orderId, String documentType, String customerId,
-                                                         String orderValue, String purchaseNumber) {
+                                                         String orderValue, String purchaseNumber, String documentDate) {
         HashMap<String, String> map = new HashMap<>();
         map.put("Function", function);
+        map.put("TripId",Settings.getString(App.TRIP_ID));
         map.put("OrderId", orderId.equals("") ? "" : orderId);
-        map.put("DocumentType", documentType);
+        map.put("DocumentType", function.equals(ConfigStore.LoadRequestFunction)&&customerId.equals(Settings.getString(App.DRIVER))
+                ?getDocumentTypefromDate(stringToDate(documentDate,App.DATE_PICKER_FORMAT))
+                :documentType);
+        if(!documentDate.equals("")){
+            map.put("DocumentDate", Helpers.parseDateforPost(documentDate));
+        }
+
         // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
         // map.put("DocumentDate", null);
            /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
@@ -338,6 +378,92 @@ public class Helpers {
         map.put("PurchaseNum", purchaseNumber);
         return map;
     }
+
+    public static HashMap<String, String> buildHeaderMapVisitList(String function, String startDateTimeStamp,
+                                                                  String endDateTimeStamp, String visitID,
+                                                                  String activityID,String visitReason,
+                                                                  String customerId) {
+        String[]startDateTime = new String[2];
+        startDateTime = parseTimeStamp(startDateTimeStamp);
+        String[]endDateTime = new String[2];
+        endDateTime = parseTimeStamp(endDateTimeStamp);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function", function);
+        map.put("StartDate",startDateTime[0]);
+        map.put("StartTime",startDateTime[1]);
+        map.put("EndDate",endDateTime[0]);
+        map.put("EndTime",endDateTime[1]);
+        map.put("VisitID", StringUtils.leftPad(StringUtils.stripStart(visitID, "0"),5-visitID.length(),"0"));
+
+        map.put("ActivityId",activityID);
+        map.put("TripId",Settings.getString(App.TRIP_ID));
+        map.put("VisitReason",visitReason);
+        map.put("CustomerId",customerId);
+
+        // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+        // map.put("DocumentDate", null);
+           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+            purchaseNumber = map.get("PurchaseNum");*/
+        return map;
+    }
+
+    public static HashMap<String, String> buildHeaderMapReason(String function, String orderId, String documentType, String customerId,
+                                                         String orderValue, String purchaseNumber, String documentDate,String reasonCode) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function", function);
+        map.put("OrdReason",reasonCode);
+        map.put("TripId",Settings.getString(App.TRIP_ID));
+        map.put("OrderId", orderId.equals("") ? "" : orderId);
+        map.put("DocumentType", function.equals(ConfigStore.LoadRequestFunction)&&customerId.equals(Settings.getString(App.DRIVER))
+                ?getDocumentTypefromDate(stringToDate(documentDate,App.DATE_PICKER_FORMAT))
+                :documentType);
+        if(!documentDate.equals("")){
+            map.put("DocumentDate", Helpers.parseDateforPost(documentDate));
+        }
+
+        // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+        // map.put("DocumentDate", null);
+           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+            purchaseNumber = map.get("PurchaseNum");*/
+        map.put("CustomerId", customerId);
+        map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+        map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+        map.put("Division", Settings.getString(App.DIVISION));
+        map.put("OrderValue", orderValue.equals("") ? "0" : orderValue);
+        map.put("Currency", App.CURRENCY);
+        map.put("PurchaseNum", purchaseNumber);
+        return map;
+    }
+
+    public static HashMap<String, String> buildBeginDayHeader(String function, String tripId,String createdBy,
+                                                         String timestamp, String purchaseNumber) {
+        String[] tokens = new String[2];
+        tokens = Helpers.parseTimeStamp(timestamp);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function", function);
+        map.put("TripId",tripId);
+        map.put("StartDate", tokens[0].toString());
+        map.put("StartTime", tokens[1].toString());
+        map.put("CreatedBy", createdBy);
+        return map;
+    }
+
+    public static HashMap<String, String> buildOdometerHeader(String tripId,String value) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("TripID",tripId);
+        map.put("Value", value);
+        return map;
+    }
+
+    public static HashMap<String, String> buildLoadConfirmationHeader(String function,String orderID,String customerID) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function",function);
+        map.put("OrderId", orderID);
+        map.put("CustomerId", customerID);
+        return map;
+    }
+
     public static void createBackgroundJob(Context context){
         ComponentName mServiceComponent = new ComponentName(context, BackgroundJob.class);
         JobInfo.Builder builder = null;
@@ -362,5 +488,20 @@ public class Helpers {
             e.printStackTrace();
         }
         return date;
+    }
+    //to check for Load Request
+    public static String getDocumentTypefromDate(Date loadDate){
+        try{
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            Date today = new Date();
+            String todayDateStr = simpleDateFormat.format(today);
+            Date todayDate = simpleDateFormat.parse(todayDateStr);
+            return loadDate.compareTo(todayDate)==0?ConfigStore.LoadRequestCurrentDocumentType:loadDate.after(today)?ConfigStore.LoadRequestFutureDocumentType:"";
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+
     }
 }

@@ -169,6 +169,19 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     db.updateData(db.VISIT_LIST, map, filter);
 
+                    //Preparing for POST
+                    HashMap<String,String> updateMap = new HashMap<String, String>();
+                    updateMap.put(db.KEY_END_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                    updateMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    HashMap<String,String> filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    filterMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    db.updateData(db.VISIT_LIST_POST,updateMap,filterMap);
+
+                    if(Helpers.isNetworkAvailable(getApplicationContext())){
+                        Helpers.createBackgroundJob(getApplicationContext());
+                    }
+
                     Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                     startActivity(intent);
                     finish();
@@ -341,6 +354,20 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
                 map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 db.updateData(db.VISIT_LIST, map, filter);
+
+                //Preparing for POST
+                HashMap<String,String> updateMap = new HashMap<String, String>();
+                updateMap.put(db.KEY_END_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                updateMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                updateMap.put(db.KEY_VISIT_SERVICED_REASON, arrayList.get(position).getReasonCode());
+                HashMap<String,String> filterMap = new HashMap<String, String>();
+                filterMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                filterMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                db.updateData(db.VISIT_LIST_POST, updateMap, filterMap);
+
+                if(Helpers.isNetworkAvailable(CustomerDetailActivity.this)){
+                    Helpers.createBackgroundJob(CustomerDetailActivity.this);
+                }
                 Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                 startActivity(intent);
                 finish();

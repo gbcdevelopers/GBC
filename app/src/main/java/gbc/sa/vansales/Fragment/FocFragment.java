@@ -49,9 +49,15 @@ public class FocFragment extends Fragment {
         if(isVisibleToUser){
             salesarrayList = Const.focList;
             if(salesarrayList.size()>0){
-                myAdapter = new SalesInvoiceAdapter(getActivity(), salesarrayList);
-               // adapter = new SalesAdapter(getActivity(), salesarrayList);
-                listSales.setAdapter(myAdapter);
+                try{
+                    myAdapter = new SalesInvoiceAdapter(getActivity(), salesarrayList);
+                    // adapter = new SalesAdapter(getActivity(), salesarrayList);
+                    listSales.setAdapter(myAdapter);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         }
     }

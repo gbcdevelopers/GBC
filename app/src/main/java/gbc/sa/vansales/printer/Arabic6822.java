@@ -2,7 +2,7 @@ package gbc.sa.vansales.printer;
 
 import java.lang.reflect.Array;
 
-public class Arabic6822 {
+public class Arabic6822 implements Cloneable {
     static int f1a;
     static int f2b;
     static char[][] f3c;
@@ -24,12 +24,13 @@ public class Arabic6822 {
     private byte[] m1b(byte[] bArr, boolean z) {
         int i;
         Object a = m0a(bArr);
-        byte[] bArr2 = (byte[]) ((byte[])a).clone();
+        byte[] bArr1 = m0a(bArr);
+        byte[] bArr2 = bArr1.clone();
         int i2 = 0;
         int i3 = 0;
         int i4 = 0;
-        for (i = 0; i < ((byte[])a).length; i++) {
-            if (m5b(((byte[])a)[i])) {
+        for (i = 0; i < bArr1.length; i++) {
+            if (m5b(bArr1[i])) {
                 i2++;
                 if (i4 == 0) {
                     i3 = i;
@@ -40,17 +41,17 @@ public class Arabic6822 {
                     i4 = i - 1;
                     int i5 = 0;
                     for (i4 = i - 1; i4 >= i3; i4--) {
-                        bArr2[i4] = ((byte[])a)[i3 + i5];
+                        bArr2[i4] = bArr1[i3 + i5];
                         i5++;
                     }
                 }
                 i4 = 0;
             }
         }
-        if (i2 == ((byte[])a).length) {
+        if (i2 == bArr1.length) {
             i2 = 0;
-            for (i = ((byte[])a).length - 1; i >= 0; i--) {
-                bArr2[i] = ((byte[])a)[0 + i2];
+            for (i = bArr1.length - 1; i >= 0; i--) {
+                bArr2[i] = bArr1[0 + i2];
                 i2++;
             }
         }
@@ -331,19 +332,19 @@ public class Arabic6822 {
                     obj3 = obj;
                 }
                 boolean a = i == 0 ? false : m3a(str2.trim().charAt(i - 1));
-                if (a /*&& r3 != null*/) {
+                if (a && obj3 != null) {
                     trim.replace(trim.charAt(i), f3c[i2][3]);
                     bArr[i] = (byte) f3c[i2][3];
                 }
-                if (a /*&& r3 == null*/) {
+                if (a && obj3 == null) {
                     trim.replace(trim.charAt(i), f3c[i2][1]);
                     bArr[i] = (byte) f3c[i2][1];
                 }
-                if (!(a /*|| r3 == null*/)) {
+                if (!(a || obj3 == null)) {
                     trim.replace(trim.charAt(i), f3c[i2][2]);
                     bArr[i] = (byte) f3c[i2][2];
                 }
-                if (!a /*&& r3 == null*/) {
+                if (!a && obj3 == null) {
                     trim.replace(trim.charAt(i), f3c[i2][4]);
                     bArr[i] = (byte) f3c[i2][4];
                 }

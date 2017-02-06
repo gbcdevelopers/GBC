@@ -239,6 +239,7 @@
 				<string name="no">لا</string>
 				<string name="no_data">Please input data before creating request</string>
 				<string name="no_records">لا توجد بيانات</string>
+				<string name="no_visit">Not Visited</string>
 				<string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
 				<string name="odometer">آخر قرائة للعداد</string>
 				<string name="odometer_reading">آخر قرائة للعداد</string>
@@ -357,6 +358,7 @@
 				<string name="synchronize">Synchronize Data</string>
 				<string name="targetgoal">TARGET/GOALS</string>
 				<string name="targetachieved">المحقق/الهدف</string>
+				<string name="tc_lbl">TC</string>
 				<string name="tc_sales">TC SALES</string>
 				<string name="telephone">هاتف</string>
 				<string name="theft">Theft or Missing</string>

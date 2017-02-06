@@ -244,6 +244,7 @@
     <string name="no">No</string>
     <string name="no_data">Please input data before creating request</string>
     <string name="no_records">No Records</string>
+    <string name="no_visit">Not Visited</string>
     <string name="not_in_sequence">You cannot serve this customer. Please follow sequence</string>
     <string name="odometer">Last Odometer Reading</string>
     <string name="odometer_reading">Last Odometer Reading</string>
@@ -362,6 +363,7 @@
     <string name="synchronize">Synchronize Data</string>
     <string name="targetgoal">TARGET/GOALS</string>
     <string name="targetachieved">Achieved/Target</string>
+    <string name="tc_lbl">TC</string>
     <string name="tc_sales">TC SALES</string>
     <string name="telephone">Telephone</string>
     <string name="theft">Theft or Missing</string>

@@ -154,6 +154,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*new postData().execute();*/
                 //String purchaseNum = isPutOnHold?"":Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
+                setTitle("Print Activity");
                 if (putOnHoldValueChanged) {
                     if (isPutOnHold) {
                         HashMap<String, String> filter = new HashMap<>();
@@ -453,7 +454,6 @@ public class LoadRequestActivity extends AppCompatActivity {
                         }
                     }
                 }
-                setTitle("Print Activity");
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
                 dialog.setContentView(R.layout.dialog_doprint);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -504,7 +504,7 @@ public class LoadRequestActivity extends AppCompatActivity {
         // Locate the ListView in listview_main.xml
         list = (ListView) findViewById(R.id.listview);
         adapter = new LoadRequestBadgeAdapter(this, arraylist);
-        list.setAdapter(adapter);
+
         // Locate the EditText in listview_main.xml
         editsearch = (EditText) findViewById(R.id.search);
         // Capture Text in EditText
@@ -759,6 +759,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
         }
     }
     public void setLoadItems(Cursor loadItemsCursor, boolean putOnHoldExists) {
@@ -896,7 +897,9 @@ public class LoadRequestActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Helpers.createBackgroundJob(LoadRequestActivity.this);
+                                if(Helpers.isNetworkAvailable(LoadRequestActivity.this)){
+                                    Helpers.createBackgroundJob(LoadRequestActivity.this);
+                                }
                                 dialog.dismiss();
                                 finish();
                             }

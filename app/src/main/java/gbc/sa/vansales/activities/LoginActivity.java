@@ -171,6 +171,7 @@ public class LoginActivity extends Activity {
                                     downloadData("Y000010000000003");
                                 }
                                 else{
+                                    Settings.setString(App.IS_DATA_SYNCING,"false");
                                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                                     startActivityForResult(intent, 0);
                                     finish();
@@ -304,23 +305,29 @@ public class LoginActivity extends Activity {
         chain.add(new Chain.Link() {
             @Override
             public void run() {
-                TripHeader.load(LoginActivity.this,tripId, db);
-                LoadDelivery.load(LoginActivity.this,tripId, db);
-                ArticleHeaders.load(LoginActivity.this, tripId, db);
-                CustomerHeaders.load(LoginActivity.this, tripId, db);
-                VisitList.load(LoginActivity.this, tripId, db);
-                Messages.load(LoginActivity.this, username, db);
-                CustomerDelivery.load(LoginActivity.this,tripId,db);
-                DriverRouteFlags.load(LoginActivity.this,tripId,db);
-                OrderReasons.load(LoginActivity.this,"",db);
-                OrderReasons.load(LoginActivity.this,App.REASON_REJECT,db);
-                VisitReasons.load(LoginActivity.this, "", db);
-                Promotions02.load(LoginActivity.this,username,db);
-                Promotions05.load(LoginActivity.this, username, db);
-                Promotions07.load(LoginActivity.this, username, db);
-                Pricing.load(LoginActivity.this, username, db);
-                Banks.load(LoginActivity.this,"",db);
-                FOCData.load(LoginActivity.this,"",db);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TripHeader.load(LoginActivity.this,tripId, db);
+                        LoadDelivery.load(LoginActivity.this,tripId, db);
+                        ArticleHeaders.load(LoginActivity.this, tripId, db);
+                        CustomerHeaders.load(LoginActivity.this, tripId, db);
+                        VisitList.load(LoginActivity.this, tripId, db);
+                        Messages.load(LoginActivity.this, username, db);
+                        CustomerDelivery.load(LoginActivity.this,tripId,db);
+                        DriverRouteFlags.load(LoginActivity.this,tripId,db);
+                        OrderReasons.load(LoginActivity.this,"",db);
+                        OrderReasons.load(LoginActivity.this,App.REASON_REJECT,db);
+                        VisitReasons.load(LoginActivity.this, "", db);
+                        Promotions02.load(LoginActivity.this,username,db);
+                        Promotions05.load(LoginActivity.this, username, db);
+                        Promotions07.load(LoginActivity.this, username, db);
+                        Pricing.load(LoginActivity.this, username, db);
+                        Banks.load(LoginActivity.this,"",db);
+                        FOCData.load(LoginActivity.this,"",db);
+                    }
+                });
+
                 /*ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());*/
             }

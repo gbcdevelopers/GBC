@@ -91,12 +91,12 @@ public class DeliveryActivity extends AppCompatActivity {
         TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
         TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
         if (!(customerHeader == null)) {
-            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
+            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
             tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
             tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
             tv_customer_contact.setText(customerHeader.getPhone());
         } else {
-            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
+            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
             tv_customer_address.setText(object.getCustomerAddress().toString());
             tv_customer_pobox.setText("");
             tv_customer_contact.setText("");
@@ -123,7 +123,7 @@ public class DeliveryActivity extends AppCompatActivity {
         iv_refresh = (ImageView) findViewById(R.id.img_refresh);
         registerForContextMenu(list_delivery);
         //  adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
-        list_delivery.setAdapter(adapter);
+       // list_delivery.setAdapter(adapter);
         list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -225,6 +225,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             adapter.notifyDataSetChanged();
+            list_delivery.setAdapter(adapter);
         }
     }
     private void setDeliveryList(Cursor cursor) {
@@ -276,7 +277,7 @@ public class DeliveryActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                deleteDeliveryItems(arrayList.get(pos).getOrderId(), statusList.get(pos).getReasonCode(), statusList.get(pos).getReasonDescription());
+                deleteDeliveryItems(arrayList.get(pos).getOrderId(), statusList.get(position).getReasonCode(), statusList.get(position).getReasonDescription());
                 deleteDelivery(pos);
                 dialog.dismiss();
             }
@@ -315,7 +316,7 @@ public class DeliveryActivity extends AppCompatActivity {
             HashMap<String, String> filter1 = new HashMap<String, String>();
             filter1.put(db.KEY_DELIVERY_NO, deliveryNo);
             filter1.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-            if (db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, filter)) {
+            if (db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, filter1)) {
                 HashMap<String, String> map1 = new HashMap<String, String>();
                 map1.put(db.KEY_ORDER_ID, "");
                 Cursor cursor1 = db.getData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map1, filter1);
@@ -331,7 +332,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 deleteMap.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 //deleteMap.put(db.KEY_MATERIAL_DESC1,deliveryItem.getItemDescription());
                 deleteMap.put(db.KEY_CASE, cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-                deleteMap.put(db.KEY_UNIT, cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
+                deleteMap.put(db.KEY_UNIT, "0");
                 deleteMap.put(db.KEY_UOM, cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
                 deleteMap.put(db.KEY_REASON_CODE, reasonCode);
                 deleteMap.put(db.KEY_REASON_DESCRIPTION, reasonDescription);
@@ -413,6 +414,9 @@ public class DeliveryActivity extends AppCompatActivity {
             filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
             filter.put(db.KEY_DELIVERY_NO, this.deliveryID);
             db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
+            if(Helpers.isNetworkAvailable(DeliveryActivity.this)){
+                Helpers.createBackgroundJob(DeliveryActivity.this);
+            }
             new loadDeliveries().execute();
         }
     }

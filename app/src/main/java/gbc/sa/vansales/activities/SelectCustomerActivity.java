@@ -330,6 +330,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
                 customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
                 customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
+                customer.setVisitListID(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
                 data.add(customer);
             }
             while (cursor.moveToNext());

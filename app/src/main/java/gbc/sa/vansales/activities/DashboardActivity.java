@@ -476,37 +476,71 @@ public class DashboardActivity extends AppCompatActivity
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
     void createPieChartFromLiveData(int cashCustomerCount,int creditCustomerCount,int tcCustomerCount) {
-        PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
-        ArrayList<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(cashCustomerCount, 0));
-        entries.add(new Entry(creditCustomerCount, 1));
-        entries.add(new Entry(tcCustomerCount, 2));
-        PieDataSet dataset = new PieDataSet(entries, "");
-        dataset.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return String.valueOf((int) value);
-            }
-        });
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add(getString(R.string.cash));
-        labels.add(getString(R.string.credit));
-        labels.add("TC");
-        PieData data = new PieData(labels, dataset);
-        List<Integer> colorCodes = new ArrayList<Integer>();
-        colorCodes.add(Color.parseColor("#c15525"));
-        colorCodes.add(Color.parseColor("#ffc502"));
-        colorCodes.add(Color.parseColor("#ff9201"));
-        dataset.setColors(colorCodes); //
-        //  pieChart.setDescription("Description");
-        pieChart.setDrawSliceText(false);
-        pieChart.setData(data);
-        pieChart.setHoleRadius(50f);
-        pieChart.setTransparentCircleRadius(50f);
-        pieChart.setDescription("");
-        pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
-        // pieChart.setUsePercentValues(true);
-        pieChart.animateY(3000);
+        if(cashCustomerCount==0&&creditCustomerCount==0&&tcCustomerCount==0){
+            PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
+            ArrayList<Entry> entries = new ArrayList<>();
+            entries.add(new Entry(1, 0));
+            PieDataSet dataset = new PieDataSet(entries, "");
+            dataset.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                    return String.valueOf((int) value);
+                }
+            });
+            ArrayList<String> labels = new ArrayList<String>();
+            labels.add(getString(R.string.no_visit));
+           // labels.add(getString(R.string.credit));
+          //  labels.add(getString(R.string.tc_lbl));
+            PieData data = new PieData(labels, dataset);
+            List<Integer> colorCodes = new ArrayList<Integer>();
+            colorCodes.add(Color.parseColor("#06A899"));
+           // colorCodes.add(Color.parseColor("#ffc502"));
+          //  colorCodes.add(Color.parseColor("#ff9201"));
+            dataset.setColors(colorCodes); //
+            //  pieChart.setDescription("Description");
+            pieChart.setDrawSliceText(false);
+            pieChart.setData(data);
+            pieChart.setHoleRadius(50f);
+            pieChart.setTransparentCircleRadius(50f);
+            pieChart.setDescription("");
+            pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+            // pieChart.setUsePercentValues(true);
+            pieChart.animateY(1000);
+        }
+        else{
+            PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
+            ArrayList<Entry> entries = new ArrayList<>();
+            entries.add(new Entry(cashCustomerCount, 0));
+            entries.add(new Entry(creditCustomerCount, 1));
+            entries.add(new Entry(tcCustomerCount, 2));
+            PieDataSet dataset = new PieDataSet(entries, "");
+            dataset.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                    return String.valueOf((int) value);
+                }
+            });
+            ArrayList<String> labels = new ArrayList<String>();
+            labels.add(getString(R.string.cash));
+            labels.add(getString(R.string.credit));
+            labels.add(getString(R.string.tc_lbl));
+            PieData data = new PieData(labels, dataset);
+            List<Integer> colorCodes = new ArrayList<Integer>();
+            colorCodes.add(Color.parseColor("#c15525"));
+            colorCodes.add(Color.parseColor("#ffc502"));
+            colorCodes.add(Color.parseColor("#ff9201"));
+            dataset.setColors(colorCodes); //
+            //  pieChart.setDescription("Description");
+            pieChart.setDrawSliceText(false);
+            pieChart.setData(data);
+            pieChart.setHoleRadius(50f);
+            pieChart.setTransparentCircleRadius(50f);
+            pieChart.setDescription("");
+            pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+            // pieChart.setUsePercentValues(true);
+            pieChart.animateY(3000);
+        }
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

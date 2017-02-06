@@ -58,6 +58,15 @@ public class ConfigStore {
     public static final String ReturnsFunction = "RETURNS";
     public static final String UnloadFunction = "ORDERREQ";
     public static final String LoadVarianceFunction = "RETURNS";
+    public static final String VisitListFunction = "VISITACTIVITY";
+    public static final String CollectionFunction = "COLLECTION";
+    public static final String AddCustomerFunction = "ADDCUSTOMER";
+
+    //This is never used but only for offline posting
+    public static final String OdometerFunction = "ODOMETER";
+    public static final String LoadConfirmationItems = "LCONITEM";
+    public static final String GoodReturn = "GOODRETURN";
+    public static final String BadReturn = "BADRETURN";
 
     //Document Types
     public static final String DocumentType = "ZVDL";
@@ -74,6 +83,8 @@ public class ConfigStore {
     public static final String FreshUnload = "ZVLO";
     public static final String LoadVarianceDebit = "ZDRB";
     public static final String LoadVarianceCredit = "ZDCR";
+    public static final String LoadRequestCurrentDocumentType = "ZREL";
+    public static final String LoadRequestFutureDocumentType = "ZVDL";
 
     //DocumentTypes for PR Number Generation
     public static final String LoadRequest_PR_Type = "LOAD";
@@ -110,6 +121,8 @@ public class ConfigStore {
     public static final String LoadVarianceDebit_PR = "13";
     public static final String LoadVarianceCredit_PR_Type = "LOADVARIANCECREDIT";
     public static final String LoadVarianceCredit_PR = "14";
+    public static final String Collection_PR_Type = "COLLECTION";
+    public static final String Collection_PR = "15";
 
     //Connectivity Messages
     public static final String WIFI_CONNECTED = "Wifi Enabled";

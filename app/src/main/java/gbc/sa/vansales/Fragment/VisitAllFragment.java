@@ -57,6 +57,7 @@ import gbc.sa.vansales.utils.Callback;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.OTPGenerator;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
@@ -198,16 +199,111 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String, String> filter = new HashMap<String, String>();
-                //filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
-                filter.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
-                filter.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put(db.KEY_VISIT_SERVICED_REASON, arrayList.get(position).getReasonCode());
-                map.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
-                map.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
-                db.updateData(db.VISIT_LIST, map, filter);
+                if(customer.isNewCustomer()){
+                    HashMap<String, String> filter = new HashMap<String, String>();
+                    //filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    filter.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
+                    filter.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_VISIT_SERVICED_REASON, arrayList.get(position).getReasonCode());
+                    map.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+                    map.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
+                    db.updateData(db.VISIT_LIST, map, filter);
+
+                    //Visit List Posting
+                    HashMap<String,String>newMap = new HashMap<String, String>();
+                    newMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_START_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_VISITLISTID,Helpers.generateVisitList(db));
+                    newMap.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
+                    int activityID = 0;
+
+                    //Check if any Activity for Customer
+                    String activityId = "";
+                    HashMap<String,String>activityMap = new HashMap<String, String>();
+                    activityMap.put(db.KEY_ACTIVITY_ID,"");
+                    HashMap<String,String>filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    if(db.checkData(db.VISIT_LIST_POST,filterMap)){
+                        Cursor c = db.getData(db.VISIT_LIST_POST,activityMap,filterMap);
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            if(c.getCount()==1){
+                                activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                            }
+                            else{
+                                do{
+                                    activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                                }
+                                while (c.moveToNext());
+                            }
+                        }
+                    }
+                    if(!activityId.equals("")){
+                        activityID = Integer.parseInt(activityId);
+                    }
+                    newMap.put(db.KEY_ACTIVITY_ID,String.valueOf(++activityID));
+                    newMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+
+                    db.addData(db.VISIT_LIST_POST,newMap);
+                }
+                else{
+                    HashMap<String, String> filter = new HashMap<String, String>();
+                    //filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    filter.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
+                    filter.put(db.KEY_IS_VISITED, App.IS_NOT_COMPLETE);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_VISIT_SERVICED_REASON, arrayList.get(position).getReasonCode());
+                    map.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+                    map.put(db.KEY_CUSTOMER_NO, customer.getCustomerID());
+                    db.updateData(db.VISIT_LIST, map, filter);
+
+                    //Visit List Posting
+                    HashMap<String,String>newMap = new HashMap<String, String>();
+                    newMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_START_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_VISITLISTID,customer.getVisitListID());
+                    newMap.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
+                    int activityID = 0;
+
+                    //Check if any Activity for Customer
+                    String activityId = "";
+                    HashMap<String,String>activityMap = new HashMap<String, String>();
+                    activityMap.put(db.KEY_ACTIVITY_ID,"");
+                    HashMap<String,String>filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    if(db.checkData(db.VISIT_LIST_POST,filterMap)){
+                        Cursor c = db.getData(db.VISIT_LIST_POST,activityMap,filterMap);
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            if(c.getCount()==1){
+                                activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                            }
+                            else{
+                                do{
+                                    activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                                }
+                                while (c.moveToNext());
+                            }
+                        }
+                    }
+                    if(!activityId.equals("")){
+                        activityID = Integer.parseInt(activityId);
+                    }
+                    newMap.put(db.KEY_ACTIVITY_ID,String.valueOf(++activityID));
+                    newMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+
+                    db.addData(db.VISIT_LIST_POST,newMap);
+                }
+
                 /*if (db.checkData(db.VISIT_LIST, filter)) {
                 } else {
                     db.addData(db.VISIT_LIST, map);

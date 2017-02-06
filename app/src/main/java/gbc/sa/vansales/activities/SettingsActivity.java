@@ -452,7 +452,7 @@ public class SettingsActivity extends AppCompatActivity {
                             else{
                                 OfflinePost object = new OfflinePost();
                                 object.setCollectionName(App.POST_COLLECTION);
-                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction,"",ConfigStore.DocumentType,Settings.getString(App.DRIVER),"",purchaseNumber));
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction,"",ConfigStore.DocumentType,Settings.getString(App.DRIVER),"",purchaseNumber,""));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
                                 purchaseNumber = tempPurchaseNumber;
@@ -493,7 +493,7 @@ public class SettingsActivity extends AppCompatActivity {
                             if(pendingLoadRequestCursor.getPosition()==pendingLoadRequestCursor.getCount()-1){
                                 OfflinePost object = new OfflinePost();
                                 object.setCollectionName(App.POST_COLLECTION);
-                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, Settings.getString(App.DRIVER), "", purchaseNumber));
+                                object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, Settings.getString(App.DRIVER), "", purchaseNumber,""));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
                                 deepEntity = new JSONArray();
@@ -546,7 +546,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 if(customerNumber.equals(tempCustomerNumber)){
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
@@ -555,7 +555,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 else{
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
@@ -601,7 +601,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 if(customerNumber.equals(tempCustomerNumber)){
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
@@ -610,7 +610,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 else{
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;

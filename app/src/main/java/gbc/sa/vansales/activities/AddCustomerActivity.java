@@ -129,6 +129,10 @@ public class AddCustomerActivity extends AppCompatActivity {
                 headerParams.put(db.KEY_POST_CODE, et_customer_pobox.getText().toString());
                 headerParams.put(db.KEY_PHONE_NO, et_customer_telephone.getText().toString());
                 headerParams.put(db.KEY_COMPANY_CODE, "GBC");
+                headerParams.put(db.KEY_LATITUDE,"0.000000");
+                headerParams.put(db.KEY_LONGITUDE,"0.000000");
+                headerParams.put(db.KEY_TERMS , App.CASH_CUSTOMER_CODE);
+                headerParams.put(db.KEY_TERMS_DESCRIPTION ,App.CASH_CUSTOMER);
 
                 db.addData(db.CUSTOMER_HEADER, headerParams);
                 /*VisitAllFragment.dataAdapter.notifyDataSetChanged();

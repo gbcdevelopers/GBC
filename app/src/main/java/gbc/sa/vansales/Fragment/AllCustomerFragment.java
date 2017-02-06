@@ -35,6 +35,7 @@ import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.Callback;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/2/2016.
@@ -127,6 +128,48 @@ public class AllCustomerFragment extends Fragment {
                 else{
                     db.addData(db.VISIT_LIST,map);
                 }*/
+
+                //Visit List Posting
+                HashMap<String,String>newMap = new HashMap<String, String>();
+                newMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                newMap.put(db.KEY_START_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                newMap.put(db.KEY_VISITLISTID,Helpers.generateVisitList(db));
+                newMap.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
+                int activityID = 0;
+
+                //Check if any Activity for Customer
+                String activityId = "";
+                HashMap<String,String>activityMap = new HashMap<String, String>();
+                activityMap.put(db.KEY_ACTIVITY_ID,"");
+                HashMap<String,String>filterMap = new HashMap<String, String>();
+                filterMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                if(db.checkData(db.VISIT_LIST_POST,filterMap)){
+                    Cursor c = db.getData(db.VISIT_LIST_POST,activityMap,filterMap);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
+                        if(c.getCount()==1){
+                            activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                        }
+                        else{
+                            do{
+                                activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                            }
+                            while (c.moveToNext());
+                        }
+                    }
+                }
+                if(!activityId.equals("")){
+                    activityID = Integer.parseInt(activityId);
+                }
+                newMap.put(db.KEY_ACTIVITY_ID,String.valueOf(++activityID));
+                newMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+
+                db.addData(db.VISIT_LIST_POST,newMap);
+
+
                 if (customerFlagExist(customer)) {
                     loadCustomerFlag(customer);
                 } else {

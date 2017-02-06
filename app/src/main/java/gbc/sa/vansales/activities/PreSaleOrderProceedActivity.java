@@ -573,6 +573,9 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                         .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if(Helpers.isNetworkAvailable(PreSaleOrderProceedActivity.this)){
+                                    Helpers.createBackgroundJob(getApplicationContext());
+                                }
                                 dialog.dismiss();
                                 Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -62,6 +62,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String LOAD_VARIANCE_ITEMS_POST = "LOAD_VARIANCE_ITEMS_POST";
     public static final String FOC_RULES = "FOC_RULES";
     public static final String FOC_INVOICE = "FOC_SALE";
+    public static final String LOAD_CONFIRMATION_HEADER = "LOAD_CONFIRMATION_HEADER";
+    public static final String VISIT_LIST_POST = "VISIT_LIST_POST";
+    public static final String VISIT_LIST_ID_GENERATE = "VISIT_LIST_ID_GENERATE";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -343,6 +346,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_INVOICE_COMPLETE = "isInvoiceComplete";
     public static final String KEY_SAP_INVOICE_NO = "sapInvoiceNo";
     public static final String KEY_INVOICE_DAYS = "invoiceDays";
+    public static final String KEY_CUSTOMER_TYPE = "customerType";
 
     //Day Activity
     public static final String KEY_ACTIVITY_TYPE = "activityType";
@@ -359,6 +363,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_FOC_ASSIGNING_QUANTITY = "assigningQuantity";
     public static final String KEY_FOC_DATE_FROM = "dateFrom";
     public static final String KEY_FOC_DATE_TO = "dateTo";
+
+    //Visit List
+    public static final String KEY_START_TIMESTAMP = "startTimestamp";
+    public static final String KEY_END_TIMESTAMP = "endTimestamp";
+    public static final String KEY_ACTIVITY_ID = "activityId";
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -907,6 +916,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TIME_STAMP + " TEXT,"
                 + KEY_COLLECTION_TYPE + " TEXT,"
+                + KEY_CUSTOMER_TYPE + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_INVOICE_NO + " TEXT,"
                 + KEY_INVOICE_AMOUNT + " TEXT,"
@@ -990,6 +1000,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_LOAD_CONFIRMATION_HEADER = "CREATE TABLE " + LOAD_CONFIRMATION_HEADER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_FUNCTION + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
+        String TABLE_VISIT_LIST_POST = "CREATE TABLE " + VISIT_LIST_POST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_START_TIMESTAMP + " TEXT,"
+                + KEY_END_TIMESTAMP + " TEXT,"
+                + KEY_VISITLISTID + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_ACTIVITY_ID + " TEXT,"
+                + KEY_VISIT_SERVICED_REASON + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
+        String TABLE_VISIT_LIST_ID_GENERATE = "CREATE TABLE " + VISIT_LIST_ID_GENERATE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_DOCUMENT_TYPE + " TEXT,"
+                + KEY_VISITLISTID + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -1031,6 +1069,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_LOAD_VARIANCE_POST);
         db.execSQL(TABLE_FOC_RULES);
         db.execSQL(TABLE_CAPTURE_FOC_SALES);
+        db.execSQL(TABLE_LOAD_CONFIRMATION_HEADER);
+        db.execSQL(TABLE_VISIT_LIST_POST);
+        db.execSQL(TABLE_VISIT_LIST_ID_GENERATE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1073,6 +1114,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_VARIANCE_ITEMS_POST);
         db.execSQL("DROP TABLE IF EXISTS " + FOC_RULES);
         db.execSQL("DROP TABLE IF EXISTS " + FOC_INVOICE);
+        db.execSQL("DROP TABLE IF EXISTS " + LOAD_CONFIRMATION_HEADER);
+        db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_ID_GENERATE);
         onCreate(db);
     }
     //Storing Secured Credentials

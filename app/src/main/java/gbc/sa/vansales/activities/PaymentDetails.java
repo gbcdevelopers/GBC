@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -347,6 +348,64 @@ public class PaymentDetails extends AppCompatActivity {
                         Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
                         intent1.putExtra("headerObj", object);
                         startActivity(intent1);
+                    }
+                    else if(from.equals("Final Invoice")){
+                        HashMap<String,String>invoiceMap = new HashMap<>();
+
+                        invoiceMap.put(db.KEY_COLLECTION_TYPE,App.COLLECTION_INVOICE);
+                        invoiceMap.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                        invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        invoiceMap.put(db.KEY_INVOICE_NO,"");
+                        invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_total_amount.getText().toString());
+                        invoiceMap.put(db.KEY_INVOICE_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                        invoiceMap.put(db.KEY_AMOUNT_CLEARED,tv_total_amount.getText().toString());
+                        invoiceMap.put(db.KEY_CHEQUE_AMOUNT,String.valueOf(getcheckamt()));
+                        invoiceMap.put(db.KEY_CHEQUE_NUMBER,edt_check_no.getText().toString());
+                        invoiceMap.put(db.KEY_CHEQUE_DATE,tv_date.getText().toString());
+                        invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                        invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
+                        invoiceMap.put(db.KEY_CASH_AMOUNT,String.valueOf(getcashamt()));
+                        invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_COMPLETE);
+                        db.addData(db.COLLECTION, invoiceMap);
+
+                        final Dialog dialog = new Dialog(PaymentDetails.this);
+                        dialog.setContentView(R.layout.dialog_doprint);
+                        dialog.setCancelable(false);
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                        LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                        dialog.show();
+                        btn_print.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                intent.putExtra("headerObj", object);
+                                intent.putExtra("msg", "visit");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        btn_notprint.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                                Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                intent.putExtra("headerObj", object);
+                                intent.putExtra("msg", "visit");
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+//                               dialog.dismiss();
+//                                Intent intent = new Intent();
+//                                intent.putExtra("pos", pos);
+//                                intent.putExtra("amt", String.valueOf(total_amt));
+//                                setResult(RESULT_OK, intent);
+//                                finish();
+                            }
+                        });
+
                     }
                     else {
                         final Dialog dialog = new Dialog(PaymentDetails.this);

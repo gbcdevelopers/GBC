@@ -72,10 +72,10 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
-                        /*PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.print();*/
-                        Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
-                        startActivity(itemlist);
+                        PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.print();
+                       /* Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
+                        startActivity(itemlist);*/
                         break;
                     case 2:
                         /*new Location(InformationsActivity.this, new Callback() {

@@ -678,7 +678,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     }
                     else{
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
-                        alertDialogBuilder.setTitle("Message")
+                        alertDialogBuilder.setTitle(getString(R.string.message))
                                 .setMessage(getString(R.string.request_created))
                                 //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                                 .setCancelable(false)
@@ -689,7 +689,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             updateStockinVan(true);
                                         }
                                         dialog.dismiss();
-                                        if(object.getPaymentMethod().equalsIgnoreCase("credit")){
+                                        if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
                                             Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
                                             intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             intent1.putExtra("headerObj", object);
@@ -697,7 +697,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             startActivity(intent1);
                                             finish();
                                         }
-                                        else{
+                                        else if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
                                             //Go to payment details screen
                                             Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
                                             intent.putExtra("msg", str_promotion_message);
@@ -705,6 +705,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             intent.putExtra("headerObj", object);
                                             intent.putExtra("amountdue", tv_net_invoice.getText().toString());
                                             startActivity(intent);
+                                            finish();
+                                        }
+                                        else if(object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)){
+                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            intent1.putExtra("headerObj", object);
+                                            intent1.putExtra("msg", "all");
+                                            startActivity(intent1);
                                             finish();
                                         }
 
@@ -937,9 +945,10 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 }
 
                 //Creating an invoice for customer
-                if(object.getPaymentMethod().equals(App.CREDIT_CUSTOMER)){
+                if(object.getPaymentMethod().equals(App.CREDIT_CUSTOMER)||object.getPaymentMethod().equals(App.TC_CUSTOMER)){
                     HashMap<String,String>invoiceMap = new HashMap<>();
                     invoiceMap.put(db.KEY_COLLECTION_TYPE,App.COLLECTION_INVOICE);
+                    invoiceMap.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
                     invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                     invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
                     invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
@@ -976,11 +985,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 updateStockinVan(false);
+                                if(Helpers.isNetworkAvailable(PromotioninfoActivity.this)){
+                                    Helpers.createBackgroundJob(getApplicationContext());
+                                }
                                 dialog.dismiss();
                                /* Intent intent = new Intent(PromotioninfoActivity.this,SalesInvoiceOptionActivity.class);
                                 intent.putExtra("from", "customerdetail");
                                 intent.putExtra("headerObj", object);*/
-                                if(object.getPaymentMethod().equalsIgnoreCase("credit")){
+                                if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
                                     Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
                                     intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     intent1.putExtra("headerObj", object);
@@ -988,9 +1000,23 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     startActivity(intent1);
                                     finish();
                                 }
-                                else{
-                                    //go to payment details screen
-
+                                else if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                                    //Go to payment details screen
+                                    Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                    intent.putExtra("msg", str_promotion_message);
+                                    intent.putExtra("from",from);
+                                    intent.putExtra("headerObj", object);
+                                    intent.putExtra("amountdue", tv_net_invoice.getText().toString());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                else if(object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)){
+                                    Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent1.putExtra("headerObj", object);
+                                    intent1.putExtra("msg", "all");
+                                    startActivity(intent1);
+                                    finish();
                                 }
 
                             }
