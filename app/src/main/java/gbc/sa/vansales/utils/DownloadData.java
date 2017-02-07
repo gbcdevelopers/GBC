@@ -416,6 +416,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_CHEQUE_BANK_CODE,"0000");
                         params.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                         params.put(db.KEY_CASH_AMOUNT,"0");
+                        params.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                         params.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
                         db.addData(db.COLLECTION,params);
                     }

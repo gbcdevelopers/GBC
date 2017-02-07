@@ -55,11 +55,24 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Helpers {
     private static int kJobId = 0;
+    private static final String arabic = "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9";
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
     public static String formatDate(Date date, String format) {
         if (date == null) return null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         return dateFormat.format(date);
+    }
+    public static String convertArabicText(String arabicText){
+        char[] chars = new char[arabicText.length()];
+        for(int i=0;i<arabicText.length();i++) {
+            char ch = arabicText.charAt(i);
+            if (ch >= 0x0660 && ch <= 0x0669)
+                ch -= 0x0660 - '0';
+            else if (ch >= 0x06f0 && ch <= 0x06F9)
+                ch -= 0x06f0 - '0';
+            chars[i] = ch;
+        }
+        return new String(chars);
     }
     public static String formatTime(Date date, String format) {
         if (date == null) return null;
@@ -68,7 +81,7 @@ public class Helpers {
     }
     public static String getCurrentTimeStamp() {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return timeStamp;
+        return Settings.getString(App.LANGUAGE).equals("ar")? convertArabicText(timeStamp):timeStamp;
     }
     public static String[] parseTimeStamp(String timeStamp) {
         //This method is used for parsing the timestamp and format to send to SAP
@@ -451,6 +464,15 @@ public class Helpers {
         map.put("StartDate", tokens[0].toString());
         map.put("StartTime", tokens[1].toString());
         map.put("CreatedBy", createdBy);
+        return map;
+    }
+
+    public static HashMap<String, String> buildCollectionHeader(String function, String customerId, String orderValue){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function", function);
+        map.put("CustomerId",customerId);
+        map.put("RefCust",Settings.getString(App.DRIVER));
+        map.put("OrderValue",orderValue);
         return map;
     }
 

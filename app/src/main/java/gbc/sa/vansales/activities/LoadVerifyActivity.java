@@ -497,7 +497,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             JSONArray deepEntity = new JSONArray();
             JSONObject obj = new JSONObject();
             deepEntity.put(obj);
-            orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+            orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

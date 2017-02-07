@@ -933,6 +933,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CHEQUE_BANK_NAME + " TEXT,"
                 + KEY_SAP_INVOICE_NO + " TEXT,"
                 + KEY_INVOICE_DAYS + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT,"
                 + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
 
         String TABLE_BANKS = "CREATE TABLE " + BANKS + "("

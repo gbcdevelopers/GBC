@@ -138,6 +138,7 @@ public class BeginDayFragment extends Fragment {
                 String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
                 HashMap<String, String> map = new HashMap<>();
                 String timeStamp = Helpers.getCurrentTimeStamp();
+                Log.e("TimeStamp","" + timeStamp);
                 map.put(db.KEY_TIME_STAMP, timeStamp);
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                 map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);

@@ -223,4 +223,5 @@ public class CollectionsActivity extends AppCompatActivity {
         }
         while (c.moveToNext());
     }
+
 }

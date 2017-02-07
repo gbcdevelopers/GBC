@@ -326,7 +326,16 @@ public class CustomerDetailActivity extends AppCompatActivity {
     private boolean shouldShowDialog() {
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        if (db.checkData(db.ORDER_REQUEST, map) || db.checkData(db.CAPTURE_SALES_INVOICE, map) || db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)) {
+
+        HashMap<String, String> filter = new HashMap<>();
+        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+        filter.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+
+        if (db.checkData(db.ORDER_REQUEST, map) ||
+            db.checkData(db.CAPTURE_SALES_INVOICE, map) ||
+            db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map) ||
+            db.checkData(db.COLLECTION, filter) ||
+            db.checkData(db.RETURNS,filter)) {
             return false;
         } else {
             return true;

@@ -82,7 +82,7 @@ public class BeginTripActivity extends AppCompatActivity  {
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("GBC SFA");
+        tv_top_header.setText(getString(R.string.gbc));
         iv_refresh.setVisibility(View.INVISIBLE);
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override

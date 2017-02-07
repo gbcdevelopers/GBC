@@ -46,6 +46,7 @@ public class App extends Application {
     public static final String DATE_PICKER_FORMAT = "dd-MM-yyyy";
     public static final String DATE_FORMAT_WO_SPACE = "yyyyMMdd";
     public static final String TIME_FORMAT = "HH:mm:ss";
+    public static final String PRINT_DATE_FORMAT = "dd/MM/yy";
 
     public static final String CASE_UOM = "CAR";
     public static final String CASE_UOM_NEW = "KAR";
@@ -145,6 +146,7 @@ public class App extends Application {
     //Printing
     public static final String REQUEST = "REQUEST";
     public static final String LOAD_SUMMARY_REQUEST = "LoadSummaryRequest";
+    public static final String LOAD_REQUEST = "LoadRequest";
 
 
     @Override

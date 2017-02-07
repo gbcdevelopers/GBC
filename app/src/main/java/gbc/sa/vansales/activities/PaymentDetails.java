@@ -344,6 +344,7 @@ public class PaymentDetails extends AppCompatActivity {
                         else{
                             updateMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_PARTIAL);
                         }
+                        updateMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                         db.updateData(db.COLLECTION, updateMap, filter);
                         Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
                         intent1.putExtra("headerObj", object);
@@ -366,6 +367,8 @@ public class PaymentDetails extends AppCompatActivity {
                         invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                         invoiceMap.put(db.KEY_CASH_AMOUNT,String.valueOf(getcashamt()));
                         invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_COMPLETE);
+                        invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                         db.addData(db.COLLECTION, invoiceMap);
 
                         final Dialog dialog = new Dialog(PaymentDetails.this);

@@ -262,7 +262,7 @@ public class UnloadActivity extends AppCompatActivity {
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    clearVanStock();
+                                   // clearVanStock(); This is for testing. Uncomment it later
                                     dialog.dismiss();
                                     Intent intent = new Intent(UnloadActivity.this,ManageInventory.class);
                                     startActivity(intent);
@@ -413,7 +413,7 @@ public class UnloadActivity extends AppCompatActivity {
             try{
                 fetchTruckTheftData();
                 HashMap<String, String> map = new HashMap<>();
-                map.put("Function", ConfigStore.UnloadFunction);
+                map.put("Function", ConfigStore.ReturnsFunction);
                 map.put("OrderId", "");
                 map.put("DocumentType",getDocumentType(param1));
                 // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));

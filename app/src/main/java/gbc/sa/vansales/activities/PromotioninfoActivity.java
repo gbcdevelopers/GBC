@@ -961,6 +961,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                     invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
                     invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                    invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                     db.addData(db.COLLECTION, invoiceMap);
                     Log.e("Going on","Foo");
                     HashMap<String,String>logMap = new HashMap<>();

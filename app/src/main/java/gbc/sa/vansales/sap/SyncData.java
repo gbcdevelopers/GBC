@@ -129,6 +129,12 @@ public class SyncData extends IntentService {
             }
             generateBatch(ConfigStore.VisitListFunction);
         }
+        if(getSyncCount(ConfigStore.CollectionFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.CollectionFunction);
+        }
         if(!isEmpty){
             new syncData("");
         }
@@ -1327,6 +1333,61 @@ public class SyncData extends IntentService {
                 }
                 break;
             }
+            case ConfigStore.CollectionFunction:{
+                try{
+                    JSONArray deepEntity = new JSONArray();
+                    ArrayList<String>tempCustomers = new ArrayList<>();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_CUSTOMER_NO,"");
+                    // itemMap.put(db.KEY_DATE,"");
+                    itemMap.put(db.KEY_AMOUNT_CLEARED,"");
+                    itemMap.put(db.KEY_INVOICE_NO,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    Cursor pCCursor = db.getData(db.COLLECTION,itemMap,filter);
+                    if(pCCursor.getCount()>0){
+                        pCCursor.moveToFirst();
+                        do{
+                            if(!tempCustomers.contains(pCCursor.getString(pCCursor.getColumnIndex(db.KEY_CUSTOMER_NO)))){
+                                tempCustomers.add(pCCursor.getString(pCCursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            }
+                        }
+                        while (pCCursor.moveToNext());
+                    }
+                    for(int i=0;i<tempCustomers.size();i++){
+                        double amountcleared = 0;
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_AMOUNT_CLEARED,"");
+                        map.put(db.KEY_INVOICE_NO,"");
+                        HashMap<String, String> filt = new HashMap<>();
+                        filt.put(db.KEY_CUSTOMER_NO,tempCustomers.get(i).toString());
+                        filt.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        Cursor cursor = db.getData(db.COLLECTION,itemMap,filter);
+
+                        JSONArray deep = new JSONArray();
+                        if(cursor.getCount()>0){
+                            cursor.moveToFirst();
+
+                            do{
+                                JSONObject object = new JSONObject();
+                                amountcleared += Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                object.put("OrderId",cursor.getString(cursor.getColumnIndex(db.KEY_INVOICE_NO)));
+                                deep.put(object);
+                            }
+                            while (cursor.moveToNext());
+                        }
+                        OfflinePost offlinePost = new OfflinePost();
+                        offlinePost.setCollectionName(App.POST_COLLECTION);
+                        offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.CollectionFunction, tempCustomers.get(i).toString(), String.valueOf(amountcleared)));
+                        offlinePost.setDeepEntity(deep);
+                        arrayList.add(offlinePost);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
         }
 
     }
@@ -1549,6 +1610,33 @@ public class SyncData extends IntentService {
                         }
                         case ConfigStore.CollectionFunction: {
 
+                            HashMap<String,String>ivMap = new HashMap<>();
+                            ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                            ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                            HashMap<String, String> map = new HashMap<String, String>();
+                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                           // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                            HashMap<String, String> filter = new HashMap<>();
+                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                            //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                            filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                            Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
+                            double newinvAmount = 0;
+                            if(prevAmnt.getCount()>0){
+                                prevAmnt.moveToFirst();
+                               newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                               Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                            }
+                            if(!(newinvAmount==0)){
+                                map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                            }
+                            db.updateData(db.COLLECTION,map,filter);
                             break;
                         }
                         case ConfigStore.AddCustomerFunction: {
@@ -1655,7 +1743,8 @@ public class SyncData extends IntentService {
                 break;
             }
             case ConfigStore.CollectionFunction:{
-
+                Cursor collectionRequest = db.getData(db.COLLECTION,map,filter);
+                syncCount = collectionRequest.getCount();
                 break;
             }
             case ConfigStore.AddCustomerFunction:{
@@ -1710,6 +1799,7 @@ public class SyncData extends IntentService {
         Cursor badReturnRequest = db.getData(db.RETURNS,map,brFilter);
         Cursor visitListCursor = db.getData(db.VISIT_LIST_POST,map,filter);
         Cursor loadVarianceCursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,map,filter);
+        Cursor collectionCursor = db.getData(db.COLLECTION,map,filter);
 
         if(beginDayRequest.getCount()>0){
             syncCount+= beginDayRequest.getCount();
@@ -1746,6 +1836,9 @@ public class SyncData extends IntentService {
         }
         if(loadVarianceCursor.getCount()>0){
             syncCount += loadVarianceCursor.getCount();
+        }
+        if(collectionCursor.getCount()>0){
+            syncCount += collectionCursor.getCount();
         }
         Log.e("Sync count","" + syncCount);
         return syncCount;
