@@ -43,6 +43,7 @@ import gbc.sa.vansales.adapters.StockTakeBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Product;
@@ -50,6 +51,7 @@ import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.ShopStatus;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 19-Nov-16.
@@ -266,6 +268,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         //new loadSummary().execute();
     }
+
     private void loadData() {
         adapter.clear();
         for (int i = 0; i < 2; i++) {

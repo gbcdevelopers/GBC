@@ -78,7 +78,7 @@ public class AllCustomerFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Const.customerPosition=position;
+                Const.customerPosition = position;
                 Customer customer = Const.allCustomerdataArrayList.get(position);
                 //Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
                /* Intent intent = new Intent(getActivity(), SelectCustomerStatus.class);
@@ -202,7 +202,13 @@ public class AllCustomerFragment extends Fragment {
             CustomerStatus status = new CustomerStatus();
             if(reason.getReasonType().equals(App.VisitReasons)){
                 status.setReasonCode(reason.getReasonID());
-                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                if(Settings.getString(App.LANGUAGE).equals("en")){
+                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                }
+                else{
+                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
+                }
+
                 arrayList.add(status);
             }
         }

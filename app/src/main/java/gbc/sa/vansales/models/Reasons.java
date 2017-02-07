@@ -8,7 +8,14 @@ public class Reasons implements Parcelable {
     private String reasonID;
     private String reasonType;
     private String reasonDescription;
+    private String reasonDescriptionAr;
 
+    public String getReasonDescriptionAr() {
+        return reasonDescriptionAr;
+    }
+    public void setReasonDescriptionAr(String reasonDescriptionAr) {
+        this.reasonDescriptionAr = reasonDescriptionAr;
+    }
     public String getReasonDescription() {
         return reasonDescription;
     }
@@ -36,6 +43,7 @@ public class Reasons implements Parcelable {
         parcel.writeString(reasonID);
         parcel.writeString(reasonDescription);
         parcel.writeString(reasonType);
+        parcel.writeString(reasonDescriptionAr);
     }
 
     public static final Creator<Reasons> CREATOR = new Creator<Reasons>() {
@@ -46,7 +54,7 @@ public class Reasons implements Parcelable {
             reasons.reasonID = source.readString();
             reasons.reasonDescription = source.readString();
             reasons.reasonType = source.readString();
-
+            reasons.reasonDescriptionAr = source.readString();
             return reasons;
         }
         @Override

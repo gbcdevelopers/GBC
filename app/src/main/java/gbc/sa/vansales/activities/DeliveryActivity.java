@@ -356,7 +356,13 @@ public class DeliveryActivity extends AppCompatActivity {
             if (reason.getReasonType().equals(App.REASON_REJECT)) {
                 CustomerStatus status = new CustomerStatus();
                 status.setReasonCode(reason.getReasonID());
-                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                if(Settings.getString(App.LANGUAGE).equals("en")){
+                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                }
+                else{
+                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
+                }
+
                 statusList.add(status);
             }
         }

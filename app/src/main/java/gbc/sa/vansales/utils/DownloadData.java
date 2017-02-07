@@ -541,6 +541,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_REASON_TYPE,App.OrderReasons);
                         params.put(db.KEY_REASON_CODE,object.get("Reason").toString());
                         params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION_AR,object.get("DescriptionAr").toString());
                         db.addData(db.REASONS, params);
                     }
                     catch (Exception e){
@@ -559,6 +560,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_REASON_TYPE,App.REASON_REJECT);
                         params.put(db.KEY_REASON_CODE,object.get("Reason").toString());
                         params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION_AR,object.get("DescriptionAr").toString());
                         db.addData(db.REASONS, params);
                     }
                     catch (Exception e){
@@ -577,6 +579,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_REASON_TYPE,App.VisitReasons);
                         params.put(db.KEY_REASON_CODE,object.get("VisitActivity").toString());
                         params.put(db.KEY_REASON_DESCRIPTION, object.get("Description").toString());
+                        params.put(db.KEY_REASON_DESCRIPTION_AR, object.get("DescriptionAr").toString());
                         db.addData(db.REASONS, params);
                     }
                     catch (Exception e){

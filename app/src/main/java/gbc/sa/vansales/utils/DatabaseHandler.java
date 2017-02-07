@@ -313,6 +313,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_REASON_TYPE = "reasonType";
     public static final String KEY_REASON_CODE = "reasonCode";
     public static final String KEY_REASON_DESCRIPTION = "reasonDescription";
+    public static final String KEY_REASON_DESCRIPTION_AR = "reasonDescriptionAr";
 
     //Banks
     public static final String KEY_BANK_CODE = "bankCode";
@@ -851,7 +852,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_REASON_TYPE + " TEXT,"
                 + KEY_REASON_CODE + " TEXT,"
-                + KEY_REASON_DESCRIPTION + " TEXT " + ")";
+                + KEY_REASON_DESCRIPTION + " TEXT,"
+                + KEY_REASON_DESCRIPTION_AR + " TEXT " + ")";
 
         String TABLE_PROMOTIONS = "CREATE TABLE " + PROMOTIONS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"

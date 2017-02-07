@@ -39,6 +39,7 @@ public class OrderReasons {
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_REASON_TYPE, "");
         map.put(db.KEY_REASON_DESCRIPTION, "");
+        map.put(db.KEY_REASON_DESCRIPTION_AR,"");
         map.put(db.KEY_REASON_CODE, "");
         HashMap<String, String> filter = new HashMap<>();
         Cursor cursor = db.getData(db.REASONS, map, filter);
@@ -49,6 +50,7 @@ public class OrderReasons {
                 reasons.setReasonID(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
                 reasons.setReasonType(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_TYPE)));
                 reasons.setReasonDescription(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
+                reasons.setReasonDescriptionAr(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION_AR)));
                 data.add(reasons);
             }
             while (cursor.moveToNext());
