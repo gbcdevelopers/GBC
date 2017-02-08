@@ -101,6 +101,8 @@ public class VanStockActivity extends AppCompatActivity {
             map.put(db.KEY_ITEM_NO,"");
             map.put(db.KEY_MATERIAL_NO,"");
             map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_ACTUAL_QTY_CASE,"");
+            map.put(db.KEY_ACTUAL_QTY_UNIT,"");
             map.put(db.KEY_RESERVED_QTY_CASE,"");
             map.put(db.KEY_RESERVED_QTY_UNIT,"");
             map.put(db.KEY_REMAINING_QTY_CASE,"");
@@ -130,8 +132,8 @@ public class VanStockActivity extends AppCompatActivity {
             VanStock vanStock = new VanStock();
             vanStock.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             vanStock.setItem_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-            vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-            vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+            vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
+            vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
             if(vanStock.getItem_case().equals("0.0")&&vanStock.getItem_units().equals("0.0")){
 
             }

@@ -569,6 +569,7 @@ public class PaymentDetails extends AppCompatActivity {
                 while (cursor.moveToNext());
             }
             orderID = IntegrationService.postData(PaymentDetails.this, App.POST_COLLECTION, map, deepEntity);
+            //orderID = IntegrationService.postDataBackup(PaymentDetails.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -483,6 +483,31 @@ public class Helpers {
         return map;
     }
 
+    public static HashMap<String,String> buildnewCustomerHeader(String customerid,String ownername,String ownername_ar,
+                                                                String tradename,String tradename_ar,String area,
+                                                                String street,String crno, String pobox,
+                                                                String email,String telephone,String fax,
+                                                                String salesArea,String distribution,String division){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Kunnr",customerid);
+        map.put("Name1",ownername);
+        map.put("Name2",ownername_ar);
+        map.put("Name3",tradename);
+        map.put("Name4",tradename_ar);
+        map.put("Stras",street);
+        map.put("Comments",crno);
+        map.put("Pfach",pobox);
+        map.put("EMail",email);
+        map.put("Telf1",telephone);
+        map.put("Telfx",fax);
+        map.put("Vkorg",salesArea);
+        map.put("Vtweg",distribution);
+        map.put("Spart",division);
+
+
+        return map;
+    }
+
     public static HashMap<String, String> buildLoadConfirmationHeader(String function,String orderID,String customerID) {
         HashMap<String, String> map = new HashMap<>();
         map.put("Function",function);

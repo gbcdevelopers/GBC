@@ -29,6 +29,7 @@ import gbc.sa.vansales.models.ColletionData;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class CollectionsActivity extends AppCompatActivity {
@@ -79,6 +80,9 @@ public class CollectionsActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                    Helpers.createBackgroundJob(getApplicationContext());
+                }
                 Intent intent = new Intent(CollectionsActivity.this, CustomerDetailActivity.class);
                 intent.putExtra("headerObj", object);
                 intent.putExtra("msg", "all");

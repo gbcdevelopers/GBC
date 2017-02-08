@@ -30,6 +30,7 @@ public class SyncData extends IntentService {
     ArrayList<OfflinePost> arrayList = new ArrayList<>();
     ArrayList<OfflinePost> beginDayList = new ArrayList<>();
     ArrayList<OfflinePost> odometerList = new ArrayList<>();
+    ArrayList<OfflinePost> customerList = new ArrayList<>();
     public static String TAG = "SyncData";
     DatabaseHandler db = new DatabaseHandler(this);
 
@@ -62,6 +63,13 @@ public class SyncData extends IntentService {
             }
             generateBatch(ConfigStore.OdometerFunction);
             new syncData("ODOMETER");
+        }
+        if(getSyncCount(ConfigStore.AddCustomerFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.AddCustomerFunction);
+            new syncData("ADDCUSTOMER");
         }
         if(getSyncCount(ConfigStore.LoadConfirmationFunction)>0){
             if(isEmpty){
@@ -196,6 +204,52 @@ public class SyncData extends IntentService {
                             , odometerCursor.getString(odometerCursor.getColumnIndex(db.KEY_ODOMETER_VALUE))));
                     object.setDeepEntity(deepEntity);
                     odometerList.add(object);
+                }
+                break;
+            }
+            case ConfigStore.AddCustomerFunction:{
+                JSONArray deepEntity = new JSONArray();
+                JSONObject jsonObject = new JSONObject();
+                deepEntity.put(jsonObject);
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP,"");
+                map.put(db.KEY_CUSTOMER_NO,"");
+                map.put(db.KEY_OWNER_NAME,"");
+                map.put(db.KEY_OWNER_NAME_AR,"");
+                map.put(db.KEY_TRADE_NAME,"");
+                map.put(db.KEY_TRADE_NAME_AR,"");
+                map.put(db.KEY_AREA,"");
+                map.put(db.KEY_STREET,"");
+                map.put(db.KEY_CR_NO,"");
+                map.put(db.KEY_PO_BOX,"");
+                map.put(db.KEY_EMAIL,"");
+                map.put(db.KEY_TELEPHONE,"");
+                map.put(db.KEY_FAX,"");
+                map.put(db.KEY_SALES_AREA,"");
+                map.put(db.KEY_DISTRIBUTION,"");
+                map.put(db.KEY_DIVISION,"");
+                map.put(db.KEY_IS_POSTED,"");
+                map.put(db.KEY_IS_PRINTED,"");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                Cursor c = db.getData(db.NEW_CUSTOMER_POST,map,filter);
+                if(c.getCount()>0){
+                    c.moveToFirst();
+                    do{
+                        OfflinePost object = new OfflinePost();
+                        object.setCollectionName(App.POST_CUSTOMER_SET);
+                        object.setMap(Helpers.buildnewCustomerHeader(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)), c.getString(c.getColumnIndex(db.KEY_OWNER_NAME)),
+                                c.getString(c.getColumnIndex(db.KEY_OWNER_NAME_AR)), c.getString(c.getColumnIndex(db.KEY_TRADE_NAME)), c.getString(c.getColumnIndex(db.KEY_TRADE_NAME_AR)),
+                                c.getString(c.getColumnIndex(db.KEY_AREA)), c.getString(c.getColumnIndex(db.KEY_STREET)), c.getString(c.getColumnIndex(db.KEY_CR_NO)),
+                                c.getString(c.getColumnIndex(db.KEY_PO_BOX)), c.getString(c.getColumnIndex(db.KEY_EMAIL)),
+                                c.getString(c.getColumnIndex(db.KEY_TELEPHONE)),c.getString(c.getColumnIndex(db.KEY_FAX)),
+                                c.getString(c.getColumnIndex(db.KEY_SALES_AREA)),c.getString(c.getColumnIndex(db.KEY_DISTRIBUTION)),
+                                c.getString(c.getColumnIndex(db.KEY_DIVISION))));
+                        object.setDeepEntity(deepEntity);
+                        customerList.add(object);
+                    }
+                    while (c.moveToNext());
+
                 }
                 break;
             }
@@ -1412,6 +1466,9 @@ public class SyncData extends IntentService {
             else if(this.value.equals("ODOMETER")){
                 this.data = IntegrationService.batchRequestOdometer(getApplicationContext(), App.POST_ODOMETER_SET, odometerList);
             }
+            else if(this.value.equals("ADDCUSTOMER")){
+                this.data = IntegrationService.batchRequestCustomer(getApplicationContext(), App.POST_CUSTOMER_SET, customerList);
+            }
             else{
                 this.data = IntegrationService.batchRequest(getApplicationContext(), App.POST_COLLECTION, arrayList);
             }
@@ -1426,25 +1483,51 @@ public class SyncData extends IntentService {
                     Log.e("Resp Fun","" + response.getFunction());
                     switch (response.getFunction()){
                         case ConfigStore.BeginDayFunction: {
-                            HashMap<String,String>map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            HashMap<String,String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
-                            db.updateData(db.BEGIN_DAY, map, filter);
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
+                                db.updateData(db.BEGIN_DAY, map, filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
+                                db.updateData(db.BEGIN_DAY, map, filter);
+                            }
+
                             break;
                         }
                         case ConfigStore.OdometerFunction: {
-                            HashMap<String,String>map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,response.getCustomerID().equals("Y")?App.DATA_IS_POSTED:App.DATA_MARKED_FOR_POST);
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,response.getCustomerID().equals("Y")?App.DATA_IS_POSTED:App.DATA_MARKED_FOR_POST);
 
-                            HashMap<String,String>filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            db.updateData(db.ODOMETER,map,filter);
+                                HashMap<String,String>filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                db.updateData(db.ODOMETER,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+
+                                HashMap<String,String>filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                db.updateData(db.ODOMETER,map,filter);
+                            }
+
                             break;
                         }
                         case ConfigStore.VisitListFunction:{
@@ -1452,6 +1535,17 @@ public class SyncData extends IntentService {
                                 HashMap<String,String>map = new HashMap<>();
                                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                                 map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.VISIT_LIST_POST,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
 
                                 HashMap<String,String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
@@ -1472,61 +1566,133 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
                             }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
+                            }
                             break;
                         }
                         case ConfigStore.LoadVarianceFunction+"D":{
-                            HashMap<String,String>map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String,String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
-                            db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
+                                db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
+                                db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                            }
+
                             break;
                         }
                         case ConfigStore.LoadVarianceFunction+"C":{
-                            HashMap<String,String>map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String,String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
-                            db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
+                                db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
+                                db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
+                            }
+
                             break;
                         }
                         case ConfigStore.LoadRequestFunction:{
-                            HashMap<String,String>map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String,String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            db.updateData(db.LOAD_REQUEST, map, filter);
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                db.updateData(db.LOAD_REQUEST, map, filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                db.updateData(db.LOAD_REQUEST, map, filter);
+                            }
                             break;
                         }
                         case ConfigStore.CustomerOrderRequestFunction+"O":{
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                            db.updateData(db.ORDER_REQUEST, map, filter);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.ORDER_REQUEST, map, filter);
+                            }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.ORDER_REQUEST, map, filter);
+                            }
+
                             break;
                         }
                         case ConfigStore.InvoiceRequestFunction:{
@@ -1543,104 +1709,226 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 db.updateData(db.CAPTURE_SALES_INVOICE, map, filter);
                             }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.CAPTURE_SALES_INVOICE, map, filter);
+                            }
 
                             break;
                         }
                         case ConfigStore.ReturnsFunction+"G":{
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                                db.updateData(db.RETURNS, map, filter);
+                            }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                            filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
-                            db.updateData(db.RETURNS, map, filter);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                                db.updateData(db.RETURNS, map, filter);
+                            }
 
                             break;
                         }
                         case ConfigStore.ReturnsFunction+"B":{
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                filter.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                                db.updateData(db.RETURNS, map, filter);
+                            }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                            filter.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
-                            db.updateData(db.RETURNS, map, filter);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                filter.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                                db.updateData(db.RETURNS, map, filter);
+                            }
 
                             break;
                         }
                         case ConfigStore.CustomerDeliveryRequestFunction:{
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                            db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+                            }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+                            }
                             break;
                         }
                         case ConfigStore.CustomerDeliveryDeleteRequestFunction:{
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                            map.put(db.KEY_ORDER_ID,response.getOrderID());
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                            db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map, filter);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map, filter);
+                            }
+                            else{
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map, filter);
+                            }
                             break;
                         }
                         case ConfigStore.CollectionFunction: {
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
 
-                            HashMap<String,String>ivMap = new HashMap<>();
-                            ivMap.put(db.KEY_AMOUNT_CLEARED,"");
-                            ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
 
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
-                           // map.put(db.KEY_ORDER_ID,response.getOrderID());
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
 
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                            //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                            //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                            filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
-
-                            Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
-                            double newinvAmount = 0;
-                            if(prevAmnt.getCount()>0){
-                                prevAmnt.moveToFirst();
-                               newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
-                               Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                db.updateData(db.COLLECTION,map,filter);
                             }
-                            if(!(newinvAmount==0)){
-                                map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
-                                map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                            else{
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                                Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                db.updateData(db.COLLECTION,map,filter);
                             }
-                            db.updateData(db.COLLECTION,map,filter);
                             break;
                         }
                         case ConfigStore.AddCustomerFunction: {
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
 
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.NEW_CUSTOMER_POST,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.NEW_CUSTOMER_POST,map,filter);
+                            }
                             break;
                         }
                         case ConfigStore.EndDayFunction: {
@@ -1748,7 +2036,8 @@ public class SyncData extends IntentService {
                 break;
             }
             case ConfigStore.AddCustomerFunction:{
-
+                Cursor newCustomerRequest = db.getData(db.NEW_CUSTOMER_POST,map,filter);
+                syncCount = newCustomerRequest.getCount();
                 break;
             }
             case ConfigStore.EndDayFunction:{
@@ -1798,6 +2087,7 @@ public class SyncData extends IntentService {
         Cursor goodReturnRequest = db.getData(db.RETURNS,map,grFilter);
         Cursor badReturnRequest = db.getData(db.RETURNS,map,brFilter);
         Cursor visitListCursor = db.getData(db.VISIT_LIST_POST,map,filter);
+        Cursor newCustomerCursor = db.getData(db.NEW_CUSTOMER_POST,map,filter);
         Cursor loadVarianceCursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,map,filter);
         Cursor collectionCursor = db.getData(db.COLLECTION,map,filter);
 
@@ -1839,6 +2129,9 @@ public class SyncData extends IntentService {
         }
         if(collectionCursor.getCount()>0){
             syncCount += collectionCursor.getCount();
+        }
+        if(newCustomerCursor.getCount()>0){
+            syncCount += newCustomerCursor.getCount();
         }
         Log.e("Sync count","" + syncCount);
         return syncCount;

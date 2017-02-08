@@ -17,7 +17,6 @@ public class ArticleHeaders {
     private static final String ARTICLE_ALT_UOM = "ArticleAltuom";
     private static final String ARTICLE_SALES_AREAS = "ArticleSalesareas";
     private static final String TRIP_ID = "ITripId";
-
     private static ArrayList<ArticleHeader> data = new ArrayList<>();
 
 

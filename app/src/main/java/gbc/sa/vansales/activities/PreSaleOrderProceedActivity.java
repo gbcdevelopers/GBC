@@ -715,6 +715,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
 
 
             orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
+           // orderID = IntegrationService.postDataBackup(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
             //Storing Order Activity for Logging
             HashMap<String,String>logMap = new HashMap<>();
             logMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());

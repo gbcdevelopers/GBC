@@ -875,6 +875,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 while (cursor.moveToNext());
             }
             orderID = IntegrationService.postData(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
+            //orderID = IntegrationService.postDataBackup(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1148,6 +1149,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 while (cursor.moveToNext());
             }
             orderID = IntegrationService.postData(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
+           // orderID = IntegrationService.postDataBackup(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

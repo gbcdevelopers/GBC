@@ -36,6 +36,8 @@ import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.PrinterDataHelper;
+import gbc.sa.vansales.utils.PrinterHelper;
 import gbc.sa.vansales.utils.Settings;
 /**
  * Created by Rakshit on 19-Nov-16.
@@ -52,6 +54,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
     ArrayList<LoadSummary> dataOld;
     LoadingSpinner loadingSpinner;
     private String tempOrderID = "";
+    private boolean print = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +135,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        print = true;
                         new postData(tempOrderID);
                         dialog.dismiss();
                         //finish();
@@ -140,6 +144,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        print = false;
                         new postData(tempOrderID);
                         dialog.dismiss();
                     }
@@ -589,6 +594,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 while (cursor.moveToNext());
                 Log.e("Variance", "" + map + deepEntity);
                 orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+               // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
             } catch (Exception e) {
                 Log.e("Variance Error", "Variance Error");
                 e.printStackTrace();
@@ -597,6 +603,32 @@ public class LoadVerifyActivity extends AppCompatActivity {
         Log.e("ORDERID", "" + orderID);
         return orderID + "," + purchaseNumber;
     }
+
+    private void printData(String orderId){
+        try{
+            PrinterDataHelper printerDataHelper = new PrinterDataHelper();
+            HashMap<String,String> header = new HashMap<>();
+            header.put("ROUTE",Settings.getString(App.ROUTE));
+            header.put("DOC DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+            header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            header.put("SALESMAN", Settings.getString(App.DRIVER));
+            header.put("CONTACTNO","1234");
+            header.put("DOCUMENT NO",orderId);  //Load Summary No
+            header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            header.put("supervisorname","-");
+            header.put("TripID",Settings.getString(App.TRIP_ID));
+            header.put("Load Number","1");
+            JSONArray jsonArray = printerDataHelper.createJSONData(App.LOAD_SUMMARY_REQUEST,header,dataNew,null);
+            PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+            //object.execute("",createDataForPrint()); //For Load Summary
+            object.execute(App.LOAD_SUMMARY_REQUEST,jsonArray);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     public class postData extends AsyncTask<Void, Void, Void> {
         String orderID = "";
         String tempOrderID = "";
@@ -619,6 +651,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+
+
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
@@ -667,6 +701,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 if (loadingSpinner.isShowing()) {
                     loadingSpinner.hide();
                 }
+                /*if(print){
+                    printData(this.tokens[0].toString());
+                }*/
                 Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -765,6 +802,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             if (updateSpinner.isShowing()) {
                 updateSpinner.hide();
             }
+
             Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
             startActivity(intent);
         }

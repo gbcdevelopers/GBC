@@ -99,10 +99,6 @@ public class LoginActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                             if(loadingSpinner.isShowing()){
                                 loadingSpinner.hide();
-                                Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                                startActivityForResult(intent, 0);
-                                finish();
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                             }
                             dialog.dismiss();
                             }
@@ -166,13 +162,13 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("Y000010000000003")){
+                                if(!checkTripID("Y000010000000011")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "Y000010000000003");
+                                    Settings.setString(TRIP_ID, "Y000010000000011");
                                     Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("Y000010000000003");
+                                    downloadData("Y000010000000011");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
@@ -236,6 +232,7 @@ public class LoginActivity extends Activity {
                             db.addLoginCredentials("E2000", "PASSWORD",Helpers.formatDate(new Date(),App.DATE_FORMAT));
                         }
                         else{
+                            Settings.setString(App.IS_DATA_SYNCING,"false");
                             Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
                             startActivityForResult(intent, 0);
                             finish();

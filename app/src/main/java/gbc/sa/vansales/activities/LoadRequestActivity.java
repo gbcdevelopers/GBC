@@ -688,6 +688,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 map.put("OrderValue", String.valueOf(orderTotalValue));
             }
             orderID = IntegrationService.postData(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
+           // orderID = IntegrationService.postDataBackup(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }

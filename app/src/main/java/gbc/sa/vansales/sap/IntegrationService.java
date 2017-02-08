@@ -28,6 +28,7 @@ import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -168,6 +169,7 @@ public class IntegrationService extends IntentService {
         Log.e("Builder is", "" + builder.toString());
         return builder.toString();
     }
+
 
     private static String postUrlOdometer(String collectionname) {
         StringBuilder builder = new StringBuilder();
@@ -625,6 +627,56 @@ public class IntegrationService extends IntentService {
         }
         return new ByteArrayEntity(data.getBytes());
     }
+    private static HttpEntity getPayloadBatchCustomer(ArrayList<OfflinePost>arrayList) throws IOException {
+
+        HashMap<String, String> map = new HashMap<>();
+        Log.e("ArrayList Length","" + arrayList.size());
+        String data = "";
+        try {
+            StringBuilder body = new StringBuilder();
+            int index=1;
+            for (OfflinePost offlinePost:arrayList){
+                Log.e("Map","" + offlinePost.getMap());
+                Log.e("Deep","" + offlinePost.getDeepEntity());
+                body.append("--batch");
+                body.append("\n");
+                body.append("Content-Type: multipart/mixed; boundary=changeset" + index);
+                body.append("\n");
+                body.append("\n");
+                body.append("--changeset" + index);
+                body.append("\n");
+                body.append("Content-Type: application/http");
+                body.append("\n");
+                body.append("Content-Transfer-Encoding: binary");
+                body.append("\n");
+                body.append("\n");
+                body.append("POST" + " " + offlinePost.getCollectionName() + " HTTP/1.1");
+                body.append("\n");
+                body.append("Accept: application/json");
+                body.append("\n");
+                body.append(CONTENT_TYPE + ":" + APPLICATION_JSON);
+                body.append("\n");
+                body.append("\n");
+                Log.e("BodyBuild", "" + bodyBuilderBatch(offlinePost.getMap()));
+                body.append("{\"d\":{" + bodyBuilderBatch(offlinePost.getMap()));
+                body.append("}}");
+                body.append("\n");
+                body.append("--changeset"+index+"--");
+                body.append("\n");
+                body.append("\n");
+                index++;
+            }
+            body.append("--batch--");
+            Log.e("String Build", "" + body.toString());
+            // data = String.format("{" + body.toString() + "}");
+            data = body.toString();
+            // data = "{" + body.toString() + "}";
+            Log.e("POST Data", "" + data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ByteArrayEntity(data.getBytes());
+    }
     public static HashMap<String, String> convertToMap(JSONObject object) throws JSONException {
         HashMap<String, String> map = new HashMap();
         Iterator keys = object.keys();
@@ -646,6 +698,20 @@ public class IntegrationService extends IntentService {
                 e.printStackTrace();
             }
             list.add("\"" + entry.getKey() + "\"" + ":\"" + value + "\"");
+        }
+        return TextUtils.join(",", list);
+    }
+    public static String bodyBuilderBatch(HashMap<String, String> hashMap) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Map.Entry entry : hashMap.entrySet()) {
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
+            /*//value = UrlBuilder.clean(value);
+            try {
+                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }*/
+            list.add("\"" + entry.getKey() + "\"" + ":\"" + UrlBuilder.decodeString(value) + "\"");
         }
         return TextUtils.join(",", list);
     }
@@ -702,7 +768,7 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
-                data = unpackOdometer(jsonString,response);
+                data = unpackOdometer(jsonString, response);
                 // JSONObject jsonObj = new JSONObject(jsonString);
             } else {
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
@@ -717,6 +783,41 @@ public class IntegrationService extends IntentService {
         }
         return data;
     }
+    public static ArrayList<OfflineResponse> batchRequestCustomer(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
+        ArrayList<OfflineResponse> data = new ArrayList<>();
+        try {
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
+            HttpPost post = new HttpPost(postUrlBatchOdometer());
+            String authString = "ecs" + ":" + "sap123";
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            // post.addHeader("Authorization", "Basic " + new String(authEncBytes));
+            post.addHeader(CONTENT_TYPE, APPLICATION_BATCH);
+            post.addHeader(ACCEPT, APPLICATION_JSON);
+            post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
+            //   post.addHeader(X_CSRF_TOKEN_KEY,token);
+            post.setEntity(getPayloadBatchCustomer(arrayList));
+            HttpResponse response = client.execute(post);
+            if (response.getStatusLine().getStatusCode() == 201||response.getStatusLine().getStatusCode() == 202) {
+                Header[] headers = response.getAllHeaders();
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                data = unpackCustomer(jsonString, response);
+                // JSONObject jsonObj = new JSONObject(jsonString);
+            } else {
+                Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+                Log.e("Message", "Message" + response);
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                JSONObject jsonObj = new JSONObject(jsonString);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     public static ArrayList<OfflineResponse> batchRequestBeginDay(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
         ArrayList<OfflineResponse> data = new ArrayList<>();
         try {
@@ -736,7 +837,7 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
-                data = unpack(jsonString,response);
+                data = unpack(jsonString, response);
                 // JSONObject jsonObj = new JSONObject(jsonString);
             } else {
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
@@ -988,6 +1089,72 @@ public class IntegrationService extends IntentService {
                             offlineResponse.setCustomerID(jsonObject.getString("Flag"));
                             offlineResponse.setPurchaseNumber(jsonObject.getString("TripID"));
                             offlineResponse.setOrderID(jsonObject.getString("Message"));
+                            arrayList.add(offlineResponse);
+                            /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                            arrayList.add(offlineResponse);*/
+                            offlineResponse = new OfflineResponse();
+                            data.put(json);
+                        }
+                        else if(json instanceof JSONArray){
+
+                        }
+                    }
+
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Log.e("JSON Array","" + data);
+        return arrayList;
+    }
+    public static ArrayList<OfflineResponse> unpackCustomer(String response,HttpResponse httpResponse){
+
+        String lines[] = response.split("\\r?\\n");
+        String boundary = lines[0];
+
+        JSONArray data = new JSONArray();
+        JSONObject d = new JSONObject();
+        ArrayList<OfflineResponse> arrayList = new ArrayList<>();
+        OfflineResponse offlineResponse = new OfflineResponse();
+        try{
+            for(int i=0;i<lines.length;i++){
+                if(lines[i].contains(boundary)){
+                    String dataStr = lines[i];
+                    try {
+                        Object json = new JSONTokener(dataStr).nextValue();
+                        if(json instanceof JSONObject){
+                            data.put(json);
+                        }
+                        else if(json instanceof JSONArray){
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else{
+
+                    String dataStr = lines[i];
+                    if(dataStr.startsWith("HTTP")){
+                        dataStr = dataStr.replaceAll("HTTP/1.1","").trim();
+                        dataStr = dataStr.substring(0, 3);
+                        offlineResponse.setResponse_code(dataStr);
+                    }
+                    else if(dataStr.startsWith("{")){
+                        Object json = new JSONTokener(dataStr).nextValue();
+                        if(json instanceof JSONObject){
+                            JSONObject jsonObject = ((JSONObject) json).getJSONObject("d");
+                            offlineResponse.setFunction(ConfigStore.AddCustomerFunction);
+                            offlineResponse.setCustomerID(jsonObject.getString("Kunnr"));
+                            offlineResponse.setPurchaseNumber(jsonObject.getString("Message"));
+                            offlineResponse.setOrderID(jsonObject.getString("Comments"));
                             arrayList.add(offlineResponse);
                             /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));

@@ -58,6 +58,7 @@ public class App extends Application {
     public static final String POST_BATCH = "$batch";
     public static final String DEEP_ENTITY = "SOItems";
     public static final String POST_ODOMETER_SET = "OdometerSet";
+    public static final String POST_CUSTOMER_SET = "CusCreateSet";
 
     //Message Reading KEYS
     public static final String DRIVER_MESSAGE_KEY = "DRIVER MESSAGE KEY";
@@ -72,6 +73,7 @@ public class App extends Application {
     public static final String DATA_IS_POSTED = "Y";
     public static final String DATA_MARKED_FOR_POST = "M";
     public static final String DATA_NOT_POSTED = "N";
+    public static final String DATA_ERROR = "E";
     public static final String DATA_PUT_ON_HOLD = "H";
 
     public static final String LANGUAGE = "lang";

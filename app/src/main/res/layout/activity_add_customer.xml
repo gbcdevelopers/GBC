@@ -14,13 +14,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="30dp"
         android:padding="@dimen/activity_horizontal_margin"
         >
 
         <LinearLayout
             android:orientation="vertical"
-            android:weightSum="12"
+            android:weightSum="14"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -102,6 +102,42 @@
 
                 <TextView
                     android:layout_weight="2"
+                    android:text="@string/owner_name_ar"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/label_small"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
+
+                <EditText
+                    android:layout_weight="3"
+                    android:id="@+id/et_owner_name_ar"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/label_small"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:hint="@string/hint_customer_name"
+                    android:textColorHint="@color/gray"
+                    android:background="@android:color/transparent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+            <View
+                android:layout_marginTop="@dimen/space"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"/>
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+
+                <TextView
+                    android:layout_weight="2"
                     android:text="@string/trade_name"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
@@ -113,6 +149,42 @@
                 <EditText
                     android:layout_weight="3"
                     android:id="@+id/et_trade_name"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/label_small"
+                    android:textColor="@color/black"
+                    android:layout_width="0dp"
+                    android:hint="@string/hint_customer_name"
+                    android:textColorHint="@color/gray"
+                    android:background="@android:color/transparent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+            <View
+                android:layout_marginTop="@dimen/space"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"/>
+            <LinearLayout
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp">
+
+                <TextView
+                    android:layout_weight="2"
+                    android:text="@string/trade_name_ar"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/label_small"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
+
+                <EditText
+                    android:layout_weight="3"
+                    android:id="@+id/et_trade_name_ar"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
                     android:textSize="@dimen/label_small"
@@ -436,6 +508,57 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"/>
 
+                <LinearLayout
+                    android:layout_weight="3"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:layout_width="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textSize="@dimen/label_small"
+                    android:textColor="@color/black"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:id="@+id/btn_sales_area"
+                        android:layout_width="0dp"
+                        android:layout_gravity="left"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:text="/"
+                        android:textSize="@dimen/label_small"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:id="@+id/btn_distribution"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:text="/"
+                        android:textSize="@dimen/label_small"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:id="@+id/btn_division"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_weight="3"
                     android:id="@+id/tv_customer_sales_area"
@@ -467,9 +590,5 @@
         android:textColor="@color/white"
         android:visibility="visible"
         />
-
-
-
-
 
 </RelativeLayout>

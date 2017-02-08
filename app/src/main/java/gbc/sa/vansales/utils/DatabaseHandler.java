@@ -65,6 +65,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String LOAD_CONFIRMATION_HEADER = "LOAD_CONFIRMATION_HEADER";
     public static final String VISIT_LIST_POST = "VISIT_LIST_POST";
     public static final String VISIT_LIST_ID_GENERATE = "VISIT_LIST_ID_GENERATE";
+    public static final String NEW_CUSTOMER_POST = "NEW_CUSTOMER_POST";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -369,6 +370,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_START_TIMESTAMP = "startTimestamp";
     public static final String KEY_END_TIMESTAMP = "endTimestamp";
     public static final String KEY_ACTIVITY_ID = "activityId";
+
+    //New Customer
+    public static final String KEY_OWNER_NAME = "ownerName";
+    public static final String KEY_OWNER_NAME_AR = "ownerNameAr";
+    public static final String KEY_TRADE_NAME = "tradeName";
+    public static final String KEY_TRADE_NAME_AR = "tradeNameAr";
+    public static final String KEY_AREA = "area";
+   // public static final String KEY_STREET = "street";
+    public static final String KEY_CR_NO = "crNo";
+    public static final String KEY_PO_BOX = "pobox";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_TELEPHONE = "telePhone";
+    public static final String KEY_FAX = "fax";
+    public static final String KEY_SALES_AREA = "salesArea";
+    public static final String KEY_DISTRIBUTION = "distribution";
+   // public static final String KEY_DIVISION = "division";
+
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
@@ -1027,6 +1045,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_NEW_CUSTOMER_POST = "CREATE TABLE " + NEW_CUSTOMER_POST + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_OWNER_NAME + " TEXT,"
+                + KEY_OWNER_NAME_AR + " TEXT,"
+                + KEY_TRADE_NAME + " TEXT,"
+                + KEY_TRADE_NAME_AR + " TEXT,"
+                + KEY_AREA + " TEXT,"
+                + KEY_STREET + " TEXT,"
+                + KEY_CR_NO + " TEXT,"
+                + KEY_PO_BOX + " TEXT,"
+                + KEY_EMAIL + " TEXT,"
+                + KEY_TELEPHONE + " TEXT,"
+                + KEY_FAX + " TEXT,"
+                + KEY_SALES_AREA + " TEXT,"
+                + KEY_DISTRIBUTION + " TEXT,"
+                + KEY_DIVISION + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
         String TABLE_VISIT_LIST_ID_GENERATE = "CREATE TABLE " + VISIT_LIST_ID_GENERATE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_DOCUMENT_TYPE + " TEXT,"
@@ -1076,6 +1115,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_LOAD_CONFIRMATION_HEADER);
         db.execSQL(TABLE_VISIT_LIST_POST);
         db.execSQL(TABLE_VISIT_LIST_ID_GENERATE);
+        db.execSQL(TABLE_NEW_CUSTOMER_POST);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1121,6 +1161,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + LOAD_CONFIRMATION_HEADER);
         db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_POST);
         db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_ID_GENERATE);
+        db.execSQL("DROP TABLE IF EXISTS " + NEW_CUSTOMER_POST);
+
         onCreate(db);
     }
     //Storing Secured Credentials

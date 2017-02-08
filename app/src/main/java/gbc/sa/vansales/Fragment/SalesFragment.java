@@ -190,8 +190,12 @@ public class SalesFragment extends Fragment {
                     RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
                     rl_specify.setVisibility(View.GONE);
 
-                    ed_cases_inv.setText(sales.getInv_cases());
-                    ed_pcs_inv.setText(sales.getInv_piece());
+                   // ed_cases_inv.setText(sales.getInv_cases());
+                  //  ed_pcs_inv.setText(sales.getInv_piece());
+
+                    ed_cases_inv.setText(Double.parseDouble(sales.getInv_cases())<0?"0":sales.getInv_cases());
+                    ed_pcs_inv.setText(Double.parseDouble(sales.getInv_piece())<0?"0":sales.getInv_piece());
+
                     ed_cases_inv.setEnabled(false);
                     ed_pcs_inv.setEnabled(false);
                     if (sales.isAltUOM()) {

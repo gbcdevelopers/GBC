@@ -68,6 +68,7 @@
     <string name="beginDay">Begin Day</string>
     <string name="beginday_route">Route # </string>
     <string name="begintrip">Begin Trip</string>
+    <string name="berain">Berain</string>
     <string name="br">B.R</string>
     <string name="buyback_free">BUYBACK FREE</string>
     <string name="cancel">Cancel</string>
@@ -259,8 +260,9 @@
     <string name="outlet_inventory">Outlet Inventory</string>
     <string name="outlet_invoice">OUTLET INVOICE</string>
     <string name="owner_name">Owner Name</string>
+    <string name="owner_name_ar">Owner Name <i>(Ar)</i></string>
     <string name="paid">Paid</string>
-    <string name="password">PASSWORD</string>
+    <string name="password">E200000</string>
     <string name="payment">payment</string>
     <string name="payment_mode">Pay By</string>
     <string-array name="paymentitem">
@@ -382,6 +384,7 @@
     <string name="total_receipt">Total Receipt</string>
     <string name="total_sales">Total Sales</string>
     <string name="trade_name">Trade Name</string>
+    <string name="trade_name_ar">Trade Name (Ar)</string>
     <string name="trade_price">Trade Price</string>
     <string name="transaction">Transaction</string>
     <string name="truck_damage">Truck Damage</string>

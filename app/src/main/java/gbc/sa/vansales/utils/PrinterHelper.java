@@ -270,9 +270,9 @@ public class PrinterHelper {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 try {
-                    PrinterHelper.this.status.put("status", false);
-                    PrinterHelper.this.status.put("isconnected", -1);
-                } catch (JSONException e) {
+                 //   PrinterHelper.this.status.put("status", false);
+                 //   PrinterHelper.this.status.put("isconnected", -1);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 PrinterHelper.this.sendUpdate(PrinterHelper.this.status, true);
@@ -1070,7 +1070,7 @@ public class PrinterHelper {
             }
             //printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), true, 1);
             this.outStream.write(this.NewLine);
-            printheaders(getAccurateText("TOUR ID:" + object.getString("TourID"), 80, 0), false, 2);
+            printheaders(getAccurateText("TRIP ID:" + object.getString("TripID"), 80, 0), false, 2);
             this.outStream.write(this.BoldOff);
             this.outStream.write(this.NewLine);
             this.outStream.write(this.NewLine);

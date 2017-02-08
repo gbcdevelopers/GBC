@@ -261,7 +261,7 @@ public class DeliveryActivity extends AppCompatActivity {
     private void showReasonDialog(ArrayList<OrderList> list, final int position) {
         final int pos = position;
         final Dialog dialog = new Dialog(DeliveryActivity.this);
-        dialog.setTitle(getString(R.string.shop_status));
+        //dialog.setTitle(getString(R.string.shop_status));
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
         tv.setText(getString(R.string.select_reason));
