@@ -300,7 +300,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     c.moveToFirst();
                     paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
                 }
-                Log.e("Payment Term1","" + paymentTerm);
+                Log.e("Payment Term1","" + paymentTerm + customer.getCustomerID());
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                 if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
@@ -316,7 +316,8 @@ public class SelectCustomerActivity extends AppCompatActivity {
                         customer.setPaymentMethod(App.CREDIT_CUSTOMER);
                     }
                     else{
-                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                        //customer.setPaymentMethod(App.CASH_CUSTOMER);
+                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
                     }
                 }
                 else{
@@ -383,7 +384,8 @@ public class SelectCustomerActivity extends AppCompatActivity {
                         customer.setPaymentMethod(App.CREDIT_CUSTOMER);
                     }
                     else{
-                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                       // customer.setPaymentMethod(App.CASH_CUSTOMER);
+                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
                     }
                 }
                 else{

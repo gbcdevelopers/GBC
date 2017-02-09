@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,7 +79,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
         //Log.e("Object", "" + object.getDeliveryNo());
         reasonsList = OrderReasons.get();
-        Log.e("Reasons List","" + reasonsList.size());
+        Log.e("Reasons List", "" + reasonsList.size());
         myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,7 +89,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
         loadSummaryUnmodList = new ArrayList<>();
         articles = new ArrayList<>();
         articles = ArticleHeaders.get();
-
         //Log.e("ReasonsList","" + reasonsList.size());
         addBlank(reasonsList);
         //Log.e("Articles", "" + articles.size());
@@ -96,12 +96,12 @@ public class LoadSummaryActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_item);
         verifyAll = (Button) findViewById(R.id.btn_verify_all);
         loadListView = (ListView) findViewById(R.id.srListView);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 final LoadSummary item = loadSummaryList.get(position);
                 final Dialog dialog = new Dialog(LoadSummaryActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
@@ -113,14 +113,13 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
                 final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
                 final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-
-                LinearLayout ll1 = (LinearLayout)dialog.findViewById(R.id.ll_1);
+                LinearLayout ll1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 ll1.setVisibility(View.GONE);
-                RelativeLayout rl_specify=(RelativeLayout)dialog.findViewById(R.id.rl_specify_reason);
+                RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
                 rl_specify.setVisibility(View.VISIBLE);
                 //
                 final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
-                Log.e("Adapter","" + myAdapter.getCount());
+                Log.e("Adapter", "" + myAdapter.getCount());
                 spin.setAdapter(myAdapter);
 
                 /*if(item.getUom().equals(App.CASE_UOM)||item.getUom().equals(App.CASE_UOM_NEW)||item.getUom().equals(App.BOTTLES_UOM)){
@@ -129,7 +128,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 if (item.getReasonCode() != null) {
                     spin.setSelection(getIndex(item.getReasonCode()));
                 }
-
                 spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -140,10 +138,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> parent) {
                     }
                 });
-                if(item.isAltUOM()){
+                if (item.isAltUOM()) {
                     ed_pcs.setEnabled(true);
-                }
-                else{
+                } else {
                     ed_pcs.setEnabled(false);
                 }
                 ed_cases.setText(item.getQuantityCases());
@@ -162,35 +159,34 @@ public class LoadSummaryActivity extends AppCompatActivity {
                         //Log.e("Spin Select","" + spin.getSelectedItem().toString());
                         if (spin.getSelectedItem().toString().equals("Select Reason")) {
                             ((TextView) spin.getSelectedView()).setError("select reason");
-                        }
-                        else{
-                        String strCase = ed_cases.getText().toString();
-                        String strpcs = ed_pcs.getText().toString();
-                        String strcaseinv = ed_cases_inv.getText().toString();
-                        String strpcsinv = ed_pcs_inv.getText().toString();
+                        } else {
+                            String strCase = ed_cases.getText().toString();
+                            String strpcs = ed_pcs.getText().toString();
+                            String strcaseinv = ed_cases_inv.getText().toString();
+                            String strpcsinv = ed_pcs_inv.getText().toString();
                         /*TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                         TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);*/
-                        if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
-                            strCase = String.valueOf(0);
-                        }
-                        if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
-                            strpcs = String.valueOf(0);
-                        }
-                        if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
-                            strcaseinv = String.valueOf(0);
-                        }
-                        if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
-                            strpcsinv = String.valueOf(0);
-                        }
-                        item.setQuantityCases(strCase);
-                        item.setQuantityUnits(strpcs);
-                        loadSummaryList.remove(position);
-                        loadSummaryList.add(position, item);
-                        hideSoftKeyboard();
-                        calculateCost();
-                        dialog.dismiss();
+                            if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
+                                strCase = String.valueOf(0);
+                            }
+                            if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
+                                strpcs = String.valueOf(0);
+                            }
+                            if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
+                                strcaseinv = String.valueOf(0);
+                            }
+                            if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
+                                strpcsinv = String.valueOf(0);
+                            }
+                            item.setQuantityCases(strCase);
+                            item.setQuantityUnits(strpcs);
+                            loadSummaryList.remove(position);
+                            loadSummaryList.add(position, item);
+                            hideSoftKeyboard();
+                            calculateCost();
+                            dialog.dismiss();
                         /*if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
                             Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                             strCase = "0";
@@ -223,12 +219,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                             dialog.dismiss();
                         }*/
                         }
-
                     }
                 });
             }
         });
-
         setListView();
         new loadSummary(object.getDeliveryNo().toString());
         verifyAll.setOnClickListener(new View.OnClickListener() {
@@ -268,7 +262,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         //new loadSummary().execute();
     }
-
     private void loadData() {
         adapter.clear();
         for (int i = 0; i < 2; i++) {
@@ -276,16 +269,16 @@ public class LoadSummaryActivity extends AppCompatActivity {
             loadSummaryList.add(loadSummary);
         }
     }
-    private void calculateCost(){
+    private void calculateCost() {
         int salesTotal = 0;
         int pcsTotal = 0;
         double total = 0;
-        for(LoadSummary item:loadSummaryList){
+        for (LoadSummary item : loadSummaryList) {
             double itemPrice = 0;
-            if(!item.isAltUOM()){
-                itemPrice = Double.parseDouble(item.getQuantityCases())*Double.parseDouble(item.getPrice());
+            if (!item.isAltUOM()) {
+                itemPrice = Double.parseDouble(item.getQuantityCases()) * Double.parseDouble(item.getPrice());
             }
-            total+=itemPrice;
+            total += itemPrice;
         }
         TextView tv = (TextView) findViewById(R.id.tv_amt);
         tv.setText(String.valueOf(total));
@@ -305,7 +298,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
             filter.put(db.KEY_DELIVERY_NO, object.getDeliveryNo().toString());
             Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, map, filter);
             cursor.moveToFirst();
-
             do {
                 LoadSummary loadItem = new LoadSummary();
                 loadItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
@@ -316,35 +308,31 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
-                HashMap<String,String>altMap = new HashMap<>();
+                HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_UOM, "");
-                HashMap<String,String>filter1 = new HashMap<>();
+                HashMap<String, String> filter1 = new HashMap<>();
                 filter1.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-
-                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM,altMap,filter1);
-                if(altUOMCursor.getCount()>0){
+                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter1);
+                if (altUOMCursor.getCount() > 0) {
                     altUOMCursor.moveToFirst();
-                    if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))){
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
                         loadItem.setIsAltUOM(false);
-                    }
-                    else{
+                    } else {
                         loadItem.setIsAltUOM(true);
                     }
-                }
-                else{
+                } else {
                     loadItem.setIsAltUOM(false);
                 }
-                HashMap<String,String>priceMap = new HashMap<>();
+                HashMap<String, String> priceMap = new HashMap<>();
                 priceMap.put(db.KEY_AMOUNT, "");
-                HashMap<String,String>filterPrice = new HashMap<>();
-                filterPrice.put(db.KEY_MATERIAL_NO,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                filterPrice.put(db.KEY_PRIORITY,"2");
-                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPrice);
-                if(priceCursor.getCount()>0){
+                HashMap<String, String> filterPrice = new HashMap<>();
+                filterPrice.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                filterPrice.put(db.KEY_PRIORITY, "2");
+                Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
+                if (priceCursor.getCount() > 0) {
                     priceCursor.moveToFirst();
                     loadItem.setPrice(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                }
-                else{
+                } else {
                     loadItem.setPrice("0");
                 }
                 // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -492,9 +480,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
             //loadSummaryUnmodList = loadSummaryList;
             adapter = new LoadSummaryBadgeAdapter(LoadSummaryActivity.this, loadSummaryList);
             loadSummaryCount = loadSummaryList.size();
-            listView.setAdapter(adapter);
+
             calculateCost();
             adapter.notifyDataSetChanged();
+            listView.setAdapter(adapter);
             // super.onPostExecute(aVoid);
         }
     }
@@ -513,43 +502,36 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
-                HashMap<String,String>altMap = new HashMap<>();
-                altMap.put(db.KEY_UOM,"");
-                HashMap<String,String>filter = new HashMap<>();
-                filter.put(db.KEY_MATERIAL_NO,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-
-                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM,altMap,filter);
-                if(altUOMCursor.getCount()>0){
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_UOM, "");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter);
+                if (altUOMCursor.getCount() > 0) {
                     altUOMCursor.moveToFirst();
-                    if(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))){
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
                         loadItem.setIsAltUOM(false);
-                    }
-                    else{
+                    } else {
                         loadItem.setIsAltUOM(true);
                     }
-                }
-                else{
+                } else {
                     loadItem.setIsAltUOM(false);
                 }
-
                 // loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 //String quantity = cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)?cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)):"0";
                 //loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-                HashMap<String,String>priceMap = new HashMap<>();
+                HashMap<String, String> priceMap = new HashMap<>();
                 priceMap.put(db.KEY_AMOUNT, "");
-                HashMap<String,String>filterPrice = new HashMap<>();
-                filterPrice.put(db.KEY_MATERIAL_NO,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                filterPrice.put(db.KEY_PRIORITY,"2");
-                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPrice);
-                if(priceCursor.getCount()>0){
+                HashMap<String, String> filterPrice = new HashMap<>();
+                filterPrice.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                filterPrice.put(db.KEY_PRIORITY, "2");
+                Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
+                if (priceCursor.getCount() > 0) {
                     priceCursor.moveToFirst();
                     loadItem.setPrice(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                }
-                else{
+                } else {
                     loadItem.setPrice("0");
                 }
-
-
                 loadItem.setQuantityCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
                 //loadItem.setQuantityUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) : "0");
                 loadItem.setQuantityUnits("0");
@@ -620,11 +602,11 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         return index;
     }
-    private void addBlank(ArrayList<Reasons>arrayList){
+    private void addBlank(ArrayList<Reasons> arrayList) {
         Reasons reasons = new Reasons();
         reasons.setReasonID("99");
         reasons.setReasonDescription("Select Reason");
         reasons.setReasonType("");
-        reasonsList.add(0,reasons);
+        reasonsList.add(0, reasons);
     }
 }

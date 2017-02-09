@@ -77,6 +77,8 @@ public class DashboardActivity extends AppCompatActivity
     int tcCustomerCount = 0;
     int postCount = 0;
     TextView lbl_totalsales;
+    TextView tv_route;
+    TextView tv_driver_no;
     TextView lbl_totalreceipt;
     ArrayList<CustomerHeader> customers;
 
@@ -92,12 +94,16 @@ public class DashboardActivity extends AppCompatActivity
         Helpers.loadData(getApplicationContext());
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
+        tv_route = (TextView)findViewById(R.id.tv_route);
+        tv_driver_no = (TextView)findViewById(R.id.tv_driver_no);
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
         lbl_totalsales = (TextView) findViewById(R.id.lbl_totalsales);
         lbl_totalreceipt = (TextView) findViewById(R.id.lbl_totalreceipt);
         iv_drawer = (ImageView) findViewById(R.id.iv_drawer);
         btn_message = (Button) findViewById(R.id.btn_messages);
+        tv_route.setText(getString(R.string.route_code_101) + Settings.getString(App.ROUTE));
+        tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER));
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,6 +201,7 @@ public class DashboardActivity extends AppCompatActivity
         btnBDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.loadData(getApplicationContext());
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
                 drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -504,6 +511,9 @@ public class DashboardActivity extends AppCompatActivity
             pieChart.setTransparentCircleRadius(50f);
             pieChart.setDescription("");
             pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+            pieChart.setDrawSliceText(false);
+            pieChart.setDrawCenterText(false);
+            pieChart.setCenterTextColor(Color.TRANSPARENT);
             // pieChart.setUsePercentValues(true);
             pieChart.animateY(1000);
         }
@@ -717,11 +727,11 @@ public class DashboardActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put(db.KEY_CUSTOMER_OUT_TIMESTAMP, "");
+            map.put(db.KEY_END_TIMESTAMP, "");
             map.put(db.KEY_CUSTOMER_NO, "");
             HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
-            Cursor c = db.getData(db.VISIT_LIST,map,filter);
+           // filter.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
+            Cursor c = db.getData(db.VISIT_LIST_POST,map,filter);
             if(c.getCount()>0){
                 c.moveToFirst();
                 createPieChart(c);
@@ -744,25 +754,30 @@ public class DashboardActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                ArrayList<String>tempCust = new ArrayList<String>();
                 do{
                     CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
                     HashMap<String,String>filter = new HashMap<String, String>();
                     filter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    if(customerHeader!=null){
-                        if(customerHeader.getTerms().equals(App.CASH_CUSTOMER_CODE)){
-                            cashCustomerCount++;
-                        }
-                        else if(customerHeader.getTerms().equals(App.TC_CUSTOMER_CODE)){
-                            tcCustomerCount++;
-                        }
+                    if(!tempCust.contains(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)))){
+                        tempCust.add(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        if(customerHeader!=null){
+                            if(customerHeader.getTerms().equals(App.CASH_CUSTOMER_CODE)){
+                                cashCustomerCount++;
+                            }
+                            else if(customerHeader.getTerms().equals(App.TC_CUSTOMER_CODE)){
+                                tcCustomerCount++;
+                            }
 
-                        else if(!customerHeader.getTerms().equals("")&&db.checkData(db.CUSTOMER_CREDIT,filter)){
-                            creditCustomerCount++;
-                        }
-                        else{
-                            cashCustomerCount++;
+                            else if(!customerHeader.getTerms().equals("")/*&&db.checkData(db.CUSTOMER_CREDIT,filter)*/){
+                                creditCustomerCount++;
+                            }
+                            else{
+                                creditCustomerCount++;
+                            }
                         }
                     }
+
 
                 }
                 while (c.moveToNext());

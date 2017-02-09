@@ -55,6 +55,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static gbc.sa.vansales.R.id.currentMonth;
@@ -115,7 +116,7 @@ public class BeginDayFragment extends Fragment {
             salesDate.setText(data.getString("psDate"));
            // delieveryDate.setText(data.getString("asDate"));
            // deliveryRoute.setText(data.getString("route"));
-            vehicleNo.setText(data.getString("truck"));
+            vehicleNo.setText(UrlBuilder.decodeString(data.getString("truck")));
             day.setText(Helpers.getDayofWeek(data.getString("psDate")));
             time.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
         } catch (Exception e) {

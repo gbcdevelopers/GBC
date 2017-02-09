@@ -410,7 +410,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         public void onClick(View view) {
             String date_month_year = (String) view.getTag();
             selectedDayMonthYearButton.setText("Selected: " + date_month_year);
-            //Log.e("Selected date", date_month_year);
+            Log.e("Selected date", date_month_year);
             try {
                /* Date parsedDate = dateFormatter.parse(date_month_year);
                 Log.d(tag, "Parsed Date: " + parsedDate.toString());*/

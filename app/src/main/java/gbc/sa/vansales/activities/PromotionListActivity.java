@@ -240,6 +240,14 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             }
             adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
             list_promotion.setAdapter(adapter);
+            if(arrayList.size()==0){
+                Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
+                intent.putExtra("msg", "Final Invoice");
+                intent.putExtra("delivery",delivery);
+                intent.putExtra("from",from);
+                intent.putExtra("headerObj", object);
+                startActivity(intent);
+            }
           //  adapter.notifyDataSetChanged();
            // onProcessingComplete();
             /*count++;

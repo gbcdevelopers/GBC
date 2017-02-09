@@ -46,10 +46,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:textAllCaps="true"
                             android:text="@string/total_sales" />
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_total_sales"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -73,6 +75,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_cash_sale"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -96,6 +99,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_credit_sales"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -119,6 +123,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_tc_sales"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -190,6 +195,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_item_discounts"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -214,6 +220,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_receipt"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -238,6 +245,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_collection"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -286,6 +294,7 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_vanstock_value"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"
@@ -304,12 +313,14 @@
 
                         <TextView
                             android:layout_width="0dp"
+                            android:textAllCaps="true"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/quantity" />
 
                         <TextView
                             android:layout_width="0dp"
+                            android:id="@+id/tv_vanstock_quantity"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center"

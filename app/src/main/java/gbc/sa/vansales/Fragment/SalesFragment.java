@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -175,6 +176,7 @@ public class SalesFragment extends Fragment {
                 public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                     final Sales sales = salesarrayList.get(position);
                     final Dialog dialog = new Dialog(getActivity());
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_with_crossbutton);
                     dialog.setCancelable(false);
                     TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
@@ -242,21 +244,23 @@ public class SalesFragment extends Fragment {
                             if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
                                 strpcsinv = String.valueOf(0);
                             }
-                            sales.setCases(strCase);
-                            sales.setPic(strpcs);
+
                             if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
                                 Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                                 strCase = "0";
+                                ed_cases.setText("0");
                                 sales.setCases(strCase);
                             } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
                                 Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                ed_pcs.setText("0");
                                 strpcs = "0";
                                 sales.setPic(strpcs);
                             } else {
                                 int salesTotal = 0;
                                 int pcsTotal = 0;
                                 double total = 0;
-
+                                sales.setCases(strCase);
+                                sales.setPic(strpcs);
                                 for(Sales sale:salesarrayList){
                                     double itemPrice = 0;
                                     if(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.CASE_UOM_NEW)||sale.getUom().equals(App.BOTTLES_UOM)){

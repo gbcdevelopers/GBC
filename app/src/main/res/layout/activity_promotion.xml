@@ -62,8 +62,6 @@
                 android:textSize="@dimen/label_small"
                 android:text="@string/_300"
                 android:enabled="false"
-                android:textColorHint="@color/colorPrimary"
-                app:backgroundTint="@color/base"
                 android:textColor="@color/black"
 
                 />
@@ -85,8 +83,6 @@
                 android:textSize="@dimen/label_small"
                 android:text="0"
                 android:enabled="false"
-                android:textColorHint="@color/colorPrimary"
-                app:backgroundTint="@color/base"
                 android:textColor="@color/black"
                 />
 
@@ -118,8 +114,6 @@
                     android:textSize="@dimen/label_small"
                     android:text="@string/_0"
                     android:enabled="false"
-                    android:textColorHint="@color/colorPrimary"
-                    app:backgroundTint="@color/base"
                     android:textColor="@color/black"
                     />
 
@@ -140,8 +134,6 @@
                     android:textSize="@dimen/label_small"
                     android:text="0"
                     android:enabled="false"
-                    android:textColorHint="@color/colorPrimary"
-                    app:backgroundTint="@color/base"
                     android:textColor="@color/black"
                     />
 
@@ -164,8 +156,6 @@
                 android:textSize="@dimen/label_small"
                 tools:text="150"
                 android:enabled="false"
-                android:textColorHint="@color/colorPrimary"
-                app:backgroundTint="@color/base"
                 android:textColor="@color/black"
                 android:id="@+id/et_discount"/>
 
@@ -186,8 +176,6 @@
             android:textSize="@dimen/label_small"
             tools:text="150"
             android:enabled="false"
-            android:textColorHint="@color/colorPrimary"
-            app:backgroundTint="@color/base"
             android:textColor="@color/black"
             android:id="@+id/tv_net_invoice"/>
 

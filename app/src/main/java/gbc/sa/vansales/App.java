@@ -132,6 +132,11 @@ public class App extends Application {
     //Activity Type
     public static final String ACTIVITY_ORDER = "ORDER";
     public static final String ACTIVITY_INVOICE = "INVOICE";
+    public static final String ACTIVITY_DELIVERY = "DELIVERY";
+
+    //Open items indicator
+    public static final String ADD_INDICATOR = "S";
+    public static final String SUB_INDICATOR = "H";
 
     //Access code range
     public static final String CUSTOMER_OUT_OF_RANGE = "20";

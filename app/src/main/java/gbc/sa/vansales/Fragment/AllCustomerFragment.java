@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -101,6 +102,7 @@ public class AllCustomerFragment extends Fragment {
     private void showStatusDialog(final Customer customer){
         final Dialog dialog = new Dialog(getActivity());
        // dialog.setTitle(getString(R.string.shop_status));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         ListView lv = (ListView) view.findViewById(R.id.statusList);
         Button cancel = (Button)view.findViewById(R.id.btnCancel);
@@ -166,7 +168,7 @@ public class AllCustomerFragment extends Fragment {
                 newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
                 newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                 newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-
+                //newMap.put(db.KEY_CUSTOMER_TYPE,customer.getPaymentMethod());
                 db.addData(db.VISIT_LIST_POST,newMap);
 
 
@@ -202,13 +204,13 @@ public class AllCustomerFragment extends Fragment {
             CustomerStatus status = new CustomerStatus();
             if(reason.getReasonType().equals(App.VisitReasons)){
                 status.setReasonCode(reason.getReasonID());
-                if(Settings.getString(App.LANGUAGE).equals("en")){
+                /*if(Settings.getString(App.LANGUAGE).equals("en")){
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
                 }
                 else{
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
-                }
-
+                }*/
+                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
                 arrayList.add(status);
             }
         }

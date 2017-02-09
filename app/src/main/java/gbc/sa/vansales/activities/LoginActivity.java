@@ -162,13 +162,13 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("Y000010000000011")){
+                                if(!checkTripID("Y000030000000007")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "Y000010000000011");
+                                    Settings.setString(TRIP_ID, "Y000030000000007");
                                     Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("Y000010000000011");
+                                    downloadData("Y000030000000007");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");

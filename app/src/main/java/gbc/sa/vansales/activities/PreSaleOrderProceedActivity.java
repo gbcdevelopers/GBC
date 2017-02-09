@@ -18,6 +18,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -152,11 +153,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final OrderRequest item = arraylist.get(position);
                 final Dialog dialog = new Dialog(PreSaleOrderProceedActivity.this);
+                dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
                 tv.setText(item.getItemName());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
                 ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
                 Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
                 final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
@@ -286,6 +289,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                     }
                 }
                 final Dialog dialog = new Dialog(PreSaleOrderProceedActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_doprint);
                 dialog.setCancelable(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -711,9 +715,6 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             }
             Log.e("Map", "" + map);
             //Log.e("Deep Entity", "" + deepEntity);
-
-
-
             orderID = IntegrationService.postData(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
            // orderID = IntegrationService.postDataBackup(PreSaleOrderProceedActivity.this, App.POST_COLLECTION, map, deepEntity);
             //Storing Order Activity for Logging

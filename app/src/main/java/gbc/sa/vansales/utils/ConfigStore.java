@@ -61,6 +61,7 @@ public class ConfigStore {
     public static final String VisitListFunction = "VISITACTIVITY";
     public static final String CollectionFunction = "COLLECTION";
     public static final String AddCustomerFunction = "ADDCUSTOMER";
+    public static final String ClearingFunction = "CASHPOST";
 
     //This is never used but only for offline posting
     public static final String OdometerFunction = "ODOMETER";

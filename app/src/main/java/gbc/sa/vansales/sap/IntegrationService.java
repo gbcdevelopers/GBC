@@ -18,6 +18,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -682,7 +683,7 @@ public class IntegrationService extends IntentService {
         Iterator keys = object.keys();
         while (keys.hasNext()) {
             String key = (String) keys.next();
-            String value = object.getString(key);
+            String value = UrlBuilder.decodeString(object.getString(key));
             map.put(key, value);
         }
         return map;
@@ -691,12 +692,12 @@ public class IntegrationService extends IntentService {
         ArrayList<String> list = new ArrayList<>();
         for (Map.Entry entry : hashMap.entrySet()) {
             String value = entry.getValue() == null ? null : entry.getValue().toString();
-            value = UrlBuilder.clean(value);
+            /*value = UrlBuilder.clean(value);
             try {
                 value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }
+            }*/
             list.add("\"" + entry.getKey() + "\"" + ":\"" + value + "\"");
         }
         return TextUtils.join(",", list);
@@ -734,6 +735,7 @@ public class IntegrationService extends IntentService {
                 Header[] headers = response.getAllHeaders();
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
+                Log.e("Response JSON", jsonString);
                 data = unpack(jsonString,response);
                // JSONObject jsonObj = new JSONObject(jsonString);
             } else {
@@ -914,7 +916,7 @@ public class IntegrationService extends IntentService {
                                     offlineResponse.setFunction(jsonObject.getString("Function"));
                                     offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                                     offlineResponse.setOrderID(jsonObject.getString("OrderId"));
-                                    Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                    Log.e("Response Order","" + jsonObject.getString("OrderId") + jsonObject.getString("PurchaseNum"));
                                     offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
                                     arrayList.add(offlineResponse);
                                 }

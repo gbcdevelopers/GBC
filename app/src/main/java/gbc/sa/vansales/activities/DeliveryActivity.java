@@ -17,6 +17,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -75,6 +76,9 @@ public class DeliveryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
         loadingSpinner = new LoadingSpinner(this);
+        Intent i = this.getIntent();
+        object = (Customer) i.getParcelableExtra("headerObj");
+        customers = CustomerHeaders.get();
         arrayList = new ArrayList<>();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         new loadDeliveries().execute();
@@ -82,9 +86,6 @@ public class DeliveryActivity extends AppCompatActivity {
         reasonsList = OrderReasons.get();
         statusAdapter = new CustomerStatusAdapter(this, statusList);
         loadStatus();
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
@@ -212,6 +213,7 @@ public class DeliveryActivity extends AppCompatActivity {
             map.put(db.KEY_DELIVERY_DATE, "");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_IS_DELIVERED, "false");
+            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -261,6 +263,7 @@ public class DeliveryActivity extends AppCompatActivity {
     private void showReasonDialog(ArrayList<OrderList> list, final int position) {
         final int pos = position;
         final Dialog dialog = new Dialog(DeliveryActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //dialog.setTitle(getString(R.string.shop_status));
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
@@ -279,6 +282,9 @@ public class DeliveryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 deleteDeliveryItems(arrayList.get(pos).getOrderId(), statusList.get(position).getReasonCode(), statusList.get(position).getReasonDescription());
                 deleteDelivery(pos);
+                if(Helpers.isNetworkAvailable(DeliveryActivity.this)){
+                    Helpers.createBackgroundJob(DeliveryActivity.this);
+                }
                 dialog.dismiss();
             }
         });
@@ -342,7 +348,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 deleteMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 deleteMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
                 //Adding item for delete in post
-                db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map);
+                db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, deleteMap);
             }
             while (cursor.moveToNext());
         }

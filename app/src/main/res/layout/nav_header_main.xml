@@ -9,6 +9,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
+        android:id="@+id/tv_route"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/route_code_101"
@@ -16,6 +17,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
     <TextView
+        android:id="@+id/tv_driver_no"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_five"

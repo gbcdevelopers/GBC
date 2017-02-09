@@ -202,7 +202,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/spin"
             android:layout_toRightOf="@+id/lbl_specify"
-            >
+            android:layout_toEndOf="@+id/lbl_specify">
 
 
         </Spinner>
@@ -216,6 +216,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_specify_reason"
         android:background="@color/buttoncolor"
+        android:textAllCaps="true"
         android:text="@string/save"
         android:textColor="@color/white" />
 

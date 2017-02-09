@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -151,7 +152,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                         showStatusDialog(customer);
                     }
                 } else {
-                    Log.e("I dont have Flag","Flag");
+                    Log.e("I dont have Flag", "Flag");
                     App.CustomerRouteControl obj = new App.CustomerRouteControl();
                     obj.setThresholdLimit("99");
                     obj.setIsVerifyGPS(false);
@@ -186,6 +187,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     private void showStatusDialog(final Customer customer){
         final Dialog dialog = new Dialog(getActivity());
         //dialog.setTitle(getString(R.string.shop_status));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         Button cancel = (Button)view.findViewById(R.id.btnCancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -300,7 +302,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                     newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
                     newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-
+                    //newMap.put(db.KEY_CUSTOMER_TYPE,customer.getPaymentMethod());
                     db.addData(db.VISIT_LIST_POST,newMap);
                 }
 
@@ -339,7 +341,14 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
             CustomerStatus status = new CustomerStatus();
             if(reason.getReasonType().equals(App.VisitReasons)){
                 status.setReasonCode(reason.getReasonID());
-                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                //Log.e("STATUS","" + status.getReasonDescription());
+                if(Settings.getString(App.LANGUAGE).equals("en")){
+                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                }
+                else{
+                    status.setReasonDescription(reason.getReasonDescriptionAr());
+                }
+
                 arrayList.add(status);
             }
         }

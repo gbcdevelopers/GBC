@@ -1,6 +1,7 @@
 package gbc.sa.vansales.data;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,12 +53,14 @@ public class OrderReasons {
                 reasons.setReasonDescription(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
                 reasons.setReasonDescriptionAr(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION_AR)));
                 data.add(reasons);
+
             }
             while (cursor.moveToNext());
         }
     }
 
     public static ArrayList<Reasons> get() {
+        Log.e("Data","" + data.get(0).getReasonDescriptionAr());
         return data;
     }
 }

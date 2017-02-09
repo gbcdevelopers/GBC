@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -110,6 +111,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 filter.put(db.KEY_IS_LOAD_VERIFIED, "false");
                 db.updateData(db.LOCK_FLAGS, altMap, filter);
                 final Dialog dialog = new Dialog(LoadVerifyActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_doprint);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
@@ -502,7 +504,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
             JSONArray deepEntity = new JSONArray();
             JSONObject obj = new JSONObject();
             deepEntity.put(obj);
-            orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+            orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+           // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -650,62 +653,71 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+            try{
+                if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
 
-
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                map.put(db.KEY_ORDER_ID, tokens[0].toString());
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                db.updateData(db.LOAD_CONFIRMATION_HEADER, map, filter);
-                if (loadingSpinner.isShowing()) {
-                    loadingSpinner.hide();
-                }
-                boolean test = addVarianceforPost(dataNew, dataOld);
-                HashMap<String, String> checkMap = new HashMap<>();
-                checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
-                HashMap<String, String> checkMapCredit = new HashMap<>();
-                checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
-                if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
-                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
-                        new postDataVariance(ConfigStore.LoadVarianceDebit);
-                    } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
-                        new postDataVariance(ConfigStore.LoadVarianceCredit);
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    db.updateData(db.LOAD_CONFIRMATION_HEADER, map, filter);
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
                     }
-                } else {
-                    new updateStockforCustomer().execute();
-                }
-            } else if (this.orderID != null && !(this.orderID.equalsIgnoreCase(""))) {
-                if (loadingSpinner.isShowing()) {
-                    loadingSpinner.hide();
-                }
-                boolean test = addVarianceforPost(dataNew, dataOld);
-                HashMap<String, String> checkMap = new HashMap<>();
-                checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
-                HashMap<String, String> checkMapCredit = new HashMap<>();
-                checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
-                if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
-                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
-                        new postDataVariance(ConfigStore.LoadVarianceDebit);
-                    } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
-                        new postDataVariance(ConfigStore.LoadVarianceCredit);
+                    boolean test = addVarianceforPost(dataNew, dataOld);
+                    HashMap<String, String> checkMap = new HashMap<>();
+                    checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
+                    HashMap<String, String> checkMapCredit = new HashMap<>();
+                    checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
+                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                        if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                            new postDataVariance(ConfigStore.LoadVarianceDebit);
+                        } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
+                            new postDataVariance(ConfigStore.LoadVarianceCredit);
+                        }
+                    } else {
+                        new updateStockforCustomer().execute();
                     }
-                } else {
-                    new updateStockforCustomer().execute();
-                }
+                } else if (this.orderID != null && !(this.orderID.equalsIgnoreCase(""))) {
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
+                    boolean test = addVarianceforPost(dataNew, dataOld);
+                    HashMap<String, String> checkMap = new HashMap<>();
+                    checkMap.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceDebit);
+                    HashMap<String, String> checkMapCredit = new HashMap<>();
+                    checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
+                    if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                        if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                            new postDataVariance(ConfigStore.LoadVarianceDebit);
+                        } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
+                            new postDataVariance(ConfigStore.LoadVarianceCredit);
+                        }
+                    } else {
+                        new updateStockforCustomer().execute();
+                    }
                /* Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);*/
-            } else if (this.orderID.contains("Error")) {
-                if (loadingSpinner.isShowing()) {
-                    loadingSpinner.hide();
-                }
+                } else if (this.orderID.contains("Error")) {
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
                 /*if(print){
                     printData(this.tokens[0].toString());
                 }*/
-                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                }
             }
+            catch (Exception e){
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                e.printStackTrace();
+                new updateStockforCustomer().execute();
+            }
+
         }
     }
     public class postDataVariance extends AsyncTask<Void, Void, Void> {
@@ -803,8 +815,18 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 updateSpinner.hide();
             }
 
-            Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
-            startActivity(intent);
+            if(print){
+                PrinterDataHelper dataHelper = new PrinterDataHelper();
+                HashMap<String,String> header = new HashMap<>();
+                //dataHelper.createJSONData(App.LOAD_SUMMARY_REQUEST,)
+                Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+                startActivity(intent);
+            }
+            else{
+                Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
     void calculateStock() {

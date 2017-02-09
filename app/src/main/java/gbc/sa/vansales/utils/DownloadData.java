@@ -409,6 +409,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_INVOICE_DATE,customerOpenItemsObj.get("DocDate").toString());
                         params.put(db.KEY_INVOICE_DAYS,customerOpenItemsObj.get("Days").toString());
                         params.put(db.KEY_DUE_DATE,customerOpenItemsObj.get("DueDate").toString());
+                        params.put(db.KEY_INDICATOR,customerOpenItemsObj.get("DebitCreditInd").toString());
                         params.put(db.KEY_AMOUNT_CLEARED,"0");
                         params.put(db.KEY_CHEQUE_AMOUNT,"0");
                         params.put(db.KEY_CHEQUE_NUMBER,"0000");

@@ -28,7 +28,7 @@
             android:id="@+id/navigationmenu"
             android:layout_width="300dp"
             android:layout_height="match_parent"
-
+            android:groupIndicator="@null"
             android:layout_marginTop="200dp"
             android:layout_marginLeft="@dimen/h3"
             android:layout_gravity="start"

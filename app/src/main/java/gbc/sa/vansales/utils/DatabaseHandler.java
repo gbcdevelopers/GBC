@@ -66,6 +66,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String VISIT_LIST_POST = "VISIT_LIST_POST";
     public static final String VISIT_LIST_ID_GENERATE = "VISIT_LIST_ID_GENERATE";
     public static final String NEW_CUSTOMER_POST = "NEW_CUSTOMER_POST";
+    public static final String TODAYS_SUMMARY = "TODAYS_SUMMARY";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -348,7 +349,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_INVOICE_COMPLETE = "isInvoiceComplete";
     public static final String KEY_SAP_INVOICE_NO = "sapInvoiceNo";
     public static final String KEY_INVOICE_DAYS = "invoiceDays";
-    public static final String KEY_CUSTOMER_TYPE = "customerType";
+    public static final String KEY_INDICATOR = "indicator";
+
 
     //Day Activity
     public static final String KEY_ACTIVITY_TYPE = "activityType";
@@ -386,6 +388,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_SALES_AREA = "salesArea";
     public static final String KEY_DISTRIBUTION = "distribution";
    // public static final String KEY_DIVISION = "division";
+
+
+    //Todays Summary
+    public static final String KEY_CUSTOMER_TYPE = "customerType";
+    public static final String KEY_ORDER_TOTAL = "totalOrderValue";
+    public static final String KEY_ORDER_DISCOUNT = "totalOrderDiscount";
+
 
 
     private static DatabaseHandler sInstance;
@@ -951,6 +960,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_CHEQUE_BANK_NAME + " TEXT,"
                 + KEY_SAP_INVOICE_NO + " TEXT,"
                 + KEY_INVOICE_DAYS + " TEXT,"
+                + KEY_INDICATOR + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT,"
                 + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
@@ -1066,6 +1076,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_TODAY_SUMMARY = "CREATE TABLE " + TODAYS_SUMMARY + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_CUSTOMER_TYPE + " TEXT,"
+                + KEY_ACTIVITY_TYPE + " TEXT,"
+                + KEY_ORDER_TOTAL + " TEXT,"
+                + KEY_ORDER_DISCOUNT + " TEXT,"
+                + KEY_ORDER_ID + " TEXT " + ")";
+
         String TABLE_VISIT_LIST_ID_GENERATE = "CREATE TABLE " + VISIT_LIST_ID_GENERATE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_DOCUMENT_TYPE + " TEXT,"
@@ -1116,6 +1136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_VISIT_LIST_POST);
         db.execSQL(TABLE_VISIT_LIST_ID_GENERATE);
         db.execSQL(TABLE_NEW_CUSTOMER_POST);
+        db.execSQL(TABLE_TODAY_SUMMARY);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1162,6 +1183,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_POST);
         db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_ID_GENERATE);
         db.execSQL("DROP TABLE IF EXISTS " + NEW_CUSTOMER_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY);
 
         onCreate(db);
     }
@@ -1190,12 +1212,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         for (Map.Entry entry : keyMap.entrySet()) {
             String value = entry.getValue() == null ? null : entry.getValue().toString();
-            value = clean(value);
+            /*value = clean(value);
             try {
                 value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }
+            }*/
             values.put(entry.getKey().toString(), value);
         }
         db.insert(tablename, null, values);

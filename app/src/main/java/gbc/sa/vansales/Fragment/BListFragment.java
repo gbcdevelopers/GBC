@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -144,6 +145,7 @@ public class  BListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 final Sales sales = arrProductList.get(position);
                 final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -441,7 +443,10 @@ public class  BListFragment extends Fragment {
                     reasons.setReasonID(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
                     reasons.setReasonType(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_TYPE)));
                     reasons.setReasonDescription(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
-                    reasonsList.add(reasons);
+                    if(reasons.getReasonID().contains("ZB")){
+                        reasonsList.add(reasons);
+                    }
+                    //reasonsList.add(reasons);
                 }
                 while (cursor.moveToNext());
             }

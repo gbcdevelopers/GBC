@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +28,10 @@ import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
+import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.Sales;
@@ -60,16 +65,19 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     float badreturndiscount = 0;
     TextView tv_current_invoice;
     ArrayList<Sales> arraylist = new ArrayList<>();
+    ArrayList<DeliveryItem> deliveryArrayList = new ArrayList<>();
     int count=0;
     int returnCount = 0;
     int referenceCount = 0;
     EditText tv_discount;
     EditText tv_net_invoice;
     OrderList delivery;
+    ArrayList<ArticleHeader> articles;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_promotion);
+        articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(this);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
@@ -82,8 +90,11 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         tv_top_header.setText(getString(R.string.promo_details));
         tv_promotion = (TextView) findViewById(R.id.tv_promotion);
         tv_current_invoice = (TextView) findViewById(R.id.tv_invoice_amount);
+        tv_current_invoice.setTextColor(Color.BLACK);
         tv_discount = (EditText)findViewById(R.id.et_discount);
+        tv_discount.setTextColor(Color.BLACK);
         tv_net_invoice = (EditText)findViewById(R.id.tv_net_invoice);
+        tv_net_invoice.setTextColor(Color.BLACK);
         if (getIntent().getExtras() != null) {
             str_promotion_message = getIntent().getExtras().getString("msg", "extra Promotion");
             from = getIntent().getExtras().getString("from","");
@@ -110,6 +121,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             public void onClick(View v) {
                 if (from.equals("Final Invoice")) {
                     final Dialog dialog = new Dialog(PromotioninfoActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_doprint);
                     dialog.setCancelable(false);
                     dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -162,14 +174,51 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         }
                     });
                 } else if (from.equals("delivery")) {
-                    Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
-                    intent.putExtra("msg", str_promotion_message);
-                    intent.putExtra("from",from);
-                    intent.putExtra("headerObj", object);
-                    intent.putExtra("delivery", delivery);
-                    intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
-                    startActivity(intent);
-                    finish();
+
+
+                    //Logging sales for todays Summary
+                    HashMap<String,String>todaysSummary = new HashMap<>();
+                    todaysSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    todaysSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    todaysSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                    todaysSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_DELIVERY);
+                    todaysSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
+                    todaysSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                    db.addData(db.TODAYS_SUMMARY,todaysSummary);
+
+                    final Dialog dialog = new Dialog(PromotioninfoActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_doprint);
+                    dialog.setCancelable(false);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                    dialog.show();
+                    btn_print.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            new postDeliveryData().execute();
+                                /*Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
+                                startActivity(intent);
+                                finish();*/
+                        }
+                    });
+                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            new postDeliveryData().execute();
+                            /*dialog.dismiss();
+                            Intent intent = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                            intent.putExtra("headerObj", object);
+                            intent.putExtra("msg", "visit");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);*/
+                        }
+                    });
+
+
                 } else {
                     if (from.equals("")) {
                         final Dialog dialog = new Dialog(PromotioninfoActivity.this);
@@ -581,8 +630,6 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             new loadPromotions(App.Promotions05,"Delivery");
             new loadPromotions(App.Promotions07,"Delivery");
 
-
-
             tv_current_invoice.setText(String.valueOf(totalamnt));
         }
     }
@@ -974,6 +1021,47 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     logMap.put(db.KEY_PRICE,tv_net_invoice.getText().toString());
                     db.addData(db.DAYACTIVITY,logMap);
                 }
+                else{
+
+                    HashMap<String,String>invoiceMap = new HashMap<>();
+                    invoiceMap.put(db.KEY_COLLECTION_TYPE,App.COLLECTION_INVOICE_CASH);
+                    invoiceMap.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                    invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
+                    invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
+                    invoiceMap.put(db.KEY_INVOICE_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                    invoiceMap.put(db.KEY_AMOUNT_CLEARED,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_NUMBER,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_DATE,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
+                    invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                    invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    db.addData(db.COLLECTION, invoiceMap);
+
+
+
+                    HashMap<String,String>logMap = new HashMap<>();
+                    logMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                    logMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    logMap.put(db.KEY_ORDER_ID,tokens[0].toString());
+                    logMap.put(db.KEY_PRICE,tv_net_invoice.getText().toString());
+                    db.addData(db.DAYACTIVITY,logMap);
+                }
+
+                //Logging sales for todays Summary
+                HashMap<String,String>todaysSummary = new HashMap<>();
+                todaysSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                todaysSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                todaysSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                todaysSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
+                todaysSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
+                todaysSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                db.addData(db.TODAYS_SUMMARY,todaysSummary);
 
 
                 if(loadingSpinner.isShowing()){
@@ -1008,6 +1096,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
                                     intent.putExtra("msg", str_promotion_message);
                                     intent.putExtra("from",from);
+                                    intent.putExtra("invoiceno",tokens[0].toString());
                                     intent.putExtra("headerObj", object);
                                     intent.putExtra("amountdue", tv_net_invoice.getText().toString());
                                     startActivity(intent);
@@ -1465,5 +1554,309 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
 
         Log.e("Discount", "" + discount);
 
+    }
+    public String postDeliveryData() {
+        String orderID = "";
+        String purchaseNumber = "";
+        try {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("Function", ConfigStore.CustomerDeliveryRequestFunction);
+            map.put("OrderId", delivery.getOrderId());
+            map.put("DocumentType", ConfigStore.DeliveryDocumentType);
+            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+            // map.put("DocumentDate", null);
+            map.put("CustomerId", object.getCustomerID());
+            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+            map.put("Division", Settings.getString(App.DIVISION));
+            map.put("OrderValue", invoiceAmount);
+            map.put("Currency", "SAR");
+            /*map.put("PurchaseNum", Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type));*/
+            JSONArray deepEntity = new JSONArray();
+            HashMap<String, String> itemMap = new HashMap<>();
+            itemMap.put(db.KEY_ITEM_NO, "");
+            itemMap.put(db.KEY_MATERIAL_NO, "");
+            itemMap.put(db.KEY_MATERIAL_DESC1, "");
+            itemMap.put(db.KEY_CASE, "");
+            itemMap.put(db.KEY_UNIT, "");
+            itemMap.put(db.KEY_AMOUNT, "");
+            itemMap.put(db.KEY_ORDER_ID, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, itemMap, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                map.put("PurchaseNum", cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                purchaseNumber = map.get("PurchaseNum");
+                int itemno = 10;
+                do {
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    if (articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
+                        JSONObject jo = new JSONObject();
+                        //jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Item", cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", "");
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        jo.put("UoM", articleHeader.getBaseUOM());
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        jo.put("Storagelocation", "");
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno + 10;
+                        deepEntity.put(jo);
+                    }
+                    else {
+                        JSONObject jo = new JSONObject();
+                        //jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                        jo.put("Item", cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                        jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                        jo.put("Plant", "");
+                        jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                        jo.put("ItemValue", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        jo.put("UoM", articleHeader.getBaseUOM());
+                        jo.put("Value", cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        jo.put("Storagelocation", "");
+                        jo.put("Route", Settings.getString(App.ROUTE));
+                        itemno = itemno + 10;
+                        deepEntity.put(jo);
+                    }
+                }
+                while (cursor.moveToNext());
+            }
+            orderID = IntegrationService.postData(PromotioninfoActivity.this, App.POST_COLLECTION, map, deepEntity);
+            //orderID = IntegrationService.postDataBackup(PaymentDetails.this, App.POST_COLLECTION, map, deepEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return orderID + "," + purchaseNumber;
+    }
+    public class postDeliveryData extends AsyncTask<Void, Void, Void> {
+        private ArrayList<String> returnList;
+        private String orderID = "";
+        private String[] tokens = new String[2];
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
+            this.orderID = postDeliveryData();
+            this.tokens = orderID.split(",");
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            //Log.e("Order ID", "" + this.orderID);
+
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put(db.KEY_TIME_STAMP, "");
+            map.put(db.KEY_DELIVERY_NO,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_NO ,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_CASE ,"");
+            map.put(db.KEY_UNIT ,"");
+            map.put(db.KEY_UOM,"");
+            map.put(db.KEY_AMOUNT, "");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PURCHASE_NUMBER,"");
+
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+
+            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+
+                    DeliveryItem deliveryItem = new DeliveryItem();
+                    deliveryItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                    deliveryItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    deliveryItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    deliveryItem.setItemCase(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                    deliveryItem.setItemUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                    deliveryItem.setItemUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                    deliveryItem.setAmount(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                    deliveryArrayList.add(deliveryItem);
+                }
+                while (cursor.moveToNext());
+            }
+            if(this.tokens[0].toString().equals(this.tokens[1].toString())){
+                for (DeliveryItem item : deliveryArrayList) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, postmap, filtermap);
+                }
+
+
+                if(object.getPaymentMethod().equals(App.CREDIT_CUSTOMER)||object.getPaymentMethod().equals(App.TC_CUSTOMER)){
+                    HashMap<String,String>invoiceMap = new HashMap<>();
+                    invoiceMap.put(db.KEY_COLLECTION_TYPE,App.COLLECTION_DELIVERY);
+                    invoiceMap.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                    invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
+                    invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
+                    invoiceMap.put(db.KEY_INVOICE_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                    invoiceMap.put(db.KEY_AMOUNT_CLEARED,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                    invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
+                    invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                    invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    db.addData(db.COLLECTION, invoiceMap);
+                   /* Log.e("Going on","Foo");
+                    HashMap<String,String>logMap = new HashMap<>();
+                    logMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                    logMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    logMap.put(db.KEY_ORDER_ID,tokens[0].toString());
+                    logMap.put(db.KEY_PRICE,tv_net_invoice.getText().toString());
+                    db.addData(db.DAYACTIVITY,logMap);*/
+                }
+
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PromotioninfoActivity.this);
+                alertDialogBuilder/*.setTitle("Message")*/
+                        //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                        .setMessage(getString(R.string.request_created))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_IS_DELIVERED, "true");
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                                db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
+                                dialog.dismiss();
+                                if(Helpers.isNetworkAvailable(PromotioninfoActivity.this)){
+                                    Helpers.createBackgroundJob(PromotioninfoActivity.this);
+                                }
+
+                                if(object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
+                                    Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                    intent.putExtra("msg", str_promotion_message);
+                                    intent.putExtra("from",from);
+                                    intent.putExtra("headerObj", object);
+                                    intent.putExtra("delivery", delivery);
+                                    intent.putExtra("invoiceno",tokens[0].toString());
+                                    intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                else{
+                                    Intent intent = new Intent(PromotioninfoActivity.this, DeliveryActivity.class);
+                                    intent.putExtra("headerObj", object);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                //  finish();
+                            }
+                        });
+                // create alert dialog
+                android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+
+            }
+            else{
+                for (DeliveryItem item : deliveryArrayList) {
+                    HashMap<String, String> postmap = new HashMap<String, String>();
+                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    postmap.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                    postmap.put(db.KEY_ORDER_ID,tokens[0].toString());
+
+                    HashMap<String, String> filtermap = new HashMap<>();
+                    filtermap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    //  filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filtermap.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    filtermap.put(db.KEY_PURCHASE_NUMBER,tokens[1].toString());
+                    db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, postmap, filtermap);
+                }
+
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
+                    // Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+                } else if (this.orderID.contains("Error")) {
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                } else {
+                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(PromotioninfoActivity.this);
+                    alertDialogBuilder.setTitle("Message")
+                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_IS_DELIVERED, "true");
+                                    HashMap<String, String> filter = new HashMap<>();
+                                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                                    db.updateData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
+                                    dialog.dismiss();
+                                    if(Helpers.isNetworkAvailable(PromotioninfoActivity.this)){
+                                        Helpers.createBackgroundJob(PromotioninfoActivity.this);
+                                    }
+
+
+                                    if(object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
+                                        Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                        intent.putExtra("msg", str_promotion_message);
+                                        intent.putExtra("from",from);
+                                        intent.putExtra("headerObj", object);
+                                        intent.putExtra("delivery", delivery);
+                                        intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else{
+                                        Intent intent = new Intent(PromotioninfoActivity.this, DeliveryActivity.class);
+                                        intent.putExtra("headerObj", object);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
+
+                                }
+                            });
+                    // create alert dialog
+                    android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
+                /*Intent intent = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                intent.putExtra("headerObj", object);
+                intent.putExtra("msg","all");
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();*/
+            }
+
+        }
     }
 }

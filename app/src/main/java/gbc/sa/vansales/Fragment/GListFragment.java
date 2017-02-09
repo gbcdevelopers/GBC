@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -156,6 +157,7 @@ public class GListFragment extends Fragment {
                 final Sales sales = arrProductList.get(position);
                 Log.e("On List Click", "" + sales.getReasonCode());
                 final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -489,7 +491,7 @@ public class GListFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String> map = new HashMap<>();
-            map.put(db.KEY_REASON_TYPE,"");
+            map.put(db.KEY_REASON_TYPE, "");
             map.put(db.KEY_REASON_DESCRIPTION,"");
             map.put(db.KEY_REASON_CODE,"");
             HashMap<String,String> filter = new HashMap<>();
@@ -501,7 +503,10 @@ public class GListFragment extends Fragment {
                     reasons.setReasonID(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_CODE)));
                     reasons.setReasonType(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_TYPE)));
                     reasons.setReasonDescription(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
-                    reasonsList.add(reasons);
+                    if(reasons.getReasonID().contains("ZG")){
+                        reasonsList.add(reasons);
+                    }
+
                 }
                 while (cursor.moveToNext());
             }

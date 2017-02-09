@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -63,6 +64,10 @@ public class EndTripActivity extends AppCompatActivity {
     TextView tv_cheque_amnt;
     TextView tv_cash_amnt;
     TextView tv_total_amount;
+    String chequeAmount;
+    String chequeNumber;
+    String customerNo;
+    String bankCodes;
     TextView tv_due_amount;
     LinearLayout ll_add_expense;
     ListView expenseListView;
@@ -139,6 +144,7 @@ public class EndTripActivity extends AppCompatActivity {
             map.put(db.KEY_CASH_AMOUNT,"");
             map.put(db.KEY_CHEQUE_AMOUNT,"");
             map.put(db.KEY_CHEQUE_NUMBER,"");
+            map.put(db.KEY_CHEQUE_BANK_CODE,"");
             map.put(db.KEY_IS_INVOICE_COMPLETE,"");
             HashMap<String,String>filter = new HashMap<>();
             Cursor c = db.getData(db.COLLECTION,map,filter);
@@ -164,6 +170,10 @@ public class EndTripActivity extends AppCompatActivity {
         do {
             chequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
             cashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+            Log.e("Customers", "" + c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+            Log.e("Cheque","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER)));
+            Log.e("Cheque Amount","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+            Log.e("Bank","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE)));
         }
         while(c.moveToNext());
     }
@@ -305,9 +315,9 @@ public class EndTripActivity extends AppCompatActivity {
                     filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
                     db.updateData(db.BEGIN_DAY, map, filter);
                 }
-
-                Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
-                startActivity(intent);
+                new postEndTrip("CASH");
+                /*Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                startActivity(intent);*/
 
             } else if (this.orderID.contains("Error")) {
                 Toast.makeText(EndTripActivity.this, this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
@@ -329,6 +339,49 @@ public class EndTripActivity extends AppCompatActivity {
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 // show it
                 alertDialog.show();
+            }
+        }
+    }
+    public class postEndTrip extends AsyncTask<Void,Void,Void>{
+        private String source;
+        private String orderId;
+
+        private postEndTrip(String source){
+            this.source = source;
+            execute();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            if(source.equals("CASH")){
+                HashMap<String,String>map = new HashMap<>();
+                map.put("OrderValue",String.valueOf(cashTotal));
+                map.put("VisitID",source);
+                map.put("Function",ConfigStore.ClearingFunction);
+                map.put("CustomerId",Settings.getString(App.DRIVER));
+                JSONArray deepEntity = new JSONArray();
+                JSONObject obj = new JSONObject();
+                deepEntity.put(obj);
+                this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                Log.e("Order ID","" + orderId);
+            }
+            else if(source.equals("CHEQ")){
+
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+
+            if(source.equals("CASH")){
+                if(chequeTotal>0){
+                    new postEndTrip("CHEQ");
+                }
+            }
+            else{
+
             }
         }
     }

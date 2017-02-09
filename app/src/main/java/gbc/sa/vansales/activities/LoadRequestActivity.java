@@ -20,6 +20,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -455,6 +456,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                     }
                 }
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_doprint);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
@@ -533,6 +535,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final LoadRequest item = arraylist.get(position);
                 final Dialog dialog = new Dialog(LoadRequestActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
@@ -872,72 +875,36 @@ public class LoadRequestActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             //Log.e("Order ID", "" + this.orderID);
-            if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
-                for (LoadRequest loadRequest : arraylist) {
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                    map.put(db.KEY_ORDER_ID, tokens[0].toString());
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    filter.put(db.KEY_MATERIAL_NO, loadRequest.getMaterialNo());
-                    // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
-                    filter.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                    db.updateData(db.LOAD_REQUEST, map, filter);
-                }
-                if (loadingSpinner.isShowing()) {
-                    loadingSpinner.hide();
-                }
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
-                alertDialogBuilder/*.setTitle("Message")*/
-                        //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
-                        .setMessage(getString(R.string.request_created))
-                                //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if(Helpers.isNetworkAvailable(LoadRequestActivity.this)){
-                                    Helpers.createBackgroundJob(LoadRequestActivity.this);
-                                }
-                                dialog.dismiss();
-                                finish();
-                            }
-                        });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
-            } else if (!tokens[0].toString().equals("")) {
-                for (LoadRequest loadRequest : arraylist) {
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
-                    map.put(db.KEY_ORDER_ID, tokens[0].toString());
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    filter.put(db.KEY_MATERIAL_NO, loadRequest.getMaterialNo());
-                    //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
-                    filter.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                    db.updateData(db.LOAD_REQUEST, map, filter);
-                }
-                if (loadingSpinner.isShowing()) {
-                    loadingSpinner.hide();
-                }
-                if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
-                } else if (this.orderID.contains("Error")) {
-                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
-                } else {
+            try{
+                if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+                    for (LoadRequest loadRequest : arraylist) {
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                        map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        filter.put(db.KEY_MATERIAL_NO, loadRequest.getMaterialNo());
+                        // filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                        filter.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                        db.updateData(db.LOAD_REQUEST, map, filter);
+                    }
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
-                    alertDialogBuilder.setTitle("Message")
-                            .setMessage("Request " + tokens[1].toString() + " has been created")
+                    alertDialogBuilder/*.setTitle("Message")*/
+                            //.setMessage("Request with reference " + tokens[1].toString() + " has been saved")
+                            .setMessage(getString(R.string.request_created))
+                                    //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    if(Helpers.isNetworkAvailable(LoadRequestActivity.this)){
+                                        Helpers.createBackgroundJob(LoadRequestActivity.this);
+                                    }
                                     dialog.dismiss();
                                     finish();
                                 }
@@ -946,10 +913,52 @@ public class LoadRequestActivity extends AppCompatActivity {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     // show it
                     alertDialog.show();
+                } else if (!tokens[0].toString().equals("")) {
+                    for (LoadRequest loadRequest : arraylist) {
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                        map.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        filter.put(db.KEY_MATERIAL_NO, loadRequest.getMaterialNo());
+                        //filter.put(db.KEY_ORDER_ID,tokens[1].toString());
+                        filter.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                        db.updateData(db.LOAD_REQUEST, map, filter);
+                    }
+                    if (loadingSpinner.isShowing()) {
+                        loadingSpinner.hide();
+                    }
+                    if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+                    } else if (this.orderID.contains("Error")) {
+                        Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadRequestActivity.this);
+                        alertDialogBuilder.setTitle("Message")
+                                .setMessage("Request " + tokens[1].toString() + " has been created")
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
+                                    }
+                                });
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
     }
     public boolean checkforNullBeforePost(){

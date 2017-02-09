@@ -1,5 +1,6 @@
 package gbc.sa.vansales.adapters;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class CustomerStatusAdapter extends ArrayAdapter<CustomerStatus> {
         }
 
         CustomerStatus status = getItem(position);
+        Log.e("Status","" + status.getReasonDescription());
         holder.item_description.setText(UrlBuilder.decodeString(status.getReasonDescription()));
         return convertView;
     }

@@ -1,5 +1,7 @@
 package gbc.sa.vansales.utils;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -46,6 +48,7 @@ import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.sap.BackgroundJob;
+import gbc.sa.vansales.sap.BackgroundJobLower;
 
 import android.net.NetworkInfo;
 
@@ -160,7 +163,7 @@ public class Helpers {
             Cursor cursor = db.getData(db.VISIT_LIST_ID_GENERATE, prData, search);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
                 Log.e("Num Range From DB", "" + numRange);
                 numRange = numRange + 1;
                 HashMap<String, String> valueMap = new HashMap<>();
@@ -173,7 +176,7 @@ public class Helpers {
             valueMap.put(db.KEY_DOC_TYPE, "VISITLIST");
             valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
             Log.e("Adding Data Num Range", "" + valueMap);
-            db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
+            db.addData(db.VISIT_LIST_ID_GENERATE, valueMap);
         }
         return StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
@@ -209,7 +212,10 @@ public class Helpers {
             Log.e("Adding Data Num Range", "" + valueMap);
             db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
-        return route + String.valueOf(docTypeId) + StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        String tripID = Settings.getString(App.TRIP_ID);
+        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
+        Log.e("GEnerated Number","" + routeCode + String.valueOf(docTypeId) + StringUtils.leftPad(String.valueOf(numRange), length, "0"));
+        return routeCode + StringUtils.leftPad(String.valueOf(docTypeId),2,"0") + StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
     public static String generateCustomer(DatabaseHandler db, String documentType) {
         String route = Settings.getString(App.ROUTE);
@@ -375,7 +381,7 @@ public class Helpers {
         HashMap<String, String> map = new HashMap<>();
         map.put("Function", function);
         map.put("TripId",Settings.getString(App.TRIP_ID));
-        map.put("OrderId", orderId.equals("") ? "" : orderId);
+        map.put("OrderId", orderId.equals("") ? "0" : orderId);
         map.put("DocumentType", function.equals(ConfigStore.LoadRequestFunction)&&customerId.equals(Settings.getString(App.DRIVER))
                 ?getDocumentTypefromDate(stringToDate(documentDate,App.DATE_PICKER_FORMAT))
                 :documentType);
@@ -517,17 +523,24 @@ public class Helpers {
     }
 
     public static void createBackgroundJob(Context context){
-        ComponentName mServiceComponent = new ComponentName(context, BackgroundJob.class);
-        JobInfo.Builder builder = null;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ComponentName mServiceComponent = new ComponentName(context, BackgroundJob.class);
+            JobInfo.Builder builder = null;
             builder = new JobInfo.Builder(kJobId++, mServiceComponent);
             builder.setMinimumLatency(2 * 1000); // wait at least
-            builder.setOverrideDeadline(50 * 1000); // maximum delay
+            builder.setOverrideDeadline(5 * 1000); // maximum delay
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // require unmetered network
             builder.setRequiresDeviceIdle(false); // device should be idle
             builder.setRequiresCharging(false); // we don't care if the device is charging or not
             JobScheduler jobScheduler = (JobScheduler) context.getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
             jobScheduler.schedule(builder.build());
+        }
+        else{
+            long time = 2 * 1000;
+            Intent intentAlarm = new Intent(context, BackgroundJobLower.class);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP,time, PendingIntent.getBroadcast(context, 1, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT));
         }
 
     }

@@ -12,6 +12,7 @@
 				<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 				<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+				<uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
 				<application
 								android:name="gbc.sa.vansales.activities.AppController"
@@ -31,6 +32,8 @@
 																				<action android:name="android.net.wifi.WIFI_STATE_CHANGED">
 																				</action></action></intent-filter>
 								</receiver>
+
+								<receiver android:name=".sap.BackgroundJobLower"/>
 
 								<service android:name=".sap.SyncData" >
 								</service>
@@ -68,10 +71,12 @@
 												android:screenOrientation="portrait" />-->
 								<activity
 												android:name=".activities.OdometerPopupActivity"
+												android:screenOrientation="portrait"
 												android:label="Single Item"/>
 
 								<activity
 									android:name=".activities.PromotioninfoActivity"
+									android:screenOrientation="portrait"
 									android:theme="@style/AppTheme.NoActionBar"
 									android:label="Single Item"/>
 
@@ -86,7 +91,6 @@
 
 					<activity
 						android:name=".activities.PrintDocumentActivity"
-
 						android:screenOrientation="portrait"
 						android:theme="@style/AppTheme.NoActionBar"
 						android:windowSoftInputMode="stateHidden"/>
