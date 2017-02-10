@@ -44,6 +44,7 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SalesInvoiceAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.Reasons;
@@ -84,7 +85,8 @@ public class GListFragment extends Fragment {
         ll_top = (LinearLayout) viewmain.findViewById(R.id.ll_top);
         db = new DatabaseHandler(getActivity());
         activity = getActivity();
-
+       // OrderReasons.loadData(getActivity());
+       // reasonsList = OrderReasons.get();
        // myAdapter = new ArrayAdapter<Reasons>(getActivity(), android.R.layout.simple_spinner_item, reasonsList);
         myAdapter = new ReasonAdapter(getActivity(), android.R.layout.simple_spinner_item, reasonsList);
 
@@ -155,7 +157,7 @@ public class GListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 final Sales sales = arrProductList.get(position);
-                Log.e("On List Click", "" + sales.getReasonCode());
+                Log.e("On List Click", "" + sales.getReasonCode() + myAdapter.getCount());
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -491,7 +493,7 @@ public class GListFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String> map = new HashMap<>();
-            map.put(db.KEY_REASON_TYPE, "");
+            map.put(db.KEY_REASON_TYPE,"");
             map.put(db.KEY_REASON_DESCRIPTION,"");
             map.put(db.KEY_REASON_CODE,"");
             HashMap<String,String> filter = new HashMap<>();

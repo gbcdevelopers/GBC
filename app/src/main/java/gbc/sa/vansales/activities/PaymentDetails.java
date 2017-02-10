@@ -165,17 +165,16 @@ public class PaymentDetails extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Payment Details");
+        tv_top_header.setText(getString(R.string.payment_details));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (from.equals("collection")) {
-                }
-                else if(from.equals("Final Invoice")){
-                    Toast.makeText(PaymentDetails.this,"Please complete the transaction",Toast.LENGTH_SHORT).show();
-                }
-                else if(from.equals("delivery")){
-                    Toast.makeText(PaymentDetails.this,"Please complete the transaction",Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if (from.equals("Final Invoice")) {
+                    Toast.makeText(PaymentDetails.this, "Please complete the transaction", Toast.LENGTH_SHORT).show();
+                } else if (from.equals("delivery")) {
+                    Toast.makeText(PaymentDetails.this, "Please complete the transaction", Toast.LENGTH_SHORT).show();
                     /*HashMap<String, String> filter = new HashMap<String, String>();
                     filter.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
                     db.deleteData(db.CUSTOMER_DELIVERY_ITEMS_POST, filter);*/
@@ -184,7 +183,7 @@ public class PaymentDetails extends AppCompatActivity {
 //                intent.putExtra("pos", pos);
 //                intent.putExtra("amt", String.valueOf(total_amt));
 //                setResult(RESULT_OK, intent);
-               // finish();
+                // finish();
             }
         });
         tv_total_amount = (TextView) findViewById(R.id.tv_total_amt);
@@ -291,8 +290,8 @@ public class PaymentDetails extends AppCompatActivity {
                     builder.setTitle("Payment Detail");
                     builder.setCancelable(true);
                     builder.setIcon(R.mipmap.ic_launcher);
-                    builder.setMessage("Amount should not be greater than actual amount");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    builder.setMessage(getString(R.string.amount_larger));
+                    builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

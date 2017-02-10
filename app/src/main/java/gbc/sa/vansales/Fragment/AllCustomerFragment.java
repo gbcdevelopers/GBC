@@ -204,14 +204,17 @@ public class AllCustomerFragment extends Fragment {
             CustomerStatus status = new CustomerStatus();
             if(reason.getReasonType().equals(App.VisitReasons)){
                 status.setReasonCode(reason.getReasonID());
-                /*if(Settings.getString(App.LANGUAGE).equals("en")){
+                if(Settings.getString(App.LANGUAGE).equals("en")){
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
                 }
                 else{
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
-                }*/
-                status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
-                arrayList.add(status);
+                }
+                if(status.getReasonCode().contains("V")){
+                    arrayList.add(status);
+                }
+                //status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                //arrayList.add(status);
             }
         }
         adapter.notifyDataSetChanged();

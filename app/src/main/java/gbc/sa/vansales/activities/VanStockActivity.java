@@ -132,8 +132,12 @@ public class VanStockActivity extends AppCompatActivity {
             VanStock vanStock = new VanStock();
             vanStock.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             vanStock.setItem_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-            vanStock.setItem_case(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
-            vanStock.setItem_units(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
+            String totalcase = String.valueOf(Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))+
+            Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE))));
+            String totalunit = String.valueOf(Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)))+
+                    Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT))));
+            vanStock.setItem_case(totalcase);
+            vanStock.setItem_units(totalunit);
             if(vanStock.getItem_case().equals("0.0")&&vanStock.getItem_units().equals("0.0")){
 
             }

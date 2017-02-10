@@ -47,6 +47,7 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 import gbc.sa.vansales.adapters.SalesInvoiceAdapter;
 import gbc.sa.vansales.adapters.SwipeDetector;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.Reasons;
@@ -101,6 +102,8 @@ public class  BListFragment extends Fragment {
         ll_top = (LinearLayout) viewmain.findViewById(R.id.ll_top);
         ll_top.setVisibility(View.GONE);
         db = new DatabaseHandler(getActivity());
+        //OrderReasons.loadData(getActivity());
+        //reasonsList = OrderReasons.get();
         myAdapter = new ReasonAdapter(getActivity(), android.R.layout.simple_spinner_item, reasonsList);
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());

@@ -1,10 +1,12 @@
 package gbc.sa.vansales.adapters;
 import android.content.Context;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,8 +50,17 @@ public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
 
         OrderList order = getItem(position);
 
-        holder.order_id.setText("Delivery No : " + StringUtils.stripStart(order.getOrderId(),"0"));
+        holder.order_id.setText("Delivery No : " + StringUtils.stripStart(order.getOrderId(), "0"));
         holder.order_date.setText("Delivery Date : " + order.getOrderDate());
+        if(order.getOrderStatus().equals("true")){
+            holder.red_arrow.setImageResource(R.drawable.green_tick_icon);
+        }
+        else if(order.getOrderStatus().equals("false")){
+
+        }
+        else if(order.getOrderStatus().equals("deleted")){
+            holder.red_arrow.setImageResource(R.drawable.green_tick_icon_cross);
+        }
 
         return convertView;
     }
@@ -60,11 +71,13 @@ public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
     private class ViewHolder{
         private TextView order_id;
         private TextView order_date;
+        private ImageView red_arrow;
 
         public ViewHolder(View v) {
 
             order_id = (TextView) v.findViewById(R.id.tv_delivery);
             order_date = (TextView) v.findViewById(R.id.tv_del_date);
+            red_arrow = (ImageView)v.findViewById(R.id.red_arrow);
         }
     }
 }

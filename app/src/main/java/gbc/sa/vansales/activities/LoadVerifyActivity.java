@@ -129,6 +129,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
                 map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
                 map.put(db.KEY_ORDER_ID, tempOrderID);
                 map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
@@ -885,7 +886,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     vanStockCursor.moveToFirst();
                     do {
                         if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
-                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)) {
+                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
                                 String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
                                 String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
                                 String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
@@ -898,7 +899,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                                 updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 //Log.e("Update Map C/S","" + updateMap);
                                 db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
-                            } else if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                            } else {
                                 String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
                                 String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
                                 String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));

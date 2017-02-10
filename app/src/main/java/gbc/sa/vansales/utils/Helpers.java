@@ -152,33 +152,40 @@ public class Helpers {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     public static String generateVisitList(DatabaseHandler db){
-        int numRange = 100;
-        int length = 3;
-        HashMap<String, String> search = new HashMap<>();
-        search.put(db.KEY_DOC_TYPE, "VISITLIST");
-        boolean checkPRNo = db.checkData(db.VISIT_LIST_ID_GENERATE, search);
-        if (checkPRNo) {
-            HashMap<String, String> prData = new HashMap<>();
-            prData.put(db.KEY_VISITLISTID, "");
-            Cursor cursor = db.getData(db.VISIT_LIST_ID_GENERATE, prData, search);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
-                Log.e("Num Range From DB", "" + numRange);
-                numRange = numRange + 1;
+        try{
+            int numRange = 100;
+            int length = 3;
+            HashMap<String, String> search = new HashMap<>();
+            search.put(db.KEY_DOC_TYPE, "VISITLIST");
+            boolean checkPRNo = db.checkData(db.VISIT_LIST_ID_GENERATE, search);
+            if (checkPRNo) {
+                HashMap<String, String> prData = new HashMap<>();
+                prData.put(db.KEY_VISITLISTID, "");
+                Cursor cursor = db.getData(db.VISIT_LIST_ID_GENERATE, prData, search);
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    numRange = Integer.parseInt(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
+                    Log.e("Num Range From DB", "" + numRange);
+                    numRange = numRange + 1;
+                    HashMap<String, String> valueMap = new HashMap<>();
+                    valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
+                    db.updateData(db.VISIT_LIST_ID_GENERATE, valueMap, search);
+                }
+            } else {
+                numRange = numRange <= 100 ? numRange + 1 : numRange;
                 HashMap<String, String> valueMap = new HashMap<>();
+                valueMap.put(db.KEY_DOC_TYPE, "VISITLIST");
                 valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
-                db.updateData(db.VISIT_LIST_ID_GENERATE, valueMap, search);
+                Log.e("Adding Data Num Range", "" + valueMap);
+                db.addData(db.VISIT_LIST_ID_GENERATE, valueMap);
             }
-        } else {
-            numRange = numRange <= 100 ? numRange + 1 : numRange;
-            HashMap<String, String> valueMap = new HashMap<>();
-            valueMap.put(db.KEY_DOC_TYPE, "VISITLIST");
-            valueMap.put(db.KEY_VISITLISTID, String.valueOf(numRange));
-            Log.e("Adding Data Num Range", "" + valueMap);
-            db.addData(db.VISIT_LIST_ID_GENERATE, valueMap);
+            return StringUtils.leftPad(String.valueOf(numRange), length, "0");
         }
-        return StringUtils.leftPad(String.valueOf(numRange), length, "0");
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
     }
     public static String generateNumber(DatabaseHandler db, String documentType) {
         String route = Settings.getString(App.ROUTE);

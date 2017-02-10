@@ -25,6 +25,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -129,10 +130,19 @@ public class DeliveryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 OrderList delivery = arrayList.get(position);
-                Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
-                intent.putExtra("headerObj", object);
-                intent.putExtra("delivery", delivery);
-                startActivity(intent);
+                if(delivery.getOrderStatus().equals("false")){
+                    Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
+                    intent.putExtra("headerObj", object);
+                    intent.putExtra("delivery", delivery);
+                    startActivity(intent);
+                }
+                else if(delivery.getOrderStatus().equals("true")){
+                    Toast.makeText(getApplicationContext(),getString(R.string.delivery_complete),Toast.LENGTH_SHORT).show();
+                }
+                else if(delivery.getOrderStatus().contains("delete")){
+                    Toast.makeText(getApplicationContext(),getString(R.string.delivery_delete),Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -211,8 +221,9 @@ public class DeliveryActivity extends AppCompatActivity {
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(db.KEY_DELIVERY_NO, "");
             map.put(db.KEY_DELIVERY_DATE, "");
+            map.put(db.KEY_IS_DELIVERED,"");
             HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_DELIVERED, "false");
+            //filter.put(db.KEY_IS_DELIVERED, "false");
             filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
             if (cursor.getCount() > 0) {
@@ -239,6 +250,7 @@ public class DeliveryActivity extends AppCompatActivity {
             orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
             String date = cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE));
             String[] token = date.split("\\.");
+            orderList.setOrderStatus(cursor.getString(cursor.getColumnIndex(db.KEY_IS_DELIVERED)));
             orderList.setOrderDate(Helpers.getMaskedValue(token[2], 2) + "-" + Helpers.getMaskedValue(token[1], 2) + "-" + token[0]);
             if (!temp.contains(orderList.getOrderId())) {
                 temp.add(orderList.getOrderId());
@@ -438,6 +450,8 @@ public class DeliveryActivity extends AppCompatActivity {
             map.put(db.KEY_MATERIAL_NO, "");
             map.put(db.KEY_REMAINING_QTY_CASE, "");
             map.put(db.KEY_REMAINING_QTY_UNIT, "");
+            map.put(db.KEY_RESERVED_QTY_CASE,"");
+            map.put(db.KEY_RESERVED_QTY_UNIT,"");
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
             Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
@@ -447,10 +461,15 @@ public class DeliveryActivity extends AppCompatActivity {
                     HashMap<String, String> updateDataMap = new HashMap<>();
                     float remainingCase = 0;
                     float remainingUnit = 0;
+                    float reservedCase = 0;
+                    float reservedUnit = 0;
                     remainingCase = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
                     remainingUnit = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                    reservedCase = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
+                    reservedUnit = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)));
                     if (!(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)).isEmpty() || cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)).equals("") || cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)) == null || cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)).equals("0"))) {
                         remainingCase = remainingCase + Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+                        reservedCase = reservedCase - Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
                     }
                     updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
                     HashMap<String, String> filterInter = new HashMap<>();

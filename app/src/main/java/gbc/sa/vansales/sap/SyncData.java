@@ -149,7 +149,7 @@ public class SyncData extends IntentService {
 
     }
     public void generateBatch(String request) {
-
+        Log.e("Request","Request" + request);
         String purchaseNumber = "";
         String tempPurchaseNumber = "";
         String customerNumber = "";
@@ -853,8 +853,10 @@ public class SyncData extends IntentService {
                 catch (Exception e){
                     e.printStackTrace();
                 }
+                break;
             }
             case ConfigStore.ReturnsFunction+"G":{
+                Log.e("Call here","Call here");
                 try{
 
                     JSONArray deepEntity = new JSONArray();
@@ -874,15 +876,15 @@ public class SyncData extends IntentService {
                     filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                     filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
 
-                    Cursor pendingInvoiceCursor = db.getData(db.RETURNS,itemMap,filter);
-                    if(pendingInvoiceCursor.getCount()>0){
-                        pendingInvoiceCursor.moveToFirst();
+                    Cursor pendingGRCursor = db.getData(db.RETURNS,itemMap,filter);
+                    if(pendingGRCursor.getCount()>0){
+                        pendingGRCursor.moveToFirst();
                         int itemno = 10;
                         String reasonCode = "";
                         do{
-                            tempPurchaseNumber = pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_ORDER_ID));
-                            tempCustomerNumber = pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_CUSTOMER_NO));
-                            reasonCode = pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_REASON_CODE));
+                            tempPurchaseNumber = pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_ORDER_ID));
+                            tempCustomerNumber = pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_CUSTOMER_NO));
+                            reasonCode = pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_REASON_CODE));
                             if(customerNumber.equals("")){
                                 customerNumber = tempCustomerNumber;
                             }
@@ -894,37 +896,40 @@ public class SyncData extends IntentService {
                             }
                             else{
                                 if(customerNumber.equals(tempCustomerNumber)){
-                                    OfflinePost object = new OfflinePost();
+                                    /*OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
-                                    deepEntity = new JSONArray();
+                                    deepEntity = new JSONArray();*/
                                 }
                                 else{
-                                    OfflinePost object = new OfflinePost();
-                                    object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
-                                    object.setDeepEntity(deepEntity);
-                                    arrayList.add(object);
-                                    purchaseNumber = tempPurchaseNumber;
-                                    customerNumber = tempCustomerNumber;
-                                    deepEntity = new JSONArray();
+                                    if(deepEntity.length()>0){
+                                        OfflinePost object = new OfflinePost();
+                                        object.setCollectionName(App.POST_COLLECTION);
+                                        object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
+                                        object.setDeepEntity(deepEntity);
+                                        arrayList.add(object);
+                                        purchaseNumber = tempPurchaseNumber;
+                                        customerNumber = tempCustomerNumber;
+                                        deepEntity = new JSONArray();
+                                    }
+
                                 }
 
                             }
 
-                            if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
+                            if(pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                                jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                jo.put("Description",UrlBuilder.decodeString(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                                jo.put("Material",pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",UrlBuilder.decodeString(pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                                 jo.put("Plant","");
-                                jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_CASE)));
-                                jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)));
-                                jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Quantity",pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_CASE)));
+                                jo.put("ItemValue", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_UOM)));
+                                jo.put("Value", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno+10;
@@ -933,22 +938,23 @@ public class SyncData extends IntentService {
                             else{
                                 JSONObject jo = new JSONObject();
                                 jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
-                                jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                jo.put("Description",UrlBuilder.decodeString(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                                jo.put("Material",pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                jo.put("Description",UrlBuilder.decodeString(pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                                 jo.put("Plant","");
-                                jo.put("Quantity",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UNIT)));
-                                jo.put("ItemValue", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
-                                jo.put("UoM", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)));
-                                jo.put("Value", pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("Quantity",pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_UNIT)));
+                                jo.put("ItemValue", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_PRICE)));
+                                jo.put("UoM", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_UOM)));
+                                jo.put("Value", pendingGRCursor.getString(pendingGRCursor.getColumnIndex(db.KEY_PRICE)));
                                 jo.put("Storagelocation", "");
                                 jo.put("Route", Settings.getString(App.ROUTE));
                                 itemno = itemno+10;
                                 deepEntity.put(jo);
                             }
                             //Check if cursor is at last position
-                            if(pendingInvoiceCursor.getPosition()==pendingInvoiceCursor.getCount()-1){
+                            if(pendingGRCursor.getPosition()==pendingGRCursor.getCount()-1){
 
                                 if(customerNumber.equals(tempCustomerNumber)){
+                                    //Log.e("This is test1","Test1");
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
@@ -956,8 +962,10 @@ public class SyncData extends IntentService {
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
+
                                 }
                                 else{
+                                    //Log.e("This is test2","Test2");
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
@@ -977,7 +985,8 @@ public class SyncData extends IntentService {
                             }
 
                         }
-                        while (pendingInvoiceCursor.moveToNext());
+                        while (pendingGRCursor.moveToNext());
+                        Log.e("ArrayList","" + arrayList.size());
                     }
 
                 }
@@ -1026,13 +1035,13 @@ public class SyncData extends IntentService {
                             }
                             else{
                                 if(customerNumber.equals(tempCustomerNumber)){
-                                    OfflinePost object = new OfflinePost();
+                                    /*OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.BadReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
-                                    deepEntity = new JSONArray();
+                                    deepEntity = new JSONArray();*/
                                 }
                                 else{
                                     OfflinePost object = new OfflinePost();
@@ -1264,6 +1273,7 @@ public class SyncData extends IntentService {
                 try{
 
                     JSONArray deepEntity = new JSONArray();
+
                     HashMap<String, String> itemMap = new HashMap<>();
                     itemMap.put(db.KEY_DELIVERY_NO,"");
                    // itemMap.put(db.KEY_DATE,"");
@@ -1305,7 +1315,22 @@ public class SyncData extends IntentService {
 
                             }
                             else{
-                                if(customerNumber.equals(tempCustomerNumber)){
+
+                                if(deliveryNumber.equals(tempDeliveryNumber)){
+
+                                }
+                                else{
+                                    OfflinePost object = new OfflinePost();
+                                    object.setCollectionName(App.POST_COLLECTION);
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryDeleteRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                    object.setDeepEntity(deepEntity);
+                                    arrayList.add(object);
+                                    purchaseNumber = tempPurchaseNumber;
+                                    deliveryNumber = tempDeliveryNumber;
+                                    customerNumber = tempCustomerNumber;
+                                    deepEntity = new JSONArray();
+                                }
+                                /*if(customerNumber.equals(tempCustomerNumber)){
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryDeleteRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
@@ -1325,7 +1350,7 @@ public class SyncData extends IntentService {
                                     deliveryNumber = tempDeliveryNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
-                                }
+                                }*/
 
                             }
 
@@ -2051,6 +2076,7 @@ public class SyncData extends IntentService {
                 filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
                 Cursor goodReturnsRequest = db.getData(db.RETURNS,map,filter);
                 syncCount = goodReturnsRequest.getCount();
+                Log.e("GR Sync Count","" + syncCount);
                 break;
             }
             //Case Statement for Bad Returns

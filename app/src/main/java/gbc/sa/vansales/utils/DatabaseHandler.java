@@ -1212,12 +1212,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         for (Map.Entry entry : keyMap.entrySet()) {
             String value = entry.getValue() == null ? null : entry.getValue().toString();
-            /*value = clean(value);
+            if(!entry.getKey().toString().contains("Ar")){
+                value = clean(value);
+            }
+
             try {
-                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                if(!entry.getKey().toString().contains("Ar")){
+                    value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-            }*/
+            }
             values.put(entry.getKey().toString(), value);
         }
         db.insert(tablename, null, values);

@@ -47,6 +47,7 @@
 				<string name="amount_0_00">قيمة</string>
 				<string name="amount_due">المبلغ المستحق</string>
 				<string name="amout_due">المبلغ المستحق</string>
+				<string name="amount_larger">لا ينبغي أن يكون المبلغ أكبر من أو أقل من المبلغ المستحق</string>
 				<string name="amt_paid">المبلغ المدفوع</string>
 				<string name="analysis">تحليل</string>
 				<string name="app_name">مبيعات السيارات</string>
@@ -126,10 +127,13 @@
 				<string name="date">تاريخ التحميل</string>
 				<string name="day">يوم</string>
 				<string name="days">ايام</string>
+				<string name="debit_invoice">Debit invoice should not be collected</string>
 				<string name="delete">الغاء</string>
 				<string name="delete_msg">هل أنت متأكد أنك تريد حذف؟</string>
 				<string name="delivery">خدمه توصيل</string>
 				<string name="delivery_1234">Delivery# 1234</string>
+				<string name="delivery_complete">Delivery completed</string>
+				<string name="delivery_delete">Delivery marked for deletion</string>
 				<string name="delivery_date">تاريخ التسليم</string>
 				<string name="delivery_date_23_oct_2016">Delivery date:23-oct-2016</string>
 				<string name="delivery_list">قائمة التسليم</string>
@@ -258,6 +262,7 @@
 				<string name="paid">دفع</string>
 				<string name="password">كلمه السر</string>
 				<string name="payment">دفعة</string>
+				<string name="payment_details">بيانات الدفع</string>
 				<string name="payment_mode">ادفع عن طريق</string>
 				<string-array name="paymentitem">
 								<item>ABN AMRO</item>
@@ -379,6 +384,7 @@
 				<string name="total_sales">إجمالي المبيعات</string>
 				<string name="trade_name">اسم تجاري</string>
 				<string name="trade_price">سعر تداول</string>
+				<string name="trip">Trip ID</string>
 				<string name="transaction">عملية /حركة</string>
 				<string name="truck_damage">الأضرار شاحنة</string>
 				<string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>

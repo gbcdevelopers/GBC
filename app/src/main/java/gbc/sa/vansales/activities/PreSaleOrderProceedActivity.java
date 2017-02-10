@@ -461,9 +461,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-            list.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+           loadingSpinner.show();
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                adapter.notifyDataSetChanged();
+                list.setAdapter(adapter);
+            }
+
         }
     }
     public void setLoadItems(Cursor loadItemsCursor, Boolean isPosted) {

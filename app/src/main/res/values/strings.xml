@@ -52,6 +52,7 @@
     <string name="amount_0_00">amount: 0.00</string>
     <string name="amount_due">AMOUNT DUE</string>
     <string name="amout_due">Amount Due</string>
+    <string name="amount_larger">Amount should not be greater than or less than payable amount</string>
     <string name="amt_paid">Amt.Paid</string>
     <string name="analysis">ANALYSIS</string>
     <string name="app_name">Vansales</string>
@@ -132,11 +133,14 @@
     <string name="date">16/01/2017</string>
     <string name="day">Day </string>
     <string name="days">Days</string>
+    <string name="debit_invoice">Debit invoice should not be collected</string>
     <string name="delete">Delete</string>
     <string name="delete_msg">Are you sure you want to delete?</string>
     <string name="delivery">Delivery</string>
     <string name="delivery_1234">Delivery# 1234</string>
     <string name="delivery_date">Delivery Date </string>
+    <string name="delivery_complete">Delivery completed</string>
+    <string name="delivery_delete">Delivery marked for deletion</string>
     <string name="delivery_date_23_oct_2016">Delivery date:23-oct-2016</string>
     <string name="delivery_list">Delivery List</string>
     <string name="delivery_order">Delivery Order</string>
@@ -265,6 +269,7 @@
     <string name="paid">Paid</string>
     <string name="password">E102964</string>
     <string name="payment">payment</string>
+    <string name="payment_details">Payment Details</string>
     <string name="payment_mode">Pay By</string>
     <string-array name="paymentitem">
         <item>ABN AMRO</item>
@@ -389,6 +394,7 @@
     <string name="trade_name_ar">Trade Name (Ar)</string>
     <string name="trade_price">Trade Price</string>
     <string name="transaction">Transaction</string>
+    <string name="trip">Trip ID : </string>
     <string name="truck_damage">Truck Damage</string>
     <string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>
     <string name="tv_cust_detail1">MOP:TC(CASH or CHEQUE)</string>

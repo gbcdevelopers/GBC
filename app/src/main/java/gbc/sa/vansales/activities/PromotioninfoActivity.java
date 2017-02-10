@@ -264,7 +264,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 }
             }
         }
-        else{
+        else if(from.equals("delivery")){
             HashMap<String,String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
@@ -494,6 +494,12 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 tv_discount.setText(String.valueOf(discount + goodreturndiscount + badreturndiscount));
                 tv_net_invoice.setText(String.valueOf(totalamnt + discount - goodreturntotal + goodreturndiscount - badreturntotal + badreturndiscount));
             }
+        }
+        else if(source.equals("Delivery")){
+
+            tv_discount.setText(String.valueOf(discount + goodreturndiscount + badreturndiscount));
+            tv_net_invoice.setText(String.valueOf(totalamnt + discount - goodreturntotal + goodreturndiscount - badreturntotal + badreturndiscount));
+
         }
         else if(source.equals(App.GOOD_RETURN)){
             if (returnExist(App.BAD_RETURN)) {
@@ -1008,6 +1014,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
                     invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                     invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_INDICATOR,Double.parseDouble(tv_net_invoice.getText().toString())>0?App.ADD_INDICATOR:App.SUB_INDICATOR);
                     invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
                     invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
@@ -1029,6 +1036,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                     invoiceMap.put(db.KEY_INVOICE_NO,tokens[0].toString());
                     invoiceMap.put(db.KEY_INVOICE_AMOUNT,tv_net_invoice.getText().toString());
+                    invoiceMap.put(db.KEY_INDICATOR,Double.parseDouble(tv_net_invoice.getText().toString())>0?App.ADD_INDICATOR:App.SUB_INDICATOR);
                     invoiceMap.put(db.KEY_INVOICE_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
                     invoiceMap.put(db.KEY_AMOUNT_CLEARED,"0");
                     invoiceMap.put(db.KEY_CHEQUE_AMOUNT,"0");
@@ -1717,6 +1725,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_CHEQUE_BANK_CODE,"0000");
                     invoiceMap.put(db.KEY_CHEQUE_BANK_NAME,"0000");
                     invoiceMap.put(db.KEY_CASH_AMOUNT,"0");
+                    invoiceMap.put(db.KEY_INDICATOR,Double.parseDouble(tv_net_invoice.getText().toString())>0?App.ADD_INDICATOR:App.SUB_INDICATOR);
                     invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
                     invoiceMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                     invoiceMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);

@@ -348,8 +348,10 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                 else{
                     status.setReasonDescription(reason.getReasonDescriptionAr());
                 }
+                if(status.getReasonCode().contains("V")){
+                    arrayList.add(status);
+                }
 
-                arrayList.add(status);
             }
         }
         adapter.notifyDataSetChanged();

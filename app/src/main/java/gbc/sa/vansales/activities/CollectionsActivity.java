@@ -121,15 +121,21 @@ public class CollectionsActivity extends AppCompatActivity {
         lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                intent.putExtra("msg", "collection");
-                intent.putExtra("from","collection");
-                intent.putExtra("pos", position);
-                intent.putExtra("headerObj", object);
-                float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                intent.putExtra("collection",colletionDatas.get(position));
-                intent.putExtra("amountdue",String.valueOf(dueamount));
-                startActivity(intent);
+                if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
+                    Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
+                    intent.putExtra("msg", "collection");
+                    intent.putExtra("from","collection");
+                    intent.putExtra("pos", position);
+                    intent.putExtra("headerObj", object);
+                    float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
+                    intent.putExtra("collection",colletionDatas.get(position));
+                    intent.putExtra("amountdue",String.valueOf(dueamount));
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(CollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                }
+
 //                startActivityForResult(intent, 1);
             }
         });
@@ -222,22 +228,29 @@ public class CollectionsActivity extends AppCompatActivity {
     }
 
     private void setCollectionData(Cursor cursor){
-        Cursor c = cursor;
-        do{
-            int indicator = 1;
-            String invoiceAmount = "";
-            Collection collection = new Collection();
-            collection.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
-            collection.setInvoiceDate(c.getString(c.getColumnIndex(db.KEY_INVOICE_DATE)));
-            indicator = c.getString(c.getColumnIndex(db.KEY_INDICATOR)).equals(App.ADD_INDICATOR)?indicator:indicator*-1;
-            invoiceAmount = c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)).equals("")?"0":c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT));
-            collection.setInvoiceAmount(String.valueOf(Double.parseDouble(invoiceAmount)*indicator));
-            collection.setAmountCleared(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)).equals("") ? "0" : c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-            amount_paid += Double.parseDouble(collection.getAmountCleared());
-            collection.setInvoiceDueDate(c.getString(c.getColumnIndex(db.KEY_DUE_DATE)));
-            colletionDatas.add(collection);
+        try{
+            Cursor c = cursor;
+            do{
+                int indicator = 1;
+                String invoiceAmount = "";
+                Collection collection = new Collection();
+                collection.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
+                collection.setInvoiceDate(c.getString(c.getColumnIndex(db.KEY_INVOICE_DATE)));
+                collection.setIndicator(c.getString(c.getColumnIndex(db.KEY_INDICATOR)));
+                indicator = c.getString(c.getColumnIndex(db.KEY_INDICATOR)).equals(App.ADD_INDICATOR)?indicator:indicator*-1;
+                invoiceAmount = c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)).equals("")?"0":c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT));
+                collection.setInvoiceAmount(String.valueOf(Double.parseDouble(invoiceAmount)*indicator));
+                collection.setAmountCleared(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)).equals("") ? "0" : c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                amount_paid += Double.parseDouble(collection.getAmountCleared());
+                collection.setInvoiceDueDate(c.getString(c.getColumnIndex(db.KEY_DUE_DATE)));
+                colletionDatas.add(collection);
+            }
+            while (c.moveToNext());
         }
-        while (c.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 }

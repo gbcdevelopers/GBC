@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -318,7 +319,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 else{
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
                 }
-                arrayList.add(status);
+                if(status.getReasonCode().contains("N")){
+                    arrayList.add(status);
+                }
+                //arrayList.add(status);
             }
         }
         statusAdapter.notifyDataSetChanged();
@@ -343,6 +347,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
     }
     private void showStatusDialog() {
         final Dialog dialog = new Dialog(CustomerDetailActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
         tv_header.setText("Non Serviced Reasons");

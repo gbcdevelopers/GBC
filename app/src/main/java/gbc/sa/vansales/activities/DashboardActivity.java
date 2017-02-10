@@ -80,6 +80,7 @@ public class DashboardActivity extends AppCompatActivity
     TextView tv_route;
     TextView tv_driver_no;
     TextView lbl_totalreceipt;
+    TextView tv_tripid;
     ArrayList<CustomerHeader> customers;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class DashboardActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnBDay = (Button) findViewById(R.id.btnBeginDay);
         tv_route = (TextView)findViewById(R.id.tv_route);
+        tv_tripid = (TextView)findViewById(R.id.tv_trip_id);
         tv_driver_no = (TextView)findViewById(R.id.tv_driver_no);
         tv_dashboard = (TextView) findViewById(R.id.tv_dashboard);
         tv_dashboard.setVisibility(View.VISIBLE);
@@ -104,6 +106,7 @@ public class DashboardActivity extends AppCompatActivity
         btn_message = (Button) findViewById(R.id.btn_messages);
         tv_route.setText(getString(R.string.route_code_101) + Settings.getString(App.ROUTE));
         tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER));
+        tv_tripid.setText(getString(R.string.trip) + Settings.getString(App.TRIP_ID));
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

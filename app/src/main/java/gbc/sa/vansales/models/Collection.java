@@ -12,6 +12,13 @@ public class Collection implements Parcelable {
     private String invoiceDate;
     private String amountCleared;
     private String isInvoiceComplete;
+    public String getIndicator() {
+        return indicator;
+    }
+    public void setIndicator(String indicator) {
+        this.indicator = indicator;
+    }
+    private String indicator;
 
 
     public String getAmountCleared() {
@@ -68,7 +75,7 @@ public class Collection implements Parcelable {
             collection.invoiceDueDate = source.readString();
             collection.invoiceNo = source.readString();
             collection.isInvoiceComplete = source.readString();
-
+            collection.indicator = source.readString();
             return collection;
         }
         @Override
@@ -90,5 +97,6 @@ public class Collection implements Parcelable {
         parcel.writeString(invoiceDueDate);
         parcel.writeString(invoiceNo);
         parcel.writeString(isInvoiceComplete);
+        parcel.writeString(indicator);
     }
 }

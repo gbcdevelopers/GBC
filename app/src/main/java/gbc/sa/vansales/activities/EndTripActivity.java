@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,6 +41,9 @@ import java.util.Locale;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.ExpenseAdapter;
+import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.models.ChequeCollection;
+import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Expense;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.AnimatedExpandableListView;
@@ -48,6 +52,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/10/2016.
  */
@@ -58,6 +63,7 @@ public class EndTripActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     ArrayList<Expense> arrayList = new ArrayList<>();
+    ArrayList<ChequeCollection> chequeList = new ArrayList<>();
     ArrayAdapter<Expense>adapter;
     float chequeTotal = 0;
     float cashTotal = 0;
@@ -72,10 +78,12 @@ public class EndTripActivity extends AppCompatActivity {
     LinearLayout ll_add_expense;
     ListView expenseListView;
     Typeface typeface;
+    ArrayList<CustomerHeader> customers;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_trip);
+        customers = CustomerHeaders.get();
         loadingSpinner = new LoadingSpinner(this);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -120,7 +128,7 @@ public class EndTripActivity extends AppCompatActivity {
         ll_add_expense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                //showDialog();
             }
         });
         new loadCollectionData().execute();
@@ -170,10 +178,17 @@ public class EndTripActivity extends AppCompatActivity {
         do {
             chequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
             cashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-            Log.e("Customers", "" + c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-            Log.e("Cheque","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER)));
-            Log.e("Cheque Amount","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-            Log.e("Bank","" + c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE)));
+            ChequeCollection chequeCollection = new ChequeCollection();
+            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
+
+            if(cheques.length>1){
+                chequeCollection.setChequeNo(cheques[1]);
+                chequeCollection.setBankCode(bankCode[1]);
+                chequeCollection.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                chequeList.add(chequeCollection);
+            }
         }
         while(c.moveToNext());
     }
@@ -365,6 +380,30 @@ public class EndTripActivity extends AppCompatActivity {
                 Log.e("Order ID","" + orderId);
             }
             else if(source.equals("CHEQ")){
+                try{
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put("OrderValue",String.valueOf(chequeTotal));
+                    map.put("VisitID",source);
+                    map.put("Function",ConfigStore.ClearingFunction);
+                    map.put("CustomerId",Settings.getString(App.DRIVER));
+                    JSONArray deepEntity = new JSONArray();
+                    for(ChequeCollection chequeCollection:chequeList){
+                        JSONObject obj = new JSONObject();
+                        obj.put("OrderId",chequeCollection.getChequeNo().toString());
+                        obj.put("Material", chequeCollection.getCustomerNo().toString());
+                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
+                        if(customerHeader!=null){
+                            obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
+                        }
+                        obj.put("Value",chequeCollection.getChequeAmount().toString());
+                        obj.put("Route",chequeCollection.getBankCode().toString());
+                        deepEntity.put(obj);
+                    }
+                    this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
             return null;
@@ -381,7 +420,8 @@ public class EndTripActivity extends AppCompatActivity {
                 }
             }
             else{
-
+                Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                startActivity(intent);
             }
         }
     }

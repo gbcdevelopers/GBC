@@ -206,6 +206,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final DeliveryItem item = arrayList.get(position);
                 final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
+                final String[] reasonCode = {""};
                 dialog.setContentView(R.layout.dialog_with_crossbutton);
                 dialog.setCancelable(false);
                 TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
@@ -224,6 +225,15 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 if (item.getReasonCode() != null) {
                     spin.setSelection(getIndex(item.getReasonCode()));
                 }
+                spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        reasonCode[0] = rejectReasonList.get(position).getReasonCode();
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put(db.KEY_REMAINING_QTY_CASE, "");
                 map.put(db.KEY_REMAINING_QTY_UNIT, "");
@@ -291,6 +301,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         } else {
                             item.setItemCase(strCase);
                             item.setItemUnits(strpcs);
+                            item.setReasonCode(reasonCode[0]);
                             arrayList.remove(position);
                             arrayList.add(position, item);
                             calculatePrice();

@@ -154,6 +154,7 @@ public class App extends Application {
     public static final String REQUEST = "REQUEST";
     public static final String LOAD_SUMMARY_REQUEST = "LoadSummaryRequest";
     public static final String LOAD_REQUEST = "LoadRequest";
+    public static final String SALES_INVOICE = "Invoice";
 
 
     @Override

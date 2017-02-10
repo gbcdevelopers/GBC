@@ -76,6 +76,7 @@ public class BeginDayFragment extends Fragment {
     TextView deliveryRoute;
     TextView vehicleNo;
     TextView day;
+    TextView tripID;
     View view;
     Calendar myCalendar = Calendar.getInstance();
     String stringSalesDate = "";
@@ -114,6 +115,7 @@ public class BeginDayFragment extends Fragment {
             salesManNo.setText(data.getString("driver1"));
             salesManName.setText(data.getString("driver1"));
             salesDate.setText(data.getString("psDate"));
+            tripID.setText(Settings.getString(App.TRIP_ID));
            // delieveryDate.setText(data.getString("asDate"));
            // deliveryRoute.setText(data.getString("route"));
             vehicleNo.setText(UrlBuilder.decodeString(data.getString("truck")));

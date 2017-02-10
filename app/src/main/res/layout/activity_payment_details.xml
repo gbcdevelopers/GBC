@@ -62,9 +62,10 @@
 																/>
 								</LinearLayout>
 
-								<RelativeLayout
+								<LinearLayout
 												android:layout_width="match_parent"
 												android:layout_height="wrap_content"
+												android:orientation="horizontal"
 												android:layout_below="@+id/ll_payment_main_aue_top"
 												android:layout_marginTop="@dimen/image_width"
 												android:background="@drawable/textline_gray"
@@ -72,6 +73,10 @@
 
 												<LinearLayout
 																android:layout_width="wrap_content"
+																android:paddingEnd="@dimen/activity_horizontal_margin"
+																android:paddingStart="@dimen/activity_horizontal_margin"
+																android:paddingLeft="@dimen/activity_horizontal_margin"
+																android:paddingRight="@dimen/activity_horizontal_margin"
 																android:layout_height="wrap_content"
 																android:orientation="vertical">
 
@@ -97,12 +102,14 @@
 																android:id="@+id/btn_edit1"
 																android:layout_width="@dimen/image_width"
 																android:layout_height="@dimen/image_width"
-																android:layout_alignParentRight="true"
+
+																android:layout_gravity="end"
+																android:gravity="end"
 																android:layout_marginRight="@dimen/h3"
 																android:background="@drawable/ic_create_black_24dp"
 																android:textColor="@color/white"
 																/>
-								</RelativeLayout>
+								</LinearLayout>
 
 								<RelativeLayout
 												android:layout_width="match_parent"

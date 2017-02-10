@@ -375,6 +375,9 @@ public class PrinterHelper {
                 if(request.equals(App.LOAD_REQUEST)){
                     printLoadRequestReport(jsnData,address);
                 }
+                if(request.equals(App.SALES_INVOICE)){
+                    printSalesInvoice(jsnData,address);
+                }
             }
         }
         if (this.outStream != null) {
@@ -977,6 +980,86 @@ public class PrinterHelper {
 
     }
 
+    //Sales Invoice
+    void printSalesInvoice(JSONObject object,String args){
+        StringBuffer s1 = new StringBuffer();
+        try{
+            int printoultlet;
+            int j;
+            JSONArray jCheques;
+            JSONObject jCash;
+            JSONObject jChequeDetails;
+            String copyStatus;
+            /*if (object.getString("printoutletitemcode").length() > 0) {
+                printoultlet = Integer.parseInt(object.getString("printoutletitemcode"));
+            } else {
+                printoultlet = 0;
+            }*/
+            if (object.getString("displayupc").equals("1")) {
+                this.hashValues = new HashMap();
+                this.hashValues.put("SL#", Integer.valueOf(4));
+                this.hashValues.put("ITEM#", Integer.valueOf(11));
+                this.hashValues.put("OUTLET CODE", Integer.valueOf(10));
+                this.hashValues.put("DESCRIPTION", Integer.valueOf(43));
+                this.hashValues.put("UPO", Integer.valueOf(5));
+                this.hashValues.put("QTY CAS/PCS", Integer.valueOf(11));
+                this.hashValues.put("QTY OUT/PCS", Integer.valueOf(11));
+                this.hashValues.put("TOTAL PCS", Integer.valueOf(0));
+                this.hashValues.put("CASE PRICE", Integer.valueOf(11));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(11));
+                this.hashValues.put("DISCOUNT", Integer.valueOf(13));
+                this.hashValues.put("AMOUNT", Integer.valueOf(11));
+                this.hashValues.put("DESCRIPTION", Integer.valueOf(38));
+                this.hashValues.put("OUTER PRICE", Integer.valueOf(11));
+                this.hashValues.put("PCS PRICE", Integer.valueOf(11));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("SL#", Integer.valueOf(0));
+                this.hashPositions.put("ITEM#", Integer.valueOf(0));
+                this.hashPositions.put("OUTLET CODE", Integer.valueOf(0));
+                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPO", Integer.valueOf(1));
+                this.hashPositions.put("QTY CAS/PCS", Integer.valueOf(1));
+                this.hashPositions.put("QTY OUT/PCS", Integer.valueOf(1));
+                this.hashPositions.put("TOTAL PCS", Integer.valueOf(1));
+                this.hashPositions.put("CASE PRICE", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("DISCOUNT", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("OUTER PRICE", Integer.valueOf(2));
+                this.hashPositions.put("PCS PRICE", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+            } else {
+                this.hashValues = new HashMap();
+                this.hashValues.put("SL#", Integer.valueOf(4));
+                this.hashValues.put("ITEM", Integer.valueOf(8));
+                this.hashValues.put("DESCRIPTION", Integer.valueOf(32));
+                this.hashValues.put("DESCRIPTION(AR)", Integer.valueOf(32));
+                this.hashValues.put("QTY CAS/PCS", Integer.valueOf(3));
+                this.hashValues.put("CASE PRICE", Integer.valueOf(7));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(7));
+                this.hashValues.put("AMOUNT", Integer.valueOf(8));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("SL#", Integer.valueOf(0));
+                this.hashPositions.put("ITEM", Integer.valueOf(0));
+                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("DESCRIPTION(AR)", Integer.valueOf(0));
+                this.hashPositions.put("QTY CAS/PCS", Integer.valueOf(2));
+                this.hashPositions.put("CASE PRICE", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("DISCOUNT", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+            }
+            line(this.startln);
+            headerprint(object, 1);
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     //Printing Headers
 
     private void printlines1(String data, int ln, JSONObject object, int sts, String adr, int tp) throws JSONException, IOException, LinePrinterException {
@@ -1113,6 +1196,125 @@ public class PrinterHelper {
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
             }*/
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
+    }
+    private void headerprint(JSONObject object, int type) throws JSONException {
+        try {
+            this.outStream.write(this.BoldOn);
+            printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), true, 1);
+            this.outStream.write(this.NewLine);
+            printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN"), 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), true, 1);
+            this.outStream.write(this.NewLine);
+            //printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), true, 1);
+            if (type == 3 || type == 5 || type == 6 || type == 4 || type == 7) {
+                printheaders(getAccurateText("TRIP START DATE:" + object.getString("TRIP START DATE"), 40, 0) + getAccurateText("TOUR ID:" + object.getString("TourID"), 40, 2), false, 1);
+            } else {
+                printheaders(getAccurateText("TRIP ID:" + object.getString("TourID"), 80, 0), false, 1);
+            }
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            if (!(type == 3 && type == 6 && type == 4 && type == 5 && type == 7) && object.has("invheadermsg") && object.getString("invheadermsg").length() > 0) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(object.getString("invheadermsg"), false, 3);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.DoubleWideOff);
+            }
+            if (type == 1) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                if (object.getString("LANG").equals("en")) {
+                    printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                } else if (object.getString("invoicepaymentterms").contains("2")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Creditinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
+                } else if (object.getString("invoicepaymentterms").contains("0") || object.getString("invoicepaymentterms").contains("1")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Cashinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
+                } else {
+                    printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                }
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.BoldOn);
+                try {
+                    String[] parts = object.getString("CUSTOMER").split("\\-");
+                    printheaders("CUSTOMER: " + parts[0], false, 2);
+                    this.outStream.write(this.NewLine);
+                    printheaders("          *" + parts[1] + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    this.outStream.write(this.BoldOff);
+                    printheaders("ADDRESS: " + object.getString("ADDRESS"), false, 1);
+                    this.outStream.write(this.NewLine);
+                    printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                } catch (Exception e) {
+                }
+                this.count++;
+            } else if (type == 2) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                if (object.getString("LANG").equals("en")) {
+                    printheaders(getAccurateText("RECEIPT: " + object.getString("RECEIPT"), 40, 1), false, 2);
+                } else {
+                    printheaders(getAccurateText("*" + ArabicTEXT.Receipt + "!:" + object.getString("RECEIPT"), 40, 1), true, 2);
+                }
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.BoldOn);
+                printheaders("CUSTOMER: " + object.getString("CUSTOMER"), true, 1);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.BoldOff);
+                printheaders("ADDRESS :" + object.getString("ADDRESS"), true, 1);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            } else if (type == 3) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("DEPOSIT SUMMARY", 40, 1), false, 3);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.count++;
+            } else if (type == 4) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("SALES SUMMARY", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            } else if (type == 5) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("ROUTE ACTIVITY LOG", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            } else if (type == 6) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("ROUTE SUMMARY", 40, 1), false, 1);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            } else if (type == 7) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                printheaders(getAccurateText("STALES/DAMAGE SUMMARY", 40, 1), false, 3);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+            }
         } catch (Exception e2) {
             e2.printStackTrace();
         }
