@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -113,103 +114,139 @@ public class AddCustomerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                HashMap<String,String> map = new HashMap<String, String>();
-                map.put(db.KEY_TRIP_ID,"");
-                HashMap<String,String> filter = new HashMap<String, String>();
-                Cursor cursor = db.getData(db.VISIT_LIST,map,filter);
+                try{
+                    if(!checkNullValues()){
+                        Toast.makeText(AddCustomerActivity.this,getString(R.string.requiredFields),Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        HashMap<String,String> map = new HashMap<String, String>();
+                        map.put(db.KEY_TRIP_ID,"");
+                        HashMap<String,String> filter = new HashMap<String, String>();
+                        Cursor cursor = db.getData(db.VISIT_LIST,map,filter);
 
-                HashMap<String, String> params = new HashMap<>();
-                params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
-                params.put(db.KEY_VISITLISTID,Settings.getString(App.TRIP_ID).replaceAll(Settings.getString(App.ROUTE),"").trim());
-                params.put(db.KEY_ITEMNO, StringUtils.leftPad(String.valueOf(cursor.getCount() + 2), 3, "0"));
-                params.put(db.KEY_CUSTOMER_NO, tv_customer_id.getText().toString());
-                params.put(db.KEY_EXEC_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                // params.put(db.KEY_EXEC_DATE, object.get("Execdate").toString().substring(0,10));
-                params.put(db.KEY_DRIVER,Settings.getString(App.DRIVER));
-                params.put(db.KEY_VP_TYPE,"");
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        params.put(db.KEY_VISITLISTID,Settings.getString(App.TRIP_ID).replaceAll(Settings.getString(App.ROUTE),"").trim());
+                        params.put(db.KEY_ITEMNO, StringUtils.leftPad(String.valueOf(cursor.getCount() + 2), 3, "0"));
+                        params.put(db.KEY_CUSTOMER_NO, tv_customer_id.getText().toString());
+                        params.put(db.KEY_EXEC_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                        // params.put(db.KEY_EXEC_DATE, object.get("Execdate").toString().substring(0,10));
+                        params.put(db.KEY_DRIVER,Settings.getString(App.DRIVER));
+                        params.put(db.KEY_VP_TYPE,"");
 
-                params.put(db.KEY_IS_DELIVERY_CAPTURED,App.IS_NOT_COMPLETE);
-                params.put(db.KEY_IS_ORDER_CAPTURED,App.IS_NOT_COMPLETE);
-                params.put(db.KEY_IS_SALES_CAPTURED,App.IS_NOT_COMPLETE);
-                params.put(db.KEY_IS_COLLECTION_CAPTURED,App.IS_NOT_COMPLETE);
-                params.put(db.KEY_IS_MERCHANDIZE_CAPTURED,App.IS_NOT_COMPLETE);
-                params.put(db.KEY_IS_VISITED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_DELIVERY_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_ORDER_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_SALES_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_COLLECTION_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_MERCHANDIZE_CAPTURED,App.IS_NOT_COMPLETE);
+                        params.put(db.KEY_IS_VISITED,App.IS_NOT_COMPLETE);
 
-                params.put(db.KEY_IS_DELIVERY_POSTED,App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_ORDER_POSTED,App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_SALES_POSTED,App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_COLLECTION_POSTED, App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_MERCHANDIZE_POSTED, App.DATA_NOT_POSTED);
-                params.put(db.KEY_IS_NEW_CUSTOMER, App.TRUE);
-                db.addData(db.VISIT_LIST, params);
+                        params.put(db.KEY_IS_DELIVERY_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_ORDER_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_SALES_POSTED,App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_COLLECTION_POSTED, App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_MERCHANDIZE_POSTED, App.DATA_NOT_POSTED);
+                        params.put(db.KEY_IS_NEW_CUSTOMER, App.TRUE);
+                        db.addData(db.VISIT_LIST, params);
 
-                HashMap<String, String> headerParams = new HashMap<>();
-                headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
-                headerParams.put(db.KEY_ORDER_BLOCK  ,"");
-                headerParams.put(db.KEY_INVOICE_BLOCK ,"");
-                headerParams.put(db.KEY_DELIVERY_BLOCK,"");
-                headerParams.put(db.KEY_ROOM_NO,"");
-                headerParams.put(db.KEY_FLOOR,"");
-                headerParams.put(db.KEY_BUILDING ,"");
-                headerParams.put(db.KEY_HOME_CITY ,"");
-                headerParams.put(db.KEY_STREET5 ,"");
-                headerParams.put(db.KEY_STREET4 ,"");
-                headerParams.put(db.KEY_STREET3 ,"");
-                headerParams.put(db.KEY_STREET2 ,"");
-                headerParams.put(db.KEY_NAME4 ,"");
-                headerParams.put(db.KEY_DRIVER,Settings.getString(App.DRIVER));
-                headerParams.put(db.KEY_CUSTOMER_NO,tv_customer_id.getText().toString());
-                headerParams.put(db.KEY_COUNTRY_CODE, "SA");
-                headerParams.put(db.KEY_NAME3 ,et_customer_name.getText().toString());
-                headerParams.put(db.KEY_NAME1 ,et_customer_name.getText().toString());
-                headerParams.put(db.KEY_ADDRESS ,et_customer_address1.getText().toString());
-                headerParams.put(db.KEY_STREET ,et_customer_address2.getText().toString());
-                headerParams.put(db.KEY_NAME2 ,"");
-                headerParams.put(db.KEY_CITY ,"");
-                headerParams.put(db.KEY_DISTRICT ,"");
-                headerParams.put(db.KEY_REGION ,"001");
-                headerParams.put(db.KEY_SITE_CODE ,"");
-                headerParams.put(db.KEY_POST_CODE, et_customer_pobox.getText().toString());
-                headerParams.put(db.KEY_PHONE_NO, et_customer_telephone.getText().toString());
-                headerParams.put(db.KEY_COMPANY_CODE, "GBC");
-                headerParams.put(db.KEY_LATITUDE,"0.000000");
-                headerParams.put(db.KEY_LONGITUDE,"0.000000");
-                headerParams.put(db.KEY_TERMS , App.CASH_CUSTOMER_CODE);
-                headerParams.put(db.KEY_TERMS_DESCRIPTION ,App.CASH_CUSTOMER);
+                        HashMap<String, String> headerParams = new HashMap<>();
+                        headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        headerParams.put(db.KEY_ORDER_BLOCK  ,"");
+                        headerParams.put(db.KEY_INVOICE_BLOCK ,"");
+                        headerParams.put(db.KEY_DELIVERY_BLOCK,"");
+                        headerParams.put(db.KEY_ROOM_NO,"");
+                        headerParams.put(db.KEY_FLOOR,"");
+                        headerParams.put(db.KEY_BUILDING ,"");
+                        headerParams.put(db.KEY_HOME_CITY ,"");
+                        headerParams.put(db.KEY_STREET5 ,"");
+                        headerParams.put(db.KEY_STREET4 ,"");
+                        headerParams.put(db.KEY_STREET3 ,"");
+                        headerParams.put(db.KEY_STREET2 ,"");
+                        headerParams.put(db.KEY_NAME4 ,"");
+                        headerParams.put(db.KEY_DRIVER,Settings.getString(App.DRIVER));
+                        headerParams.put(db.KEY_CUSTOMER_NO,tv_customer_id.getText().toString());
+                        headerParams.put(db.KEY_COUNTRY_CODE, "SA");
+                        headerParams.put(db.KEY_NAME3 ,et_customer_name.getText().toString());
+                        headerParams.put(db.KEY_NAME1 ,et_customer_name.getText().toString());
+                        headerParams.put(db.KEY_ADDRESS ,et_customer_address1.getText().toString());
+                        headerParams.put(db.KEY_STREET ,et_customer_address2.getText().toString());
+                        headerParams.put(db.KEY_NAME2 ,"");
+                        headerParams.put(db.KEY_CITY ,"");
+                        headerParams.put(db.KEY_DISTRICT ,"");
+                        headerParams.put(db.KEY_REGION ,"001");
+                        headerParams.put(db.KEY_SITE_CODE ,"");
+                        headerParams.put(db.KEY_POST_CODE, et_customer_pobox.getText().toString());
+                        headerParams.put(db.KEY_PHONE_NO, et_customer_telephone.getText().toString());
+                        headerParams.put(db.KEY_COMPANY_CODE, "GBC");
+                        headerParams.put(db.KEY_LATITUDE,"0.000000");
+                        headerParams.put(db.KEY_LONGITUDE,"0.000000");
+                        headerParams.put(db.KEY_TERMS , App.CASH_CUSTOMER_CODE);
+                        headerParams.put(db.KEY_TERMS_DESCRIPTION ,App.CASH_CUSTOMER);
 
-                db.addData(db.CUSTOMER_HEADER, headerParams);
+                        db.addData(db.CUSTOMER_HEADER, headerParams);
                 /*VisitAllFragment.dataAdapter.notifyDataSetChanged();
                 AllCustomerFragment.dataAdapter1.notifyDataSetChanged();
                 finish();*/
 
 
-                HashMap<String, String> newCustomer = new HashMap<>();
-                newCustomer.put(db.KEY_CUSTOMER_NO,tv_customer_id.getText().toString());
-                newCustomer.put(db.KEY_OWNER_NAME,et_customer_name.getText().toString());
-                newCustomer.put(db.KEY_OWNER_NAME_AR,et_customer_name_ar.getText().toString());
-                newCustomer.put(db.KEY_TRADE_NAME,et_trade_name.getText().toString());
-                newCustomer.put(db.KEY_TRADE_NAME_AR,et_trade_name_ar.getText().toString());
-                newCustomer.put(db.KEY_AREA,et_customer_address1.getText().toString());
-                newCustomer.put(db.KEY_STREET,et_customer_address2.getText().toString());
-                newCustomer.put(db.KEY_CR_NO,et_cr_no.getText().toString());
-                newCustomer.put(db.KEY_PO_BOX,et_customer_pobox.getText().toString());
-                newCustomer.put(db.KEY_EMAIL,et_customer_email.getText().toString());
-                newCustomer.put(db.KEY_TELEPHONE,et_customer_telephone.getText().toString());
-                newCustomer.put(db.KEY_FAX,et_customer_fax.getText().toString());
-                newCustomer.put(db.KEY_SALES_AREA,"1000");
-                newCustomer.put(db.KEY_DISTRIBUTION,distribution);
-                newCustomer.put(db.KEY_DIVISION,division);
-                newCustomer.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                newCustomer.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                db.addData(db.NEW_CUSTOMER_POST,newCustomer);
+                        HashMap<String, String> newCustomer = new HashMap<>();
+                        newCustomer.put(db.KEY_CUSTOMER_NO,tv_customer_id.getText().toString());
+                        newCustomer.put(db.KEY_OWNER_NAME,et_customer_name.getText().toString());
+                        newCustomer.put(db.KEY_OWNER_NAME_AR,et_customer_name_ar.getText().toString());
+                        newCustomer.put(db.KEY_TRADE_NAME,et_trade_name.getText().toString());
+                        newCustomer.put(db.KEY_TRADE_NAME_AR,et_trade_name_ar.getText().toString());
+                        newCustomer.put(db.KEY_AREA,et_customer_address1.getText().toString());
+                        newCustomer.put(db.KEY_STREET,et_customer_address2.getText().toString());
+                        newCustomer.put(db.KEY_CR_NO,et_cr_no.getText().toString());
+                        newCustomer.put(db.KEY_PO_BOX,et_customer_pobox.getText().toString());
+                        newCustomer.put(db.KEY_EMAIL,et_customer_email.getText().toString());
+                        newCustomer.put(db.KEY_TELEPHONE,et_customer_telephone.getText().toString());
+                        newCustomer.put(db.KEY_FAX,et_customer_fax.getText().toString());
+                        newCustomer.put(db.KEY_SALES_AREA,"1000");
+                        newCustomer.put(db.KEY_DISTRIBUTION,distribution);
+                        newCustomer.put(db.KEY_DIVISION,division);
+                        newCustomer.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        newCustomer.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        db.addData(db.NEW_CUSTOMER_POST,newCustomer);
 
-                if (Helpers.isNetworkAvailable(AddCustomerActivity.this)) {
-                    Helpers.createBackgroundJob(AddCustomerActivity.this);
+                        if (Helpers.isNetworkAvailable(AddCustomerActivity.this)) {
+                            Helpers.createBackgroundJob(AddCustomerActivity.this);
+                        }
+                        Intent intent = new Intent(AddCustomerActivity.this,SelectCustomerActivity.class);
+                        startActivity(intent);
+                    }
+
                 }
-                Intent intent = new Intent(AddCustomerActivity.this,SelectCustomerActivity.class);
-                startActivity(intent);
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
+    }
+
+    private boolean checkNullValues(){
+
+        boolean returnvalue = false;
+        if(et_customer_name.getText().toString().matches("")||
+                et_customer_name_ar.getText().toString().matches("")||
+                et_trade_name.getText().toString().matches("")||
+                et_trade_name_ar.getText().toString().matches("")||
+                et_customer_address1.getText().toString().matches("")||
+                et_customer_address2.getText().toString().matches("")||
+                et_cr_no.getText().toString().matches("")||
+                et_customer_pobox.getText().toString().matches("")||
+                et_customer_email.getText().toString().matches("")||
+                et_customer_telephone.getText().toString().matches("")||
+                et_customer_fax.getText().toString().matches("")||
+                distribution==null||
+                division==null){
+
+        }
+        else{
+            returnvalue = true;
+        }
+        return returnvalue;
     }
 
     void showDialog(String type,String param){

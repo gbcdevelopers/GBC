@@ -36,113 +36,34 @@
                 android:textColor="@color/white"/>
         </LinearLayout>
         <LinearLayout
-            android:background="@drawable/edittext_top_bg"
             android:layout_gravity="center_vertical"
             android:weightSum="2"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/all_padding"
+            android:orientation="vertical"
             android:gravity="center_vertical"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="0dp"
             android:layout_marginRight="50dp"
             android:layout_width="match_parent"
-            android:layout_height="20dp">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
 
             <TextView
                 android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
+                android:layout_gravity="left"
+                android:textColor="@color/buttoncolor"
                 android:paddingLeft="@dimen/all_padding"
-                android:text="@string/invoice_no"
-                android:textSize="@dimen/label_min"
-                android:layout_height="wrap_content"/>
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"/>
-            <TextView
-                android:id="@+id/tv_invoice_number"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:paddingLeft="@dimen/all_padding"
-                android:text="@string/invoice_no"
-                android:textSize="@dimen/label_min"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_height="0.5dp"
-            android:background="@color/colorPrimary"/>
-        <LinearLayout
-            android:background="@drawable/edittext_center_bg"
-            android:layout_gravity="center_vertical"
-            android:weightSum="2"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="20dp">
-
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:paddingLeft="@dimen/all_padding"
-                android:text="@string/invoice_amount"
-                android:textSize="@dimen/label_min"
-                android:layout_height="wrap_content"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"/>
-
-            <TextView
-                android:id="@+id/tv_invoice_total"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:paddingLeft="@dimen/all_padding"
-                android:text="@string/invoice_no"
-                android:textSize="@dimen/label_min"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_height="0.5dp"
-            android:background="@color/colorPrimary"/>
-        <LinearLayout
-            android:background="@drawable/edittext_bottom_bg"
-            android:layout_gravity="center_vertical"
-            android:weightSum="2"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_width="match_parent"
-            android:layout_height="20dp">
-
-            <TextView
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:paddingLeft="@dimen/all_padding"
+                android:textAllCaps="true"
                 android:text="@string/amout_due"
                 android:textSize="@dimen/label_min"
                 android:layout_height="wrap_content"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimary"/>
 
             <TextView
                 android:id="@+id/tv_payment__amout_due_number"
                 android:layout_weight="1"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:paddingLeft="@dimen/all_padding"
-                android:text="@string/invoice_no"
+                android:text="0"
                 android:textSize="@dimen/label_min"
                 android:layout_height="wrap_content"/>
 
@@ -180,14 +101,15 @@
                 android:textSize="@dimen/label_min"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:id="@+id/cb_cheque"/>
 
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_cash_payment"
             android:layout_width="match_parent"
             android:weightSum="2"
-            android:visibility="visible"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/all_padding"
             android:layout_marginLeft="@dimen/all_padding"
             android:layout_marginRight="@dimen/all_padding"
@@ -204,8 +126,9 @@
             <EditText
                 android:layout_weight="1"
                 android:id="@+id/edt_cash_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:layout_marginTop="@dimen/size_two"
                 android:enabled="true"
                 android:inputType="numberDecimal"
@@ -216,7 +139,7 @@
         <LinearLayout
             android:id="@+id/ll_cheque_payment"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="gone"
             android:weightSum="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -243,10 +166,11 @@
 
                     <EditText
                         android:id="@+id/edt_check_no"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:layout_marginTop="@dimen/size_two"
-                        android:enabled="false"
+                        android:enabled="true"
                         android:inputType="number"
                         android:text=""
                         />
@@ -266,10 +190,11 @@
 
                     <EditText
                         android:id="@+id/edt_check_amt"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/size_two"
-                        android:enabled="false"
+                        android:enabled="true"
+                        android:singleLine="true"
                         android:inputType="numberDecimal"
                         android:text=""
                         />

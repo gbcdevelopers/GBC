@@ -7,6 +7,7 @@ import android.os.Parcelable;
 public class LoadSummary implements Parcelable {
     private String item_code;
     private String item_description;
+    private String item_description_ar;
     private String quantity_cases;
     private String quantity_units;
     private String uom;
@@ -29,6 +30,12 @@ public class LoadSummary implements Parcelable {
     }
     public void setItemDescription(String item_description) {
         this.item_description = item_description;
+    }
+    public String getItem_description_ar() {
+        return item_description_ar;
+    }
+    public void setItem_description_ar(String item_description_ar) {
+        this.item_description_ar = item_description_ar;
     }
     public String getQuantityCases() {
         return quantity_cases;
@@ -79,6 +86,7 @@ public class LoadSummary implements Parcelable {
             loadSummary.item_code = source.readString();
             loadSummary.item_description = source.readString();
             loadSummary.quantity_cases = source.readString();
+           // loadSummary.item_description_ar = source.readString();
             loadSummary.quantity_units = source.readString();
             loadSummary.materialNo = source.readString();
             loadSummary.uom = source.readString();
@@ -100,6 +108,7 @@ public class LoadSummary implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(item_code);
         parcel.writeString(item_description);
+       // parcel.writeString(item_description_ar);
         parcel.writeString(quantity_cases);
         parcel.writeString(quantity_units);
         parcel.writeString(materialNo);

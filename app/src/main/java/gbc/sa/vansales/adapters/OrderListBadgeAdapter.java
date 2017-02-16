@@ -56,8 +56,8 @@ public class OrderListBadgeAdapter extends ArrayAdapter<OrderList> {
         asterisk.setSpan(new ForegroundColorSpan(Color.RED),0, 2, 0);
         holder.order_id.setText(order.getOrderId().contains(Settings.getString(App.ROUTE))?"Order No : " + order.getOrderId() + asterisk: order.getOrderId());
         */
-        holder.order_id.setText("Order No : " + order.getOrderId());
-        holder.order_date.setText("Order Date : " + order.getOrderDate());
+        holder.order_id.setText(getContext().getString(R.string.order_no) + " : " + order.getOrderId());
+        holder.order_date.setText(getContext().getString(R.string.order_date) + " : " + order.getOrderDate());
         return convertView;
     }
 

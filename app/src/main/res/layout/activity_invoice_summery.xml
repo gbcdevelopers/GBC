@@ -258,8 +258,7 @@
 																												android:text="@string/cases"
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
-																												android:textStyle="bold"
-																												android:capitalize="none"/>
+																												android:textStyle="bold"/>
 
 																								<EditText
 																												android:id="@+id/et_sales_cases"

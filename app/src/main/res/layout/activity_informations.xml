@@ -16,6 +16,7 @@
         <include layout="@layout/common_header" />
 
         <GridView
+            android:layoutDirection="ltr"
             android:id="@+id/grid_information"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

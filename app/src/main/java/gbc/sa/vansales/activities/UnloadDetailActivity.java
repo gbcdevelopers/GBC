@@ -555,8 +555,8 @@ public class UnloadDetailActivity extends AppCompatActivity {
                     String uomCase = c.getString(c.getColumnIndex(db.KEY_UOM_CASE));
                     String uomUnit = c.getString(c.getColumnIndex(db.KEY_UOM_UNIT));
                     unload.setUom((uomCase == null || uomCase.equals("")) ? uomUnit : uomCase);
-                    unload.setCases(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                    unload.setPic(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                    unload.setCases(String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)))+Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))));
+                    unload.setPic(String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT))) + Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)))));
                     dataStoreList.add(unload);
                 }
                 while (c.moveToNext());
@@ -695,8 +695,12 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         } else {
                             unload.setPrice("0");
                         }
-                        unload.setCases(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                        unload.setPic(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                        double cases = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE))) + Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                        double units = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_UNIT))) + Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                        //unload.setCases(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                        //unload.setPic(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                        unload.setCases(String.valueOf(cases));
+                        unload.setPic(String.valueOf(units));
                         unload.setReasonCode("0");
                         arrayList.add(unload);
                     }

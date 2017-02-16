@@ -121,20 +121,27 @@ public class CollectionsActivity extends AppCompatActivity {
         lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
-                    Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                    intent.putExtra("msg", "collection");
-                    intent.putExtra("from","collection");
-                    intent.putExtra("pos", position);
-                    intent.putExtra("headerObj", object);
-                    float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                    intent.putExtra("collection",colletionDatas.get(position));
-                    intent.putExtra("amountdue",String.valueOf(dueamount));
-                    startActivity(intent);
+                double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
+                if(amountdue==0){
+                    Toast.makeText(CollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(CollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                    if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
+                        Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
+                        intent.putExtra("msg", "collection");
+                        intent.putExtra("from","collection");
+                        intent.putExtra("pos", position);
+                        intent.putExtra("headerObj", object);
+                        float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
+                        intent.putExtra("collection",colletionDatas.get(position));
+                        intent.putExtra("amountdue",String.valueOf(dueamount));
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(CollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                    }
                 }
+
 
 //                startActivityForResult(intent, 1);
             }

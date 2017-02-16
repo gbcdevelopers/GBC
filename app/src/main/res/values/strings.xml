@@ -94,6 +94,7 @@
     <string name="cname">Name</string>
     <string name="collection">Collection</string>
     <string name="complete_invoice">Complete Invoice</string>
+    <string name="complete_transaction">Please complete transaction</string>
     <string name="confirmload">Confirm Load</string>
     <string name="confirmorder">Confirm Order</string>
     <string name="confirmreturn">Confirm Returns</string>
@@ -120,6 +121,7 @@
     <string name="customer_address2">Street</string>
     <string name="customer_balance_report">CUSTOMER BALANCE REPORT</string>
     <string name="customer_decs">Customer decs</string>
+    <string name="customer_list_title">Customers List</string>
     <string name="customer_list">CUSTOMER LIST</string>
     <string name="customer_name">Customer Name</string>
     <string name="customerid">Customer ID</string>
@@ -131,6 +133,7 @@
     <string name="data_posting_audit">DATA POSTING \n AUDIT</string>
     <string name="data_posting_audit_lbl">DATA POSTING AUDIT</string>
     <string name="date">16/01/2017</string>
+    <string name="date_invalid">Date selection is invalid. Please select current date</string>
     <string name="day">Day </string>
     <string name="days">Days</string>
     <string name="debit_invoice">Debit invoice should not be collected</string>
@@ -170,6 +173,8 @@
     <string name="enter_amount">Enter Amount</string>
     <string name="enter_category">Enter Category</string>
     <string name="enter_cash_amount">ENTER CASH AMOUNT:</string>
+    <string name="enter_employee_hint">Username</string>
+    <string name="enter_password_hint">Password</string>
     <string name="enter_employee_id">Please enter employee ID</string>
     <string name="enter_password">Please enter password</string>
     <string name="error_message">An error occured. Please try again</string>
@@ -180,7 +185,7 @@
     <string name="frahn">Frahn</string>
     <string name="freegoods">FREEGOODS</string>
     <string name="fresh_unload">Fresh Unload</string>
-    <string name="gbc">GBC SFA</string>
+    <string name="gbc">Berain SFA</string>
     <string name="good">Good</string>
     <string name="good_return">Good Return</string>
     <string name="good_returns">GOOD RETURNS</string>
@@ -248,6 +253,7 @@
     <string name="new_invoice_amount">New Invoice Amount</string>
     <string name="next_load_lbl">NEXT LOAD</string>
     <string name="nextload">Next Load to Process</string>
+    <string name="nonservicedreason">Non Serviced Reason</string>
     <string name="no">No</string>
     <string name="no_data">Please input data before creating request</string>
     <string name="no_records">No Records</string>
@@ -319,6 +325,7 @@
     <string name="reload_data">Reload Data</string>
     <string name="remark">Remark</string>
     <string name="rental">RENTAL</string>
+    <string name="requiredFields">Please fill all the required fields</string>
     <string name="request_created">Request created</string>
     <string name="request_timeout">Request Timeout</string>
     <string-array name="returnReasons">
@@ -347,8 +354,8 @@
     <string name="sales_discounts">SALES DISCOUNTS</string>
     <string name="sales_invoice">Sales Invoice</string>
     <string name="sales_invoice_option">Sales Invoice Opt.</string>
-    <string name="sales_man_name">Sales Man Name </string>
-    <string name="sales_man_no">Sales Man No </string>
+    <string name="sales_man_name">Salesman Name </string>
+    <string name="sales_man_no">Salesman No </string>
     <string name="sales_qty">Sales Qty</string>
     <string name="sales_summary">SALES SUMMARY</string>
     <string name="save">save</string>

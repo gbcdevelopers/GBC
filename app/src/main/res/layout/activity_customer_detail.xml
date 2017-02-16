@@ -242,6 +242,7 @@
 												android:layout_width="match_parent"
 												android:layout_height="70dp"
 												android:layout_marginTop="@dimen/activity_vertical_margin"
+												android:layoutDirection="ltr"
 												android:orientation="horizontal"
 												android:paddingLeft="@dimen/size_five"
 												android:paddingRight="@dimen/size_five"
@@ -391,11 +392,14 @@
 												android:layout_width="match_parent"
 												android:layout_height="match_parent"
 												android:paddingLeft="@dimen/size_five"
+												android:paddingStart="@dimen/size_five"
+												android:paddingEnd="@dimen/size_five"
 												android:paddingRight="@dimen/size_five"
 												>
 
 												<GridView
 																android:id="@+id/grid"
+																android:layoutDirection="ltr"
 																android:layout_width="match_parent"
 																android:layout_height="match_parent"
 																android:gravity="center"

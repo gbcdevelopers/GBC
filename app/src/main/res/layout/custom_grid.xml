@@ -41,4 +41,11 @@
 												android:textSize="12dp"
 												/>
 				</LinearLayout>
+				<ImageView
+								android:id="@+id/img_lock"
+								android:alpha="0.4"
+								android:visibility="invisible"
+								android:src="@drawable/img_lock1"
+								android:layout_width="match_parent"
+								android:layout_height="70dp"/>
 </android.support.v7.widget.CardView>

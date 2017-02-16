@@ -22,7 +22,7 @@
 				<string name="_0_0_0_1">0.0/0.1</string>
 				<string name="_10">10</string>
 				<string name="_1177711565">1177711565</string>
-				<string name="_12">12</string>
+				<string name="_12">0</string>
 				<string name="_12100">12100</string>
 				<string name="_146_40">146.40</string>
 				<string name="_150_ml_qty">150 ML QTY</string>
@@ -65,7 +65,7 @@
 				<string name="beginday_route">خط سير</string>
 				<string name="begintrip">بداية الرحلة</string>
 				<string name="berain">Berain</string>
-				<string name="br">B.R</string>
+				<string name="br">سيئة العودة</string>
 				<string name="buyback_free">إعادة شراء مجانية</string>
 				<string name="calendar">تقويم</string>
 				<string name="cancel">إلغاء</string>
@@ -89,6 +89,7 @@
 				<string name="cname">الاسم</string>
 				<string name="collection">مجموعة</string>
 				<string name="complete_invoice">اكمل الفاتورة</string>
+				<string name="complete_transaction">يرجى إكمال المعاملة</string>
 				<string name="confirmload">تأكيد التحميل</string>
 				<string name="confirmorder">أكد الطلب</string>
 				<string name="confirmreturn">تأكيد العودة</string>
@@ -115,6 +116,7 @@
 				<string name="customer_address2">Address(Line 2)</string>
 				<string name="customer_balance_report">تقرير حساب العميل</string>
 				<string name="customer_decs">Customer decs</string>
+				<string name="customer_list_title">قائمة العملاء</string>
 				<string name="customer_list">قائمة العملاء</string>
 				<string name="customer_name">اسم العميل</string>
 				<string name="customerid">كود العميل</string>
@@ -123,17 +125,19 @@
 				<string name="damage_expiry_report">تقرير المنتهى الصلاحية و التالف</string>
 				<string name="dashboard">لوحة المعلومات</string>
 				<string name="data_loss_msg">سيتم حذف جميع البيانات الخاصة بك. هل تريد الاستمرار؟</string>
+				<string name="data_posting_audit_lbl">البيانات المرحلة / تراجع</string>
 				<string name="data_posting_audit">البيانات المرحلة / تراجع</string>
 				<string name="date">تاريخ التحميل</string>
+				<string name="date_invalid">تاريخ اختيار غير صالحة. يرجى تحديد التاريخ الحالي</string>
 				<string name="day">يوم</string>
 				<string name="days">ايام</string>
-				<string name="debit_invoice">Debit invoice should not be collected</string>
+				<string name="debit_invoice">يجب عدم جمع فاتورة الخصم</string>
 				<string name="delete">الغاء</string>
 				<string name="delete_msg">هل أنت متأكد أنك تريد حذف؟</string>
 				<string name="delivery">خدمه توصيل</string>
 				<string name="delivery_1234">Delivery# 1234</string>
-				<string name="delivery_complete">Delivery completed</string>
-				<string name="delivery_delete">Delivery marked for deletion</string>
+				<string name="delivery_complete">تسليم الانتهاء</string>
+				<string name="delivery_delete">تسليم وضع علامة للحذف</string>
 				<string name="delivery_date">تاريخ التسليم</string>
 				<string name="delivery_date_23_oct_2016">Delivery date:23-oct-2016</string>
 				<string name="delivery_list">قائمة التسليم</string>
@@ -152,7 +156,7 @@
 				<string name="dismiss">رفض/انهاء</string>
 				<string name="do_not_print">لا تطبع</string>
 				<string name="due_date">تاريخ الاستحقاق</string>
-				<string name="e2000">E200000</string>
+				<string name="e2000">E102964</string>
 				<string name="edit">تعديل</string>
 				<string name="email">البريد الإلكتروني</string>
 				<string name="enableautosync">تمكين المزامنة التلقائية</string>
@@ -164,13 +168,15 @@
 				<string name="enter_amount">أدخل المبلغ</string>
 				<string name="enter_category">أدخل الفئة</string>
 				<string name="enter_cash_amount">ادخل المبلغ النقدي</string>
+				<string name="enter_employee_hint">اسم المستخدم</string>
+				<string name="enter_password_hint">كلمه السر</string>
 				<string name="enter_employee_id">الرجاء إدخال كود الموظف</string>
 				<string name="enter_password">الرجاء إدخال كلمة مرور</string>
 				<string name="error_message">حدث خطأ. حاول مرة اخرى</string>
 				<string name="error_title">خطأ</string>
 				<string name="excess">فائض/تجاوز الحد</string>
 				<string name="fax">فاكس</string>
-				<string name="feature_blocked">Option currently disabled for customer</string>
+				<string name="feature_blocked">الخيار معطل حاليا للعميل</string>
 				<string name="frahn">Frahn</string>
 				<string name="freegoods">بضائع مجانية</string>
 				<string name="fresh_unload">إلغاء تحميل جديدة</string>
@@ -178,7 +184,7 @@
 				<string name="good">جيد</string>
 				<string name="good_return">مرتجعات جيدة</string>
 				<string name="good_returns">مرتجعات جيدة</string>
-				<string name="gr">G.R</string>
+				<string name="gr">عودة جيدة</string>
 				<string name="hint_cr_no"><i>على سبيل المثال. 12345</i></string>
 				<string name="hint_customer_name"><i>على سبيل المثال. فلان الفلاني</i></string>
 				<string name="hint_customer_address1"><i>على سبيل المثال. 144 شارع بيكر</i></string>
@@ -242,6 +248,7 @@
 				<string name="new_invoice_amount">القيمة الجديدة للفاتورة</string>
 				<string name="next_load_lbl">التحميل التالي</string>
 				<string name="nextload">البدء فى الحمولة التالية</string>
+				<string name="nonservicedreason">السبب غير مخدومة</string>
 				<string name="no">لا</string>
 				<string name="no_data">الرجاء إدخال البيانات قبل إنشاء الطلب</string>
 				<string name="no_records">لا توجد بيانات</string>
@@ -270,7 +277,7 @@
 				</string-array>
 				<string name="pcs">عدد(حبات)</string>
 				<string name="pcs_100">PCS : 100</string>
-				<string name="pending_invoice">Operation cannot be performed as there are due invoices. Please clear the pending invoices</string>
+				<string name="pending_invoice">الرجاء مسح الفواتير المعلقة</string>
 				<string name="please_enter_odometer">برجاء ادخال عداد السيارة</string>
 				<string name="pobox">ص.ب.</string>
 				<string name="posting">بينات الترحيل</string>
@@ -312,6 +319,7 @@
 				<string name="reload_data">اعاده التحميل</string>
 				<string name="remark">تعليق</string>
 				<string name="rental">تاجير</string>
+				<string name="requiredFields">يرجى تعبئة جميع الحقول المطلوبة</string>
 				<string name="request_created">طلب مكون</string>
 				<string name="request_timeout">انتهاء فترة الطلب</string>
 				<string-array name="returnReasons">
@@ -333,7 +341,7 @@
 				<string name="route_code_101">كود خط السير</string>
 				<string name="route_pro">ROUTE-PRO</string>
 				<string name="route_summary">ملخص خط السير</string>
-				<string name="s_l_no">S.L. No</string>
+				<string name="s_l_no">رقم</string>
 				<string name="sales">مبيعات</string>
 				<string name="sales_area">مبيعات المنطقة</string>
 				<string name="sales_date">تاريخ البيع</string>
@@ -365,8 +373,8 @@
 				<string name="synchronize">التزامن</string>
 				<string name="targetgoal">الهدف / الأهداف</string>
 				<string name="targetachieved">المحقق/الهدف</string>
-				<string name="tc_lbl">TC</string>
-				<string name="tc_sales">TC SALES</string>
+				<string name="tc_lbl">الائتمان مؤقت</string>
+				<string name="tc_sales">مبيعات الائتمان مؤقتة</string>
 				<string name="telephone">هاتف</string>
 				<string name="theft">سرق أو فقد</string>
 				<string name="theft_label"><font fgcolor='#ff0000'>سرق أو فقد</font></string>
@@ -384,7 +392,7 @@
 				<string name="total_sales">إجمالي المبيعات</string>
 				<string name="trade_name">اسم تجاري</string>
 				<string name="trade_price">سعر تداول</string>
-				<string name="trip">Trip ID</string>
+				<string name="trip">عدد رحلة</string>
 				<string name="transaction">عملية /حركة</string>
 				<string name="truck_damage">الأضرار شاحنة</string>
 				<string name="tv_cust_detail">3106,EMARAT (EGPC)(DE455)</string>

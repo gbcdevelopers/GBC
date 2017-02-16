@@ -218,17 +218,23 @@ public class DeliveryActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put(db.KEY_DELIVERY_NO, "");
-            map.put(db.KEY_DELIVERY_DATE, "");
-            map.put(db.KEY_IS_DELIVERED,"");
-            HashMap<String, String> filter = new HashMap<>();
-            //filter.put(db.KEY_IS_DELIVERED, "false");
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-            Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                setDeliveryList(cursor);
+            try{
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put(db.KEY_DELIVERY_NO, "");
+                map.put(db.KEY_DELIVERY_DATE, "");
+                map.put(db.KEY_IS_DELIVERED,"");
+                HashMap<String, String> filter = new HashMap<>();
+                //filter.put(db.KEY_IS_DELIVERED, "false");
+                filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_HEADER, map, filter);
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    setDeliveryList(cursor);
+                }
+
+            }
+            catch (Exception e){
+                e.printStackTrace();
             }
             return null;
         }

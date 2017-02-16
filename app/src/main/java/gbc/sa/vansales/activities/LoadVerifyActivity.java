@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,6 +33,7 @@ import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.LoadVerifyBadgeAdapter;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
+import gbc.sa.vansales.models.OrderRequest;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -40,6 +42,7 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.PrinterDataHelper;
 import gbc.sa.vansales.utils.PrinterHelper;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
@@ -82,40 +85,90 @@ public class LoadVerifyActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
     private void calculateCost() {
-        int salesTotal = 0;
-        int pcsTotal = 0;
-        double total = 0;
-        for (LoadSummary item : loadSummaryList) {
-            double itemPrice = 0;
-            String[] cases = item.getQuantityCases().split("\\|");
-            if (!item.isAltUOM()) {
-                itemPrice = Double.parseDouble(cases[1]) * Double.parseDouble(item.getPrice());
+        try{
+            int salesTotal = 0;
+            int pcsTotal = 0;
+            double total = 0;
+            for (LoadSummary item : loadSummaryList) {
+                double itemPrice = 0;
+                String[] cases = item.getQuantityCases().split("\\|");
+                if (!item.isAltUOM()) {
+                    itemPrice = Double.parseDouble(cases[1]) * Double.parseDouble(item.getPrice());
+                }
+                total += itemPrice;
             }
-            total += itemPrice;
+            TextView tv = (TextView) findViewById(R.id.tv_amt);
+            tv.setText(String.valueOf(total));
         }
-        TextView tv = (TextView) findViewById(R.id.tv_amt);
-        tv.setText(String.valueOf(total));
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public void confirmLoad(View v) {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(db.KEY_IS_VERIFIED, "true");
-        HashMap<String, String> filters = new HashMap<>();
-        filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
-        db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
-        addItemstoVan(dataNew);
-        if (!checkIfLoadExists()) {
-            if (createDataForPost(dataNew, dataOld)) {
-                HashMap<String, String> altMap = new HashMap<>();
-                altMap.put(db.KEY_IS_LOAD_VERIFIED, "true");
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_IS_LOAD_VERIFIED, "false");
-                db.updateData(db.LOCK_FLAGS, altMap, filter);
-                final Dialog dialog = new Dialog(LoadVerifyActivity.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.dialog_doprint);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+        try{
+            HashMap<String, String> parameters = new HashMap<>();
+            parameters.put(db.KEY_IS_VERIFIED, "true");
+            HashMap<String, String> filters = new HashMap<>();
+            filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
+            db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
+            addItemstoVan(dataNew);
+            if (!checkIfLoadExists()) {
+                if (createDataForPost(dataNew, dataOld)) {
+                    HashMap<String, String> altMap = new HashMap<>();
+                    altMap.put(db.KEY_IS_LOAD_VERIFIED, "true");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_LOAD_VERIFIED, "false");
+                    db.updateData(db.LOCK_FLAGS, altMap, filter);
+                    final Dialog dialog = new Dialog(LoadVerifyActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_doprint);
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                    HashMap<String, String> searchMap = new HashMap<>();
+                    searchMap.put(db.KEY_ORDER_ID, "");
+                    HashMap<String, String> filterMap = new HashMap<>();
+                    filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
+                    Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, searchMap, filterMap);
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                    }
+
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
+                    map.put(db.KEY_ORDER_ID, tempOrderID);
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                    db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+                    btn_print.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            print = true;
+                            new postData(tempOrderID);
+                            dialog.dismiss();
+                            //finish();
+                        }
+                    });
+                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            print = false;
+                            new postData(tempOrderID);
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setCancelable(false);
+                    dialog.show();
+                /*Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
+                startActivity(intent);*/
+                }
+            } else {
+
                 HashMap<String, String> searchMap = new HashMap<>();
                 searchMap.put(db.KEY_ORDER_ID, "");
                 HashMap<String, String> filterMap = new HashMap<>();
@@ -125,62 +178,24 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     cursor.moveToFirst();
                     tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
                 }
-
+                //tempOrderID = "0000000075";
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
                 map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
                 map.put(db.KEY_ORDER_ID, tempOrderID);
-                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
                 db.addData(db.LOAD_CONFIRMATION_HEADER, map);
-                btn_print.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        print = true;
-                        new postData(tempOrderID);
-                        dialog.dismiss();
-                        //finish();
-                    }
-                });
-                btn_notprint.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        print = false;
-                        new postData(tempOrderID);
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setCancelable(false);
-                dialog.show();
-                /*Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
-                startActivity(intent);*/
-            }
-        } else {
 
-            HashMap<String, String> searchMap = new HashMap<>();
-            searchMap.put(db.KEY_ORDER_ID, "");
-            HashMap<String, String> filterMap = new HashMap<>();
-            filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
-            Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, searchMap, filterMap);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+                startActivity(intent);
             }
-            //tempOrderID = "0000000075";
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-            map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
-            map.put(db.KEY_ORDER_ID, tempOrderID);
-            map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-            map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
-            db.addData(db.LOAD_CONFIRMATION_HEADER, map);
-
-            Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
-            startActivity(intent);
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public void cancel(View v) {
         Intent intent = new Intent(LoadVerifyActivity.this, LoadSummaryActivity.class);
@@ -188,301 +203,341 @@ public class LoadVerifyActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private boolean checkIfLoadExists() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_TRIP_ID, "");
-        map.put(db.KEY_DELIVERY_NO, "");
-        map.put(db.KEY_DELIVERY_DATE, "");
-        map.put(db.KEY_DELIVERY_TYPE, "");
-        HashMap<String, String> filters = new HashMap<>();
-        filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
-        filters.put(db.KEY_IS_VERIFIED, "false");
-        Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER, map, filters);
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TRIP_ID, "");
+            map.put(db.KEY_DELIVERY_NO, "");
+            map.put(db.KEY_DELIVERY_DATE, "");
+            map.put(db.KEY_DELIVERY_TYPE, "");
+            HashMap<String, String> filters = new HashMap<>();
+            filters.put(db.KEY_TRIP_ID, Settings.getString(TRIP_ID));
+            filters.put(db.KEY_IS_VERIFIED, "false");
+            Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER, map, filters);
+            if (cursor.getCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
             return false;
         }
+
     }
     private boolean checkMaterialExists(String materialno, String uom) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_MATERIAL_NO, "");
-        if (uom.equals(App.CASE_UOM)) {
-            map.put(db.KEY_UOM_CASE, "");
-        } else if (uom.equals(App.BOTTLES_UOM)) {
-            map.put(db.KEY_UOM_UNIT, "");
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_MATERIAL_NO, "");
+            if (uom.equals(App.CASE_UOM)) {
+                map.put(db.KEY_UOM_CASE, "");
+            } else if (uom.equals(App.BOTTLES_UOM)) {
+                map.put(db.KEY_UOM_UNIT, "");
+            }
+            HashMap<String, String> filters = new HashMap<>();
+            filters.put(db.KEY_MATERIAL_NO, materialno);
+            if (uom.equals(App.CASE_UOM)) {
+                filters.put(db.KEY_UOM_CASE, uom);
+            } else if (uom.equals(App.BOTTLES_UOM)) {
+                filters.put(db.KEY_UOM_UNIT, uom);
+            }
+            Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filters);
+            //Log.e("Cursorcountcheck", "" + materialno + uom + cursor.getCount());
+            if (cursor.getCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        HashMap<String, String> filters = new HashMap<>();
-        filters.put(db.KEY_MATERIAL_NO, materialno);
-        if (uom.equals(App.CASE_UOM)) {
-            filters.put(db.KEY_UOM_CASE, uom);
-        } else if (uom.equals(App.BOTTLES_UOM)) {
-            filters.put(db.KEY_UOM_UNIT, uom);
-        }
-        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filters);
-        //Log.e("Cursorcountcheck", "" + materialno + uom + cursor.getCount());
-        if (cursor.getCount() > 0) {
-            return true;
-        } else {
+        catch (Exception e){
+            e.printStackTrace();
             return false;
         }
+
     }
     private void addItemstoVan(ArrayList<LoadSummary> dataNew) {
-        for (int i = 0; i < dataNew.size(); i++) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
-            map.put(db.KEY_DELIVERY_NO, object.getDeliveryNo().toString());
-            map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
-            map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());
-            map.put(db.KEY_MATERIAL_DESC1, dataNew.get(i).getItemDescription().toString());
-            if (!((dataNew.get(i).getQuantityCases().isEmpty()) || (dataNew.get(i).getQuantityCases().equals(""))
-                    || (dataNew.get(i).getQuantityCases().equals("0")) || (dataNew.get(i).getQuantityCases().equals("")))) {
-                //Check if old data exists for case
-                if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.CASE_UOM)) {
-                    //Logic to read Customer Delivery Item and block material quantity based on UOM
-                    int reserved = 0;
-                    //Getting old data
-                    HashMap<String, String> oldData = new HashMap<>();
-                    oldData.put(db.KEY_MATERIAL_NO, "");
-                    oldData.put(db.KEY_UOM_CASE, "");
-                    oldData.put(db.KEY_ACTUAL_QTY_CASE, "");
-                    oldData.put(db.KEY_RESERVED_QTY_CASE, "");
-                    oldData.put(db.KEY_REMAINING_QTY_CASE, "");
-                    HashMap<String, String> filterOldData = new HashMap<>();
-                    filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
-                    filterOldData.put(db.KEY_UOM_CASE, App.CASE_UOM);
-                    Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
-                    float actualQtyCase = 0;
-                    float reservedQtyCase = 0;
-                    float remainingQtyCase = 0;
-                    if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
-                        do {
-                            actualQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
-                            reservedQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
-                            remainingQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                            actualQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
-                            remainingQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+        try{
+            for (int i = 0; i < dataNew.size(); i++) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_DELIVERY_NO, object.getDeliveryNo().toString());
+                map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());
+                map.put(db.KEY_MATERIAL_DESC1, dataNew.get(i).getItemDescription().toString());
+                if (!((dataNew.get(i).getQuantityCases().isEmpty()) || (dataNew.get(i).getQuantityCases().equals(""))
+                        || (dataNew.get(i).getQuantityCases().equals("0")) || (dataNew.get(i).getQuantityCases().equals("")))) {
+                    //Check if old data exists for case
+                    if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.CASE_UOM)) {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reserved = 0;
+                        //Getting old data
+                        HashMap<String, String> oldData = new HashMap<>();
+                        oldData.put(db.KEY_MATERIAL_NO, "");
+                        oldData.put(db.KEY_UOM_CASE, "");
+                        oldData.put(db.KEY_ACTUAL_QTY_CASE, "");
+                        oldData.put(db.KEY_RESERVED_QTY_CASE, "");
+                        oldData.put(db.KEY_REMAINING_QTY_CASE, "");
+                        HashMap<String, String> filterOldData = new HashMap<>();
+                        filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                        filterOldData.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
+                        float actualQtyCase = 0;
+                        float reservedQtyCase = 0;
+                        float remainingQtyCase = 0;
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            do {
+                                actualQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
+                                reservedQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
+                                remainingQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                actualQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+                                remainingQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+                            }
+                            while (cursor.moveToNext());
+                            map.put(db.KEY_ACTUAL_QTY_CASE, String.valueOf(actualQtyCase));
+                            map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQtyCase));
+                            map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingQtyCase));
+                            map.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                            // db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
                         }
-                        while (cursor.moveToNext());
-                        map.put(db.KEY_ACTUAL_QTY_CASE, String.valueOf(actualQtyCase));
-                        map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQtyCase));
-                        map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingQtyCase));
+                    } else {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reservedQty = 0;
+                        map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
+                        map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
+                        map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
                         map.put(db.KEY_UOM_CASE, App.CASE_UOM);
-                        // db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
+                        // db.addData(db.VAN_STOCK_ITEMS, map);
                     }
+                /*map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
+                map.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf("0"));
+                map.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString())-0));
+                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);*/
                 } else {
-                    //Logic to read Customer Delivery Item and block material quantity based on UOM
                     int reservedQty = 0;
                     map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
                     map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
                     map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
                     map.put(db.KEY_UOM_CASE, App.CASE_UOM);
-                    // db.addData(db.VAN_STOCK_ITEMS, map);
                 }
-                /*map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
-                map.put(db.KEY_RESERVED_QTY_UNIT,String.valueOf("0"));
-                map.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString())-0));
-                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);*/
-            } else {
-                int reservedQty = 0;
-                map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
-                map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
-                map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
-                map.put(db.KEY_UOM_CASE, App.CASE_UOM);
-            }
-            if (!((dataNew.get(i).getQuantityUnits().isEmpty()) || (dataNew.get(i).getQuantityUnits().equals(""))
-                    || (dataNew.get(i).getQuantityUnits().equals("0")) || (dataNew.get(i).getQuantityUnits().equals("")))) {
-                //Log.e("Step 0","Step 0");
-                if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.BOTTLES_UOM)) {
-                    //Logic to read Customer Delivery Item and block material quantity based on UOM
-                    int reserved = 0;
-                    //Log.e("Step 1","Step 1");
-                    //Getting old data
-                    HashMap<String, String> oldData = new HashMap<>();
-                    oldData.put(db.KEY_MATERIAL_NO, "");
-                    oldData.put(db.KEY_UOM_UNIT, "");
-                    oldData.put(db.KEY_ACTUAL_QTY_UNIT, "");
-                    oldData.put(db.KEY_RESERVED_QTY_UNIT, "");
-                    oldData.put(db.KEY_REMAINING_QTY_UNIT, "");
-                    HashMap<String, String> filterOldData = new HashMap<>();
-                    filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
-                    filterOldData.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
-                    Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
-                    //Log.e("Step 2","Step 2" + cursor.getCount());
-                    float actualQtyUnit;
-                    float reservedQtyUnit;
-                    float remainingQtyUnit;
-                    if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
-                        do {
-                            actualQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
-                            reservedQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)));
-                            remainingQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                            //Log.e("Actual Qty Unit1","" + actualQtyUnit);
-                            //Log.e("REmaining Qty Unit1","" + remainingQtyUnit);
-                            actualQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
-                            remainingQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
-                            //Log.e("Actual Qty Unit2","" + actualQtyUnit);
-                            //Log.e("REmaining Qty Unit2","" + remainingQtyUnit);
+                if (!((dataNew.get(i).getQuantityUnits().isEmpty()) || (dataNew.get(i).getQuantityUnits().equals(""))
+                        || (dataNew.get(i).getQuantityUnits().equals("0")) || (dataNew.get(i).getQuantityUnits().equals("")))) {
+                    //Log.e("Step 0","Step 0");
+                    if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.BOTTLES_UOM)) {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reserved = 0;
+                        //Log.e("Step 1","Step 1");
+                        //Getting old data
+                        HashMap<String, String> oldData = new HashMap<>();
+                        oldData.put(db.KEY_MATERIAL_NO, "");
+                        oldData.put(db.KEY_UOM_UNIT, "");
+                        oldData.put(db.KEY_ACTUAL_QTY_UNIT, "");
+                        oldData.put(db.KEY_RESERVED_QTY_UNIT, "");
+                        oldData.put(db.KEY_REMAINING_QTY_UNIT, "");
+                        HashMap<String, String> filterOldData = new HashMap<>();
+                        filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                        filterOldData.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
+                        //Log.e("Step 2","Step 2" + cursor.getCount());
+                        float actualQtyUnit;
+                        float reservedQtyUnit;
+                        float remainingQtyUnit;
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            do {
+                                actualQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
+                                reservedQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)));
+                                remainingQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                                //Log.e("Actual Qty Unit1","" + actualQtyUnit);
+                                //Log.e("REmaining Qty Unit1","" + remainingQtyUnit);
+                                actualQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
+                                remainingQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
+                                //Log.e("Actual Qty Unit2","" + actualQtyUnit);
+                                //Log.e("REmaining Qty Unit2","" + remainingQtyUnit);
+                            }
+                            while (cursor.moveToNext());
+                            map.put(db.KEY_ACTUAL_QTY_UNIT, String.valueOf(actualQtyUnit));
+                            map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQtyUnit));
+                            map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingQtyUnit));
+                            map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                            //db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
                         }
-                        while (cursor.moveToNext());
-                        map.put(db.KEY_ACTUAL_QTY_UNIT, String.valueOf(actualQtyUnit));
-                        map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQtyUnit));
-                        map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingQtyUnit));
+                    } else {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reservedQty = 0;
+                        map.put(db.KEY_ACTUAL_QTY_UNIT, dataNew.get(i).getQuantityUnits().toString());
+                        map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQty));
+                        map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString()) - reservedQty));
                         map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
-                        //db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
                     }
+
+               /* map.put(db.KEY_ACTUAL_QTY_CASE,dataNew.get(i).getQuantityCases().toString());
+                map.put(db.KEY_RESERVED_QTY_CASE,String.valueOf("0"));
+                map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString())-0));
+                map.put(db.KEY_UOM_CASE, App.CASE_UOM);*/
                 } else {
-                    //Logic to read Customer Delivery Item and block material quantity based on UOM
                     int reservedQty = 0;
                     map.put(db.KEY_ACTUAL_QTY_UNIT, dataNew.get(i).getQuantityUnits().toString());
                     map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQty));
                     map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString()) - reservedQty));
                     map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
                 }
-
-               /* map.put(db.KEY_ACTUAL_QTY_CASE,dataNew.get(i).getQuantityCases().toString());
-                map.put(db.KEY_RESERVED_QTY_CASE,String.valueOf("0"));
-                map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString())-0));
-                map.put(db.KEY_UOM_CASE, App.CASE_UOM);*/
-            } else {
-                int reservedQty = 0;
-                map.put(db.KEY_ACTUAL_QTY_UNIT, dataNew.get(i).getQuantityUnits().toString());
-                map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQty));
-                map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString()) - reservedQty));
-                map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
-            }
-            //Log.e("ITEM MAP", "" + map);
-            HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
-            //Log.e("Step 3", "Step 3");
-            if ((checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.CASE_UOM)) || (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.BOTTLES_UOM))) {
-                db.updateData(db.VAN_STOCK_ITEMS, map, filter);
-            } else {
-                db.addData(db.VAN_STOCK_ITEMS, map);
+                //Log.e("ITEM MAP", "" + map);
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                //Log.e("Step 3", "Step 3");
+                if ((checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.CASE_UOM)) || (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), App.BOTTLES_UOM))) {
+                    db.updateData(db.VAN_STOCK_ITEMS, map, filter);
+                } else {
+                    db.addData(db.VAN_STOCK_ITEMS, map);
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     private boolean createDataForPost(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
-        for (int i = 0; i < dataNew.size(); i++) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
-            map.put(db.KEY_DELIVERY_NO, object.getDeliveryNo().toString());
-            map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
-            map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());
-            map.put(db.KEY_MATERIAL_DESC1, dataNew.get(i).getItemDescription().toString());
-            if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                // Log.e("I m here","here")
-                map.put(db.KEY_ORG_CASE, dataOld.get(i).getQuantityCases());
-                map.put(db.KEY_VAR_CASE, dataNew.get(i).getQuantityCases());
-                map.put(db.KEY_ORG_UNITS, dataOld.get(i).getQuantityUnits());
-                map.put(db.KEY_VAR_UNITS, dataNew.get(i).getQuantityUnits());
+        try{
+            for (int i = 0; i < dataNew.size(); i++) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_ENTRY_TIME, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_DELIVERY_NO, object.getDeliveryNo().toString());
+                map.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                map.put(db.KEY_ITEM_NO, dataNew.get(i).getItemCode().toString());
+                map.put(db.KEY_MATERIAL_DESC1, dataNew.get(i).getItemDescription().toString());
+                if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
+                    // Log.e("I m here","here")
+                    map.put(db.KEY_ORG_CASE, dataOld.get(i).getQuantityCases());
+                    map.put(db.KEY_VAR_CASE, dataNew.get(i).getQuantityCases());
+                    map.put(db.KEY_ORG_UNITS, dataOld.get(i).getQuantityUnits());
+                    map.put(db.KEY_VAR_UNITS, dataNew.get(i).getQuantityUnits());
+                }
+                db.addData(db.LOAD_DELIVERY_ITEMS_POST, map);
             }
-            db.addData(db.LOAD_DELIVERY_ITEMS_POST, map);
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return true;
     }
     public ArrayList<LoadSummary> generateData(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
-        for (int i = 0; i < dataNew.size(); i++) {
-            LoadSummary loadSummary = new LoadSummary();
-            loadSummary.setItemCode(dataNew.get(i).getItemCode());
-            loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
-            loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
-            if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
+        try{
+            for (int i = 0; i < dataNew.size(); i++) {
+                LoadSummary loadSummary = new LoadSummary();
+                loadSummary.setItemCode(dataNew.get(i).getItemCode());
+                loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
+                loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
+                if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
+                    loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
+                }
+                if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
+                    loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
+                }
+                loadSummary.setPrice(dataNew.get(i).getPrice());
+                loadSummaryList.add(loadSummary);
             }
-            if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
-            }
-            loadSummary.setPrice(dataNew.get(i).getPrice());
-            loadSummaryList.add(loadSummary);
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         adapter.notifyDataSetChanged();
         return loadSummaryList;
     }
     private boolean addVarianceforPost(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
-        for (int i = 0; i < dataNew.size(); i++) {
-            LoadSummary loadSummary = new LoadSummary();
-            loadSummary.setItemCode(dataNew.get(i).getItemCode());
-            loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
-            loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
-            if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                if (dataNew.get(i).getQuantityCases().equals(dataOld.get(i).getQuantityCases())) {
-                    loadSummary.setQuantityCases("0");
-                } else {
-                    String code = Double.parseDouble(dataNew.get(i).getQuantityCases()) > Double.parseDouble(dataOld.get(i).getQuantityCases()) ? "C" : "D";
-                    String quantity = code.equals("C")
-                            ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(dataOld.get(i).getQuantityCases()))
-                            : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityCases()) - Double.parseDouble(dataNew.get(i).getQuantityCases()));
-                    loadSummary.setQuantityCases(quantity + code);
-                }
-                //loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
-            }
-            if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
-                if (dataNew.get(i).getQuantityUnits().equals(dataOld.get(i).getQuantityUnits())) {
-                    loadSummary.setQuantityUnits("0");
-                } else {
-                    String code = Double.parseDouble(dataNew.get(i).getQuantityUnits()) > Double.parseDouble(dataOld.get(i).getQuantityUnits()) ? "C" : "D";
-                    String quantity = code.equals("C")
-                            ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityUnits()) - Double.parseDouble(dataOld.get(i).getQuantityUnits()))
-                            : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityUnits()) - Double.parseDouble(dataNew.get(i).getQuantityUnits()));
-                    loadSummary.setQuantityUnits(quantity + code);
-                }
-                //loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
-            }
-            loadSummary.setPrice(dataNew.get(i).getPrice());
-            loadSummary.setReasonCode(dataNew.get(i).getReasonCode());
-            if (loadSummary.getQuantityCases().equals("0") && loadSummary.getQuantityUnits().equals("0")) {
-            } else {
-                varianceLoadSummaryList.add(loadSummary);
-            }
-            //loadSummaryList.add(loadSummary);
-        }
-        if (varianceLoadSummaryList.size() > 0) {
-            String debitPRNo = "";
-            String creditPRNo = "";
-            for (int i = 0; i < varianceLoadSummaryList.size(); i++) {
-                LoadSummary loadSummary = varianceLoadSummaryList.get(i);
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
-                map.put(db.KEY_ITEM_NO, loadSummary.getItemCode());
-                map.put(db.KEY_MATERIAL_DESC1, loadSummary.getItemDescription());
-                map.put(db.KEY_MATERIAL_NO, loadSummary.getMaterialNo());
-                map.put(db.KEY_MATERIAL_GROUP, "");
-                map.put(db.KEY_CASE, loadSummary.getQuantityCases().contains("D")
-                        ? loadSummary.getQuantityCases().replaceAll("D", "").trim()
-                        : loadSummary.getQuantityCases().replaceAll("C", "").trim());
-                // map.put(db.KEY_CASE_DIFF,"");
-                map.put(db.KEY_UNIT, loadSummary.getQuantityUnits().contains("D")
-                        ? loadSummary.getQuantityUnits().replaceAll("D", "").trim()
-                        : loadSummary.getQuantityUnits().replaceAll("C", "").trim());
-                // map.put(db.KEY_UNIT,"");
-                // map.put(db.KEY_UNIT_DIFF,"");
-                if (loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D")) {
-                    if (debitPRNo.equals("")) {
-                        debitPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceDebit_PR_Type);
+        try{
+            for (int i = 0; i < dataNew.size(); i++) {
+                LoadSummary loadSummary = new LoadSummary();
+                loadSummary.setItemCode(dataNew.get(i).getItemCode());
+                loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
+                loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
+                if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
+                    if (dataNew.get(i).getQuantityCases().equals(dataOld.get(i).getQuantityCases())) {
+                        loadSummary.setQuantityCases("0");
+                    } else {
+                        String code = Double.parseDouble(dataNew.get(i).getQuantityCases()) > Double.parseDouble(dataOld.get(i).getQuantityCases()) ? "C" : "D";
+                        String quantity = code.equals("C")
+                                ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(dataOld.get(i).getQuantityCases()))
+                                : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityCases()) - Double.parseDouble(dataNew.get(i).getQuantityCases()));
+                        loadSummary.setQuantityCases(quantity + code);
                     }
+                    //loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
                 }
-                if (loadSummary.getQuantityCases().contains("C") || loadSummary.getQuantityUnits().contains("C")) {
-                    if (creditPRNo.equals("")) {
-                        creditPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceCredit_PR_Type);
+                if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
+                    if (dataNew.get(i).getQuantityUnits().equals(dataOld.get(i).getQuantityUnits())) {
+                        loadSummary.setQuantityUnits("0");
+                    } else {
+                        String code = Double.parseDouble(dataNew.get(i).getQuantityUnits()) > Double.parseDouble(dataOld.get(i).getQuantityUnits()) ? "C" : "D";
+                        String quantity = code.equals("C")
+                                ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityUnits()) - Double.parseDouble(dataOld.get(i).getQuantityUnits()))
+                                : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityUnits()) - Double.parseDouble(dataNew.get(i).getQuantityUnits()));
+                        loadSummary.setQuantityUnits(quantity + code);
                     }
+                    //loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
                 }
-                map.put(db.KEY_UOM, loadSummary.getUom());
-                map.put(db.KEY_PRICE, loadSummary.getPrice());
-                map.put(db.KEY_ORDER_ID, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
-                map.put(db.KEY_REASON_CODE, loadSummary.getReasonCode());
-                map.put(db.KEY_REASON_DESCRIPTION, "");
-                map.put(db.KEY_DOCUMENT_TYPE, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? ConfigStore.LoadVarianceDebit : ConfigStore.LoadVarianceCredit);
-                map.put(db.KEY_PURCHASE_NUMBER, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
-                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                map.put(db.KEY_IS_PRINTED, "");
-                db.addData(db.LOAD_VARIANCE_ITEMS_POST, map);
+                loadSummary.setPrice(dataNew.get(i).getPrice());
+                loadSummary.setReasonCode(dataNew.get(i).getReasonCode());
+                loadSummary.setUom(dataNew.get(i).getUom());
+                if (loadSummary.getQuantityCases().equals("0") && loadSummary.getQuantityUnits().equals("0")) {
+                } else {
+                    varianceLoadSummaryList.add(loadSummary);
+                }
+                //loadSummaryList.add(loadSummary);
+            }
+            if (varianceLoadSummaryList.size() > 0) {
+                String debitPRNo = "";
+                String creditPRNo = "";
+                for (int i = 0; i < varianceLoadSummaryList.size(); i++) {
+                    LoadSummary loadSummary = varianceLoadSummaryList.get(i);
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                    map.put(db.KEY_ITEM_NO, loadSummary.getItemCode());
+                    map.put(db.KEY_MATERIAL_DESC1, loadSummary.getItemDescription());
+                    map.put(db.KEY_MATERIAL_NO, loadSummary.getMaterialNo());
+                    map.put(db.KEY_MATERIAL_GROUP, "");
+                    map.put(db.KEY_CASE, loadSummary.getQuantityCases().contains("D")
+                            ? loadSummary.getQuantityCases().replaceAll("D", "").trim()
+                            : loadSummary.getQuantityCases().replaceAll("C", "").trim());
+                    // map.put(db.KEY_CASE_DIFF,"");
+                    map.put(db.KEY_UNIT, loadSummary.getQuantityUnits().contains("D")
+                            ? loadSummary.getQuantityUnits().replaceAll("D", "").trim()
+                            : loadSummary.getQuantityUnits().replaceAll("C", "").trim());
+                    // map.put(db.KEY_UNIT,"");
+                    // map.put(db.KEY_UNIT_DIFF,"");
+                    if (loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D")) {
+                        if (debitPRNo.equals("")) {
+                            debitPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceDebit_PR_Type);
+                        }
+                    }
+                    if (loadSummary.getQuantityCases().contains("C") || loadSummary.getQuantityUnits().contains("C")) {
+                        if (creditPRNo.equals("")) {
+                            creditPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceCredit_PR_Type);
+                        }
+                    }
+                    map.put(db.KEY_UOM, loadSummary.getUom());
+                    map.put(db.KEY_PRICE, loadSummary.getPrice());
+                    map.put(db.KEY_ORDER_ID, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
+                    map.put(db.KEY_REASON_CODE, loadSummary.getReasonCode());
+                    map.put(db.KEY_REASON_DESCRIPTION, "");
+                    map.put(db.KEY_DOCUMENT_TYPE, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? ConfigStore.LoadVarianceDebit : ConfigStore.LoadVarianceCredit);
+                    map.put(db.KEY_PURCHASE_NUMBER, loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D") ? debitPRNo : creditPRNo);
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED, "");
+                    db.addData(db.LOAD_VARIANCE_ITEMS_POST, map);
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         return true;
     }
     private String postData(String tempOrderID) {
@@ -506,7 +561,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             JSONObject obj = new JSONObject();
             deepEntity.put(obj);
             orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
-           // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+            // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -598,7 +653,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 while (cursor.moveToNext());
                 Log.e("Variance", "" + map + deepEntity);
                 orderID = IntegrationService.postData(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
-               // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
+                // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
             } catch (Exception e) {
                 Log.e("Variance Error", "Variance Error");
                 e.printStackTrace();
@@ -606,31 +661,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         Log.e("ORDERID", "" + orderID);
         return orderID + "," + purchaseNumber;
-    }
-
-    private void printData(String orderId){
-        try{
-            PrinterDataHelper printerDataHelper = new PrinterDataHelper();
-            HashMap<String,String> header = new HashMap<>();
-            header.put("ROUTE",Settings.getString(App.ROUTE));
-            header.put("DOC DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
-            header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
-            header.put("SALESMAN", Settings.getString(App.DRIVER));
-            header.put("CONTACTNO","1234");
-            header.put("DOCUMENT NO",orderId);  //Load Summary No
-            header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
-            header.put("supervisorname","-");
-            header.put("TripID",Settings.getString(App.TRIP_ID));
-            header.put("Load Number","1");
-            JSONArray jsonArray = printerDataHelper.createJSONData(App.LOAD_SUMMARY_REQUEST,header,dataNew,null);
-            PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
-            //object.execute("",createDataForPrint()); //For Load Summary
-            object.execute(App.LOAD_SUMMARY_REQUEST,jsonArray);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
     }
 
     public class postData extends AsyncTask<Void, Void, Void> {
@@ -817,11 +847,31 @@ public class LoadVerifyActivity extends AppCompatActivity {
             }
 
             if(print){
-                PrinterDataHelper dataHelper = new PrinterDataHelper();
-                HashMap<String,String> header = new HashMap<>();
-                //dataHelper.createJSONData(App.LOAD_SUMMARY_REQUEST,)
-                Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
-                startActivity(intent);
+                /*runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PrinterDataHelper dataHelper = new PrinterDataHelper();
+                        HashMap<String,String> header = new HashMap<>();
+                        header.put("ROUTE",Settings.getString(App.ROUTE));
+                        header.put("DOC DATE",Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+                        header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+                        header.put("SALESMAN", Settings.getString(App.DRIVER));
+                        header.put("CONTACTNO","1234");
+                        header.put("DOCUMENT NO", object.getDeliveryNo());  //Load Summary No
+                        header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+                        header.put("supervisorname","-");
+                        header.put("TripID",Settings.getString(App.TRIP_ID));
+                        header.put("Load Number", "1");
+                        JSONArray data = dataHelper.createJSONDataLoadSummary(App.LOAD_SUMMARY_REQUEST, header, dataNew, dataOld,null);
+                        PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+                        object.execute(App.LOAD_SUMMARY_REQUEST,data);
+                    }
+                });*/
+                JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+                object.execute("", jsonArray);
+                /*Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+                startActivity(intent);*/
             }
             else{
                 Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
@@ -831,95 +881,186 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
     }
     void calculateStock() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_DELIVERY_NO, "");
-        map.put(db.KEY_ITEM_NO, "");
-        map.put(db.KEY_ITEM_CATEGORY, "");
-        map.put(db.KEY_CREATED_BY, "");
-        map.put(db.KEY_ENTRY_TIME, "");
-        map.put(db.KEY_DATE, "");
-        map.put(db.KEY_MATERIAL_NO, "");
-        map.put(db.KEY_MATERIAL_ENTERED, "");
-        map.put(db.KEY_MATERIAL_GROUP, "");
-        map.put(db.KEY_PLANT, "");
-        map.put(db.KEY_STORAGE_LOCATION, "");
-        map.put(db.KEY_BATCH, "");
-        map.put(db.KEY_ACTUAL_QTY, "");
-        map.put(db.KEY_REMAINING_QTY, "");
-        map.put(db.KEY_UOM, "");
-        map.put(db.KEY_DIST_CHANNEL, "");
-        map.put(db.KEY_DIVISION, "");
-        map.put(db.KEY_IS_DELIVERED, "");
-        HashMap<String, String> filter = new HashMap<>();
-        Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
-        if (deliveryCursor.getCount() > 0) {
-            deliveryCursor.moveToFirst();
-            do {
-                HashMap<String, String> mapVanStock = new HashMap<>();
-                mapVanStock.put(db.KEY_DELIVERY_NO, "");
-                mapVanStock.put(db.KEY_ITEM_NO, "");
-                mapVanStock.put(db.KEY_ITEM_CATEGORY, "");
-                mapVanStock.put(db.KEY_CREATED_BY, "");
-                mapVanStock.put(db.KEY_ENTRY_TIME, "");
-                mapVanStock.put(db.KEY_DATE, "");
-                mapVanStock.put(db.KEY_MATERIAL_NO, "");
-                mapVanStock.put(db.KEY_MATERIAL_DESC1, "");
-                mapVanStock.put(db.KEY_MATERIAL_ENTERED, "");
-                mapVanStock.put(db.KEY_MATERIAL_GROUP, "");
-                mapVanStock.put(db.KEY_PLANT, "");
-                mapVanStock.put(db.KEY_STORAGE_LOCATION, "");
-                mapVanStock.put(db.KEY_BATCH, "");
-                mapVanStock.put(db.KEY_ACTUAL_QTY_CASE, "");
-                mapVanStock.put(db.KEY_ACTUAL_QTY_UNIT, "");
-                mapVanStock.put(db.KEY_RESERVED_QTY_CASE, "");
-                mapVanStock.put(db.KEY_RESERVED_QTY_UNIT, "");
-                mapVanStock.put(db.KEY_REMAINING_QTY_CASE, "");
-                mapVanStock.put(db.KEY_REMAINING_QTY_UNIT, "");
-                mapVanStock.put(db.KEY_UOM_CASE, "");
-                mapVanStock.put(db.KEY_UOM_UNIT, "");
-                mapVanStock.put(db.KEY_DIST_CHANNEL, "");
-                mapVanStock.put(db.KEY_DIVISION, "");
-                mapVanStock.put(db.KEY_IS_VERIFIED, "");
-                HashMap<String, String> filterVanStock = new HashMap<>();
-                Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS, mapVanStock, filterVanStock);
-                if (vanStockCursor.getCount() > 0) {
-                    vanStockCursor.moveToFirst();
-                    do {
-                        if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
-                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
-                                String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
-                                String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
-                                String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
-                                HashMap<String, String> updateMap = new HashMap<>();
-                                updateMap.put(db.KEY_ACTUAL_QTY_CASE, actualCase);
-                                updateMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(Float.parseFloat(reservedCase == null ? "0" : reservedCase) + Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
-                                updateMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(remainingCase == null ? "0" : remainingCase) - Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
-                                HashMap<String, String> updateFilter = new HashMap<>();
-                                updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                //Log.e("Update Map C/S","" + updateMap);
-                                db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
-                            } else {
-                                String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
-                                String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
-                                String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));
-                                String remainingUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT));
-                                HashMap<String, String> updateMap = new HashMap<>();
-                                updateMap.put(db.KEY_ACTUAL_QTY_UNIT, actualUnits);
-                                updateMap.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(Float.parseFloat(reservedUnits == null ? "0" : reservedUnits) + Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
-                                updateMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(remainingUnits == null ? "0" : remainingUnits) - Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
-                                //Log.e("Update Map B/T", "" + updateMap);
-                                HashMap<String, String> updateFilter = new HashMap<>();
-                                updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_DELIVERY_NO, "");
+            map.put(db.KEY_ITEM_NO, "");
+            map.put(db.KEY_ITEM_CATEGORY, "");
+            map.put(db.KEY_CREATED_BY, "");
+            map.put(db.KEY_ENTRY_TIME, "");
+            map.put(db.KEY_DATE, "");
+            map.put(db.KEY_MATERIAL_NO, "");
+            map.put(db.KEY_MATERIAL_ENTERED, "");
+            map.put(db.KEY_MATERIAL_GROUP, "");
+            map.put(db.KEY_PLANT, "");
+            map.put(db.KEY_STORAGE_LOCATION, "");
+            map.put(db.KEY_BATCH, "");
+            map.put(db.KEY_ACTUAL_QTY, "");
+            map.put(db.KEY_REMAINING_QTY, "");
+            map.put(db.KEY_UOM, "");
+            map.put(db.KEY_DIST_CHANNEL, "");
+            map.put(db.KEY_DIVISION, "");
+            map.put(db.KEY_IS_DELIVERED, "");
+            HashMap<String, String> filter = new HashMap<>();
+            Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
+            if (deliveryCursor.getCount() > 0) {
+                deliveryCursor.moveToFirst();
+                do {
+                    HashMap<String, String> mapVanStock = new HashMap<>();
+                    mapVanStock.put(db.KEY_DELIVERY_NO, "");
+                    mapVanStock.put(db.KEY_ITEM_NO, "");
+                    mapVanStock.put(db.KEY_ITEM_CATEGORY, "");
+                    mapVanStock.put(db.KEY_CREATED_BY, "");
+                    mapVanStock.put(db.KEY_ENTRY_TIME, "");
+                    mapVanStock.put(db.KEY_DATE, "");
+                    mapVanStock.put(db.KEY_MATERIAL_NO, "");
+                    mapVanStock.put(db.KEY_MATERIAL_DESC1, "");
+                    mapVanStock.put(db.KEY_MATERIAL_ENTERED, "");
+                    mapVanStock.put(db.KEY_MATERIAL_GROUP, "");
+                    mapVanStock.put(db.KEY_PLANT, "");
+                    mapVanStock.put(db.KEY_STORAGE_LOCATION, "");
+                    mapVanStock.put(db.KEY_BATCH, "");
+                    mapVanStock.put(db.KEY_ACTUAL_QTY_CASE, "");
+                    mapVanStock.put(db.KEY_ACTUAL_QTY_UNIT, "");
+                    mapVanStock.put(db.KEY_RESERVED_QTY_CASE, "");
+                    mapVanStock.put(db.KEY_RESERVED_QTY_UNIT, "");
+                    mapVanStock.put(db.KEY_REMAINING_QTY_CASE, "");
+                    mapVanStock.put(db.KEY_REMAINING_QTY_UNIT, "");
+                    mapVanStock.put(db.KEY_UOM_CASE, "");
+                    mapVanStock.put(db.KEY_UOM_UNIT, "");
+                    mapVanStock.put(db.KEY_DIST_CHANNEL, "");
+                    mapVanStock.put(db.KEY_DIVISION, "");
+                    mapVanStock.put(db.KEY_IS_VERIFIED, "");
+                    HashMap<String, String> filterVanStock = new HashMap<>();
+                    Cursor vanStockCursor = db.getData(db.VAN_STOCK_ITEMS, mapVanStock, filterVanStock);
+                    if (vanStockCursor.getCount() > 0) {
+                        vanStockCursor.moveToFirst();
+                        do {
+                            if (vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)).equals(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)))) {
+                                if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW)||deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    String deliveryCase = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                                    String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
+                                    String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
+                                    String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
+                                    HashMap<String, String> updateMap = new HashMap<>();
+                                    updateMap.put(db.KEY_ACTUAL_QTY_CASE, actualCase);
+                                    updateMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(Float.parseFloat(reservedCase == null ? "0" : reservedCase) + Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
+                                    updateMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(remainingCase == null ? "0" : remainingCase) - Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
+                                    HashMap<String, String> updateFilter = new HashMap<>();
+                                    updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                    //Log.e("Update Map C/S","" + updateMap);
+                                    db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+                                } else {
+                                    String deliveryUnits = deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_ACTUAL_QTY));
+                                    String actualUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT));
+                                    String reservedUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT));
+                                    String remainingUnits = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT));
+                                    HashMap<String, String> updateMap = new HashMap<>();
+                                    updateMap.put(db.KEY_ACTUAL_QTY_UNIT, actualUnits);
+                                    updateMap.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(Float.parseFloat(reservedUnits == null ? "0" : reservedUnits) + Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
+                                    updateMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(remainingUnits == null ? "0" : remainingUnits) - Float.parseFloat(deliveryUnits == null ? "0" : deliveryUnits)));
+                                    //Log.e("Update Map B/T", "" + updateMap);
+                                    HashMap<String, String> updateFilter = new HashMap<>();
+                                    updateFilter.put(db.KEY_MATERIAL_NO, vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                    db.updateData(db.VAN_STOCK_ITEMS, updateMap, updateFilter);
+                                }
+                                break;
                             }
-                            break;
                         }
+                        while (vanStockCursor.moveToNext());
                     }
-                    while (vanStockCursor.moveToNext());
                 }
+                while (deliveryCursor.moveToNext());
             }
-            while (deliveryCursor.moveToNext());
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
+
+    public JSONArray createPrintData(String orderDate,String orderNo){
+        JSONArray jArr = new JSONArray();
+        try{
+            double totalAmount = 0;
+            double totalPcs = 0;
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.LOAD_SUMMARY_REQUEST);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO",orderNo);  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("ITEM#");
+            HEADERS.put("ENGLISH DESCRIPTION");
+            HEADERS.put("ARABIC DESCRIPTION");
+            HEADERS.put("UPC ");
+            HEADERS.put("BEGIN INV");
+            HEADERS.put("LOAD");
+            HEADERS.put("ADJUST");
+            HEADERS.put("NET LOAD");
+            HEADERS.put("VALUE");
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+
+            JSONArray jData = new JSONArray();
+
+            for(int i=0;i<dataNew.size();i++){
+                LoadSummary obj = dataNew.get(i);
+                LoadSummary obj1 = dataOld.get(i);
+                JSONArray data = new JSONArray();
+                data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
+                data.put(UrlBuilder.decodeString(obj.getItemDescription()));
+                data.put("شد 48*200مل بيرين PH8");
+                data.put("1");
+                data.put("+0");
+                data.put("+" + obj1.getQuantityCases());
+                double variance = Double.parseDouble(obj1.getQuantityCases())-Double.parseDouble(obj.getQuantityCases());
+                data.put(variance<0?"+" + String.valueOf(variance*-1):variance==0?String.valueOf(variance):"-"+String.valueOf(variance));
+                data.put(obj.getQuantityCases());
+                totalPcs+= Double.parseDouble(obj.getQuantityCases());
+                data.put(String.valueOf(Double.parseDouble(obj.getQuantityCases())*Double.parseDouble(obj.getPrice())));
+                totalAmount+=Double.parseDouble(obj.getQuantityCases())*Double.parseDouble(obj.getPrice());
+                jData.put(data);
+            }
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("TOTAL UNITS","+" + String.valueOf(totalPcs));
+            totalObj.put("UNIT PRICE","");
+            totalObj.put("AMOUNT","+" + String.valueOf(totalAmount));
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            mainArr.put("data",jData);
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            // jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
+    public void callbackFunction(){
+        Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+        startActivity(intent);
+    }
+
+
 }

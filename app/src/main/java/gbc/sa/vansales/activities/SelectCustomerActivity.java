@@ -266,145 +266,173 @@ public class SelectCustomerActivity extends AppCompatActivity {
 
 
     public void setVisitList(Cursor visitListCursor,boolean isVisitList) {
-        Cursor cursor = visitListCursor;
-        cursor.moveToFirst();
-        Log.e("Cursor count", "" + cursor.getCount());
-        if(isVisitList){
-            dataArrayList.clear();
-            ArrayList<Customer> data = new ArrayList<>();
-            do {
-                Customer customer = new Customer();
-                customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+        try{
+            Cursor cursor = visitListCursor;
+            cursor.moveToFirst();
+            Log.e("Cursor count", "" + cursor.getCount());
+            if(isVisitList){
+                dataArrayList.clear();
+                ArrayList<Customer> data = new ArrayList<>();
+                do {
+                    Customer customer = new Customer();
+                    customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
-                if(!(customerHeader==null)){
-                    customer.setCustomerName(customerHeader.getName1());
-                    customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
-                    customer.setLatitude(customerHeader.getLatitude());
-                    customer.setLongitude(customerHeader.getLongitude());
-                }
-                else{
-                    customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    customer.setCustomerAddress("");
-                    customer.setLatitude("0.000000");
-                    customer.setLongitude("0.000000");
-                }
-
-                HashMap<String,String>newMap = new HashMap<>();
-                newMap.put(db.KEY_TERMS,"");
-                HashMap<String,String>newFilter = new HashMap<>();
-                newFilter.put(db.KEY_CUSTOMER_NO,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
-                String paymentTerm = "";
-                if(c.getCount()>0){
-                    c.moveToFirst();
-                    paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
-                }
-                Log.e("Payment Term1","" + paymentTerm + customer.getCustomerID());
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
-                    customer.setPaymentMethod(App.CASH_CUSTOMER);
-                }
-                else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
-                    customer.setPaymentMethod(App.TC_CUSTOMER);
-                }
-                else if(!paymentTerm.equals("")){
-                    Log.e("Here","Here");
-                    if (db.checkData(db.CUSTOMER_CREDIT,map)){
-                        Log.e("Credit Exist","Credit Exist");
-                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                    if(!(customerHeader==null)){
+                        customer.setCustomerName(customerHeader.getName1());
+                        customer.setCustomer_name_ar(customerHeader.getName3());
+                        customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
+                        customer.setLatitude(customerHeader.getLatitude());
+                        customer.setLongitude(customerHeader.getLongitude());
                     }
                     else{
-                        //customer.setPaymentMethod(App.CASH_CUSTOMER);
-                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        customer.setCustomer_name_ar(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        customer.setCustomerAddress("");
+                        customer.setLatitude("0.000000");
+                        customer.setLongitude("0.000000");
                     }
-                }
-                else{
-                    customer.setPaymentMethod(App.CASH_CUSTOMER);
-                }
 
-                customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
-                customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
-                customer.setCollection(false);
-                customer.setMerchandize(false);
-                customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
-                customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
-                customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
-                customer.setVisitListID(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
-                data.add(customer);
-            }
-            while (cursor.moveToNext());
+                    HashMap<String,String>newMap = new HashMap<>();
+                    newMap.put(db.KEY_TERMS,"");
+                    HashMap<String,String>newFilter = new HashMap<>();
+                    newFilter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
+                    String paymentTerm = "";
+                    if(c.getCount()>0){
+                        c.moveToFirst();
+                        paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
+                    }
+                    Log.e("Payment Term1", "" + paymentTerm + customer.getCustomerID());
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
 
-            Const.dataArrayList = data;
-            Log.e("Data Array","" + Const.dataArrayList.size());
-        }
-        else{
-            dataArrayList.clear();
-            ArrayList<Customer> data = new ArrayList<>();
-            do {
-                Customer customer = new Customer();
-                //Log.e("Cursor count", "" + cursor.getCount());
-                customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    HashMap<String, String> collectionMap = new HashMap<>();
+                    collectionMap.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    collectionMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
 
-                if(!(customerHeader==null)){
-                    customer.setCustomerName(customerHeader.getName1());
-                    customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
-                    customer.setLatitude(customerHeader.getLatitude());
-                    customer.setLongitude(customerHeader.getLongitude());
-                }
-                else{
-                    customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    customer.setCustomerAddress("");
-                    customer.setLatitude("0.000000");
-                    customer.setLongitude("0.000000");
-                }
-                HashMap<String,String>newMap = new HashMap<>();
-                newMap.put(db.KEY_TERMS,"");
-                HashMap<String,String>newFilter = new HashMap<>();
-                newFilter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
-                String paymentTerm = "";
-                if(c.getCount()>0){
-                    c.moveToFirst();
-                    paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
-                }
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
-                    customer.setPaymentMethod(App.CASH_CUSTOMER);
-                }
-                else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
-                    customer.setPaymentMethod(App.TC_CUSTOMER);
-                }
-                else if(!paymentTerm.equals("")){
-                    if (db.checkData(db.CUSTOMER_CREDIT,map)){
-                        Log.e("Credit Exist","Credit Exist");
-                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                    HashMap<String, String> collectionMap1 = new HashMap<>();
+                    collectionMap1.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    collectionMap1.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+
+
+                    if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                    }
+                    else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
+                        customer.setPaymentMethod(App.TC_CUSTOMER);
+                    }
+                    else if(!paymentTerm.equals("")){
+                        Log.e("Here","Here");
+                        if (db.checkData(db.CUSTOMER_CREDIT,map)){
+                            Log.e("Credit Exist","Credit Exist");
+                            customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        }
+                        else{
+                            //customer.setPaymentMethod(App.CASH_CUSTOMER);
+                            customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        }
                     }
                     else{
-                       // customer.setPaymentMethod(App.CASH_CUSTOMER);
-                        customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
                     }
-                }
-                else{
-                    customer.setPaymentMethod(App.CASH_CUSTOMER);
-                }
-                //Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
-                customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
-                customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE,map));
-                customer.setCollection(false);
-                customer.setMerchandize(false);
-                customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
-               // customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
-                data.add(customer);
-            }
-            while (cursor.moveToNext());
 
-            Const.allCustomerdataArrayList = data;
-            Log.e("All Array","" + Const.allCustomerdataArrayList.size());
+                    customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
+                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
+                    customer.setCollection(db.checkData(db.COLLECTION,collectionMap)||db.checkData(db.COLLECTION,collectionMap1));
+                    customer.setMerchandize(false);
+                    customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map));
+                    customer.setNewCustomer(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_NEW_CUSTOMER))));
+                    customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
+                    customer.setVisitListID(cursor.getString(cursor.getColumnIndex(db.KEY_VISITLISTID)));
+                    data.add(customer);
+                }
+                while (cursor.moveToNext());
+
+                Const.dataArrayList = data;
+                Log.e("Data Array","" + Const.dataArrayList.size());
+            }
+            else{
+                dataArrayList.clear();
+                ArrayList<Customer> data = new ArrayList<>();
+                do {
+                    Customer customer = new Customer();
+                    //Log.e("Cursor count", "" + cursor.getCount());
+                    customer.setCustomerID(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+
+                    if(!(customerHeader==null)){
+                        customer.setCustomerName(customerHeader.getName1());
+                        customer.setCustomerAddress(UrlBuilder.decodeString(customerHeader.getStreet()));
+                        customer.setLatitude(customerHeader.getLatitude());
+                        customer.setLongitude(customerHeader.getLongitude());
+                    }
+                    else{
+                        customer.setCustomerName(cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        customer.setCustomerAddress("");
+                        customer.setLatitude("0.000000");
+                        customer.setLongitude("0.000000");
+                    }
+                    HashMap<String,String>newMap = new HashMap<>();
+                    newMap.put(db.KEY_TERMS,"");
+                    HashMap<String,String>newFilter = new HashMap<>();
+                    newFilter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    Cursor c = db.getData(db.CUSTOMER_HEADER,newMap,newFilter);
+                    String paymentTerm = "";
+                    if(c.getCount()>0){
+                        c.moveToFirst();
+                        paymentTerm = c.getString(c.getColumnIndex(db.KEY_TERMS));
+                    }
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    if(paymentTerm.equals(App.CASH_CUSTOMER_CODE)){
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                    }
+                    else if(paymentTerm.equals(App.TC_CUSTOMER_CODE)){
+                        customer.setPaymentMethod(App.TC_CUSTOMER);
+                    }
+                    else if(!paymentTerm.equals("")){
+                        if (db.checkData(db.CUSTOMER_CREDIT,map)){
+                            Log.e("Credit Exist","Credit Exist");
+                            customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        }
+                        else{
+                            // customer.setPaymentMethod(App.CASH_CUSTOMER);
+                            customer.setPaymentMethod(App.CREDIT_CUSTOMER);
+                        }
+                    }
+                    else{
+                        customer.setPaymentMethod(App.CASH_CUSTOMER);
+                    }
+                    //Log.e("Where the F",""+db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map));
+
+                    HashMap<String, String> collectionMap = new HashMap<>();
+                    collectionMap.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    collectionMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+                    HashMap<String, String> collectionMap1 = new HashMap<>();
+                    collectionMap1.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    collectionMap1.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+
+
+                    customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
+                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
+                    customer.setCollection(db.checkData(db.COLLECTION,collectionMap)||db.checkData(db.COLLECTION,collectionMap1));
+                    customer.setMerchandize(false);
+                    customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map));
+                    // customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));
+                    data.add(customer);
+                }
+                while (cursor.moveToNext());
+
+                Const.allCustomerdataArrayList = data;
+                Log.e("All Array","" + Const.allCustomerdataArrayList.size());
+            }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 
     }
     private class loadVisitList extends AsyncTask<Void, Void, Void> {

@@ -257,7 +257,10 @@ public class Helpers {
             Log.e("Adding Data Num Range", "" + valueMap);
             db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
-        return customer + route + StringUtils.leftPad(String.valueOf(numRange), length-(customer.length()+route.length()), "0");
+        String tripID = Settings.getString(App.TRIP_ID);
+        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
+
+        return customer + routeCode + StringUtils.leftPad(String.valueOf(numRange), length-(String.valueOf(numRange).length()), "0");
     }
     public static String getDocumentTypeNo(String documentType) {
         String docTypeNo = "";
@@ -516,7 +519,7 @@ public class Helpers {
         map.put("Vkorg",salesArea);
         map.put("Vtweg",distribution);
         map.put("Spart",division);
-
+        map.put("Driver",Settings.getString(App.DRIVER));
 
         return map;
     }

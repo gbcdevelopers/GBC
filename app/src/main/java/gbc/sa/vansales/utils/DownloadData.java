@@ -68,7 +68,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_ROUTE ,headerObj.get("Route").toString());
                     Settings.setString(App.ROUTE, headerObj.get("Route").toString());
                     headerParams.put(db.KEY_DRIVER, headerObj.get("Driver1").toString());
-                    Settings.setString(App.DRIVER,headerObj.get("Driver1").toString());
+                    Settings.setString(App.DRIVER, headerObj.get("Driver1").toString());
                     headerParams.put(db.KEY_TRUCK, headerObj.get("Truck").toString());
                     headerParams.put(db.KEY_PS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Psdate").toString()), App.DATE_FORMAT));
                     headerParams.put(db.KEY_AS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Asdate").toString()), App.DATE_FORMAT));
@@ -79,6 +79,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     headerParams.put(db.KEY_DOWN_STATUS ,headerObj.get("DownStatus").toString());
                     headerParams.put(db.KEY_UP_STATUS ,headerObj.get("UpStatus").toString());
                     headerParams.put(db.KEY_LOADS  ,headerObj.get("Loads").toString());
+                    Settings.setString(App.DRIVER_NAME_AR, headerObj.get("Name_AR").toString());
+                    Settings.setString(App.DRIVER_NAME_EN,headerObj.get("Name").toString());
 
                     db.addData(db.TRIP_HEADER, headerParams);
 

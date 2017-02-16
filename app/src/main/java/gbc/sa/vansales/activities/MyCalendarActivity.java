@@ -18,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import java.util.Locale;
 
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.utils.Helpers;
 @TargetApi(3)
 public class MyCalendarActivity extends Activity implements OnClickListener {
     private static final String tag = "MyCalendarActivity";
@@ -410,16 +412,23 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         public void onClick(View view) {
             String date_month_year = (String) view.getTag();
             selectedDayMonthYearButton.setText("Selected: " + date_month_year);
-            Log.e("Selected date", date_month_year);
-            try {
+            String todaydate = Helpers.formatDate(new Date(),"dd-MMMM-yyyy");
+            Log.e("Selected date", date_month_year + todaydate);
+            if(todaydate.equals(date_month_year)){
+                try {
                /* Date parsedDate = dateFormatter.parse(date_month_year);
                 Log.d(tag, "Parsed Date: " + parsedDate.toString());*/
-                CustomerHeaders.loadData(MyCalendarActivity.this);
-                Intent intent = new Intent(MyCalendarActivity.this, SelectCustomerActivity.class);
-                startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
+                    CustomerHeaders.loadData(MyCalendarActivity.this);
+                    Intent intent = new Intent(MyCalendarActivity.this, SelectCustomerActivity.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            else{
+                Toast.makeText(MyCalendarActivity.this,getString(R.string.date_invalid),Toast.LENGTH_SHORT).show();
+            }
+
         }
         public int getCurrentDayOfMonth() {
             return currentDayOfMonth;

@@ -35,6 +35,8 @@ public class App extends Application {
     public static final String TRIP_ID = "ITripId";
     public static final String ROUTE = "Route";
     public static final String DRIVER = "Driver";
+    public static final String DRIVER_NAME_EN = "DriverNameEn";
+    public static final String DRIVER_NAME_AR = "DriverNameAr";
     public static final String SALES_ORG = "SalesOrg";
     public static final String DIVISION = "Division";
     public static final String DIST_CHANNEL = "DistChannel";
@@ -154,7 +156,10 @@ public class App extends Application {
     public static final String REQUEST = "REQUEST";
     public static final String LOAD_SUMMARY_REQUEST = "LoadSummaryRequest";
     public static final String LOAD_REQUEST = "LoadRequest";
+    public static final String ORDER_REQUEST = "OrderRequest";
     public static final String SALES_INVOICE = "Invoice";
+    public static final String DELIVERY = "Delivery";
+    public static final String COLLECTION = "Collection";
 
 
     @Override

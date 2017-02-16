@@ -1,8 +1,10 @@
 package gbc.sa.vansales.adapters;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,7 @@ public class CustomerOperationAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -59,10 +62,30 @@ public class CustomerOperationAdapter extends BaseAdapter {
         LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.ll_items);
         ImageView roundedImageView = (ImageView) convertView.findViewById(R.id.iv_round);
         roundedImageView.setImageResource(resarr[position]);
+        ImageView lock_img = (ImageView)convertView.findViewById(R.id.img_lock);
+        //ImageView lockView = (ImageView) convertView.findViewById(R.id.img_lock);
         TextView tv_title = (TextView) convertView.findViewById(R.id.tv_iv_title);
         tv_title.setText(strText[position]);
+        if(from.equals("InformationsActivity")){
+            if(position==2||position==3){
+               // layout.setForeground(context.getDrawable(R.drawable.lock));
+                lock_img.setVisibility(View.VISIBLE);
+            }
+
+        }
+        if(from.equals("ReviewActivity")){
+            if(position==1||position==3||position==4){
+                // layout.setForeground(context.getDrawable(R.drawable.lock));
+                lock_img.setVisibility(View.VISIBLE);
+            }
+
+        }
         if (from.equals("CustomerDetailActivity")) {
             layout.setBackgroundColor(Color.WHITE);
+            if(position==3){
+                // layout.setForeground(context.getDrawable(R.drawable.lock));
+                lock_img.setVisibility(View.VISIBLE);
+            }
         } else if (from.equals("SalesInvoiceOptionActivity")) {
            /* if(position==1){
                 Log.e("Here LOCK","" + App.DriverRouteControl.isDisplayInvoiceSummary());

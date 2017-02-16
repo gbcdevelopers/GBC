@@ -463,6 +463,7 @@ public class  BListFragment extends Fragment {
     public class loadBadReturns extends AsyncTask<Void, Void, Void> {
         private String orderID;
         private loadBadReturns(String orderID) {
+            SalesInvoiceActivity.tab_position = 3;
             this.orderID = orderID;
             execute();
         }
@@ -523,6 +524,8 @@ public class  BListFragment extends Fragment {
             salesTotal = salesTotal + Integer.parseInt(sale.getCases());
             pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
         }
+        Const.brBundle = new Bundle();
+        Const.brBundle.putParcelableArrayList("br", arrProductList);
         TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
         tv.setText(String.valueOf(total));
         TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
@@ -563,6 +566,8 @@ public class  BListFragment extends Fragment {
     }
     private void setBadReturns(ArrayList<Sales> arrayList) {
         adapter = new SalesInvoiceAdapter(getActivity(), arrayList);
+        Const.brBundle = new Bundle();
+        Const.brBundle.putParcelableArrayList("br", arrProductList);
         listSales.setAdapter(adapter);
         calculateCost();
         adapter.notifyDataSetChanged();

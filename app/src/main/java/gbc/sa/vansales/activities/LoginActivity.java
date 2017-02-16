@@ -75,7 +75,8 @@ public class LoginActivity extends Activity {
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-
+        //id = "E102964";
+       // password = "E102964";
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
         } else if (password.isEmpty()) {
@@ -162,13 +163,13 @@ public class LoginActivity extends Activity {
                                  //For development purpose only
 
                                       //  downloadData("GBC012000000003");
-                                if(!checkTripID("Y000030000000007")){
+                                if(!checkTripID("Y000030000000014")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "Y000030000000007");
+                                    Settings.setString(TRIP_ID, "Y000030000000014");
                                     Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("Y000030000000007");
+                                    downloadData("Y000030000000014");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");

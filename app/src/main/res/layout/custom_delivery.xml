@@ -1,37 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/h3"
+              android:weightSum="4"
     android:background="@color/white"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delivery_1234"
-        android:id="@+id/tv_delivery"
-        android:layout_marginBottom="5dp"
-        android:textColor="@color/black"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight="3.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
 
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delivery_date_23_oct_2016"
-        android:layout_below="@+id/tv_delivery"
-        android:textColor="@color/black"
-        android:id="@+id/tv_del_date"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delivery_1234"
+            android:id="@+id/tv_delivery"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/black"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delivery_date_23_oct_2016"
+            android:layout_below="@+id/tv_delivery"
+            android:textColor="@color/black"
+            android:id="@+id/tv_del_date"
+            />
+
+    </LinearLayout>
 
 
-    <ImageView
-        android:id="@+id/red_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/size_five"
-        android:src="@drawable/red_arrow"
-        />
+    <LinearLayout
+        android:layout_weight="0.5"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/red_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/size_five"
+            android:src="@drawable/red_arrow"
+            />
 
-</RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

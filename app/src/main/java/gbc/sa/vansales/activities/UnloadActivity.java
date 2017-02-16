@@ -146,6 +146,38 @@ public class UnloadActivity extends AppCompatActivity {
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if(unloadVarianceExist("")){
+                            new postDataNew().execute();
+                        }
+                        else{
+                            clearVanStock();
+                            HashMap<String, String> altMap = new HashMap<>();
+                            altMap.put(db.KEY_IS_UNLOAD, "true");
+                            HashMap<String, String> filterMap = new HashMap<>();
+                            filterMap.put(db.KEY_IS_UNLOAD, "false");
+                            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+
+                            dialog.dismiss();
+                            Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+            }
+        });
+        /*processUnloadInventory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(UnloadActivity.this);
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                dialog.show();
+                btn_print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         //Variances are recorded(Ending Inventory/Theft or Missing/Truck Damage
                         try {
                             if (unloadVarianceExist("")) {
@@ -191,11 +223,49 @@ public class UnloadActivity extends AppCompatActivity {
                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        try {
+                            if (unloadVarianceExist("")) {
+                                //Checking any record exist for ZDRX
+                                if (unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)) {
+                                    //Checking does it exist for both
+                                    if (unloadVarianceExist(App.THEFT) && unloadVarianceExist(App.TRUCK_DAMAGE)) {
+                                        referenceCount++;
+                                        new postData(App.THEFT, App.TRUCK_DAMAGE);
+                                    }
+                                    //Check if it exists only for Theft
+                                    else if (unloadVarianceExist(App.THEFT)) {
+                                        referenceCount++;
+                                        new postData(App.THEFT);
+                                    }
+                                    //It only exist for Truck Damage
+                                    else {
+                                        referenceCount++;
+                                        new postData(App.TRUCK_DAMAGE);
+                                    }
+                                }
+                                //Checking if  Any excess product exist
+                                if (unloadVarianceExist(App.EXCESS)) {
+                                    referenceCount++;
+                                    new postData(App.EXCESS);
+                                }
+                                //Check if any ending inventory is present
+                                if (unloadVarianceExist(App.ENDING_INVENTORY)) {
+                                    referenceCount++;
+                                    new postData(App.ENDING_INVENTORY);
+                                }
+                                //Finally unloading remainder quantity
+                            } else {
+                                referenceCount++;
+                                new postData(App.FRESHUNLOAD);
+                                dialog.dismiss();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
-        });
+        });*/
     }
     private void navigation() {
         Intent i = new Intent(UnloadActivity.this, ManageInventory.class);
@@ -212,6 +282,59 @@ public class UnloadActivity extends AppCompatActivity {
         }
     }
 
+    public class postDataNew extends AsyncTask<String,String,String>{
+        @Override
+        protected String doInBackground(String... params) {
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_TIME_STAMP,"");
+            map.put(db.KEY_VARIANCE_TYPE,"");
+            map.put(db.KEY_TRIP_ID,"");
+            map.put(db.KEY_ITEM_NO,"");
+            map.put(db.KEY_MATERIAL_DESC1,"");
+            map.put(db.KEY_MATERIAL_NO,"");
+            map.put(db.KEY_IS_POSTED,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+            Cursor c = db.getData(db.UNLOAD_VARIANCE,map,filter);
+            if(c.getCount()>0){
+                c.moveToFirst();
+                setUnloadData(c);
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            clearVanStock();
+            HashMap<String, String> altMap = new HashMap<>();
+            altMap.put(db.KEY_IS_UNLOAD, "true");
+            HashMap<String, String> filterMap = new HashMap<>();
+            filterMap.put(db.KEY_IS_UNLOAD, "false");
+            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+            Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void setUnloadData(Cursor c){
+        try{
+            Cursor cursor = c;
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                do{
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    HashMap<String,String>filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                }
+                while (cursor.moveToNext());
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
     public class postData extends AsyncTask<String,String,String>{
 
         private String param1;
@@ -248,7 +371,7 @@ public class UnloadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             postCount++;
-            Log.e("Refernce Count","" + postCount + referenceCount);
+            Log.e("Refernce Count", "" + postCount + referenceCount);
             if(postCount==referenceCount){
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();
@@ -262,9 +385,14 @@ public class UnloadActivity extends AppCompatActivity {
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                   // clearVanStock(); This is for testing. Uncomment it later
+                                    clearVanStock(); //This is for testing. Uncomment it later
                                     dialog.dismiss();
-                                    Intent intent = new Intent(UnloadActivity.this,ManageInventory.class);
+                                    HashMap<String, String> altMap = new HashMap<>();
+                                    altMap.put(db.KEY_IS_UNLOAD, "true");
+                                    HashMap<String, String> filterMap = new HashMap<>();
+                                    filterMap.put(db.KEY_IS_UNLOAD, "false");
+                                    db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+                                    Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
                                     startActivity(intent);
                                 }
                             });
@@ -292,8 +420,15 @@ public class UnloadActivity extends AppCompatActivity {
                                         /*dialog.dismiss();
                                         finish();*/
                                         clearVanStock();
+
+                                        HashMap<String, String> altMap = new HashMap<>();
+                                        altMap.put(db.KEY_IS_UNLOAD, "true");
+                                        HashMap<String, String> filterMap = new HashMap<>();
+                                        filterMap.put(db.KEY_IS_UNLOAD, "false");
+                                        db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+
                                         dialog.dismiss();
-                                        Intent intent = new Intent(UnloadActivity.this,ManageInventory.class);
+                                        Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
                                         startActivity(intent);
                                     }
                                 });
@@ -306,7 +441,6 @@ public class UnloadActivity extends AppCompatActivity {
             }
         }
     }
-
     public String getDocumentType(String param){
         String docType = null;
         switch (param){
@@ -405,250 +539,263 @@ public class UnloadActivity extends AppCompatActivity {
             }
         }
     }
-    public String postData(String param1,String param2){
+    public String postData(final String param1, final String param2){
         //There is no post for truck and theft
-        String orderID="";
-        String purchaseNumber = "";
-        if(!param2.equals("")){
-            try{
-                fetchTruckTheftData();
-                HashMap<String, String> map = new HashMap<>();
-                map.put("Function", ConfigStore.ReturnsFunction);
-                map.put("OrderId", "");
-                map.put("DocumentType",getDocumentType(param1));
-                // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
-                // map.put("DocumentDate", null);
-                map.put("CustomerId", Settings.getString(App.DRIVER));
-                map.put("SalesOrg", Settings.getString(App.SALES_ORG));
-                map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
-                map.put("Division", Settings.getString(App.DIVISION));
-                map.put("OrderValue", "00");
-                map.put("Currency", "SAR");
-                purchaseNumber = Helpers.generateNumber(db,ConfigStore.TheftorTruck_PR_Type);
-                JSONArray deepEntity = new JSONArray();
+        final String[] orderID = {""};
+        final String[] purchaseNumber = {""};
 
-                int itemno = 10;
-                for(Unload unload:arrayList){
-                    if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
-                        JSONObject jo = new JSONObject();
-                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                        jo.put("Material", unload.getMaterial_no());
-                        jo.put("Description", unload.getName());
-                        jo.put("Plant", App.PLANT);
-                        jo.put("Quantity", unload.getCases());
-                        jo.put("ItemValue", unload.getPrice());
-                        jo.put("UoM", unload.getUom());
-                        jo.put("Value", unload.getPrice());
-                        jo.put("Storagelocation", App.STORAGE_LOCATION);
-                        jo.put("Route", Settings.getString(App.ROUTE));
-                        itemno = itemno + 10;
-                        deepEntity.put(jo);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    if(!param2.equals("")){
+                        try{
+                            fetchTruckTheftData();
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("Function", ConfigStore.ReturnsFunction);
+                            map.put("OrderId", "");
+                            map.put("DocumentType",getDocumentType(param1));
+                            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+                            // map.put("DocumentDate", null);
+                            map.put("CustomerId", Settings.getString(App.DRIVER));
+                            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+                            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+                            map.put("Division", Settings.getString(App.DIVISION));
+                            map.put("OrderValue", "00");
+                            map.put("Currency", "SAR");
+                            purchaseNumber[0] = Helpers.generateNumber(db,ConfigStore.TheftorTruck_PR_Type);
+                            JSONArray deepEntity = new JSONArray();
+
+                            int itemno = 10;
+                            for(Unload unload:arrayList){
+                                if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                    jo.put("Material", unload.getMaterial_no());
+                                    jo.put("Description", unload.getName());
+                                    jo.put("Plant", App.PLANT);
+                                    jo.put("Quantity", unload.getCases());
+                                    jo.put("ItemValue", unload.getPrice());
+                                    jo.put("UoM", unload.getUom());
+                                    jo.put("Value", unload.getPrice());
+                                    jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                    jo.put("Route", Settings.getString(App.ROUTE));
+                                    itemno = itemno + 10;
+                                    deepEntity.put(jo);
+                                }
+                                else{
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                    jo.put("Material", unload.getMaterial_no());
+                                    jo.put("Description", unload.getName());
+                                    jo.put("Plant", App.PLANT);
+                                    jo.put("Quantity", unload.getPic());
+                                    jo.put("ItemValue", unload.getPrice());
+                                    jo.put("UoM", unload.getUom());
+                                    jo.put("Value", unload.getPrice());
+                                    jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                    jo.put("Route", Settings.getString(App.ROUTE));
+                                    itemno = itemno + 10;
+                                    deepEntity.put(jo);
+                                }
+
+                            }
+                            orderID[0] = IntegrationService.postDataBackup(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
+                    //This means there is no post for both truck and theft
                     else{
-                        JSONObject jo = new JSONObject();
-                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                        jo.put("Material", unload.getMaterial_no());
-                        jo.put("Description", unload.getName());
-                        jo.put("Plant", App.PLANT);
-                        jo.put("Quantity", unload.getPic());
-                        jo.put("ItemValue", unload.getPrice());
-                        jo.put("UoM", unload.getUom());
-                        jo.put("Value", unload.getPrice());
-                        jo.put("Storagelocation", App.STORAGE_LOCATION);
-                        jo.put("Route", Settings.getString(App.ROUTE));
-                        itemno = itemno + 10;
-                        deepEntity.put(jo);
-                    }
+                        try{
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("Function", ConfigStore.UnloadFunction);
+                            map.put("OrderId", "");
+                            map.put("DocumentType",getDocumentType(param1));
+                            // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+                            // map.put("DocumentDate", null);
+                            map.put("CustomerId", Settings.getString(App.DRIVER));
+                            map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+                            map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+                            map.put("Division", Settings.getString(App.DIVISION));
+                            map.put("OrderValue", "00");
+                            map.put("Currency", "SAR");
 
-                }
-                orderID = IntegrationService.postData(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        //This means there is no post for both truck and theft
-        else{
-            try{
-                HashMap<String, String> map = new HashMap<>();
-                map.put("Function", ConfigStore.UnloadFunction);
-                map.put("OrderId", "");
-                map.put("DocumentType",getDocumentType(param1));
-                // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
-                // map.put("DocumentDate", null);
-                map.put("CustomerId", Settings.getString(App.DRIVER));
-                map.put("SalesOrg", Settings.getString(App.SALES_ORG));
-                map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
-                map.put("Division", Settings.getString(App.DIVISION));
-                map.put("OrderValue", "00");
-                map.put("Currency", "SAR");
-
-                if(param1.equals(App.THEFT)||param1.equals(App.THEFT)){
-                    purchaseNumber = Helpers.generateNumber(db,ConfigStore.TheftorTruck_PR_Type);
-                }
-                else if(param1.equals(App.EXCESS)){
-                    purchaseNumber = Helpers.generateNumber(db,ConfigStore.Excess_PR_Type);
-                }
-                else if(param1.equals(App.ENDING_INVENTORY)){
-                    purchaseNumber = Helpers.generateNumber(db,ConfigStore.EndingInventory_PR_Type);
-                }
-                else if(param1.equals(App.FRESHUNLOAD)){
-                    purchaseNumber = Helpers.generateNumber(db,ConfigStore.FreshUnload_PR_Type);
-                }
-                map.put("PurchaseNum", purchaseNumber);
-                JSONArray deepEntity = new JSONArray();
-                //Apart from Fresh unload read everything from Load Variance Table
-                if(!param1.equals(App.FRESHUNLOAD)){
-                    HashMap<String, String> itemMap = new HashMap<>();
-                    itemMap.put(db.KEY_ITEM_NO,"");
-                    itemMap.put(db.KEY_MATERIAL_DESC1,"");
-                    itemMap.put(db.KEY_MATERIAL_NO,"");
-                    itemMap.put(db.KEY_MATERIAL_GROUP,"");
-                    itemMap.put(db.KEY_CASE,"");
-                    itemMap.put(db.KEY_UNIT,"");
-                    itemMap.put(db.KEY_UOM,"");
-                    itemMap.put(db.KEY_PRICE,"");
-                    itemMap.put(db.KEY_ORDER_ID,"");
-                    itemMap.put(db.KEY_PURCHASE_NUMBER,"");
-                    itemMap.put(db.KEY_IS_POSTED,"");
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    filter.put(db.KEY_VARIANCE_TYPE,param1);
-                    Cursor cursor = db.getData(db.UNLOAD_VARIANCE,itemMap,filter);
-                    if(cursor.getCount()>0){
-                        cursor.moveToFirst();
-                        int itemno = 10;
-                        do{
-                            ArticleHeader articleHeader = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-
-                            if (articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
-                                JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                                jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                                jo.put("Plant", App.PLANT);
-                                jo.put("Quantity", param1.equals(App.EXCESS) ? String.valueOf(Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)))*-1) : cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
-                                jo.put("ItemValue", "0");
-                                jo.put("UoM", articleHeader.getBaseUOM());
-                                jo.put("Value", "0");
-                                jo.put("Storagelocation", App.STORAGE_LOCATION);
-                                jo.put("Route", Settings.getString(App.ROUTE));
-                                itemno = itemno + 10;
-                                deepEntity.put(jo);
+                            if(param1.equals(App.THEFT)||param1.equals(App.THEFT)){
+                                purchaseNumber[0] = Helpers.generateNumber(db,ConfigStore.TheftorTruck_PR_Type);
                             }
-                            else {
-                                JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                                jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                                jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                                jo.put("Plant", App.PLANT);
-                                jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
-                                jo.put("ItemValue", "0");
-                                jo.put("UoM", articleHeader.getBaseUOM());
-                                jo.put("Value", "0");
-                                jo.put("Storagelocation", App.STORAGE_LOCATION);
-                                jo.put("Route", Settings.getString(App.ROUTE));
-                                itemno = itemno + 10;
-                                deepEntity.put(jo);
+                            else if(param1.equals(App.EXCESS)){
+                                purchaseNumber[0] = Helpers.generateNumber(db,ConfigStore.Excess_PR_Type);
+                            }
+                            else if(param1.equals(App.ENDING_INVENTORY)){
+                                purchaseNumber[0] = Helpers.generateNumber(db,ConfigStore.EndingInventory_PR_Type);
+                            }
+                            else if(param1.equals(App.FRESHUNLOAD)){
+                                purchaseNumber[0] = Helpers.generateNumber(db,ConfigStore.FreshUnload_PR_Type);
+                            }
+                            map.put("PurchaseNum", purchaseNumber[0]);
+                            JSONArray deepEntity = new JSONArray();
+                            //Apart from Fresh unload read everything from Load Variance Table
+                            if(!param1.equals(App.FRESHUNLOAD)){
+                                HashMap<String, String> itemMap = new HashMap<>();
+                                itemMap.put(db.KEY_ITEM_NO,"");
+                                itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                                itemMap.put(db.KEY_MATERIAL_NO,"");
+                                itemMap.put(db.KEY_MATERIAL_GROUP,"");
+                                itemMap.put(db.KEY_CASE,"");
+                                itemMap.put(db.KEY_UNIT,"");
+                                itemMap.put(db.KEY_UOM,"");
+                                itemMap.put(db.KEY_PRICE,"");
+                                itemMap.put(db.KEY_ORDER_ID,"");
+                                itemMap.put(db.KEY_PURCHASE_NUMBER,"");
+                                itemMap.put(db.KEY_IS_POSTED,"");
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                filter.put(db.KEY_VARIANCE_TYPE,param1);
+                                Cursor cursor = db.getData(db.UNLOAD_VARIANCE,itemMap,filter);
+                                if(cursor.getCount()>0){
+                                    cursor.moveToFirst();
+                                    int itemno = 10;
+                                    do{
+                                        ArticleHeader articleHeader = ArticleHeader.getArticle(articles,cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                                        if (articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)) {
+                                            JSONObject jo = new JSONObject();
+                                            jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                            jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                            jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                            jo.put("Plant", App.PLANT);
+                                            jo.put("Quantity", param1.equals(App.EXCESS) ? String.valueOf(Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)))*-1) : cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                                            jo.put("ItemValue", "0");
+                                            jo.put("UoM", articleHeader.getBaseUOM());
+                                            jo.put("Value", "0");
+                                            jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                            jo.put("Route", Settings.getString(App.ROUTE));
+                                            itemno = itemno + 10;
+                                            deepEntity.put(jo);
+                                        }
+                                        else {
+                                            JSONObject jo = new JSONObject();
+                                            jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                            jo.put("Material", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                            jo.put("Description", cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                                            jo.put("Plant", App.PLANT);
+                                            jo.put("Quantity", cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
+                                            jo.put("ItemValue", "0");
+                                            jo.put("UoM", articleHeader.getBaseUOM());
+                                            jo.put("Value", "0");
+                                            jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                            jo.put("Route", Settings.getString(App.ROUTE));
+                                            itemno = itemno + 10;
+                                            deepEntity.put(jo);
+                                        }
+                                    }
+                                    while (cursor.moveToNext());
+
+                                }
+                                orderID[0] = IntegrationService.postDataBackup(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
+                            }
+                            else if(param1.equals(App.FRESHUNLOAD)){
+                                HashMap<String,String>itemMap = new HashMap<>();
+                                itemMap.put(db.KEY_ITEM_NO,"");
+                                itemMap.put(db.KEY_ITEM_CATEGORY,"");
+                                itemMap.put(db.KEY_CREATED_BY,"");
+                                itemMap.put(db.KEY_ENTRY_TIME,"");
+                                itemMap.put(db.KEY_DATE,"");
+                                itemMap.put(db.KEY_MATERIAL_NO,"");
+                                itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                                itemMap.put(db.KEY_MATERIAL_ENTERED,"");
+                                itemMap.put(db.KEY_MATERIAL_GROUP,"");
+                                itemMap.put(db.KEY_PLANT,"");
+                                itemMap.put(db.KEY_STORAGE_LOCATION,"");
+                                itemMap.put(db.KEY_BATCH,"");
+                                itemMap.put(db.KEY_ACTUAL_QTY_CASE,"");
+                                itemMap.put(db.KEY_ACTUAL_QTY_UNIT,"");
+                                itemMap.put(db.KEY_RESERVED_QTY_CASE,"");
+                                itemMap.put(db.KEY_RESERVED_QTY_UNIT,"");
+                                itemMap.put(db.KEY_REMAINING_QTY_CASE,"");
+                                itemMap.put(db.KEY_REMAINING_QTY_UNIT,"");
+                                itemMap.put(db.KEY_UOM_CASE,"");
+                                itemMap.put(db.KEY_UOM_UNIT,"");
+                                itemMap.put(db.KEY_DIST_CHANNEL,"");
+                                HashMap<String,String>filter=new HashMap<>();
+                                Cursor c = db.getData(db.VAN_STOCK_ITEMS,itemMap,filter);
+                                int itemno = 10;
+                                if(c.getCount()>0){
+                                    c.moveToFirst();
+                                    do{
+                                        Unload unload = new Unload();
+                                        unload.setName(UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                                        unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
+                                        unload.setMaterial_no(c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
+                                        String uomCase = c.getString(c.getColumnIndex(db.KEY_UOM_CASE));
+                                        String uomUnit = c.getString(c.getColumnIndex(db.KEY_UOM_UNIT));
+                                        unload.setUom((uomCase == null || uomCase.equals("")) ? uomUnit : uomCase);
+                                        unload.setCases(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                        unload.setPic(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                                        dataStoreList.add(unload);
+
+                                    }
+                                    while (c.moveToNext());
+                                    recalculateFreshUnload(dataStoreList);
+                                }
+
+                                for(Unload unload:dataStoreList){
+
+                                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,unload.getMaterial_no());
+                                    if(articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)){
+                                        JSONObject jo = new JSONObject();
+                                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                        jo.put("Material", unload.getMaterial_no());
+                                        jo.put("Description", unload.getName());
+                                        jo.put("Plant", App.PLANT);
+                                        jo.put("Quantity", unload.getCases());
+                                        jo.put("ItemValue", unload.getPrice());
+                                        jo.put("UoM",articleHeader.getBaseUOM());
+                                        jo.put("Value", unload.getPrice());
+                                        jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                        jo.put("Route", Settings.getString(App.ROUTE));
+                                        itemno = itemno + 10;
+                                        deepEntity.put(jo);
+                                    }
+                                    else{
+                                        JSONObject jo = new JSONObject();
+                                        jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                        jo.put("Material", unload.getMaterial_no());
+                                        jo.put("Description", unload.getName());
+                                        jo.put("Plant", App.PLANT);
+                                        jo.put("Quantity", unload.getPic());
+                                        jo.put("ItemValue", unload.getPrice());
+                                        jo.put("UoM", articleHeader.getBaseUOM());
+                                        jo.put("Value", unload.getPrice());
+                                        jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                        jo.put("Route", Settings.getString(App.ROUTE));
+                                        itemno = itemno + 10;
+                                        deepEntity.put(jo);
+                                    }
+                                    //Log.e("Got here","" + map + deepEntity);
+                                }
+                                orderID[0] = IntegrationService.postDataBackup(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
+
                             }
                         }
-                        while (cursor.moveToNext());
-
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        //Log.e("Step","Step1" + orderID + purchaseNumber);
+                       // return orderID[0].toString() + "," + purchaseNumber[0].toString();
                     }
-                    orderID = IntegrationService.postData(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
                 }
-                else if(param1.equals(App.FRESHUNLOAD)){
-                    HashMap<String,String>itemMap = new HashMap<>();
-                    itemMap.put(db.KEY_ITEM_NO,"");
-                    itemMap.put(db.KEY_ITEM_CATEGORY,"");
-                    itemMap.put(db.KEY_CREATED_BY,"");
-                    itemMap.put(db.KEY_ENTRY_TIME,"");
-                    itemMap.put(db.KEY_DATE,"");
-                    itemMap.put(db.KEY_MATERIAL_NO,"");
-                    itemMap.put(db.KEY_MATERIAL_DESC1,"");
-                    itemMap.put(db.KEY_MATERIAL_ENTERED,"");
-                    itemMap.put(db.KEY_MATERIAL_GROUP,"");
-                    itemMap.put(db.KEY_PLANT,"");
-                    itemMap.put(db.KEY_STORAGE_LOCATION,"");
-                    itemMap.put(db.KEY_BATCH,"");
-                    itemMap.put(db.KEY_ACTUAL_QTY_CASE,"");
-                    itemMap.put(db.KEY_ACTUAL_QTY_UNIT,"");
-                    itemMap.put(db.KEY_RESERVED_QTY_CASE,"");
-                    itemMap.put(db.KEY_RESERVED_QTY_UNIT,"");
-                    itemMap.put(db.KEY_REMAINING_QTY_CASE,"");
-                    itemMap.put(db.KEY_REMAINING_QTY_UNIT,"");
-                    itemMap.put(db.KEY_UOM_CASE,"");
-                    itemMap.put(db.KEY_UOM_UNIT,"");
-                    itemMap.put(db.KEY_DIST_CHANNEL,"");
-                    HashMap<String,String>filter=new HashMap<>();
-                    Cursor c = db.getData(db.VAN_STOCK_ITEMS,itemMap,filter);
-                    int itemno = 10;
-                    if(c.getCount()>0){
-                        c.moveToFirst();
-                        do{
-                            Unload unload = new Unload();
-                            unload.setName(UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                            unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
-                            unload.setMaterial_no(c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
-                            String uomCase = c.getString(c.getColumnIndex(db.KEY_UOM_CASE));
-                            String uomUnit = c.getString(c.getColumnIndex(db.KEY_UOM_UNIT));
-                            unload.setUom((uomCase == null || uomCase.equals("")) ? uomUnit : uomCase);
-                            unload.setCases(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                            unload.setPic(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                            dataStoreList.add(unload);
-
-                        }
-                        while (c.moveToNext());
-                        recalculateFreshUnload(dataStoreList);
-                    }
-
-                    for(Unload unload:dataStoreList){
-
-                        ArticleHeader articleHeader = ArticleHeader.getArticle(articles,unload.getMaterial_no());
-                        if(articleHeader.getBaseUOM().equals(App.CASE_UOM)||articleHeader.getBaseUOM().equals(App.BOTTLES_UOM)){
-                            JSONObject jo = new JSONObject();
-                            jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                            jo.put("Material", unload.getMaterial_no());
-                            jo.put("Description", unload.getName());
-                            jo.put("Plant", App.PLANT);
-                            jo.put("Quantity", unload.getCases());
-                            jo.put("ItemValue", unload.getPrice());
-                            jo.put("UoM",articleHeader.getBaseUOM());
-                            jo.put("Value", unload.getPrice());
-                            jo.put("Storagelocation", App.STORAGE_LOCATION);
-                            jo.put("Route", Settings.getString(App.ROUTE));
-                            itemno = itemno + 10;
-                            deepEntity.put(jo);
-                        }
-                        else{
-                            JSONObject jo = new JSONObject();
-                            jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
-                            jo.put("Material", unload.getMaterial_no());
-                            jo.put("Description", unload.getName());
-                            jo.put("Plant", App.PLANT);
-                            jo.put("Quantity", unload.getPic());
-                            jo.put("ItemValue", unload.getPrice());
-                            jo.put("UoM", articleHeader.getBaseUOM());
-                            jo.put("Value", unload.getPrice());
-                            jo.put("Storagelocation", App.STORAGE_LOCATION);
-                            jo.put("Route", Settings.getString(App.ROUTE));
-                            itemno = itemno + 10;
-                            deepEntity.put(jo);
-                        }
-                        //Log.e("Got here","" + map + deepEntity);
-                    }
-                    orderID = IntegrationService.postData(UnloadActivity.this, App.POST_COLLECTION, map, deepEntity);
-
+                catch (Exception e){
+                    e.printStackTrace();
                 }
             }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-            //Log.e("Step","Step1" + orderID + purchaseNumber);
-            return orderID + "," + purchaseNumber;
-        }
+        });
+
+
         //Log.e("Step","Step2" + orderID + purchaseNumber);
-        return orderID + "," + purchaseNumber;
+        return orderID[0].toString() + "," + purchaseNumber[0].toString();
         //return null;
     }
     private boolean unloadVarianceExist(String varianceType){

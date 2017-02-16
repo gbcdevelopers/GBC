@@ -118,6 +118,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 intent.putExtra("from", "list");
                 intent.putExtra("pos", position);
                 intent.putExtra("orderList", orderList);
+                intent.putExtra("headerObj", object);
                 startActivity(intent);
             }
         });
@@ -212,42 +213,54 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         }
     }
     private void setOrders(Cursor cursor) {
-        ArrayList<String> temp = new ArrayList<String>();
-        temp.clear();
-        arrayList.clear();
-        //Log.e("Cursor", "" + cursor.getCount());
-        do {
-            OrderList orderList = new OrderList();
-            //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
-            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-            orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
-            //Log.e("ORDER1", "" + orderList.getOrderId());
-            if (!temp.contains(orderList.getOrderId())) {
-                temp.add(orderList.getOrderId());
-                arrayList.add(orderList);
+        try{
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.clear();
+            arrayList.clear();
+            //Log.e("Cursor", "" + cursor.getCount());
+            do {
+                OrderList orderList = new OrderList();
+                //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
+                //Log.e("ORDER1", "" + orderList.getOrderId());
+                if (!temp.contains(orderList.getOrderId())) {
+                    temp.add(orderList.getOrderId());
+                    arrayList.add(orderList);
+                }
             }
+            while (cursor.moveToNext());
         }
-        while (cursor.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     private void setOrdersLocal(Cursor cursor) {
-        ArrayList<String> temp = new ArrayList<String>();
-        temp.clear();
-        //arrayList.clear();
-        //Log.e("Cursor", "" + cursor.getCount());
-        cursor.moveToFirst();
-        do {
-            OrderList orderList = new OrderList();
-            //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
-            orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
-            orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
+        try{
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.clear();
+            //arrayList.clear();
+            //Log.e("Cursor", "" + cursor.getCount());
+            cursor.moveToFirst();
+            do {
+                OrderList orderList = new OrderList();
+                //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+                orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                orderList.setOrderDate(cursor.getString(cursor.getColumnIndex(db.KEY_DATE)));
 
-            if (!temp.contains(orderList.getOrderId())) {
-                //Log.e("ORDER", "" + orderList.getOrderId());
-                temp.add(orderList.getOrderId());
-                arrayList.add(orderList);
+                if (!temp.contains(orderList.getOrderId())) {
+                    //Log.e("ORDER", "" + orderList.getOrderId());
+                    temp.add(orderList.getOrderId());
+                    arrayList.add(orderList);
+                }
             }
+            while (cursor.moveToNext());
         }
-        while (cursor.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public void dispatchRefresh() {
         refreshLayout.setRefreshing(true);

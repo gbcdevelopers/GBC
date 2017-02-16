@@ -29,7 +29,7 @@ public class PrinterDataHelper {
         articles = ArticleHeaders.get();
     }
 
-    public JSONArray createJSONData(String request,HashMap<String,String>headerData,ArrayList<LoadSummary> data,HashMap<String,String>footerData){
+    public JSONArray createJSONDataLoadSummary(String request,HashMap<String,String>headerData,ArrayList<LoadSummary> data,ArrayList<LoadSummary> dataNew,HashMap<String,String>footerData){
         try{
             JSONArray jInter = new JSONArray();
             JSONObject jDict = new JSONObject();
@@ -47,23 +47,37 @@ public class PrinterDataHelper {
             JSONArray footers = new JSONArray();
 
             JSONArray jData = new JSONArray();
+            int i=0;
             for(Object obj: data){
+
                 JSONArray jDataInner = new JSONArray();
                 if(obj instanceof LoadSummary){
                     ArticleHeader articleHeader = ArticleHeader.getArticle(articles,((LoadSummary) obj).getMaterialNo());
                     if(articleHeader!=null){
-                        jDataInner.put(((LoadSummary) obj).getItemCode());  //Item Code
+                        jDataInner.put(articleHeader.getMaterialNo());  //Item Code
                         jDataInner.put(UrlBuilder.decodeString(articleHeader.getMaterialDesc1()));  //Item Description English
                         jDataInner.put(articleHeader.getMaterialDesc2()); //Item Description Arabic
                         jDataInner.put("1"); //UPC
-                        jDataInner.put(((LoadSummary) obj).getQuantityCases()); //Cases
-                        jDataInner.put(0); //Variance
-                        jDataInner.put(((LoadSummary) obj).getQuantityCases()); //Net Load
-                        jDataInner.put(((LoadSummary) obj).getPrice());
-                        jDataInner.put(String.valueOf(Double.parseDouble(((LoadSummary) obj).getQuantityCases())*Double.parseDouble(((LoadSummary) obj).getPrice())));
+                        jDataInner.put("+0"); //Begin Inventory
+                        jDataInner.put("+" + data.get(i).getQuantityCases()); //Cases
+                        jDataInner.put("+" + String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(data.get(i).getQuantityCases()))); //Variance
+                        jDataInner.put(String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases())*Double.parseDouble(dataNew.get(i).getPrice()))); //Net Load
+                        jDataInner.put(String.valueOf(Double.parseDouble(((LoadSummary) obj).getQuantityCases())*Double.parseDouble(((LoadSummary) obj).getPrice()))); //Total Value
+                    }
+                    else{
+                        jDataInner.put(((LoadSummary) obj).getMaterialNo());  //Item Code
+                        jDataInner.put(((LoadSummary) obj).getItemDescription());  //Item Description English
+                        jDataInner.put(((LoadSummary) obj).getItem_description_ar()); //Item Description Arabic
+                        jDataInner.put("1"); //UPC
+                        jDataInner.put("+0"); //Begin Inventory
+                        jDataInner.put("+" + data.get(i).getQuantityCases()); //Cases
+                        jDataInner.put("+" + String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(data.get(i).getQuantityCases()))); //Variance
+                        jDataInner.put(String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases())*Double.parseDouble(dataNew.get(i).getPrice()))); //Net Load
+                        jDataInner.put(String.valueOf(Double.parseDouble(((LoadSummary) obj).getQuantityCases())*Double.parseDouble(((LoadSummary) obj).getPrice()))); //Total Value
                     }
                 }
                 jData.put(jDataInner);
+                i++;
             }
             mainArr.put(DATA,jData);
             jDict.put(MAINARR,mainArr);

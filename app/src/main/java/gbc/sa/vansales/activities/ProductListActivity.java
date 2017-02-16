@@ -57,6 +57,7 @@ public class ProductListActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("I am here","Here in product");
                 if (Const.addlist.size() > 0) {
                     Intent intent = new Intent();
                     intent.putStringArrayListExtra("product", Const.addlist);

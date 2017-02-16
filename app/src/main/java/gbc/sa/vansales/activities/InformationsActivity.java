@@ -60,6 +60,9 @@ public class InformationsActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(InformationsActivity.this,DashboardActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             }
         });
@@ -80,7 +83,7 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 1:
                         PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforSI()); //For Sales Invoice
+                        object.execute("",createDataforCollection()); //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                       //  object.execute("",createDataForLoadRequest());
                        /* Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
@@ -415,13 +418,7 @@ public class InformationsActivity extends AppCompatActivity {
             jDict.put("mainArr",mainArr);
             jInter.put(jDict);
             jArr.put(jInter);
-
-
-
             jArr.put(HEADERS);
-
-
-
         }
         catch (Exception e){
             e.printStackTrace();
@@ -443,17 +440,24 @@ public class InformationsActivity extends AppCompatActivity {
             mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
             mainArr.put("CONTACTNO","1234");
             mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
             mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
             mainArr.put("supervisorname","-");
-            mainArr.put("TourID",Settings.getString(App.TRIP_ID));
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
             mainArr.put("invheadermsg","HAPPY NEW YEAR");
             mainArr.put("LANG","en");
             mainArr.put("invoicepaymentterms","2");
             mainArr.put("invoicenumber","1300000001");
-            mainArr.put("INVOICETYPE","SALES");
-            mainArr.put("CUSTOMER","LULU HYPER MARKET");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
             mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
             mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
 
             //mainArr.put("Load Number","1");
 
@@ -543,16 +547,121 @@ public class InformationsActivity extends AppCompatActivity {
             jData.put(jData1);
             jData.put(jData2);
             jData.put(jData3);
+            JSONArray grData = new JSONArray();
+            //grData.put(jData1);
+           // grData.put(jData2);
+           // grData.put(jData3);
+            JSONArray brData = new JSONArray();
+            brData.put(jData1);
+            brData.put(jData2);
+            brData.put(jData3);
             /*jData.put(jData4);
             jData.put(jData5);
             jData.put(jData6);*/
 
             mainArr.put("data",jData);
+            mainArr.put("gr",grData);
+            mainArr.put("br",brData);
             jDict.put("mainArr",mainArr);
             jInter.put(jDict);
             jArr.put(jInter);
 
+            jArr.put(HEADERS);
 
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
+    //Collection
+    public JSONArray createDataforCollection(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.COLLECTION);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("RECEIPT","INVOICE RECEIPT");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("PaymentType","2"); //0 for cash,1 for cheque, 2 for both
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("Invoice#");
+            HEADERS.put("Due Date");
+            HEADERS.put("Due Amount");
+            HEADERS.put("Invoice Balance");
+            HEADERS.put("Amount Paid");
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+
+            JSONObject jCash = new JSONObject();
+            jCash.put("Amount","1000");
+            mainArr.put("Cash",jCash);
+
+            JSONArray jCheque = new JSONArray();
+            JSONObject jChequeData = new JSONObject();
+            jChequeData.put("Cheque Date","15-02-2017");
+            jChequeData.put("Cheque No","012345");
+            jChequeData.put("Bank","Al Rajhi Bank");
+            jChequeData.put("Amount","500");
+            jCheque.put(jChequeData);
+            mainArr.put("Cheque",jCheque);
+            mainArr.put("expayment","");
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("Invoice Balance","+1000");
+            totalObj.put("Amount Paid","800");
+            //totalObj.put("AMOUNT","+2230");
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",totalObj);
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("140000012");
+            jData3.put("13-12-2016");
+            jData3.put("1000");
+            jData3.put("0");
+            jData3.put("1000");
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData3);
+            mainArr.put("data",jData);
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
 
             jArr.put(HEADERS);
 

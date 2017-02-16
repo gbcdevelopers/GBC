@@ -56,12 +56,13 @@ public class ConfigStore {
     public static final String BeginDayFunction = "BEGINDAY";
     public static final String EndDayFunction = "ENDDAY";
     public static final String ReturnsFunction = "RETURNS";
-    public static final String UnloadFunction = "ORDERREQ";
-    public static final String LoadVarianceFunction = "RETURNS";
+    //public static final String UnloadFunction = "ORDERREQ";
+    public static final String LoadVarianceFunction = "UNLOAD";
     public static final String VisitListFunction = "VISITACTIVITY";
     public static final String CollectionFunction = "COLLECTION";
     public static final String AddCustomerFunction = "ADDCUSTOMER";
     public static final String ClearingFunction = "CASHPOST";
+    public static final String UnloadFunction = "UNLOAD";
 
     //This is never used but only for offline posting
     public static final String OdometerFunction = "ODOMETER";
@@ -79,8 +80,8 @@ public class ConfigStore {
     public static final String BadReturnType = "ZEXP";
     public static final String OrderRequestType = "ZPRE";
     public static final String EndingInventory = "ZVLO";
-    public static final String TheftorTruckDocumentType = "ZDRX";
-    public static final String ExcessDocumentType = "ZCRX";
+    public static final String TheftorTruckDocumentType = "ZDRB";
+    public static final String ExcessDocumentType = "ZDCR";
     public static final String FreshUnload = "ZVLO";
     public static final String LoadVarianceDebit = "ZDRB";
     public static final String LoadVarianceCredit = "ZDCR";

@@ -16,8 +16,11 @@ import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.activities.SettingsActivity;
+import gbc.sa.vansales.data.ArticleHeaders;
+import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.OfflinePost;
 import gbc.sa.vansales.models.OfflineResponse;
+import gbc.sa.vansales.models.Unload;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
@@ -33,6 +36,7 @@ public class SyncData extends IntentService {
     ArrayList<OfflinePost> customerList = new ArrayList<>();
     public static String TAG = "SyncData";
     DatabaseHandler db = new DatabaseHandler(this);
+    public ArrayList<ArticleHeader> articles;
 
     public SyncData(){
         super(TAG);
@@ -43,6 +47,8 @@ public class SyncData extends IntentService {
         if(!Boolean.parseBoolean(Settings.getString(App.IS_DATA_SYNCING))){
             Log.e("Inside", "Inside" + getSyncCount());
             if(getSyncCount()>0){
+                articles = new ArrayList<>();
+                articles = ArticleHeaders.get();
                 Settings.setString(App.IS_DATA_SYNCING,"true");
                 syncData();
             }
@@ -142,6 +148,12 @@ public class SyncData extends IntentService {
                 isEmpty = false;
             }
             generateBatch(ConfigStore.CollectionFunction);
+        }
+        if(getSyncCount(ConfigStore.UnloadFunction+"U")>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.UnloadFunction+"U");
         }
         if(!isEmpty){
             new syncData("");
@@ -348,7 +360,7 @@ public class SyncData extends IntentService {
                         String documentDate = "";
                         do{
                             tempPurchaseNumber = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_ORDER_ID));
-                            documentDate = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_DATE));
+                            //documentDate = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_DATE));
                             if(purchaseNumber.equals("")){
                                 purchaseNumber = tempPurchaseNumber;
                             }
@@ -356,13 +368,13 @@ public class SyncData extends IntentService {
 
                             }
                             else{
-                                OfflinePost object = new OfflinePost();
+                                /*OfflinePost object = new OfflinePost();
                                 object.setCollectionName(App.POST_COLLECTION);
                                 object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadVarianceFunction,"",ConfigStore.LoadVarianceDebit,Settings.getString(App.DRIVER),"",purchaseNumber,documentDate));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
                                 purchaseNumber = tempPurchaseNumber;
-                                deepEntity = new JSONArray();
+                                deepEntity = new JSONArray();*/
                             }
 
                             if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
@@ -431,6 +443,7 @@ public class SyncData extends IntentService {
                     itemMap.put(db.KEY_ORDER_ID,"");
                     HashMap<String, String> filter = new HashMap<>();
                     filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
 
                     Cursor pendingLoadRequestCursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,itemMap,filter);
                     if(pendingLoadRequestCursor.getCount()>0){
@@ -439,7 +452,7 @@ public class SyncData extends IntentService {
                         String documentDate = "";
                         do{
                             tempPurchaseNumber = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_ORDER_ID));
-                            documentDate = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_DATE));
+                            //documentDate = pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_DATE));
                             if(purchaseNumber.equals("")){
                                 purchaseNumber = tempPurchaseNumber;
                             }
@@ -447,13 +460,13 @@ public class SyncData extends IntentService {
 
                             }
                             else{
-                                OfflinePost object = new OfflinePost();
+                                /*OfflinePost object = new OfflinePost();
                                 object.setCollectionName(App.POST_COLLECTION);
                                 object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadVarianceFunction,"",ConfigStore.LoadVarianceCredit,Settings.getString(App.DRIVER),"",purchaseNumber,documentDate));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
                                 purchaseNumber = tempPurchaseNumber;
-                                deepEntity = new JSONArray();
+                                deepEntity = new JSONArray();*/
                             }
 
                             if(pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingLoadRequestCursor.getString(pendingLoadRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
@@ -1486,6 +1499,145 @@ public class SyncData extends IntentService {
                 }
                 break;
             }
+            case ConfigStore.UnloadFunction+"U":{
+                try{
+                    ArrayList<Unload> arrayListDebit  = new ArrayList<>();
+                    ArrayList<Unload> arrayListCredit = new ArrayList<>();
+                    for(ArticleHeader articleHeader:articles){
+                        HashMap<String,String>map = new HashMap<>();
+                        map.put(db.KEY_ID,"");
+                        map.put(db.KEY_TIME_STAMP,"");
+                        map.put(db.KEY_REASON_CODE,"");
+                        map.put(db.KEY_VARIANCE_TYPE,"");
+                        map.put(db.KEY_TRIP_ID,"");
+                        map.put(db.KEY_ITEM_NO,"");
+                        map.put(db.KEY_MATERIAL_DESC1,"");
+                        map.put(db.KEY_MATERIAL_NO,"");
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_CASE,"");
+                        map.put(db.KEY_UNIT,"");
+                        map.put(db.KEY_UOM,"");
+                        map.put(db.KEY_PRICE,"");
+                        map.put(db.KEY_ORDER_ID,"");
+                        map.put(db.KEY_PURCHASE_NUMBER,"");
+                        map.put(db.KEY_IS_POSTED,"");
+                        map.put(db.KEY_IS_PRINTED,"");
+                        HashMap<String,String>filter = new HashMap<>();
+                        filter.put(db.KEY_MATERIAL_NO,articleHeader.getMaterialNo());
+                        Cursor c = db.getData(db.UNLOAD_VARIANCE,map,filter);
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            Unload unload = new Unload();
+                            unload.setMaterial_no(c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            unload.setMaterial_description(c.getString(c.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                            unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
+                            String varianceType = c.getString(c.getColumnIndex(db.KEY_VARIANCE_TYPE));
+                            unload.setUom(c.getString(c.getColumnIndex(db.KEY_UOM)));
+                            double cases = 0;
+                            double units = 0;
+                            do{
+                                cases += Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_CASE)));
+                                units += Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                            }
+                            while (c.moveToNext());
+                            unload.setCases(String.valueOf(cases));
+                            unload.setPic(String.valueOf(units));
+                            if(!varianceType.equals(App.EXCESS)){
+                                arrayListDebit.add(unload);
+                            }
+                            else{
+                                arrayListCredit.add(unload);
+                            }
+
+                        }
+                    }
+                    if(arrayListDebit.size()>0){
+                        JSONArray deepEntity = new JSONArray();
+                        int itemno = 10;
+                        for(Unload unload:arrayListDebit){
+                            if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                            else{
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                        }
+                        OfflinePost offlinePost = new OfflinePost();
+                        offlinePost.setCollectionName(App.POST_COLLECTION);
+                        offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", "", ""));
+                        offlinePost.setDeepEntity(deepEntity);
+                        arrayList.add(offlinePost);
+                    }
+                    if(arrayListCredit.size()>0){
+                        JSONArray deepEntity = new JSONArray();
+                        int itemno = 10;
+                        for(Unload unload:arrayListDebit){
+                            if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                            else{
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                        }
+                        OfflinePost offlinePost = new OfflinePost();
+                        offlinePost.setCollectionName(App.POST_COLLECTION);
+                        offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceCredit, Settings.getString(App.DRIVER), "", "", ""));
+                        offlinePost.setDeepEntity(deepEntity);
+                        arrayList.add(offlinePost);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
@@ -1991,7 +2143,26 @@ public class SyncData extends IntentService {
                             break;
                         }
                         case ConfigStore.UnloadFunction+"U":{
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
 
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                               // filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.UNLOAD_VARIANCE,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+
+                                HashMap<String,String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                db.updateData(db.UNLOAD_VARIANCE,map,filter);
+                            }
                             break;
                         }
                     }
@@ -2101,7 +2272,8 @@ public class SyncData extends IntentService {
                 break;
             }
             case ConfigStore.UnloadFunction+"U":{
-
+                Cursor unloadFunction = db.getData(db.UNLOAD_VARIANCE,map,filter);
+                syncCount = unloadFunction.getCount();
                 break;
             }
 
@@ -2146,6 +2318,7 @@ public class SyncData extends IntentService {
         Cursor newCustomerCursor = db.getData(db.NEW_CUSTOMER_POST,map,filter);
         Cursor loadVarianceCursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,map,filter);
         Cursor collectionCursor = db.getData(db.COLLECTION,map,filter);
+        Cursor unloadCursor = db.getData(db.UNLOAD_VARIANCE,map,filter);
 
         if(beginDayRequest.getCount()>0){
             syncCount+= beginDayRequest.getCount();
@@ -2188,6 +2361,9 @@ public class SyncData extends IntentService {
         }
         if(newCustomerCursor.getCount()>0){
             syncCount += newCustomerCursor.getCount();
+        }
+        if(unloadCursor.getCount()>0){
+            syncCount += unloadCursor.getCount();
         }
         Log.e("Sync count","" + syncCount);
         return syncCount;

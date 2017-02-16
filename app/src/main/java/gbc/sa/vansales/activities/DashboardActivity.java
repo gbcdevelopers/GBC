@@ -81,6 +81,7 @@ public class DashboardActivity extends AppCompatActivity
     TextView tv_driver_no;
     TextView lbl_totalreceipt;
     TextView tv_tripid;
+    TextView tv_driver_name;
     ArrayList<CustomerHeader> customers;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +106,8 @@ public class DashboardActivity extends AppCompatActivity
         iv_drawer = (ImageView) findViewById(R.id.iv_drawer);
         btn_message = (Button) findViewById(R.id.btn_messages);
         tv_route.setText(getString(R.string.route_code_101) + Settings.getString(App.ROUTE));
-        tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER));
+        String driverName = Settings.getString(App.LANGUAGE).equals("en")?Settings.getString(App.DRIVER_NAME_EN):Settings.getString(App.DRIVER_NAME_AR);
+        tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER) + " , " + driverName);
         tv_tripid.setText(getString(R.string.trip) + Settings.getString(App.TRIP_ID));
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -230,45 +232,57 @@ public class DashboardActivity extends AppCompatActivity
 
        // lbl_totalsales.setText("0.00" + getString(R.string.currency));
         //lbl_totalreceipt.setText("0.00 " + getString(R.string.currency));
-        lbl_targetachieved.setText("594.00/75000.00");
+        lbl_targetachieved.setText("0.00/0.00");
     }
     private void loadTotalSales(){
-        HashMap<String,String>map = new HashMap<>();
-        map.put(db.KEY_ACTIVITY_TYPE,"");
-        map.put(db.KEY_CUSTOMER_NO,"");
-        map.put(db.KEY_ORDER_ID,"");
-        map.put(db.KEY_PRICE,"");
-        HashMap<String,String>filter = new HashMap<>();
-        Cursor c = db.getData(db.DAYACTIVITY,map,filter);
-        double totalSales = 0;
-        if(c.getCount()>0){
-            c.moveToFirst();
-            do{
-                totalSales+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_PRICE)));
+        try{
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_ACTIVITY_TYPE,"");
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_ORDER_ID,"");
+            map.put(db.KEY_PRICE,"");
+            HashMap<String,String>filter = new HashMap<>();
+            Cursor c = db.getData(db.DAYACTIVITY,map,filter);
+            double totalSales = 0;
+            if(c.getCount()>0){
+                c.moveToFirst();
+                do{
+                    totalSales+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_PRICE)));
+                }
+                while (c.moveToNext());
             }
-            while (c.moveToNext());
+            lbl_totalsales.setText(String.valueOf(totalSales) + " " + getString(R.string.currency));
         }
-        lbl_totalsales.setText(String.valueOf(totalSales) + " " + getString(R.string.currency));
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     private void loadTotalReceipt(){
-        HashMap<String,String>map = new HashMap<>();
-        map.put(db.KEY_CUSTOMER_NO,"");
-        map.put(db.KEY_INVOICE_NO,"");
-        map.put(db.KEY_INVOICE_AMOUNT,"");
-        map.put(db.KEY_DUE_DATE,"");
-        map.put(db.KEY_INVOICE_DATE,"");
-        map.put(db.KEY_AMOUNT_CLEARED,"");
-        map.put(db.KEY_IS_INVOICE_COMPLETE,"");
-        HashMap<String,String>filter = new HashMap<>();
-        double totalReceipt = 0;
-        Cursor c = db.getData(db.COLLECTION,map,filter);
-        if(c.getCount()>0){
-            do{
-                totalReceipt+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+        try{
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_INVOICE_NO,"");
+            map.put(db.KEY_INVOICE_AMOUNT,"");
+            map.put(db.KEY_DUE_DATE,"");
+            map.put(db.KEY_INVOICE_DATE,"");
+            map.put(db.KEY_AMOUNT_CLEARED,"");
+            map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+            HashMap<String,String>filter = new HashMap<>();
+            double totalReceipt = 0;
+            Cursor c = db.getData(db.COLLECTION,map,filter);
+            if(c.getCount()>0){
+                do{
+                    totalReceipt+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                }
+                while (c.moveToNext());
             }
-            while (c.moveToNext());
+            lbl_totalreceipt.setText(String.valueOf(totalReceipt) + " " + getString(R.string.currency));
         }
-        lbl_totalreceipt.setText(String.valueOf(totalReceipt) + " " + getString(R.string.currency));
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     private void setBeginDayVisibility() {
         HashMap<String, String> map = new HashMap<>();
@@ -322,6 +336,7 @@ public class DashboardActivity extends AppCompatActivity
         map.put(db.KEY_IS_BEGIN_DAY, "");
         map.put(db.KEY_IS_LOAD_VERIFIED, "");
         map.put(db.KEY_IS_END_DAY, "");
+        map.put(db.KEY_IS_UNLOAD,"");
         HashMap<String, String> filter = new HashMap<>();
         Cursor cursor = db.getData(db.LOCK_FLAGS, map, filter);
         if (cursor.getCount() > 0) {
@@ -329,30 +344,31 @@ public class DashboardActivity extends AppCompatActivity
         }
         boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
         boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
+        boolean isUnloadEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_UNLOAD)));
         boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
         listDataHeader = new ArrayList<ExpandedMenuModel>();
         listDataChild = new HashMap<ExpandedMenuModel, List<String>>();
         ExpandedMenuModel beginTrip = new ExpandedMenuModel();
         beginTrip.setIconName(getString(R.string.begintrip));
         beginTrip.setIconImg(R.drawable.ic_begintrip);
-        beginTrip.setIsEnabled(true);
+        beginTrip.setIsEnabled(isEndDayEnabled?false:true);
         listDataHeader.add(beginTrip);
         ExpandedMenuModel manageInventory = new ExpandedMenuModel();
         manageInventory.setIconName(getString(R.string.manageinventory));
         manageInventory.setIconImg(R.drawable.ic_manageinventory);
-        manageInventory.setIsEnabled(isBeginTripEnabled);
+        manageInventory.setIsEnabled(isBeginTripEnabled&&!isEndDayEnabled?true:false);
         //manageInventory.setIsEnabled(true);
         listDataHeader.add(manageInventory);
         ExpandedMenuModel customerOperations = new ExpandedMenuModel();
         customerOperations.setIconName(getString(R.string.customeroperation));
         customerOperations.setIconImg(R.drawable.ic_customeropt);
-        customerOperations.setIsEnabled(isloadVerifiedEnabled);
+        customerOperations.setIsEnabled(isloadVerifiedEnabled&&!isEndDayEnabled?true:false);
         // customerOperations.setIsEnabled(true);
         listDataHeader.add(customerOperations);
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
-        endTrip.setIsEnabled(isBeginTripEnabled);
+        endTrip.setIsEnabled(isUnloadEnabled&&!isEndDayEnabled?true:false);
         // endTrip.setIsEnabled(true);
         listDataHeader.add(endTrip);
         ExpandedMenuModel information = new ExpandedMenuModel();
@@ -453,106 +469,118 @@ public class DashboardActivity extends AppCompatActivity
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
     void createBarChartFromLiveData(float salesCount,float goodreturnsCount,float badreturnsCount) {
-        Log.e("Count in Live Data","" + salesCount + "/" + goodreturnsCount + "/" + badreturnsCount);
-        BarChart barChart = (BarChart) findViewById(R.id.barChart);
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.setPinchZoom(false);
-        barChart.setDrawGridBackground(false);
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(salesCount,0));
-        entries.add(new BarEntry(goodreturnsCount,1));
-        entries.add(new BarEntry(badreturnsCount,2));
+        try{
+            Log.e("Count in Live Data","" + salesCount + "/" + goodreturnsCount + "/" + badreturnsCount);
+            BarChart barChart = (BarChart) findViewById(R.id.barChart);
+            barChart.setDrawBarShadow(false);
+            barChart.setDrawValueAboveBar(true);
+            barChart.setPinchZoom(false);
+            barChart.setDrawGridBackground(false);
+            ArrayList<BarEntry> entries = new ArrayList<>();
+            entries.add(new BarEntry(salesCount,0));
+            entries.add(new BarEntry(goodreturnsCount,1));
+            entries.add(new BarEntry(badreturnsCount,2));
         /*entries.add(new BarEntry(4f, 0));
         entries.add(new BarEntry(8f, 1));
         entries.add(new BarEntry(6f, 2));*/
-        BarDataSet dataset = new BarDataSet(entries, "");
-        // dataset.setColors(ColorTemplate.PASTEL_COLORS);
-        List<Integer> colorCodes = new ArrayList<Integer>();
-        colorCodes.add(Color.parseColor("#82d173"));
-        colorCodes.add(Color.parseColor("#3e7aae"));
-        colorCodes.add(Color.parseColor("#ff715b"));
-        dataset.setColors(colorCodes);
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add(getString(R.string.sales));
-        labels.add(getString(R.string.good_return));
-        labels.add(getString(R.string.bad_return));
-        BarData data = new BarData(labels, dataset);
-        barChart.setData(data);
-        barChart.animateY(2000);
-        barChart.setDescription("");
-        barChart.getAxisRight().setEnabled(false);
-        barChart.getLegend().setEnabled(false);
-        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+            BarDataSet dataset = new BarDataSet(entries, "");
+            // dataset.setColors(ColorTemplate.PASTEL_COLORS);
+            List<Integer> colorCodes = new ArrayList<Integer>();
+            colorCodes.add(Color.parseColor("#82d173"));
+            colorCodes.add(Color.parseColor("#3e7aae"));
+            colorCodes.add(Color.parseColor("#ff715b"));
+            dataset.setColors(colorCodes);
+            ArrayList<String> labels = new ArrayList<String>();
+            labels.add(getString(R.string.sales));
+            labels.add(getString(R.string.good_return));
+            labels.add(getString(R.string.bad_return));
+            BarData data = new BarData(labels, dataset);
+            barChart.setData(data);
+            barChart.animateY(2000);
+            barChart.setDescription("");
+            barChart.getAxisRight().setEnabled(false);
+            barChart.getLegend().setEnabled(false);
+            barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     void createPieChartFromLiveData(int cashCustomerCount,int creditCustomerCount,int tcCustomerCount) {
-        if(cashCustomerCount==0&&creditCustomerCount==0&&tcCustomerCount==0){
-            PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
-            ArrayList<Entry> entries = new ArrayList<>();
-            entries.add(new Entry(1, 0));
-            PieDataSet dataset = new PieDataSet(entries, "");
-            dataset.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                    return String.valueOf((int) value);
-                }
-            });
-            ArrayList<String> labels = new ArrayList<String>();
-            labels.add(getString(R.string.no_visit));
-           // labels.add(getString(R.string.credit));
-          //  labels.add(getString(R.string.tc_lbl));
-            PieData data = new PieData(labels, dataset);
-            List<Integer> colorCodes = new ArrayList<Integer>();
-            colorCodes.add(Color.parseColor("#06A899"));
-           // colorCodes.add(Color.parseColor("#ffc502"));
-          //  colorCodes.add(Color.parseColor("#ff9201"));
-            dataset.setColors(colorCodes); //
-            //  pieChart.setDescription("Description");
-            pieChart.setDrawSliceText(false);
-            pieChart.setData(data);
-            pieChart.setHoleRadius(50f);
-            pieChart.setTransparentCircleRadius(50f);
-            pieChart.setDescription("");
-            pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
-            pieChart.setDrawSliceText(false);
-            pieChart.setDrawCenterText(false);
-            pieChart.setCenterTextColor(Color.TRANSPARENT);
-            // pieChart.setUsePercentValues(true);
-            pieChart.animateY(1000);
+        try{
+            if(cashCustomerCount==0&&creditCustomerCount==0&&tcCustomerCount==0){
+                PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
+                ArrayList<Entry> entries = new ArrayList<>();
+                entries.add(new Entry(1, 0));
+                PieDataSet dataset = new PieDataSet(entries, "");
+                dataset.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                        return String.valueOf((int) value);
+                    }
+                });
+                ArrayList<String> labels = new ArrayList<String>();
+                labels.add(getString(R.string.no_visit));
+                // labels.add(getString(R.string.credit));
+                //  labels.add(getString(R.string.tc_lbl));
+                PieData data = new PieData(labels, dataset);
+                List<Integer> colorCodes = new ArrayList<Integer>();
+                colorCodes.add(Color.parseColor("#06A899"));
+                // colorCodes.add(Color.parseColor("#ffc502"));
+                //  colorCodes.add(Color.parseColor("#ff9201"));
+                dataset.setColors(colorCodes); //
+                //  pieChart.setDescription("Description");
+                pieChart.setDrawSliceText(false);
+                pieChart.setData(data);
+                pieChart.setHoleRadius(50f);
+                pieChart.setTransparentCircleRadius(50f);
+                pieChart.setDescription("");
+                pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+                pieChart.setDrawSliceText(false);
+                pieChart.setDrawCenterText(false);
+                pieChart.setCenterTextColor(Color.TRANSPARENT);
+                // pieChart.setUsePercentValues(true);
+                pieChart.animateY(1000);
+            }
+            else{
+                PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
+                ArrayList<Entry> entries = new ArrayList<>();
+                entries.add(new Entry(cashCustomerCount, 0));
+                entries.add(new Entry(creditCustomerCount, 1));
+                entries.add(new Entry(tcCustomerCount, 2));
+                PieDataSet dataset = new PieDataSet(entries, "");
+                dataset.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                        return String.valueOf((int) value);
+                    }
+                });
+                ArrayList<String> labels = new ArrayList<String>();
+                labels.add(getString(R.string.cash));
+                labels.add(getString(R.string.credit));
+                labels.add(getString(R.string.tc_lbl));
+                PieData data = new PieData(labels, dataset);
+                List<Integer> colorCodes = new ArrayList<Integer>();
+                colorCodes.add(Color.parseColor("#c15525"));
+                colorCodes.add(Color.parseColor("#ffc502"));
+                colorCodes.add(Color.parseColor("#ff9201"));
+                dataset.setColors(colorCodes); //
+                //  pieChart.setDescription("Description");
+                pieChart.setDrawSliceText(false);
+                pieChart.setData(data);
+                pieChart.setHoleRadius(50f);
+                pieChart.setTransparentCircleRadius(50f);
+                pieChart.setDescription("");
+                pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
+                // pieChart.setUsePercentValues(true);
+                pieChart.animateY(3000);
+            }
         }
-        else{
-            PieChart pieChart = (PieChart) findViewById(R.id.pieChart);
-            ArrayList<Entry> entries = new ArrayList<>();
-            entries.add(new Entry(cashCustomerCount, 0));
-            entries.add(new Entry(creditCustomerCount, 1));
-            entries.add(new Entry(tcCustomerCount, 2));
-            PieDataSet dataset = new PieDataSet(entries, "");
-            dataset.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                    return String.valueOf((int) value);
-                }
-            });
-            ArrayList<String> labels = new ArrayList<String>();
-            labels.add(getString(R.string.cash));
-            labels.add(getString(R.string.credit));
-            labels.add(getString(R.string.tc_lbl));
-            PieData data = new PieData(labels, dataset);
-            List<Integer> colorCodes = new ArrayList<Integer>();
-            colorCodes.add(Color.parseColor("#c15525"));
-            colorCodes.add(Color.parseColor("#ffc502"));
-            colorCodes.add(Color.parseColor("#ff9201"));
-            dataset.setColors(colorCodes); //
-            //  pieChart.setDescription("Description");
-            pieChart.setDrawSliceText(false);
-            pieChart.setData(data);
-            pieChart.setHoleRadius(50f);
-            pieChart.setTransparentCircleRadius(50f);
-            pieChart.setDescription("");
-            pieChart.getLegend().setPosition(Legend.LegendPosition.PIECHART_CENTER);
-            // pieChart.setUsePercentValues(true);
-            pieChart.animateY(3000);
+        catch (Exception e){
+            e.printStackTrace();
         }
+
 
     }
     @Override
@@ -587,72 +615,78 @@ public class DashboardActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(var.equals(App.SALES)){
-                    HashMap<String, String>map = new HashMap<>();
-                    map.put(db.KEY_TIME_STAMP,"");
-                    map.put(db.KEY_ORG_CASE,"");
-                    HashMap<String,String>filterPostedSales = new HashMap<>();
-                    filterPostedSales.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED); //Count of all invoices posted in SAP
-                    HashMap<String,String>filterMarkedforPostSales = new HashMap<>();
-                    filterMarkedforPostSales.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                    Cursor salesMarkforPostCursor = null;
-                    Cursor salesPostedCursor = null;
-                    if(db.checkData(db.CAPTURE_SALES_INVOICE,filterMarkedforPostSales)){
-                        salesMarkforPostCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filterMarkedforPostSales);
-                        if(salesMarkforPostCursor.getCount()>0){
-                            salesMarkforPostCursor.moveToFirst();
+                try{
+                    if(var.equals(App.SALES)){
+                        HashMap<String, String>map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,"");
+                        map.put(db.KEY_ORG_CASE,"");
+                        HashMap<String,String>filterPostedSales = new HashMap<>();
+                        filterPostedSales.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED); //Count of all invoices posted in SAP
+                        HashMap<String,String>filterMarkedforPostSales = new HashMap<>();
+                        filterMarkedforPostSales.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        Cursor salesMarkforPostCursor = null;
+                        Cursor salesPostedCursor = null;
+                        if(db.checkData(db.CAPTURE_SALES_INVOICE,filterMarkedforPostSales)){
+                            salesMarkforPostCursor = db.getData(db.CAPTURE_SALES_INVOICE,map,filterMarkedforPostSales);
+                            if(salesMarkforPostCursor.getCount()>0){
+                                salesMarkforPostCursor.moveToFirst();
+                            }
                         }
-                    }
-                    if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
-                        salesPostedCursor  = db.getData(db.CAPTURE_SALES_INVOICE,map,filterPostedSales);
-                        if(salesPostedCursor.getCount()>0){
-                            salesPostedCursor.moveToFirst();
+                        if(db.checkData(db.CAPTURE_SALES_INVOICE,filterPostedSales)){
+                            salesPostedCursor  = db.getData(db.CAPTURE_SALES_INVOICE,map,filterPostedSales);
+                            if(salesPostedCursor.getCount()>0){
+                                salesPostedCursor.moveToFirst();
+                            }
                         }
+                        salesCount = calculateData(var,salesPostedCursor,salesMarkforPostCursor);
                     }
-                    salesCount = calculateData(var,salesPostedCursor,salesMarkforPostCursor);
-                }
-                else if(var.equals(App.GOOD_RETURN))
-                {
-                    HashMap<String, String>returnMap = new HashMap<>();
-                    returnMap.put(db.KEY_TIME_STAMP,"");
-                    returnMap.put(db.KEY_CASE,"");
-                    HashMap<String,String>filterPostedGoodReturn = new HashMap<>();
-                    filterPostedGoodReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
-                    filterPostedGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
-                    HashMap<String,String>filterMarkedforPostGoodReturn = new HashMap<>();
-                    filterMarkedforPostGoodReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                    filterMarkedforPostGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                    else if(var.equals(App.GOOD_RETURN))
+                    {
+                        HashMap<String, String>returnMap = new HashMap<>();
+                        returnMap.put(db.KEY_TIME_STAMP,"");
+                        returnMap.put(db.KEY_CASE,"");
+                        HashMap<String,String>filterPostedGoodReturn = new HashMap<>();
+                        filterPostedGoodReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                        filterPostedGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                        HashMap<String,String>filterMarkedforPostGoodReturn = new HashMap<>();
+                        filterMarkedforPostGoodReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        filterMarkedforPostGoodReturn.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
 
-                    Cursor goodReturnPostedCursor = null;
-                    if(db.checkData(db.RETURNS,filterPostedGoodReturn)){
-                        goodReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedGoodReturn);
+                        Cursor goodReturnPostedCursor = null;
+                        if(db.checkData(db.RETURNS,filterPostedGoodReturn)){
+                            goodReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedGoodReturn);
+                        }
+                        Cursor goodReturnMarkforPostCursor = null;
+                        if(db.checkData(db.RETURNS,filterMarkedforPostGoodReturn)){
+                            goodReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostGoodReturn);
+                        }
+                        goodReturnsCount = calculateData(var,goodReturnPostedCursor,goodReturnMarkforPostCursor);
                     }
-                    Cursor goodReturnMarkforPostCursor = null;
-                    if(db.checkData(db.RETURNS,filterMarkedforPostGoodReturn)){
-                        goodReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostGoodReturn);
+                    else if(var.equals(App.BAD_RETURN)){
+                        HashMap<String, String>returnMap = new HashMap<>();
+                        returnMap.put(db.KEY_TIME_STAMP,"");
+                        returnMap.put(db.KEY_CASE,"");
+                        HashMap<String,String>filterPostedBadReturn = new HashMap<>();
+                        filterPostedBadReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
+                        filterPostedBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                        HashMap<String,String>filterMarkedforPostBadReturn = new HashMap<>();
+                        filterMarkedforPostBadReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        filterMarkedforPostBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                        Cursor badReturnPostedCursor = null;
+                        Cursor badReturnMarkforPostCursor = null;
+                        if(db.checkData(db.RETURNS,filterPostedBadReturn)){
+                            badReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedBadReturn);
+                        }
+                        if(db.checkData(db.RETURNS,filterMarkedforPostBadReturn)){
+                            badReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostBadReturn);
+                        }
+                        badReturnsCount = calculateData(var,badReturnPostedCursor,badReturnMarkforPostCursor);
                     }
-                    goodReturnsCount = calculateData(var,goodReturnPostedCursor,goodReturnMarkforPostCursor);
                 }
-                else if(var.equals(App.BAD_RETURN)){
-                    HashMap<String, String>returnMap = new HashMap<>();
-                    returnMap.put(db.KEY_TIME_STAMP,"");
-                    returnMap.put(db.KEY_CASE,"");
-                    HashMap<String,String>filterPostedBadReturn = new HashMap<>();
-                    filterPostedBadReturn.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);//Count of all good REturns posted in SAP
-                    filterPostedBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
-                    HashMap<String,String>filterMarkedforPostBadReturn = new HashMap<>();
-                    filterMarkedforPostBadReturn.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                    filterMarkedforPostBadReturn.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
-                    Cursor badReturnPostedCursor = null;
-                    Cursor badReturnMarkforPostCursor = null;
-                    if(db.checkData(db.RETURNS,filterPostedBadReturn)){
-                        badReturnPostedCursor = db.getData(db.RETURNS,returnMap,filterPostedBadReturn);
-                    }
-                    if(db.checkData(db.RETURNS,filterMarkedforPostBadReturn)){
-                        badReturnMarkforPostCursor = db.getData(db.RETURNS,returnMap,filterMarkedforPostBadReturn);
-                    }
-                    badReturnsCount = calculateData(var,badReturnPostedCursor,badReturnMarkforPostCursor);
+                catch (Exception e){
+                    e.printStackTrace();
                 }
+
             }
         });
     }
@@ -757,97 +791,111 @@ public class DashboardActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ArrayList<String>tempCust = new ArrayList<String>();
-                do{
-                    CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    HashMap<String,String>filter = new HashMap<String, String>();
-                    filter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                    if(!tempCust.contains(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)))){
-                        tempCust.add(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        if(customerHeader!=null){
-                            if(customerHeader.getTerms().equals(App.CASH_CUSTOMER_CODE)){
-                                cashCustomerCount++;
-                            }
-                            else if(customerHeader.getTerms().equals(App.TC_CUSTOMER_CODE)){
-                                tcCustomerCount++;
-                            }
+                try{
+                    ArrayList<String>tempCust = new ArrayList<String>();
+                    do{
+                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        HashMap<String,String>filter = new HashMap<String, String>();
+                        filter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        if(!tempCust.contains(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)))){
+                            tempCust.add(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            if(customerHeader!=null){
+                                if(customerHeader.getTerms().equals(App.CASH_CUSTOMER_CODE)){
+                                    cashCustomerCount++;
+                                }
+                                else if(customerHeader.getTerms().equals(App.TC_CUSTOMER_CODE)){
+                                    tcCustomerCount++;
+                                }
 
-                            else if(!customerHeader.getTerms().equals("")/*&&db.checkData(db.CUSTOMER_CREDIT,filter)*/){
-                                creditCustomerCount++;
-                            }
-                            else{
-                                creditCustomerCount++;
+                                else if(!customerHeader.getTerms().equals("")/*&&db.checkData(db.CUSTOMER_CREDIT,filter)*/){
+                                    creditCustomerCount++;
+                                }
+                                else{
+                                    creditCustomerCount++;
+                                }
                             }
                         }
+
+
                     }
-
-
+                    while (c.moveToNext());
                 }
-                while (c.moveToNext());
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
     }
 
     private float calculateData(String var,Cursor c1,Cursor c2){
-        float count = 0;
-        if(var.equals(App.SALES)){
-            if(c1!=null){
-                if(c1.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_ORG_CASE)));
+        try{
+            float count = 0;
+            if(var.equals(App.SALES)){
+                if(c1!=null){
+                    if(c1.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_ORG_CASE)));
+                        }
+                        while (c1.moveToNext());
                     }
-                    while (c1.moveToNext());
                 }
-            }
-            if(c2!=null){
-                if(c2.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_ORG_CASE)));
+                if(c2!=null){
+                    if(c2.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_ORG_CASE)));
+                        }
+                        while (c2.moveToNext());
                     }
-                    while (c2.moveToNext());
                 }
-            }
 
 
+            }
+            else if(var.equals(App.GOOD_RETURN)){
+                if(c1!=null){
+                    if(c1.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
+                        }
+                        while (c1.moveToNext());
+                    }
+                }
+                if(c2!=null){
+                    if(c2.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                        }
+                        while (c2.moveToNext());
+                    }
+                }
+
+            }
+            else if(var.equals(App.BAD_RETURN)){
+                if(c1!=null){
+                    if(c1.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
+                        }
+                        while (c1.moveToNext());
+                    }
+                }
+                if(c2!=null){
+                    if(c2.getCount()>0){
+                        do{
+                            count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                        }
+                        while (c2.moveToNext());
+                    }
+                }
+
+            }
+            return count;
         }
-        else if(var.equals(App.GOOD_RETURN)){
-            if(c1!=null){
-                if(c1.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
-                    }
-                    while (c1.moveToNext());
-                }
-            }
-            if(c2!=null){
-                if(c2.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
-                    }
-                    while (c2.moveToNext());
-                }
-            }
-
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
         }
-        else if(var.equals(App.BAD_RETURN)){
-            if(c1!=null){
-                if(c1.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
-                    }
-                    while (c1.moveToNext());
-                }
-            }
-            if(c2!=null){
-                if(c2.getCount()>0){
-                    do{
-                        count += Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
-                    }
-                    while (c2.moveToNext());
-                }
-            }
 
-        }
-        return count;
+
     }
 }

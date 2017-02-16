@@ -1,5 +1,6 @@
 package gbc.sa.vansales.adapters;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -81,7 +82,11 @@ public class OrderRequestBadgeAdapter extends ArrayAdapter<OrderRequest> {
         else{
             holder.item_price.setText(getContext().getString(R.string.price) + " - " + String.valueOf(Float.parseFloat(loadRequestList.get(pos).getPrice())));
         }
-        holder.categoryImage.setImageResource(R.drawable.beraincategory);
+        String uri = "@drawable/a"+StringUtils.stripStart(loadRequestList.get(pos).getMaterialNo(),"0");
+        int imageResource = getContext().getResources().getIdentifier(uri,null,getContext().getPackageName());
+        Drawable res = getContext().getResources().getDrawable(imageResource);
+        holder.categoryImage.setImageDrawable(res);
+        //holder.categoryImage.setImageResource(R.drawable.beraincategory);
         return convertView;
     }
     public class ViewHolder {

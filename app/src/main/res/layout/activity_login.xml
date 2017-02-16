@@ -38,7 +38,6 @@
                 android:singleLine="true"
                 android:background="@drawable/edittext_top_bg"
                 android:textColorHint="#cccccc"
-                android:text="@string/e2000"
                 android:drawableLeft="@drawable/user"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +60,6 @@
                 android:layout_marginTop="-12dp"
                 android:singleLine="true"
                 android:textColorHint="#cccccc"
-                android:text="@string/password"
                 android:password="true"
                 android:drawableLeft="@drawable/password"/>
         </android.support.design.widget.TextInputLayout>

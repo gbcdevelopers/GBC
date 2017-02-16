@@ -56,7 +56,7 @@ public class CollectionAdapter extends ArrayAdapter<Collection> {
         holder.tv_invoice_no.setText(context.getString(R.string.invoice_no) + " : " + collectionsList.get(pos).getInvoiceNo());
         //holder.tv_price.setText("Price:54.00/2.25");
         holder.tv_invoice_date.setText(getContext().getString(R.string.inv_date) + " : " + collectionsList.get(pos).getInvoiceDate());
-        holder.tv_invoice_due_date.setText(getContext().getString(R.string.due_date) + " : " + collectionsList.get(pos).getInvoiceDate());
+        holder.tv_invoice_due_date.setText(getContext().getString(R.string.due_date) + " : " + collectionsList.get(pos).getInvoiceDueDate());
         //holder.tv_invoice_amount.setText(collectionsList.get(pos).getInvoiceAmount() + " SAR ");
         float amountdue = Float.parseFloat(collectionsList.get(pos).getInvoiceAmount())- Float.parseFloat(collectionsList.get(pos).getAmountCleared());
         holder.tv_invoice_amount.setText(collectionsList.get(pos).getAmountCleared());

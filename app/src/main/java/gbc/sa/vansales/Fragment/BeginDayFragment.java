@@ -113,9 +113,17 @@ public class BeginDayFragment extends Fragment {
             Log.e("Data in Fragment", "" + data);
             route.setText(data.getString("route"));
             salesManNo.setText(data.getString("driver1"));
-            salesManName.setText(data.getString("driver1"));
+            //salesManName.setText(data.getString("driver1"));
+            if(Settings.getString(App.LANGUAGE).equals("ar")){
+                salesManName.setText(Settings.getString(App.DRIVER_NAME_AR));
+            }
+            else{
+                salesManName.setText(Settings.getString(App.DRIVER_NAME_EN));
+            }
+
+
             salesDate.setText(data.getString("psDate"));
-            tripID.setText(Settings.getString(App.TRIP_ID));
+            //tripID.setText(Settings.getString(App.TRIP_ID));
            // delieveryDate.setText(data.getString("asDate"));
            // deliveryRoute.setText(data.getString("route"));
             vehicleNo.setText(UrlBuilder.decodeString(data.getString("truck")));
@@ -138,23 +146,29 @@ public class BeginDayFragment extends Fragment {
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
-                HashMap<String, String> map = new HashMap<>();
-                String timeStamp = Helpers.getCurrentTimeStamp();
-                Log.e("TimeStamp","" + timeStamp);
-                map.put(db.KEY_TIME_STAMP, timeStamp);
-                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
-                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
-                map.put(db.KEY_IS_SELECTED, "true");
-                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                db.addData(db.BEGIN_DAY, map);
-                new postTrip(purchaseNumber, timeStamp);
+                try{
+                    String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
+                    HashMap<String, String> map = new HashMap<>();
+                    String timeStamp = Helpers.getCurrentTimeStamp();
+                    Log.e("TimeStamp","" + timeStamp);
+                    map.put(db.KEY_TIME_STAMP, timeStamp);
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                    map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                    map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                    map.put(db.KEY_IS_SELECTED, "true");
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    db.addData(db.BEGIN_DAY, map);
+                    new postTrip(purchaseNumber, timeStamp);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 // showDialog();
             }
         });
-        salesDate.setEnabled(false);
+        salesDate.setEnabled(true);
         return view;
     }
     private void setBeginDayVisibility() {
@@ -231,22 +245,28 @@ public class BeginDayFragment extends Fragment {
         alertDialog.show();
     }
     public void postOdometer(String value) {
-        String purchaseNumber = Helpers.generateNumber(db, ConfigStore.Odometer_PR_Type);
-        String timeStamp = Helpers.getCurrentTimeStamp();
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_ODOMETER_VALUE, value);
-        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-        map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-        map.put(db.KEY_TIME_STAMP, timeStamp);
-        map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-        if (db.checkData(db.ODOMETER, filter)) {
-            db.updateData(db.ODOMETER, map, filter);
-        } else {
-            db.addData(db.ODOMETER, map);
+        try{
+            String purchaseNumber = Helpers.generateNumber(db, ConfigStore.Odometer_PR_Type);
+            String timeStamp = Helpers.getCurrentTimeStamp();
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_ODOMETER_VALUE, value);
+            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+            map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+            map.put(db.KEY_TIME_STAMP, timeStamp);
+            map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+            if (db.checkData(db.ODOMETER, filter)) {
+                db.updateData(db.ODOMETER, map, filter);
+            } else {
+                db.addData(db.ODOMETER, map);
+            }
+            new postData(value, purchaseNumber);
         }
-        new postData(value, purchaseNumber);
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public class postData extends AsyncTask<Void, Void, Void> {
         String flag = "";
@@ -351,8 +371,8 @@ public class BeginDayFragment extends Fragment {
             map.put("Function", ConfigStore.BeginDayFunction);
             map.put("TripId", Settings.getString(App.TRIP_ID));
             map.put("CreatedBy", Settings.getString(App.DRIVER));
-            map.put("StartDate", tokens[0].toString());
-            map.put("StartTime", tokens[1].toString());
+            map.put("StartDate", Settings.getString(App.LANGUAGE).equals("ar") ? Helpers.convertArabicText(tokens[0].toString()) : tokens[0].toString());
+            map.put("StartTime", Settings.getString(App.LANGUAGE).equals("ar") ? Helpers.convertArabicText(tokens[1].toString()) : tokens[1].toString());
             JSONArray deepEntity = new JSONArray();
             JSONObject jsonObject = new JSONObject();
             deepEntity.put(jsonObject);

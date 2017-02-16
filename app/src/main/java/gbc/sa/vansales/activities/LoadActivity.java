@@ -120,20 +120,26 @@ public class LoadActivity extends AppCompatActivity {
         return results;
     }
     public void setLoadDelivery(Cursor loadCursor) {
-        Cursor cursor = loadCursor;
-        cursor.moveToFirst();
-        //Log.e("cursor", "" + cursor.getCount());
-        do {
-            LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
-            loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
-            loadDeliveryHeader.setLoadingDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
-            loadDeliveryHeader.setLoadVerified(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_VERIFIED))));
-            //loadDeliveryHeader.setAvailableLoad("1");
-            loadDeliveryHeaders.add(loadDeliveryHeader);
+        try{
+            Cursor cursor = loadCursor;
+            cursor.moveToFirst();
+            //Log.e("cursor", "" + cursor.getCount());
+            do {
+                LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
+                loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
+                loadDeliveryHeader.setLoadingDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
+                loadDeliveryHeader.setLoadVerified(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_VERIFIED))));
+                //loadDeliveryHeader.setAvailableLoad("1");
+                loadDeliveryHeaders.add(loadDeliveryHeader);
+            }
+            while (cursor.moveToNext());
+            //Log.e("loadDeliver", "" + loadDeliveryHeaders.size());
+            adapter.notifyDataSetChanged();
         }
-        while (cursor.moveToNext());
-        //Log.e("loadDeliver", "" + loadDeliveryHeaders.size());
-        adapter.notifyDataSetChanged();
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         //Log.e("adapter", "" + adapter.getCount());
     }
     private class fetchLoads extends AsyncTask<Void, Void, Void> {

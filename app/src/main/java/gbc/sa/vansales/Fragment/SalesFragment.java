@@ -117,7 +117,7 @@ public class SalesFragment extends Fragment {
         tv.setText(Const.availableLimit);
         db = new DatabaseHandler(getActivity());
         Activity activity = getActivity();
-        Log.e("Activity", "" + activity);
+        //Log.e("Activity", "" + activity);
         articles = new ArrayList<>();
         articles = ArticleHeaders.get();
         listSales = (ListView) viewmain.findViewById(R.id.list_sales);
@@ -250,6 +250,7 @@ public class SalesFragment extends Fragment {
                                 strCase = "0";
                                 ed_cases.setText("0");
                                 sales.setCases(strCase);
+                                myAdapter.notifyDataSetChanged();
                             } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
                                 Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                                 ed_pcs.setText("0");
@@ -421,7 +422,13 @@ public class SalesFragment extends Fragment {
                         filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                         filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                         filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                        db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
+                        if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+                            db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
+                        }
+                        else{
+                            db.addData(db.CAPTURE_SALES_INVOICE,map);
+                        }
+
                     }
                 }
               //  Const.salesarrayList = salesarrayList;

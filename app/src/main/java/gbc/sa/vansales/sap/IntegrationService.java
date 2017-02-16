@@ -743,6 +743,7 @@ public class IntegrationService extends IntentService {
                 Log.e("Message", "Message" + response);
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
+                Log.e("Error JSON",jsonString);
                 JSONObject jsonObj = new JSONObject(jsonString);
             }
 
@@ -935,7 +936,12 @@ public class IntegrationService extends IntentService {
                                 if(offlineResponse.getResponse_code().equals("201")){
                                     if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
                                         if(jsonObject.getString("DocumentType").equals(ConfigStore.LoadVarianceDebit)){
-                                            offlineResponse.setFunction(jsonObject.getString("Function")+"D");
+                                            if(jsonObject.getString("OrderId").equals("")){
+                                                offlineResponse.setFunction(jsonObject.getString("Function")+"U");
+                                            }
+                                            else{
+                                                offlineResponse.setFunction(jsonObject.getString("Function")+"D");
+                                            }
                                             offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                                             Log.e("Response Order","" + jsonObject.getString("OrderId"));
@@ -943,7 +949,12 @@ public class IntegrationService extends IntentService {
                                             arrayList.add(offlineResponse);
                                         }
                                         if(jsonObject.getString("DocumentType").equals(ConfigStore.LoadVarianceCredit)){
-                                            offlineResponse.setFunction(jsonObject.getString("Function")+"C");
+                                            if(jsonObject.getString("OrderId").equals("")){
+                                                offlineResponse.setFunction(jsonObject.getString("Function")+"U");
+                                            }
+                                            else{
+                                                offlineResponse.setFunction(jsonObject.getString("Function")+"D");
+                                            }
                                             offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                                             Log.e("Response Order","" + jsonObject.getString("OrderId"));
@@ -1026,6 +1037,7 @@ public class IntegrationService extends IntentService {
                                 offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
                                 arrayList.add(offlineResponse);
                             }
+
                             /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                             Log.e("Response Order","" + jsonObject.getString("OrderId"));

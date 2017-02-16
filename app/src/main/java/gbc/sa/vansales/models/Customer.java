@@ -21,7 +21,14 @@ public class Customer implements Parcelable{
     private boolean collection;
     private boolean merchandize;
     private boolean newcustomer;
+    private String customer_name_ar;
 
+    public String getCustomer_name_ar() {
+        return customer_name_ar;
+    }
+    public void setCustomer_name_ar(String customer_name_ar) {
+        this.customer_name_ar = customer_name_ar;
+    }
     public String getVisitListID() {
         return visitListID;
     }
@@ -166,6 +173,7 @@ public class Customer implements Parcelable{
             customer.latitude = source.readString();
             customer.longitude = source.readString();
             customer.visitListID = source.readString();
+            customer.customer_name_ar = source.readString();
             return customer;
         }
         @Override
@@ -196,5 +204,6 @@ public class Customer implements Parcelable{
         parcel.writeString(latitude);
         parcel.writeString(longitude);
         parcel.writeString(visitListID);
+        parcel.writeString(customer_name_ar);
     }
 }

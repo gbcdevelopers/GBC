@@ -361,6 +361,7 @@ public class GListFragment extends Fragment {
     }
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.e("GR Bundle", "" + arrProductList.size());
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("gr", arrProductList);
         Const.grBundle = new Bundle();
@@ -523,6 +524,7 @@ public class GListFragment extends Fragment {
         private String orderID;
         private loadGoodReturns(String orderID) {
             this.orderID = orderID;
+            SalesInvoiceActivity.tab_position = 2;
             execute();
         }
         @Override
@@ -584,6 +586,8 @@ public class GListFragment extends Fragment {
             salesTotal = salesTotal + Integer.parseInt(sale.getCases());
             pcsTotal = pcsTotal + Integer.parseInt(sale.getPic());
         }
+        Const.grBundle = new Bundle();
+        Const.grBundle.putParcelableArrayList("gr",arrProductList);
         TextView tv = (TextView) viewmain.findViewById(R.id.tv_amt);
         tv.setText(String.valueOf(total));
         TextView tvsales = (TextView) viewmain.findViewById(R.id.tv_sales_qty);
@@ -627,6 +631,8 @@ public class GListFragment extends Fragment {
     }
     private void setGoodReturns(ArrayList<Sales>arrayList){
         adapter = new SalesInvoiceAdapter(getActivity(), arrayList);
+        Const.grBundle = new Bundle();
+        Const.grBundle.putParcelableArrayList("gr",arrayList);
         listSales.setAdapter(adapter);
         calculateCost();
         adapter.notifyDataSetChanged();

@@ -350,7 +350,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
         TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
-        tv_header.setText("Non Serviced Reasons");
+        tv_header.setText(getString(R.string.nonservicedreason));
         ListView lv = (ListView) view.findViewById(R.id.statusList);
         Button cancel = (Button) view.findViewById(R.id.btnCancel);
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -431,48 +431,52 @@ public class CustomerDetailActivity extends AppCompatActivity {
     }
     /*To calculate available limit*/
     private void calculateAvailableLimit(){
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_CUSTOMER_NO, "");
-        map.put(db.KEY_CREDIT_LIMIT, "");
-        HashMap<String, String> filters = new HashMap<>();
-        filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            tv_credit_days.setText("0");
-            tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-            limit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-            HashMap<String,String> map1 = new HashMap<>();
-            map1.put(db.KEY_CUSTOMER_NO,"");
-            map1.put(db.KEY_INVOICE_NO,"");
-            map1.put(db.KEY_INVOICE_AMOUNT,"");
-            map1.put(db.KEY_DUE_DATE,"");
-            map1.put(db.KEY_INVOICE_DATE,"");
-            map1.put(db.KEY_AMOUNT_CLEARED,"");
-            map1.put(db.KEY_IS_INVOICE_COMPLETE,"");
-            HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-            Cursor c = db.getData(db.COLLECTION,map1,filter);
-            if(c.getCount()>0){
-                c.moveToFirst();
-                do{
-                    totalInvoiceAmount+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO, "");
+            map.put(db.KEY_CREDIT_LIMIT, "");
+            HashMap<String, String> filters = new HashMap<>();
+            filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                tv_credit_days.setText("0");
+                tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                limit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
+                HashMap<String,String> map1 = new HashMap<>();
+                map1.put(db.KEY_CUSTOMER_NO,"");
+                map1.put(db.KEY_INVOICE_NO,"");
+                map1.put(db.KEY_INVOICE_AMOUNT,"");
+                map1.put(db.KEY_DUE_DATE,"");
+                map1.put(db.KEY_INVOICE_DATE,"");
+                map1.put(db.KEY_AMOUNT_CLEARED,"");
+                map1.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                HashMap<String,String>filter = new HashMap<>();
+                filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                Cursor c = db.getData(db.COLLECTION,map1,filter);
+                if(c.getCount()>0){
+                    c.moveToFirst();
+                    do{
+                        totalInvoiceAmount+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+                    }
+                    while (c.moveToNext());
                 }
-                while (c.moveToNext());
+                Log.e("Total Invoice", "" + totalInvoiceAmount);
+                if(limit-totalInvoiceAmount==0){
+                    isLimitAvailable = false;
+                }
+                tv_available_limit.setText(String.valueOf(limit-totalInvoiceAmount));
             }
-            Log.e("Total Invoice", "" + totalInvoiceAmount);
-            if(limit-totalInvoiceAmount==0){
-                isLimitAvailable = false;
+            else{
+                tv_credit_days.setText("0");
+                tv_credit_limit.setText("0");
+                tv_available_limit.setText("0");
+                isLimitAvailable = true;
             }
-            tv_available_limit.setText(String.valueOf(limit-totalInvoiceAmount));
         }
-        else{
-            tv_credit_days.setText("0");
-            tv_credit_limit.setText("0");
-            tv_available_limit.setText("0");
-            isLimitAvailable = true;
+        catch (Exception e){
+            e.printStackTrace();
         }
-
 
     }
     @Override

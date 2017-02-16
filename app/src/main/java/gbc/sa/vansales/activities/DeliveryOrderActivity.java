@@ -94,6 +94,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     FloatingActionButton edit;
     FloatingActionButton ok;
     ArrayAdapter<CustomerStatus> myAdapter;
+    ArrayAdapter<Reasons> reasonsAdapter;
     boolean canEdit = false;
     public ArrayList<ArticleHeader> articles;
     private ArrayList<Reasons> reasonsList = new ArrayList<>();
@@ -105,6 +106,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(this);
         deliveryItemsList = (ListView) findViewById(R.id.list_delivery_items);
+
         arrayList = new ArrayList<>();
         adapter = new DeliveryItemBadgeAdapter(this, arrayList);
         custLayout = (LinearLayout) findViewById(R.id.ll_common);
@@ -112,6 +114,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         custLayout.setVisibility(View.GONE);
         labelView.setVisibility(View.GONE);
         reasonsList = OrderReasons.get();
+        reasonsAdapter = new ReasonAdapter(DeliveryOrderActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         myAdapter = new CustomerStatusAdapter(this, rejectReasonList);
         loadRejectReasons();
         edit = (FloatingActionButton) findViewById(R.id.edit);
@@ -204,112 +207,118 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         deliveryItemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                final DeliveryItem item = arrayList.get(position);
-                final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
-                final String[] reasonCode = {""};
-                dialog.setContentView(R.layout.dialog_with_crossbutton);
-                dialog.setCancelable(false);
-                TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
-                tv.setText(item.getItemDescription());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
-                Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
-                final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
-                final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
-                final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
-                final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-                RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
-                rl_specify.setVisibility(View.VISIBLE);
-                final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
-                spin.setAdapter(myAdapter);
-                if (item.getReasonCode() != null) {
-                    spin.setSelection(getIndex(item.getReasonCode()));
-                }
-                spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        reasonCode[0] = rejectReasonList.get(position).getReasonCode();
+                try{
+                    final DeliveryItem item = arrayList.get(position);
+                    final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
+                    final String[] reasonCode = {""};
+                    dialog.setContentView(R.layout.dialog_with_crossbutton);
+                    dialog.setCancelable(false);
+                    TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
+                    tv.setText(item.getItemDescription());
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
+                    Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+                    final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
+                    final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
+                    final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
+                    final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
+                    RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
+                    rl_specify.setVisibility(View.VISIBLE);
+                    final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                    spin.setAdapter(reasonsAdapter);
+                    if (item.getReasonCode() != null) {
+                        spin.setSelection(getIndex(item.getReasonCode()));
                     }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-                    }
-                });
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put(db.KEY_REMAINING_QTY_CASE, "");
-                map.put(db.KEY_REMAINING_QTY_UNIT, "");
-                HashMap<String, String> filter = new HashMap<String, String>();
-                filter.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
-                Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-                if (c.getCount() > 0) {
-                    c.moveToFirst();
-                    if (!item.isAltUOM()) {
-                        ed_cases_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                    } else {
-                        ed_pcs_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                    }
-                } else {
-                    ed_cases_inv.setText("0");
-                    ed_pcs_inv.setText("0");
-                }
-                ed_cases_inv.setEnabled(false);
-                ed_pcs_inv.setEnabled(false);
-                if (item.isAltUOM()) {
-                    ed_pcs.setEnabled(true);
-                } else {
-                    ed_pcs.setEnabled(false);
-                }
-                ed_cases.setText(item.getItemCase());
-                ed_pcs.setText(item.getItemUnits());
-                LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
-                iv_cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.cancel();
-                    }
-                });
-                if (canEdit) {
-                    dialog.show();
-                } else {
-                }
-                btn_save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String strCase = ed_cases.getText().toString();
-                        String strpcs = ed_pcs.getText().toString();
-                        String strcaseinv = ed_cases_inv.getText().toString();
-                        String strpcsinv = ed_pcs_inv.getText().toString();
-                        if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
-                            strCase = String.valueOf(0);
+                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            reasonCode[0] = reasonsList.get(position).getReasonID();
                         }
-                        if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
-                            strpcs = String.valueOf(0);
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
                         }
-                        if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
-                            strcaseinv = String.valueOf(0);
-                        }
-                        if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
-                            strpcsinv = String.valueOf(0);
-                        }
-                        if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
-                            Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                            strCase = "0";
-                            item.setItemCase("0");
-                        } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
-                            Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                            strpcs = "0";
-                            item.setItemUnits(strpcs);
+                    });
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_REMAINING_QTY_CASE, "");
+                    map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                    HashMap<String, String> filter = new HashMap<String, String>();
+                    filter.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                    if (c.getCount() > 0) {
+                        c.moveToFirst();
+                        if (!item.isAltUOM()) {
+                            ed_cases_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
                         } else {
-                            item.setItemCase(strCase);
-                            item.setItemUnits(strpcs);
-                            item.setReasonCode(reasonCode[0]);
-                            arrayList.remove(position);
-                            arrayList.add(position, item);
-                            calculatePrice();
-                            adapter.notifyDataSetChanged();
-                            dialog.dismiss();
+                            ed_pcs_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
                         }
+                    } else {
+                        ed_cases_inv.setText("0");
+                        ed_pcs_inv.setText("0");
                     }
-                });
+                    ed_cases_inv.setEnabled(false);
+                    ed_pcs_inv.setEnabled(false);
+                    if (item.isAltUOM()) {
+                        ed_pcs.setEnabled(true);
+                    } else {
+                        ed_pcs.setEnabled(false);
+                    }
+                    ed_cases.setText(item.getItemCase());
+                    ed_pcs.setText(item.getItemUnits());
+                    LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
+                    iv_cancle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.cancel();
+                        }
+                    });
+                    if (canEdit) {
+                        dialog.show();
+                    } else {
+                    }
+                    btn_save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String strCase = ed_cases.getText().toString();
+                            String strpcs = ed_pcs.getText().toString();
+                            String strcaseinv = ed_cases_inv.getText().toString();
+                            String strpcsinv = ed_pcs_inv.getText().toString();
+                            if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
+                                strCase = String.valueOf(0);
+                            }
+                            if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
+                                strpcs = String.valueOf(0);
+                            }
+                            if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
+                                strcaseinv = String.valueOf(0);
+                            }
+                            if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
+                                strpcsinv = String.valueOf(0);
+                            }
+                            if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
+                                Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                strCase = "0";
+                                item.setItemCase("0");
+                            } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
+                                Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                strpcs = "0";
+                                item.setItemUnits(strpcs);
+                            } else {
+                                item.setItemCase(strCase);
+                                item.setItemUnits(strpcs);
+                                item.setReasonCode(reasonCode[0]);
+                                arrayList.remove(position);
+                                arrayList.add(position, item);
+                                calculatePrice();
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
         deliveryItemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -385,99 +394,112 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         }
     }
     private void loadRejectReasons() {
-        for (Reasons reason : reasonsList) {
-            CustomerStatus status = new CustomerStatus();
-            if (reason.getReasonType().equals(App.REASON_REJECT)) {
-                status.setReasonCode(reason.getReasonID());
-                if(Settings.getString(App.LANGUAGE).equals("en")){
-                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
-                }
-                else{
-                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
-                }
+        try{
+            for (Reasons reason : reasonsList) {
+                CustomerStatus status = new CustomerStatus();
+                if (reason.getReasonType().equals(App.REASON_REJECT)) {
+                    status.setReasonCode(reason.getReasonID());
+                    if(Settings.getString(App.LANGUAGE).equals("en")){
+                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                    }
+                    else{
+                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
+                    }
 
-                rejectReasonList.add(status);
+                    rejectReasonList.add(status);
+                }
             }
+            myAdapter.notifyDataSetChanged();
         }
-        myAdapter.notifyDataSetChanged();
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
     private void showReasonDialog(ArrayList<DeliveryItem> list, final int position) {
-        final int pos = position;
-        final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
-        //dialog.setTitle(getString(R.string.shop_status));
-        View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-        TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
-        tv_header.setText(getString(R.string.select_reason));
-        Button cancel = (Button) view.findViewById(R.id.btnCancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        ListView lv = (ListView) view.findViewById(R.id.statusList);
-        lv.setAdapter(myAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                //Check if there is any existing entry for same delivery no for deletion for purchase number
-                String purchaseNumber = "";
-                HashMap<String,String>filter = new HashMap<String, String>();
-                filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
-                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                if(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,filter)){
-                    HashMap<String,String>map = new HashMap<String, String>();
-                    map.put(db.KEY_ORDER_ID,"");
-                    Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map,filter);
-                    cursor.moveToFirst();
-                    purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+        try {
+            final int pos = position;
+            final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
+            //dialog.setTitle(getString(R.string.shop_status));
+            View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+            TextView tv_header = (TextView) view.findViewById(R.id.tv_top_header);
+            tv_header.setText(getString(R.string.select_reason));
+            Button cancel = (Button) view.findViewById(R.id.btnCancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
                 }
+            });
+            ListView lv = (ListView) view.findViewById(R.id.statusList);
+            lv.setAdapter(myAdapter);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                DeliveryItem deliveryItem = arrayList.get(pos);
-                HashMap<String,String> map = new HashMap<String, String>();
-                map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
-                map.put(db.KEY_ITEM_NO,deliveryItem.getItemCode());
-                map.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
-                map.put(db.KEY_MATERIAL_DESC1,deliveryItem.getItemDescription());
-                map.put(db.KEY_CASE,deliveryItem.getItemCase());
-                map.put(db.KEY_UNIT,deliveryItem.getItemUnits());
-                map.put(db.KEY_UOM,deliveryItem.getItemUom());
-                Log.e("Reject Reason","" + rejectReasonList.get(position).getReasonCode() + rejectReasonList.get(pos).getReasonCode());
-                map.put(db.KEY_REASON_CODE,rejectReasonList.get(position).getReasonCode());
-                map.put(db.KEY_REASON_DESCRIPTION,rejectReasonList.get(position).getReasonDescription());
-                map.put(db.KEY_ORDER_ID,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
-                map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
-                map.put(db.KEY_AMOUNT,deliveryItem.getAmount());
-                map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
-                //Adding item for delete in post
-                db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map);
-                //Update the same in delivery items table
-                HashMap<String,String>updateMap = new HashMap<String, String>();
-                updateMap.put(db.KEY_IS_DELIVERED, App.DELETED);
-                HashMap<String,String>filterMap = new HashMap<String, String>();
-                filterMap.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
-                filterMap.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
-                db.updateData(db.CUSTOMER_DELIVERY_ITEMS,updateMap,filterMap);
+                    //Check if there is any existing entry for same delivery no for deletion for purchase number
+                    String purchaseNumber = "";
+                    HashMap<String,String>filter = new HashMap<String, String>();
+                    filter.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    if(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,filter)){
+                        HashMap<String,String>map = new HashMap<String, String>();
+                        map.put(db.KEY_ORDER_ID,"");
+                        Cursor cursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map,filter);
+                        cursor.moveToFirst();
+                        purchaseNumber = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                    }
 
-                arrayList.remove(pos);
-                dialog.dismiss();
-                if(Helpers.isNetworkAvailable(DeliveryOrderActivity.this)){
-                    Helpers.createBackgroundJob(DeliveryOrderActivity.this);
+                    DeliveryItem deliveryItem = arrayList.get(pos);
+                    HashMap<String,String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_DELIVERY_NO,delivery.getOrderId());
+                    map.put(db.KEY_ITEM_NO,deliveryItem.getItemCode());
+                    map.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
+                    map.put(db.KEY_MATERIAL_DESC1,deliveryItem.getItemDescription());
+                    map.put(db.KEY_CASE,deliveryItem.getItemCase());
+                    map.put(db.KEY_UNIT,deliveryItem.getItemUnits());
+                    map.put(db.KEY_UOM,deliveryItem.getItemUom());
+                    Log.e("Reject Reason","" + rejectReasonList.get(position).getReasonCode() + rejectReasonList.get(pos).getReasonCode());
+                    map.put(db.KEY_REASON_CODE,rejectReasonList.get(position).getReasonCode());
+                    map.put(db.KEY_REASON_DESCRIPTION,rejectReasonList.get(position).getReasonDescription());
+                    map.put(db.KEY_ORDER_ID,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
+                    map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber.equals("")?Helpers.generateNumber(db, ConfigStore.CustomerDeliveryDelete_PR_Type):purchaseNumber);
+                    map.put(db.KEY_AMOUNT,deliveryItem.getAmount());
+                    map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                    //Adding item for delete in post
+                    db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map);
+                    //Update the same in delivery items table
+                    HashMap<String,String>updateMap = new HashMap<String, String>();
+                    updateMap.put(db.KEY_IS_DELIVERED, App.DELETED);
+                    HashMap<String,String>filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_MATERIAL_NO,deliveryItem.getMaterialNo());
+                    filterMap.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                    db.updateData(db.CUSTOMER_DELIVERY_ITEMS,updateMap,filterMap);
+
+                    arrayList.remove(pos);
+                    dialog.dismiss();
+                    if(Helpers.isNetworkAvailable(DeliveryOrderActivity.this)){
+                        Helpers.createBackgroundJob(DeliveryOrderActivity.this);
+                    }
+                    adapter.notifyDataSetChanged();
+                    calculatePrice();
+                    if (arrayList.size() == 0) {
+                        finish();
+                    }
                 }
-                adapter.notifyDataSetChanged();
-                calculatePrice();
-                if (arrayList.size() == 0) {
-                    finish();
-                }
-            }
-        });
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        dialog.show();
+            });
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         /*AlertDialog.Builder builderSingle = new AlertDialog.Builder(DeliveryOrderActivity.this);
         builderSingle.setTitle(getString(R.string.select_reason));
@@ -519,35 +541,43 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         builderSingle.show();*/
     }
     public void setData(Cursor cursor) {
-        if (preSaleProceeds != null) {
-            preSaleProceeds.clear();
-        }
-        cursor.moveToFirst();
-        do {
-            DeliveryItem deliveryItem = new DeliveryItem();
-            deliveryItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
-            deliveryItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            if (article != null) {
-                deliveryItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
-            } else {
-                deliveryItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+        try {
+            if (preSaleProceeds != null) {
+                preSaleProceeds.clear();
             }
-//            proceed.setPRODUCT_NAME("Berain 250 ml");
-            if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                deliveryItem.setItemCase(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-            } else {
-                deliveryItem.setItemCase("0");
-            }
-            HashMap<String, String> altMap = new HashMap<>();
-            altMap.put(db.KEY_UOM, "");
-            HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter);
-            if (altUOMCursor.getCount() > 0) {
-                altUOMCursor.moveToFirst();
-                if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
-                    deliveryItem.setIsAltUOM(false);
+            cursor.moveToFirst();
+            do {
+                DeliveryItem deliveryItem = new DeliveryItem();
+                deliveryItem.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                deliveryItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                if (article != null) {
+                    deliveryItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                } else {
+                    deliveryItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                }
+    //            proceed.setPRODUCT_NAME("Berain 250 ml");
+                if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    deliveryItem.setItemCase(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+                } else {
+                    deliveryItem.setItemCase("0");
+                }
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_UOM, "");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Cursor altUOMCursor = db.getData(db.ARTICLE_UOM, altMap, filter);
+                if (altUOMCursor.getCount() > 0) {
+                    altUOMCursor.moveToFirst();
+                    if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)))) {
+                        deliveryItem.setIsAltUOM(false);
+                    } else {
+                        if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) && altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
+                            deliveryItem.setIsAltUOM(false);
+                        } else {
+                            deliveryItem.setIsAltUOM(true);
+                        }
+                    }
                 } else {
                     if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) && altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
                         deliveryItem.setIsAltUOM(false);
@@ -555,35 +585,31 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         deliveryItem.setIsAltUOM(true);
                     }
                 }
-            } else {
-                if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) && altUOMCursor.getString(altUOMCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)) {
-                    deliveryItem.setIsAltUOM(false);
+                HashMap<String, String> priceMap = new HashMap<>();
+                priceMap.put(db.KEY_AMOUNT, "");
+                HashMap<String, String> filterPrice = new HashMap<>();
+                filterPrice.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                filterPrice.put(db.KEY_PRIORITY, "2");
+                Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
+                if (priceCursor.getCount() > 0) {
+                    priceCursor.moveToFirst();
+                    deliveryItem.setAmount(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
                 } else {
-                    deliveryItem.setIsAltUOM(true);
+                    deliveryItem.setAmount("0");
                 }
-            }
-            HashMap<String, String> priceMap = new HashMap<>();
-            priceMap.put(db.KEY_AMOUNT, "");
-            HashMap<String, String> filterPrice = new HashMap<>();
-            filterPrice.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-            filterPrice.put(db.KEY_PRIORITY, "2");
-            Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
-            if (priceCursor.getCount() > 0) {
-                priceCursor.moveToFirst();
-                deliveryItem.setAmount(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
-            } else {
-                deliveryItem.setAmount("0");
-            }
-            /*if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                deliveryItem.setItemUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
-            } else {
+                /*if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                    deliveryItem.setItemUnits(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
+                } else {
+                    deliveryItem.setItemUnits("0");
+                }*/
                 deliveryItem.setItemUnits("0");
-            }*/
-            deliveryItem.setItemUnits("0");
-            deliveryItem.setItemUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-            arrayList.add(deliveryItem);
+                deliveryItem.setItemUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                arrayList.add(deliveryItem);
+            }
+            while (cursor.moveToNext());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        while (cursor.moveToNext());
     }
     private void updateLabel(int year, int monthOfYear, int dayOfMonth) {
         myCalendar.set(Calendar.YEAR, year);
@@ -646,57 +672,65 @@ public class DeliveryOrderActivity extends AppCompatActivity {
 //        tv_amt.setText(String.valueOf(totalamt));
 //    }
     public void calculatePrice() {
-        double totalamt = 0;
-        for (DeliveryItem item : arrayList) {
-            double itemPrice = 0;
-            if (!item.isAltUOM()) {
-                itemPrice = Double.parseDouble(item.getItemCase()) * Double.parseDouble(item.getAmount());
+        try {
+            double totalamt = 0;
+            for (DeliveryItem item : arrayList) {
+                double itemPrice = 0;
+                if (!item.isAltUOM()) {
+                    itemPrice = Double.parseDouble(item.getItemCase()) * Double.parseDouble(item.getAmount());
+                }
+                totalamt += itemPrice;
             }
-            totalamt += itemPrice;
+            tv_amt.setText(String.valueOf(totalamt));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
-        tv_amt.setText(String.valueOf(totalamt));
     }
     private void saveData() {
-        double totalamt = 0;
-        String purchaseNum = Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type);
-        for (int i = 0; i < arrayList.size(); i++) {
-            DeliveryItem item = arrayList.get(i);
-            String itemCase = item.getItemCase().equals("") || item.getItemCase().isEmpty() || item.getItemCase() == null ? "0" : item.getItemCase();
-            String itemUnit = item.getItemUnits().equals("") || item.getItemUnits().isEmpty() || item.getItemUnits() == null ? "0" : item.getItemUnits();
-            totalamt = totalamt + (Double.parseDouble(itemCase) * 54 + Double.parseDouble(itemUnit) * 2.25);
-        }
-        for (DeliveryItem item : arrayList) {
-            try {
-                if ((item.getItemCase().isEmpty() || item.getItemCase().equals("") || item.getItemCase() == null)) {
-                    item.setItemCase("0");
-                }
-                if ((item.getItemUnits().isEmpty() || item.getItemUnits().equals("") || item.getItemUnits() == null)) {
-                    item.setItemUnits("0");
-                }
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                map.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
-                map.put(db.KEY_ITEM_NO, item.getItemCode());
-                map.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
-                map.put(db.KEY_MATERIAL_DESC1, item.getItemDescription());
-                map.put(db.KEY_CASE, item.getItemCase());
-                map.put(db.KEY_UNIT, item.getItemUnits());
-                map.put(db.KEY_UOM, item.getItemUom());
-                map.put(db.KEY_AMOUNT, item.getAmount());
-                map.put(db.KEY_ORDER_ID, purchaseNum);
-                map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
-                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                map.put(db.KEY_IS_PRINTED, "");
-                //Log.e("Map","" + map);
-                if (Float.parseFloat(item.getItemCase()) > 0 || Float.parseFloat(item.getItemUnits()) > 0) {
-                    db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST, map);
-                } else {
-                    //   Log.e("LOOO","FOOOO");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            double totalamt = 0;
+            String purchaseNum = Helpers.generateNumber(db, ConfigStore.CustomerDeliveryRequest_PR_Type);
+            for (int i = 0; i < arrayList.size(); i++) {
+                DeliveryItem item = arrayList.get(i);
+                String itemCase = item.getItemCase().equals("") || item.getItemCase().isEmpty() || item.getItemCase() == null ? "0" : item.getItemCase();
+                String itemUnit = item.getItemUnits().equals("") || item.getItemUnits().isEmpty() || item.getItemUnits() == null ? "0" : item.getItemUnits();
+                totalamt = totalamt + (Double.parseDouble(itemCase) * 54 + Double.parseDouble(itemUnit) * 2.25);
             }
+            for (DeliveryItem item : arrayList) {
+                try {
+                    if ((item.getItemCase().isEmpty() || item.getItemCase().equals("") || item.getItemCase() == null)) {
+                        item.setItemCase("0");
+                    }
+                    if ((item.getItemUnits().isEmpty() || item.getItemUnits().equals("") || item.getItemUnits() == null)) {
+                        item.setItemUnits("0");
+                    }
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    map.put(db.KEY_DELIVERY_NO, delivery.getOrderId());
+                    map.put(db.KEY_ITEM_NO, item.getItemCode());
+                    map.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                    map.put(db.KEY_MATERIAL_DESC1, item.getItemDescription());
+                    map.put(db.KEY_CASE, item.getItemCase());
+                    map.put(db.KEY_UNIT, item.getItemUnits());
+                    map.put(db.KEY_UOM, item.getItemUom());
+                    map.put(db.KEY_AMOUNT, item.getAmount());
+                    map.put(db.KEY_ORDER_ID, purchaseNum);
+                    map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    map.put(db.KEY_IS_PRINTED, "");
+                    //Log.e("Map","" + map);
+                    if (Float.parseFloat(item.getItemCase()) > 0 || Float.parseFloat(item.getItemUnits()) > 0) {
+                        db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST, map);
+                    } else {
+                        //   Log.e("LOOO","FOOOO");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     @Override

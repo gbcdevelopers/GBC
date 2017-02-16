@@ -39,7 +39,12 @@ import java.util.UUID;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.LoadVerifyActivity;
+import gbc.sa.vansales.activities.PaymentDetails;
+import gbc.sa.vansales.activities.PreSaleOrderProceedActivity;
+import gbc.sa.vansales.activities.PromotioninfoActivity;
 import gbc.sa.vansales.models.DevicesData;
+import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.printer.Arabic6822;
 import gbc.sa.vansales.printer.JsonRpcUtil;
 import gbc.sa.vansales.printer.LinePrinterException;
@@ -361,6 +366,7 @@ public class PrinterHelper {
     @SuppressLint({"NewApi"})
     void printReports(String address) throws JSONException {
         Log.e("Print Report",""+ this.jArr.toString());
+        Log.e("Array Length", "" + this.jArr.length());
  //       Log.d("Print Report", this.jArr.toString());
         //printVanStockReport();
         for(int j=0; j<this.jArr.length();j++){
@@ -373,10 +379,19 @@ public class PrinterHelper {
                     parseLoadSummaryResponse(jsnData, address);
                 }
                 if(request.equals(App.LOAD_REQUEST)){
-                    printLoadRequestReport(jsnData,address);
+                    printLoadRequestReport(jsnData, address);
+                }
+                if(request.equals(App.ORDER_REQUEST)){
+                    printOrderRequestReport(jsnData, address);
                 }
                 if(request.equals(App.SALES_INVOICE)){
-                    printSalesInvoice(jsnData,address);
+                    printSalesInvoice(jsnData, address);
+                }
+                if(request.equals(App.DELIVERY)){
+                    printDelivery(jsnData, address);
+                }
+                if(request.equals(App.COLLECTION)){
+                    parseCollectionResponse(jsnData, address);
                 }
             }
         }
@@ -753,6 +768,9 @@ public class PrinterHelper {
             String strheader = "";
             String strHeaderBottom = "";
             //int MAXLEngth = 137;
+            //String strTotal = "";
+            //JSONArray jTotal = object.getJSONArray("TOTAL");
+
             int MAXLEngth = 137;
             for (i = 0; i < headers.length(); i++) {
                 MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
@@ -760,6 +778,7 @@ public class PrinterHelper {
             if (MAXLEngth > 0) {
                 MAXLEngth /= headers.length();
             }
+            //JSONObject jTOBject = jTotal.getJSONObject(0);
             for (i = 0; i < headers.length(); i++) {
                 stringBuilder = new StringBuilder(String.valueOf(strheader));
                 string = headers.getString(i);
@@ -822,20 +841,45 @@ public class PrinterHelper {
 
             //Logic for Total
 
+            /*JSONArray jTotal = object.getJSONArray("TOTAL");
+            for (i = 0; i < jTotal.length(); i++) {
+                JSONObject jTOBject = jTotal.getJSONObject(0);
+                String strTotal = "";
+                for (j = 0; j < headers.length(); j++) {
+                    if (jTOBject.has(headers.getString(j))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(j).toString()), ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(j).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(j).equals("ARABIC DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(j))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                }
+                printlines1(strTotal, 1, object, 1, args, 1);
+            }*/
+
+
+            //rintlines1(strTotal, 1, object, 1, args, 1);
             //Logic Ends Here
             this.outStream.write(this.CompressOff);
             printlines1(" ", 1, object, 1, args, 1);
             this.outStream.write(this.BoldOn);
+
             JSONObject jSONObject = object;
             //printlines1(getAccurateText("Load Value : ", 50, 2) + getAccurateText(object.getString("LoadValue"), 12, 2), 1, jSONObject, 1, args, 2);
             this.outStream.write(this.NewLine);
             this.outStream.write(this.BoldOff);
             printlines1(getAccurateText("_____________", 26, 1) + getAccurateText("____________", 27, 1) + getAccurateText("____________", 27, 1), 2, object, 1, args, 1);
             this.outStream.write(this.NewLine);
-            printlines1(getAccurateText("STORE KEEPER", 26, 1) + getAccurateText("SUPERVISOR", 26, 1) + getAccurateText("SALESMAN", 26, 1), 2, object, 1, args, 1);
+            printlines1(getAccurateText("STORE KEEPER", 26, 1) + getAccurateText("DUTY SUPERVISOR", 26, 1) + getAccurateText("SALESMAN", 26, 1), 2, object, 1, args, 1);
             jSONObject = object;
-            printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 1);
-
+           // printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 1);
+            if(context instanceof LoadVerifyActivity){
+                ((LoadVerifyActivity) context).callbackFunction();
+            }
         }
         catch (Exception e){
             e.printStackTrace();
@@ -969,7 +1013,7 @@ public class PrinterHelper {
             //printlines1(getAccurateText("Net Value : ", 50, 2) + getAccurateText(object.getString("netvalue"), 12, 2), 3, jSONObject, 1, args, 5);
             this.outStream.write(this.NewLine);
             this.outStream.write(this.BoldOff);
-            printlines1(getAccurateText("_____________", 40, 1)+ getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
             printlines1(getAccurateText("STORE KEEPER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
             jSONObject = object;
             //printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 5);
@@ -979,87 +1023,1105 @@ public class PrinterHelper {
         }
 
     }
+    //Load Request
+    void printOrderRequestReport(JSONObject object,String args){
+        try{
+            int i;
+            StringBuilder stringBuilder;
+            // String string;
+            //int j;
 
+            this.hashValues = new HashMap();
+            this.hashValues.put("ITEM NO", Integer.valueOf(10));
+            this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+            this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+            this.hashValues.put("UPC ", Integer.valueOf(7));
+            this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+            this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+            this.hashValues.put("AMOUNT", Integer.valueOf(12));
+            //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+            //this.hashValues.put("VALUE", Integer.valueOf(8));
+            //this.hashValues.put("Description", Integer.valueOf(40));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+            // this.hashPositions.put("Item#", Integer.valueOf(0));
+            this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("UPC ", Integer.valueOf(2));
+            this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
+            this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+            this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+            // this.hashPositions.put("NET LOAD", Integer.valueOf(2));
+            // this.hashPositions.put("VALUE", Integer.valueOf(2));
+            // this.hashPositions.put("Description", Integer.valueOf(0));
+            line(this.startln);
+            headerprint(object, 1);
+
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            String strTotal = "";
+            JSONArray jTotal = object.getJSONArray("TOTAL");
+            int MAXLEngth = 137;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = jTotal.getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    string = headers.getString(i);
+                    /*if (headers.getString(i).indexOf(" ") == -1) {
+                        string = headers.getString(i);
+                    } else {
+                        string = headers.getString(i).substring(0, headers.getString(i).indexOf(" "));
+                    }*/
+                    strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string = "";
+                    } else {
+                        string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("ARABIC DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 1);
+            // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    if (j == 0) {
+                        //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 2) {
+                        itemDescrion = "           @" + jArr.getString(j) + "!";
+                    }
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 7) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            printlines1(strTotal, 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            printlines1(getAccurateText("", 80, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.BoldOn);
+            JSONObject jSONObject = object;
+            //printlines1(getAccurateText("Net Value : ", 50, 2) + getAccurateText(object.getString("netvalue"), 12, 2), 3, jSONObject, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOff);
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
+            printlines1(getAccurateText("CUSTOMER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
+            jSONObject = object;
+            if(context instanceof PreSaleOrderProceedActivity){
+                ((PreSaleOrderProceedActivity)context).callback();
+            }
+            //printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 5);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
     //Sales Invoice
     void printSalesInvoice(JSONObject object,String args){
         StringBuffer s1 = new StringBuffer();
         try{
             int printoultlet;
-            int j;
             JSONArray jCheques;
             JSONObject jCash;
             JSONObject jChequeDetails;
             String copyStatus;
+            JSONObject jSONObject;
+            int i;
+            StringBuilder stringBuilder;
             /*if (object.getString("printoutletitemcode").length() > 0) {
                 printoultlet = Integer.parseInt(object.getString("printoutletitemcode"));
             } else {
                 printoultlet = 0;
             }*/
             if (object.getString("displayupc").equals("1")) {
+
                 this.hashValues = new HashMap();
-                this.hashValues.put("SL#", Integer.valueOf(4));
-                this.hashValues.put("ITEM#", Integer.valueOf(11));
-                this.hashValues.put("OUTLET CODE", Integer.valueOf(10));
-                this.hashValues.put("DESCRIPTION", Integer.valueOf(43));
-                this.hashValues.put("UPO", Integer.valueOf(5));
-                this.hashValues.put("QTY CAS/PCS", Integer.valueOf(11));
-                this.hashValues.put("QTY OUT/PCS", Integer.valueOf(11));
-                this.hashValues.put("TOTAL PCS", Integer.valueOf(0));
-                this.hashValues.put("CASE PRICE", Integer.valueOf(11));
-                this.hashValues.put("UNIT PRICE", Integer.valueOf(11));
-                this.hashValues.put("DISCOUNT", Integer.valueOf(13));
-                this.hashValues.put("AMOUNT", Integer.valueOf(11));
-                this.hashValues.put("DESCRIPTION", Integer.valueOf(38));
-                this.hashValues.put("OUTER PRICE", Integer.valueOf(11));
-                this.hashValues.put("PCS PRICE", Integer.valueOf(11));
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
                 this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
                 this.hashPositions = new HashMap();
-                this.hashPositions.put("SL#", Integer.valueOf(0));
-                this.hashPositions.put("ITEM#", Integer.valueOf(0));
-                this.hashPositions.put("OUTLET CODE", Integer.valueOf(0));
-                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
-                this.hashPositions.put("UPO", Integer.valueOf(1));
-                this.hashPositions.put("QTY CAS/PCS", Integer.valueOf(1));
-                this.hashPositions.put("QTY OUT/PCS", Integer.valueOf(1));
-                this.hashPositions.put("TOTAL PCS", Integer.valueOf(1));
-                this.hashPositions.put("CASE PRICE", Integer.valueOf(2));
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
                 this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
-                this.hashPositions.put("DISCOUNT", Integer.valueOf(2));
                 this.hashPositions.put("AMOUNT", Integer.valueOf(2));
-                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
-                this.hashPositions.put("OUTER PRICE", Integer.valueOf(2));
-                this.hashPositions.put("PCS PRICE", Integer.valueOf(2));
                 this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+
+
             } else {
                 this.hashValues = new HashMap();
-                this.hashValues.put("SL#", Integer.valueOf(4));
-                this.hashValues.put("ITEM", Integer.valueOf(8));
-                this.hashValues.put("DESCRIPTION", Integer.valueOf(32));
-                this.hashValues.put("DESCRIPTION(AR)", Integer.valueOf(32));
-                this.hashValues.put("QTY CAS/PCS", Integer.valueOf(3));
-                this.hashValues.put("CASE PRICE", Integer.valueOf(7));
-                this.hashValues.put("UNIT PRICE", Integer.valueOf(7));
-                this.hashValues.put("AMOUNT", Integer.valueOf(8));
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
                 this.hashPositions = new HashMap();
-                this.hashPositions.put("SL#", Integer.valueOf(0));
-                this.hashPositions.put("ITEM", Integer.valueOf(0));
-                this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
-                this.hashPositions.put("DESCRIPTION(AR)", Integer.valueOf(0));
-                this.hashPositions.put("QTY CAS/PCS", Integer.valueOf(2));
-                this.hashPositions.put("CASE PRICE", Integer.valueOf(2));
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
                 this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
-                this.hashPositions.put("DISCOUNT", Integer.valueOf(2));
                 this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
             }
             line(this.startln);
-            headerprint(object, 1);
+            headerprint(object, 9);
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+            printheaders(getAccurateText("SALES", 40, 1), false, 2);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.DoubleWideOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
 
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            String strTotal = "";
+
+            JSONArray jTotal = object.getJSONArray("TOTAL");
+            int MAXLEngth = 137;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = jTotal.getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    string = headers.getString(i);
+                    strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string = "";
+                    } else {
+                        string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("ARABIC DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 1);
+            // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    if (j == 0) {
+                        //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 2) {
+                        itemDescrion = "           @" + jArr.getString(j) + "!";
+                    }
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 7) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
+            }
+
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+            JSONArray grData = object.getJSONArray("gr");
+            if(grData.length()>0){
+                printheaders(getAccurateText("GOOD RETURN", 40, 1), false, 2);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+
+
+                for (i = 0; i < grData.length(); i++) {
+                    JSONArray jArr = grData.getJSONArray(i);
+                    String strData = "";
+                    for (int j = 0; j < jArr.length(); j++) {
+                        int i2;
+                        Object obj;
+                        String itemDescrion = jArr.getString(j);
+                        if (j == 0) {
+                            //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                        } else if (j == 2) {
+                            itemDescrion = "           @" + jArr.getString(j) + "!";
+                        }
+                        stringBuilder = new StringBuilder(String.valueOf(strData));
+                        if (j == 2) {
+                            //i2 = 60;
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        } else {
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        }
+                        HashMap hashMap = this.hashPositions;
+                        if (j == 7) {
+                            obj = "Description";
+                        } else {
+                            obj = headers.getString(j).toString();
+                        }
+                        strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                    }
+                    this.outStream.write(this.CompressOn);
+                    this.count++;
+                    printlines1(strData, 1, object, 1, args, 1);
+                    this.outStream.write(this.CompressOff);
+                }
+            }
+
+
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            JSONArray brData = object.getJSONArray("br");
+            if(brData.length()>0){
+                //printheaders(object.getString("invheadermsg"), false, 3);
+                printheaders(getAccurateText("BAD RETURN", 40, 1), false, 2);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.DoubleWideOff);
+                // this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+
+
+                for (i = 0; i < brData.length(); i++) {
+                    JSONArray jArr = brData.getJSONArray(i);
+                    String strData = "";
+                    for (int j = 0; j < jArr.length(); j++) {
+                        int i2;
+                        Object obj;
+                        String itemDescrion = jArr.getString(j);
+                        if (j == 0) {
+                            //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                        } else if (j == 2) {
+                            itemDescrion = "           @" + jArr.getString(j) + "!";
+                        }
+                        stringBuilder = new StringBuilder(String.valueOf(strData));
+                        if (j == 2) {
+                            //i2 = 60;
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        } else {
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        }
+                        HashMap hashMap = this.hashPositions;
+                        if (j == 7) {
+                            obj = "Description";
+                        } else {
+                            obj = headers.getString(j).toString();
+                        }
+                        strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                    }
+                    this.outStream.write(this.CompressOn);
+                    this.count++;
+                    printlines1(strData, 1, object, 1, args, 1);
+                    this.outStream.write(this.CompressOff);
+                }
+            }
+
+
+            //Gagdadfdsafsd
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            printlines1(strTotal, 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            printlines1(getAccurateText("", 80, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.BoldOn);
+            jSONObject = object;
+            if (object.getString("invoicepriceprint").equals("1")) {
+                jSONObject = object;
+                printlines2(getAccurateText("SUB TOTAL", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("SUB TOTAL") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.SubTotal, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                if (object.has("INVOICE DISCOUNT")) {
+                    Log.e("I have discount", "Discount");
+                    if (object.getString("INVOICE DISCOUNT").toString().length() > 0) {
+                        Log.e("I have discount","Discount1");
+                        if (Double.parseDouble(object.getString("INVOICE DISCOUNT")) > 0.0d) {
+                            jSONObject = object;
+                            printlines2(getAccurateText("INVOICE DISCOUNT", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("INVOICE DISCOUNT") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.InvoiceDiscount, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                        }
+                        else{
+                            Log.e("I have discount","Discount Else");
+                            jSONObject = object;
+                            printlines2(getAccurateText("INVOICE DISCOUNT", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("INVOICE DISCOUNT") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.InvoiceDiscount, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                        }
+                    }
+                }
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                jSONObject = object;
+                printlines2(getAccurateText("NET SALES", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("NET SALES") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.NetSales, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+            }
+            //printlines1(getAccurateText("Net Value : ", 50, 2) + getAccurateText(object.getString("netvalue"), 12, 2), 3, jSONObject, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
+            printlines1(getAccurateText("CUSTOMER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
+           // printlines1(getAccurateText("For any complaints please contact " + object.getString("supervisorname") + "on" + object.getString("supervisorno"), 40, 0), false, 1);
+
+            //jSONObject = object;
+            if(context instanceof PromotioninfoActivity){
+                ((PromotioninfoActivity)context).callback(App.SALES_INVOICE);
+            }
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
 
+    //Delivery
+    void printDelivery(JSONObject object,String args){
+        StringBuffer s1 = new StringBuffer();
+        try{
+            int printoultlet;
+            JSONArray jCheques;
+            JSONObject jCash;
+            JSONObject jChequeDetails;
+            String copyStatus;
+            JSONObject jSONObject;
+            int i;
+            StringBuilder stringBuilder;
+            /*if (object.getString("printoutletitemcode").length() > 0) {
+                printoultlet = Integer.parseInt(object.getString("printoutletitemcode"));
+            } else {
+                printoultlet = 0;
+            }*/
+            if (object.getString("displayupc").equals("1")) {
+
+                this.hashValues = new HashMap();
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+
+
+            } else {
+                this.hashValues = new HashMap();
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+            }
+            line(this.startln);
+            headerprint(object, 10);
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+            printheaders(getAccurateText("SALES", 40, 1), false, 2);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.DoubleWideOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            String strTotal = "";
+
+            JSONArray jTotal = object.getJSONArray("TOTAL");
+            int MAXLEngth = 137;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = jTotal.getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    string = headers.getString(i);
+                    strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string = "";
+                    } else {
+                        string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("ARABIC DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 1);
+            // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    if (j == 0) {
+                        //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 2) {
+                        itemDescrion = "           @" + jArr.getString(j) + "!";
+                    }
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 7) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
+            }
+
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+                        //Gagdadfdsafsd
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            printlines1(strTotal, 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            printlines1(getAccurateText("", 80, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.BoldOn);
+            jSONObject = object;
+            if (object.getString("invoicepriceprint").equals("1")) {
+                jSONObject = object;
+                printlines2(getAccurateText("SUB TOTAL", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("SUB TOTAL") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.SubTotal, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                if (object.has("INVOICE DISCOUNT")) {
+                    if (object.getString("INVOICE DISCOUNT").toString().length() > 0) {
+                        if (Double.parseDouble(object.getString("INVOICE DISCOUNT")) > 0.0d) {
+                            jSONObject = object;
+                            printlines2(getAccurateText("INVOICE DISCOUNT", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("INVOICE DISCOUNT") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.InvoiceDiscount, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                        }
+                    }
+                }
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                jSONObject = object;
+                printlines2(getAccurateText("NET SALES", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("NET SALES") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.NetSales, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+            }
+            //printlines1(getAccurateText("Net Value : ", 50, 2) + getAccurateText(object.getString("netvalue"), 12, 2), 3, jSONObject, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
+            printlines1(getAccurateText("CUSTOMER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
+            // printlines1(getAccurateText("For any complaints please contact " + object.getString("supervisorname") + "on" + object.getString("supervisorno"), 40, 0), false, 1);
+
+            //jSONObject = object;
+            if(context instanceof PromotioninfoActivity){
+                ((PromotioninfoActivity)context).callback(App.DELIVERY);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    //Invoice Receipts
+    void printInvoiceReceipt(JSONObject object,String args){
+        StringBuffer s1 = new StringBuffer();
+        try{
+            int printoultlet;
+            JSONArray jCheques;
+            JSONObject jCash;
+            JSONObject jChequeDetails;
+            String copyStatus;
+            JSONObject jSONObject;
+            int i;
+            StringBuilder stringBuilder;
+            /*if (object.getString("printoutletitemcode").length() > 0) {
+                printoultlet = Integer.parseInt(object.getString("printoutletitemcode"));
+            } else {
+                printoultlet = 0;
+            }*/
+            if (object.getString("displayupc").equals("1")) {
+
+                this.hashValues = new HashMap();
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+
+
+            } else {
+                this.hashValues = new HashMap();
+                this.hashValues.put("ITEM NO", Integer.valueOf(10));
+                this.hashValues.put("ENGLISH DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("ARABIC DESCRIPTION", Integer.valueOf(40));
+                this.hashValues.put("UPC ", Integer.valueOf(7));
+                this.hashValues.put("TOTAL UNITS", Integer.valueOf(12));
+                this.hashValues.put("UNIT PRICE", Integer.valueOf(12));
+                this.hashValues.put("AMOUNT", Integer.valueOf(12));
+                this.hashValues.put("REASON CODE", Integer.valueOf(11));
+                //this.hashValues.put("NET LOAD", Integer.valueOf(8));
+                //this.hashValues.put("VALUE", Integer.valueOf(8));
+                //this.hashValues.put("Description", Integer.valueOf(40));
+                this.hashPositions = new HashMap();
+                this.hashPositions.put("ITEM NO", Integer.valueOf(0));
+                // this.hashPositions.put("Item#", Integer.valueOf(0));
+                this.hashPositions.put("ENGLISH DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("ARABIC DESCRIPTION", Integer.valueOf(0));
+                this.hashPositions.put("UPC ", Integer.valueOf(2));
+                this.hashPositions.put("TOTAL UNITS", Integer.valueOf(2));
+                this.hashPositions.put("UNIT PRICE", Integer.valueOf(2));
+                this.hashPositions.put("AMOUNT", Integer.valueOf(2));
+                this.hashPositions.put("REASON CODE", Integer.valueOf(2));
+            }
+            line(this.startln);
+            headerprint(object, 10);
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+            printheaders(getAccurateText("SALES", 40, 1), false, 2);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.DoubleWideOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+            //this.outStream.write(this.NewLine);
+
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            String strTotal = "";
+
+            JSONArray jTotal = object.getJSONArray("TOTAL");
+            int MAXLEngth = 137;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = jTotal.getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    string = headers.getString(i);
+                    strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string = "";
+                    } else {
+                        string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("ARABIC DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 1);
+            // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    if (j == 0) {
+                        //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                    } else if (j == 2) {
+                        itemDescrion = "           @" + jArr.getString(j) + "!";
+                    }
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 7) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
+            }
+
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.DoubleWideOn);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            //printheaders(object.getString("invheadermsg"), false, 3);
+            //Gagdadfdsafsd
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+            printlines1(strTotal, 1, object, 1, args, 1);
+            this.outStream.write(this.CompressOff);
+            printlines1(getAccurateText("", 80, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.BoldOn);
+            jSONObject = object;
+            if (object.getString("invoicepriceprint").equals("1")) {
+                jSONObject = object;
+                printlines2(getAccurateText("SUB TOTAL", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("SUB TOTAL") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.SubTotal, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                if (object.has("INVOICE DISCOUNT")) {
+                    if (object.getString("INVOICE DISCOUNT").toString().length() > 0) {
+                        if (Double.parseDouble(object.getString("INVOICE DISCOUNT")) > 0.0d) {
+                            jSONObject = object;
+                            printlines2(getAccurateText("INVOICE DISCOUNT", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("INVOICE DISCOUNT") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.InvoiceDiscount, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                        }
+                    }
+                }
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.BoldOn);
+                jSONObject = object;
+                printlines2(getAccurateText("NET SALES", 20, 0) + getAccurateText(" : ", 3, 0) + getAccurateText(object.getString("NET SALES") + " SAR", 12, 0) + getAccurateText(" : ", 3, 0) + "@" + getAccurateText(ArabicTEXT.NetSales, 15, 2) + "!", 1, jSONObject, 1, args, 1, 1);
+                this.outStream.write(this.BoldOff);
+            }
+            //printlines1(getAccurateText("Net Value : ", 50, 2) + getAccurateText(object.getString("netvalue"), 12, 2), 3, jSONObject, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
+            printlines1(getAccurateText("CUSTOMER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+
+            printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
+            // printlines1(getAccurateText("For any complaints please contact " + object.getString("supervisorname") + "on" + object.getString("supervisorno"), 40, 0), false, 1);
+
+            //jSONObject = object;
+            if(context instanceof PromotioninfoActivity){
+                ((PromotioninfoActivity)context).callback(App.DELIVERY);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    void parseCollectionResponse(JSONObject object,String args){
+        StringBuffer s1 = new StringBuffer();
+        try {
+            int i;
+            int j;
+            JSONArray jCheques;
+            JSONObject jCash;
+            JSONObject jSONObject;
+            String exPayment;
+            this.hashValues = new HashMap();
+            this.hashValues.put("Invoice#", Integer.valueOf(18));
+            this.hashValues.put("Due Date", Integer.valueOf(15));
+            this.hashValues.put("Due Amount", Integer.valueOf(15));
+            this.hashValues.put("Invoice Balance", Integer.valueOf(15));
+            this.hashValues.put("Amount Paid", Integer.valueOf(15));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("Invoice#", Integer.valueOf(0));
+            this.hashPositions.put("Due Date", Integer.valueOf(0));
+            this.hashPositions.put("Due Amount", Integer.valueOf(2));
+            this.hashPositions.put("Invoice Balance", Integer.valueOf(2));
+            this.hashPositions.put("Amount Paid", Integer.valueOf(2));
+            this.hashArbPositions = new HashMap();
+            this.hashArbPositions.put("Invoice#", Integer.valueOf(2));
+            this.hashArbPositions.put("Due Date", Integer.valueOf(2));
+            this.hashArbPositions.put("Due Amount", Integer.valueOf(0));
+            this.hashArbPositions.put("Invoice Balance", Integer.valueOf(0));
+            this.hashArbPositions.put("Amount Paid", Integer.valueOf(0));
+            this.hashArabVales = new HashMap();
+            this.hashArabVales.put("Invoice#", ArabicTEXT.Invoice);
+            this.hashArabVales.put("Due Date", ArabicTEXT.InvoiceDate);
+            this.hashArabVales.put("Due Amount", ArabicTEXT.InvoiceAmount);
+            this.hashArabVales.put("Invoice Balance", ArabicTEXT.InvoiceBalance);
+            this.hashArabVales.put("Amount Paid", ArabicTEXT.AmountPaid);
+            line(this.startln);
+            headerprint(object, 2);
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strTotal = "";
+            String strHeaderBottom = "";
+            int MAXLEngth = 80;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = object.getJSONObject("TOTAL");
+            for (i = 0; i < headers.length(); i++) {
+                StringBuilder stringBuilder;
+                String str;
+                String HeaderVal = "";
+                if (object.getString("LANG").equals("en")) {
+                    HeaderVal = headers.getString(i);
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    str = HeaderVal;
+                    /*if (HeaderVal.indexOf(" ") == -1) {
+                        str = HeaderVal;
+                    } else {
+                        str = HeaderVal.substring(0, HeaderVal.indexOf(" "));
+                    }*/
+                    strheader = stringBuilder.append(getAccurateText(str, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    //stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (HeaderVal.indexOf(" ") == -1) {
+                        str = "";
+                    } else {
+                        str = HeaderVal.substring(HeaderVal.indexOf(" "), HeaderVal.length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(str, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                } else {
+                    HeaderVal = (String) this.hashArabVales.get(headers.getString(i));
+                    if (HeaderVal.indexOf(" ") == -1) {
+                        str = HeaderVal;
+                    } else {
+                        str = HeaderVal.substring(0, HeaderVal.indexOf(" "));
+                    }
+                    strheader = getAccurateText(str, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashArbPositions.get(headers.getString(i).toString())).intValue()) + strheader;
+                    if (HeaderVal.indexOf(" ") == -1) {
+                        str = "";
+                    } else {
+                        str = HeaderVal.substring(HeaderVal.indexOf(" "), HeaderVal.length());
+                    }
+                    strHeaderBottom = getAccurateText(str, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashArbPositions.get(headers.getString(i).toString())).intValue()) + strHeaderBottom;
+                }
+                if (jTOBject.has(headers.getString(i))) {
+                    strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                } else {
+                    stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                    if (headers.getString(i).equals("Due Date")) {
+                        str = "TOTAL";
+                    } else {
+                        str = "";
+                    }
+                    strTotal = stringBuilder.append(getAccurateText(str, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                }
+            }
+            Log.e("Header", strheader);
+            Log.e("Bottom", strHeaderBottom);
+            if (object.getString("LANG").equals("en")) {
+                printlines2(strheader, 1, object, 1, args, 2, 2);
+                //printlines2(strHeaderBottom, 1, object, 1, args, 2, 2);
+            } else {
+                printlines2("@" + strHeaderBottom + "!", 1, object, 1, args, 2, 2);
+                printlines2("@" + strheader + "!", 1, object, 1, args, 2, 2);
+            }
+            printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (j = 0; j < jArr.length(); j++) {
+                    Log.e("JARRR","" + jArr.getString(j));
+                    strData = new StringBuilder(String.valueOf(strData)).append(getAccurateText(jArr.getString(j), ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(j).toString())).intValue())).toString();
+                }
+                printlines2(strData, 1, object, 1, args, 2, 2);
+            }
+            printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+            printlines2(strTotal, 2, object, 1, args, 2, 2);
+            if (object.getString("LANG").equals("en")) {
+                printlines2(getAccurateText("PAYMENT DETAILS", 80, 1), 2, object, 1, args, 2, 2);
+            } else {
+                printlines2(getAccurateText("@" + ArabicTEXT.PaymentDetails + "!", 80, 1), 2, object, 1, args, 2, 2);
+            }
+            if (object.has("Cheque")) {
+                jCheques = object.getJSONArray("Cheque");
+            } else {
+                jCheques = null;
+            }
+            if (object.has("Cash")) {
+                jCash = object.getJSONObject("Cash");
+            } else {
+                jCash = null;
+            }
+            JSONObject jChequeDetails;
+            switch (Integer.parseInt(object.getString("PaymentType"))) {
+                case 0 /*0*/:
+                    this.outStream.write(this.BoldOn);
+                    if (object.getString("LANG").equals("en")) {
+                        jSONObject = object;
+                        printlines2(getAccurateText("CASH:" + jCash.getString("Amount"), 80, 1), 1, jSONObject, 1, args, 2, 2);
+                    } else {
+                        jSONObject = object;
+                        printlines2(getAccurateText("*" + ArabicTEXT.Cash + "! :" + jCash.getString("Amount"), 80, 1), 1, jSONObject, 1, args, 2, 2);
+                    }
+                    this.outStream.write(this.BoldOff);
+                    break;
+                case 1 /*1*/:
+                    this.outStream.write(this.BoldOn);
+                    printlines2(getAccurateText("CHEQUE", 80, 1), 2, object, 1, args, 2, 2);
+                    this.outStream.write(this.BoldOff);
+                    printlines2(getAccurateText("Cheque Date:", 20, 0) + getAccurateText("Cheque No:", 20, 0) + getAccurateText("Bank:", 20, 0) + getAccurateText("Amount:", 20, 2), 1, object, 1, args, 2, 2);
+                    printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+                    for (j = 0; j < jCheques.length(); j++) {
+                        jChequeDetails = jCheques.getJSONObject(j);
+                        jSONObject = object;
+                        printlines2(getAccurateText(jChequeDetails.getString("Cheque Date"), 20, 0) + getAccurateText(jChequeDetails.getString("Cheque No"), 20, 0) + getAccurateText(jChequeDetails.getString("Bank"), 20, 0) + getAccurateText(jChequeDetails.getString("Amount"), 20, 2), 1, jSONObject, 1, args, 2, 2);
+                    }
+                    printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+                    break;
+                case 2 /*2*/:
+                    this.outStream.write(this.BoldOn);
+                    jSONObject = object;
+                    printlines2(getAccurateText("CASH:" + jCash.getString("Amount"), 80, 1), 2, jSONObject, 1, args, 2, 2);
+                    this.outStream.write(this.BoldOff);
+                    this.outStream.write(this.BoldOn);
+                    printlines2(getAccurateText("CHEQUE", 80, 1), 1, object, 2, args, 2, 2);
+                    this.outStream.write(this.BoldOff);
+                    printlines2(getAccurateText("Cheque Date:", 20, 0) + getAccurateText("Cheque No:", 20, 0) + getAccurateText("Bank:", 20, 0) + getAccurateText("Amount:", 20, 2), 1, object, 1, args, 2, 2);
+                    printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+                    for (j = 0; j < jCheques.length(); j++) {
+                        jChequeDetails = jCheques.getJSONObject(j);
+                        jSONObject = object;
+                        printlines2(getAccurateText(jChequeDetails.getString("Cheque Date"), 20, 0) + getAccurateText(jChequeDetails.getString("Cheque No"), 20, 0) + getAccurateText(jChequeDetails.getString("Bank"), 20, 0) + getAccurateText(jChequeDetails.getString("Amount"), 20, 2), 1, jSONObject, 1, args, 2, 2);
+                    }
+                    printlines2(printSeprator(), 1, object, 1, args, 2, 2);
+                    break;
+            }
+            if (object.has("expayment")) {
+                exPayment = object.getString("expayment");
+            } else {
+                exPayment = "";
+            }
+            if (exPayment != null && exPayment.toString().trim().length() > 0) {
+                printlines2(getAccurateText("Excess Payment : " + exPayment, 80, 0), 1, object, 1, args, 2, 2);
+            }
+            /*if (object.getString("comments").toString().length() > 0) {
+                jSONObject = object;
+                printlines2(getAccurateText("Comments: " + object.getString("comments"), 80, 0), 3, jSONObject, 1, args, 2, 2);
+            } else {
+                printlines2(" ", 2, object, 1, args, 2, 2);
+            }*/
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
+            printlines2(getAccurateText("CUSTOMER_________________@" + ArabicTEXT.Customer + "!             SALESMAN_______________@" + ArabicTEXT.Salesman + "!", 80, 1), 2, object, 1, args, 2, 2);
+            String copyStatus = "";
+            if(context instanceof PaymentDetails){
+                ((PaymentDetails)context).callback();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     //Printing Headers
 
     private void printlines1(String data, int ln, JSONObject object, int sts, String adr, int tp) throws JSONException, IOException, LinePrinterException {
@@ -1134,7 +2196,91 @@ public class PrinterHelper {
             }
         }
     }
-
+    private void printlines2(String data, int ln, JSONObject object, int sts, String adr, int tran, int tp) throws JSONException, IOException, LinePrinterException {
+        int i;
+        this.count += ln;
+        boolean isEnd = false;
+        if (sts == 2 && this.count != 0) {
+            printArabic(data);
+            //Log.e("salessummary count", this.count);
+            //Log.e("salessummary pln", 48);
+            isEnd = true;
+            int lnno1 = (48 - this.count) + this.endln;
+            for (i = 0; i < lnno1; i++) {
+                try {
+                    if (i % 10 == 0) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    this.outStream.write(this.NewLine);
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
+            this.outStream.write(this.CarriageReturn);
+            this.count = 0;
+            try {
+                Thread.sleep(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+            } catch (InterruptedException e3) {
+                e3.printStackTrace();
+            }
+            this.status.put("status", true);
+            this.status.put("isconnected", 0);
+            sendUpdate(this.status, true);
+        }
+        if (!isEnd) {
+            printArabic(data);
+            for (i = 0; i < ln; i++) {
+                try {
+                    this.outStream.write(this.NewLine);
+                } catch (IOException e22) {
+                    e22.printStackTrace();
+                }
+            }
+            if (this.count % 10 == 0) {
+                try {
+                    Thread.sleep(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+                } catch (InterruptedException e32) {
+                    e32.printStackTrace();
+                }
+            }
+            Log.d("Count", "Count1" + this.count);
+            if (this.count > 48) {
+                this.count = 0;
+                Log.d("Count", "Count1" + this.count);
+                Log.d("Pln", "PLn" + 48);
+                try {
+                    line(this.cnln);
+                    this.outStream.write(this.CompressOff);
+                    if (tran == 2) {
+                        headerprint(object, tp);
+                    } else if (tran == 1) {
+                        headerprint(object, tp);
+                    } else if (tran == 5) {
+                        headerprint(object, tp);
+                    } else if (tran == 4) {
+                        headerprint(object, tp);
+                    } else if (tran == 3) {
+                        headerprint(object, tp);
+                    } else if (tran == 6) {
+                        headerprint(object, tp);
+                    } else if (tran == 7) {
+                        headerprint(object, tp);
+                    }
+                    this.outStream.write(printSeprator().getBytes());
+                    this.count++;
+                    if (tran == 5 || tran == 4) {
+                        this.outStream.write(this.CompressOn);
+                    }
+                } catch (Exception e4) {
+                    e4.printStackTrace();
+                }
+            }
+        }
+    }
     private void headerinvprint(JSONObject object, int invtype) throws JSONException {
         try {
             this.outStream.write(this.BoldOn);
@@ -1203,15 +2349,22 @@ public class PrinterHelper {
     private void headerprint(JSONObject object, int type) throws JSONException {
         try {
             this.outStream.write(this.BoldOn);
-            printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), true, 1);
+            printheaders(getAccurateText("ROUTE#: " + object.getString("ROUTE"), 26, 0) + getAccurateText("SALESMAN#: " + object.getString("SALESMAN"), 26, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " " + object.getString("TIME"), 26, 2), false, 1);
             this.outStream.write(this.NewLine);
-            printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN"), 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), true, 1);
+            printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE") + " " + "@" + ArabicLabels.Date, 26, 0) + "!" + getAccurateText(object.getString("SALESMAN") + " " + "@" + ArabicLabels.SalesMan, 26, 1) + "!", true, 1);
+            printheaders(getAccurateText(object.getString("ROUTE") + "@" + ArabicLabels.Route, 26, 2)+"!" + " ",true,1);
+            //printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN"), 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), true, 1);
             this.outStream.write(this.NewLine);
             //printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), true, 1);
             if (type == 3 || type == 5 || type == 6 || type == 4 || type == 7) {
                 printheaders(getAccurateText("TRIP START DATE:" + object.getString("TRIP START DATE"), 40, 0) + getAccurateText("TOUR ID:" + object.getString("TourID"), 40, 2), false, 1);
             } else {
-                printheaders(getAccurateText("TRIP ID:" + object.getString("TourID"), 80, 0), false, 1);
+                if(!(type==9||type==10)){
+                    printheaders(getAccurateText("TRIP ID:" + object.getString("TripID"), 80, 0), false, 1);
+                }
+                /*else if(type == 9){
+                    printheaders(getAccurateText("SUPERVISOR NAME: " + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR NO: " + object.getString("supervisorno"), 40, 2), false, 1);
+                }*/
             }
             this.outStream.write(this.BoldOff);
             this.outStream.write(this.NewLine);
@@ -1219,7 +2372,8 @@ public class PrinterHelper {
             if (!(type == 3 && type == 6 && type == 4 && type == 5 && type == 7) && object.has("invheadermsg") && object.getString("invheadermsg").length() > 0) {
                 this.outStream.write(this.BoldOn);
                 this.outStream.write(this.DoubleWideOn);
-                printheaders(object.getString("invheadermsg"), false, 3);
+                //printheaders(object.getString("invheadermsg"), false, 3);
+                printheaders(getAccurateText(object.getString("invheadermsg"),40,1),false,2);
                 this.outStream.write(this.BoldOff);
                 this.outStream.write(this.DoubleWideOff);
             }
@@ -1228,12 +2382,14 @@ public class PrinterHelper {
                 this.outStream.write(this.DoubleWideOn);
                 if (object.getString("LANG").equals("en")) {
                     printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                    this.outStream.write(this.NewLine);
+                    printheaders(getAccurateText("ORDER NO - " + object.getString("ORDERNO"),40,1),false,2);
                 } else if (object.getString("invoicepaymentterms").contains("2")) {
                     printheaders(getAccurateText("@" + ArabicTEXT.Creditinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
                 } else if (object.getString("invoicepaymentterms").contains("0") || object.getString("invoicepaymentterms").contains("1")) {
                     printheaders(getAccurateText("@" + ArabicTEXT.Cashinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
                 } else {
-                    printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
                 }
                 this.outStream.write(this.DoubleWideOff);
                 this.outStream.write(this.BoldOff);
@@ -1244,30 +2400,118 @@ public class PrinterHelper {
                     String[] parts = object.getString("CUSTOMER").split("\\-");
                     printheaders("CUSTOMER: " + parts[0], false, 2);
                     this.outStream.write(this.NewLine);
-                    printheaders("          *" + parts[1] + "!", true, 1);
+                    Log.e("ARABIC CUSTOMER","" + parts[1]);
+                    printheaders("          @" + parts[1] + "!", true, 1);
                     this.outStream.write(this.NewLine);
                     this.outStream.write(this.BoldOff);
                     printheaders("ADDRESS: " + object.getString("ADDRESS"), false, 1);
                     this.outStream.write(this.NewLine);
                     printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
                     this.outStream.write(this.NewLine);
+                   // this.outStream.write(this.NewLine);
+                  //  this.outStream.write(this.NewLine);
                 } catch (Exception e) {
                 }
                 this.count++;
-            } else if (type == 2) {
+            }
+            else if (type == 9) {   //Type for Sales Invoice
                 this.outStream.write(this.BoldOn);
                 this.outStream.write(this.DoubleWideOn);
                 if (object.getString("LANG").equals("en")) {
-                    printheaders(getAccurateText("RECEIPT: " + object.getString("RECEIPT"), 40, 1), false, 2);
+                    String customerType = "";
+                    if(object.getString("customertype").equals("1")){
+                        customerType = "CASH";
+                    }
+                    else if(object.getString("customertype").equals("2")){
+                        customerType = "CREDIT";
+                    }
+                    else if(object.getString("customertype").equals("3")){
+                        customerType = "TC";
+                    }
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                    this.outStream.write(this.NewLine);
+                    printheaders(getAccurateText(customerType + " " + "INVOICE NO - " + object.getString("ORDERNO"),40,1),false,2);
+                } else if (object.getString("invoicepaymentterms").contains("2")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Creditinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
+                } else if (object.getString("invoicepaymentterms").contains("0") || object.getString("invoicepaymentterms").contains("1")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Cashinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
                 } else {
-                    printheaders(getAccurateText("*" + ArabicTEXT.Receipt + "!:" + object.getString("RECEIPT"), 40, 1), true, 2);
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
                 }
                 this.outStream.write(this.DoubleWideOff);
                 this.outStream.write(this.BoldOff);
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.BoldOn);
-                printheaders("CUSTOMER: " + object.getString("CUSTOMER"), true, 1);
+                try {
+                    String[] parts = object.getString("CUSTOMER").split("\\-");
+                    printheaders("CUSTOMER: " + parts[0], false, 2);
+                    this.outStream.write(this.NewLine);
+                    Log.e("ARABIC CUSTOMER","" + parts[1]);
+                    printheaders("          @" + parts[1] + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    this.outStream.write(this.BoldOff);
+                    printheaders("ADDRESS: " + object.getString("ADDRESS"), false, 1);
+                    this.outStream.write(this.NewLine);
+                    printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    //this.outStream.write(this.NewLine);
+                    //this.outStream.write(this.NewLine);
+                } catch (Exception e) {
+                }
+                this.count++;
+            }
+            else if (type == 10) {   //Type for Delivery
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                if (object.getString("LANG").equals("en")) {
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                    this.outStream.write(this.NewLine);
+                    printheaders(getAccurateText("DELIVERY NO - " + object.getString("ORDERNO"), 40, 1), false, 2);
+                    printheaders(getAccurateText("DELIVERY DATE - " + object.getString("DELIVERYDATE"),40,1),false,2);
+                }
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.BoldOn);
+                try {
+                    String[] parts = object.getString("CUSTOMER").split("\\-");
+                    printheaders("CUSTOMER: " + parts[0], false, 2);
+                    this.outStream.write(this.NewLine);
+                    Log.e("ARABIC CUSTOMER","" + parts[1]);
+                    printheaders("          @" + parts[1] + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    this.outStream.write(this.BoldOff);
+                    printheaders("ADDRESS: " + object.getString("ADDRESS"), false, 1);
+                    this.outStream.write(this.NewLine);
+                    printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    //this.outStream.write(this.NewLine);
+                    //this.outStream.write(this.NewLine);
+                } catch (Exception e) {
+                }
+                this.count++;
+            }
+
+            else if (type == 2) {
+                this.outStream.write(this.BoldOn);
+                this.outStream.write(this.DoubleWideOn);
+                if (object.getString("LANG").equals("en")) {
+                    printheaders(getAccurateText("RECEIPT: " + object.getString("RECEIPT"), 40, 1), false, 2);
+                } else {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Receipt + "!:" + object.getString("RECEIPT"), 40, 1), true, 2);
+                }
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.BoldOn);
+                String[] parts = object.getString("CUSTOMER").split("\\-");
+                printheaders("CUSTOMER: " + parts[0], false, 2);
+                this.outStream.write(this.NewLine);
+                Log.e("ARABIC CUSTOMER", "" + parts[1]);
+                printheaders("          @" + parts[1] + "!", true, 1);
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.BoldOff);
                 printheaders("ADDRESS :" + object.getString("ADDRESS"), true, 1);

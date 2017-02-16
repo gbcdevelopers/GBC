@@ -36,8 +36,9 @@
 
             <ImageView
                 android:src="@drawable/calend"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"/>
 
@@ -64,8 +65,9 @@
 
             <ImageView
                 android:src="@drawable/ic_unserviced"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="end|center_vertical"
                 android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"/>
 
@@ -93,7 +95,8 @@
 
             <ImageView
                 android:src="@drawable/ic_map_icon"
-                android:layout_gravity="right|center_vertical"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"/>

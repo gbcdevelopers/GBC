@@ -79,6 +79,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
         //Log.e("Object", "" + object.getDeliveryNo());
         reasonsList = OrderReasons.get();
+        refine(reasonsList);
         Log.e("Reasons List", "" + reasonsList.size());
         myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
@@ -99,94 +100,95 @@ public class LoadSummaryActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-                final LoadSummary item = loadSummaryList.get(position);
-                final Dialog dialog = new Dialog(LoadSummaryActivity.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.dialog_with_crossbutton);
-                dialog.setCancelable(false);
-                TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
-                tv.setText(item.getItemDescription());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
-                Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
-                final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
-                final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
-                final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
-                final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-                LinearLayout ll1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
-                ll1.setVisibility(View.GONE);
-                RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
-                rl_specify.setVisibility(View.VISIBLE);
-                //
-                final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
-                Log.e("Adapter", "" + myAdapter.getCount());
-                spin.setAdapter(myAdapter);
+                try{
+                    final LoadSummary item = loadSummaryList.get(position);
+                    final Dialog dialog = new Dialog(LoadSummaryActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    dialog.setContentView(R.layout.dialog_with_crossbutton);
+                    dialog.setCancelable(false);
+                    TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
+                    tv.setText(item.getItemDescription());
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
+                    Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+                    final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
+                    final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
+                    final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
+                    final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
+                    LinearLayout ll1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
+                    ll1.setVisibility(View.GONE);
+                    RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
+                    rl_specify.setVisibility(View.VISIBLE);
+                    //
+                    final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                    Log.e("Adapter", "" + myAdapter.getCount());
+                    spin.setAdapter(myAdapter);
 
                 /*if(item.getUom().equals(App.CASE_UOM)||item.getUom().equals(App.CASE_UOM_NEW)||item.getUom().equals(App.BOTTLES_UOM)){
                     ed_pcs.setEnabled(false);
                 }*/
-                if (item.getReasonCode() != null) {
-                    spin.setSelection(getIndex(item.getReasonCode()));
-                }
-                spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        Reasons reason = myAdapter.getItem(position);
-                        item.setReasonCode(reason.getReasonID());
+                    if (item.getReasonCode() != null) {
+                        spin.setSelection(getIndex(item.getReasonCode()));
                     }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
+                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            Reasons reason = myAdapter.getItem(position);
+                            item.setReasonCode(reason.getReasonID());
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                    if (item.isAltUOM()) {
+                        ed_pcs.setEnabled(true);
+                    } else {
+                        ed_pcs.setEnabled(false);
                     }
-                });
-                if (item.isAltUOM()) {
-                    ed_pcs.setEnabled(true);
-                } else {
-                    ed_pcs.setEnabled(false);
-                }
-                ed_cases.setText(item.getQuantityCases());
-                ed_pcs.setText(item.getQuantityUnits());
-                LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
-                iv_cancle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.cancel();
-                    }
-                });
-                dialog.show();
-                btn_save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Log.e("Spin Select","" + spin.getSelectedItem().toString());
-                        if (spin.getSelectedItem().toString().equals("Select Reason")) {
-                            ((TextView) spin.getSelectedView()).setError("select reason");
-                        } else {
-                            String strCase = ed_cases.getText().toString();
-                            String strpcs = ed_pcs.getText().toString();
-                            String strcaseinv = ed_cases_inv.getText().toString();
-                            String strpcsinv = ed_pcs_inv.getText().toString();
+                    ed_cases.setText(item.getQuantityCases());
+                    ed_pcs.setText(item.getQuantityUnits());
+                    LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
+                    iv_cancle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.cancel();
+                        }
+                    });
+                    dialog.show();
+                    btn_save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //Log.e("Spin Select","" + spin.getSelectedItem().toString());
+                            if (spin.getSelectedItem().toString().equals("Select Reason")) {
+                                ((TextView) spin.getSelectedView()).setError("select reason");
+                            } else {
+                                String strCase = ed_cases.getText().toString();
+                                String strpcs = ed_pcs.getText().toString();
+                                String strcaseinv = ed_cases_inv.getText().toString();
+                                String strpcsinv = ed_pcs_inv.getText().toString();
                         /*TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                         TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
                         tv_cases.setText(strCase);
                         tv_pcs.setText(strpcs);*/
-                            if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
-                                strCase = String.valueOf(0);
-                            }
-                            if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
-                                strpcs = String.valueOf(0);
-                            }
-                            if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
-                                strcaseinv = String.valueOf(0);
-                            }
-                            if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
-                                strpcsinv = String.valueOf(0);
-                            }
-                            item.setQuantityCases(strCase);
-                            item.setQuantityUnits(strpcs);
-                            loadSummaryList.remove(position);
-                            loadSummaryList.add(position, item);
-                            hideSoftKeyboard();
-                            calculateCost();
-                            dialog.dismiss();
+                                if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
+                                    strCase = String.valueOf(0);
+                                }
+                                if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
+                                    strpcs = String.valueOf(0);
+                                }
+                                if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
+                                    strcaseinv = String.valueOf(0);
+                                }
+                                if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
+                                    strpcsinv = String.valueOf(0);
+                                }
+                                item.setQuantityCases(strCase);
+                                item.setQuantityUnits(strpcs);
+                                loadSummaryList.remove(position);
+                                loadSummaryList.add(position, item);
+                                hideSoftKeyboard();
+                                calculateCost();
+                                dialog.dismiss();
                         /*if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
                             Toast.makeText(getActivity(), getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
                             strCase = "0";
@@ -218,9 +220,14 @@ public class LoadSummaryActivity extends AppCompatActivity {
                             tvsales.setText(salesTotal + "/" + pcsTotal);*//*
                             dialog.dismiss();
                         }*/
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
         setListView();
@@ -305,8 +312,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                   // loadItem.setItem_description_ar(article.getMaterialDesc2());
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                   // loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_UOM, "");
@@ -499,8 +508,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                    //loadItem.setItem_description_ar(article.getMaterialDesc2());
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                   // loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_UOM, "");
@@ -608,5 +619,15 @@ public class LoadSummaryActivity extends AppCompatActivity {
         reasons.setReasonDescription("Select Reason");
         reasons.setReasonType("");
         reasonsList.add(0, reasons);
+    }
+    private void refine(ArrayList<Reasons>arrayList){
+        ArrayList<Reasons>temp = new ArrayList<>();
+        for(Reasons reasons:arrayList){
+            if(reasons.getReasonID().contains("ZU")){
+                temp.add(reasons);
+            }
+        }
+        reasonsList = new ArrayList<>();
+        reasonsList = temp;
     }
 }

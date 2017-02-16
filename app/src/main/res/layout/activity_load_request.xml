@@ -84,7 +84,7 @@
 																				android:layout_height="@dimen/big"
 																				android:layout_centerVertical="true"
 																				android:layout_marginLeft="40dp"
-																				android:layout_toRightOf="@+id/tv1"
+																				android:layout_toEndOf="@+id/tv1"
 																				android:background="@drawable/calend"
 																				/>
 												</RelativeLayout>

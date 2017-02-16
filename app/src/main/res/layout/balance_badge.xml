@@ -19,7 +19,11 @@
             android:orientation="horizontal"
             android:weightSum="5"
             >
-
+            <ImageView
+                android:id="@+id/img_item_due_date"
+                android:layout_width="@dimen/size_two"
+                android:layout_height="match_parent"
+                android:background="#ff0000" />
 
             <LinearLayout
                 android:layout_width="0dp"

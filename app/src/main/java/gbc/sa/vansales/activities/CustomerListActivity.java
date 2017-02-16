@@ -28,7 +28,7 @@ public class CustomerListActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Customers List");
+        tv_top_header.setText(getString(R.string.customer_list_title));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

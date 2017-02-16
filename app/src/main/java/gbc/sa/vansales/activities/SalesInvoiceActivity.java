@@ -93,7 +93,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.e("Back Clicked","Back Clicked");
+                Log.e("Back Clicked","Back Clicked");
                 ArrayList<Sales> salesarrayList = new ArrayList<>();;
                 ArrayList<Sales>goodsReturnList = new ArrayList<>();
                 ArrayList<Sales>badReturnList = new ArrayList<>();
@@ -281,6 +281,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         sales.setPic("0");
                         productArrayList.add(sales);
                     }
+                    Log.e("On Resume","Good Return");
                     //GListFragment.arrProductList.addAll(productArrayList);
                     GListFragment.adapter.notifyDataSetChanged();
 
@@ -297,6 +298,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         productArrayList.add(sales);
                     }
                     //BListFragment.arrProductList.addAll(productArrayList);
+                    Log.e("On Resume","Bad Return");
                     BListFragment.adapter.notifyDataSetChanged();
 
                 }
@@ -322,9 +324,24 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             case R.id.remove:
                 // add stuff here
                 if (SalesInvoiceActivity.tab_position == 2) {
+                    Sales sales = GListFragment.arrProductList.get(info.position);
+                    HashMap<String, String> grFilter = new HashMap<>();
+                    grFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    grFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    grFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+                    grFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
+                    db.deleteData(db.RETURNS,grFilter);
                     GListFragment.arrProductList.remove(info.position);
                     GListFragment.adapter.notifyDataSetChanged();
                 } else if (SalesInvoiceActivity.tab_position == 3) {
+                    Sales sales = BListFragment.arrProductList.get(info.position);
+                    HashMap<String, String> brFilter = new HashMap<>();
+                    brFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    brFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    brFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                    brFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
+                    db.deleteData(db.RETURNS,brFilter);
+
                     BListFragment.arrProductList.remove(info.position);
                     BListFragment.adapter.notifyDataSetChanged();
                 }
@@ -340,11 +357,207 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     }
 
     private void salesInvoiceDataonBack(ArrayList<Sales>salesInvoiceList,ArrayList<Sales>grList,ArrayList<Sales>brList,ArrayList<Sales>focList){
+        Log.e("Here on SI Back","" + grList.size());
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
         filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
         if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+            String orderID = "";
+            HashMap<String,String>searchMap = new HashMap<>();
+            searchMap.put(db.KEY_ORDER_ID,"");
+            Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE,searchMap,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                orderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                Log.e("ORDER ID - SI BACK","" + orderID);
+                //new loadItems(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));
+            }
 
+            for (Sales sale : salesInvoiceList) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                map.put(db.KEY_MATERIAL_GROUP, "");
+                map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                map.put(db.KEY_ORG_CASE, sale.getCases());
+                map.put(db.KEY_UOM,sale.getUom());
+                map.put(db.KEY_ORG_UNITS, sale.getPic());
+                map.put(db.KEY_AMOUNT, sale.getPrice());
+                map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                map.put(db.KEY_ORDER_ID,orderID);
+                map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                HashMap<String, String> updateFilter = new HashMap<>();
+                updateFilter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                updateFilter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                updateFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                updateFilter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                if(db.checkData(db.CAPTURE_SALES_INVOICE,updateFilter)){
+                    db.updateData(db.CAPTURE_SALES_INVOICE, map,updateFilter);
+                }
+                else{
+                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                        db.addData(db.CAPTURE_SALES_INVOICE,map);
+                    }
+
+                }
+
+            }
+
+            if(grList.size()>0){
+                Log.e("GR List","" + grList.size());
+                HashMap<String, String> grFilter = new HashMap<>();
+                grFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                grFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                grFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+
+                //There were good returns in the table
+                if(db.checkData(db.RETURNS,grFilter)){
+                    for(Sales sale:grList){
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                        map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                        map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_CASE,sale.getCases());
+                        map.put(db.KEY_UNIT,sale.getPic());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_PRICE,sale.getPrice());
+                        map.put(db.KEY_ORDER_ID,orderID);
+                        map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        HashMap<String, String> updateFilter = new HashMap<>();
+                        //updateFilter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        updateFilter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        updateFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        updateFilter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        updateFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+                        if(db.checkData(db.RETURNS,updateFilter)){
+                            db.updateData(db.RETURNS, map, updateFilter);
+                        }
+                        else{
+                            if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                db.addData(db.RETURNS,map);
+                            }
+
+                        }
+
+                    }
+                }
+                //No good return yet
+                else{
+                    String grPRNo= "";
+                    if(!orderID.equals("")){
+                        grPRNo = orderID;
+                    }
+                    for(Sales sale:grList){
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                        map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                        map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_CASE,sale.getCases());
+                        map.put(db.KEY_UNIT,sale.getPic());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_PRICE,sale.getPrice());
+                        map.put(db.KEY_ORDER_ID,grPRNo);
+                        map.put(db.KEY_PURCHASE_NUMBER,grPRNo);
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                            db.addData(db.RETURNS, map);
+                        }
+                    }
+                }
+            }
+            if(brList.size()>0){
+                HashMap<String, String> brFilter = new HashMap<>();
+                brFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                brFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                brFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+
+                //There were good returns in the table
+                if(db.checkData(db.RETURNS,brFilter)){
+                    for(Sales sale:brList){
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                        map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                        map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_CASE,sale.getCases());
+                        map.put(db.KEY_UNIT,sale.getPic());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_PRICE,sale.getPrice());
+                        map.put(db.KEY_ORDER_ID,orderID);
+                        map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        HashMap<String, String> updateFilter = new HashMap<>();
+                        //updateFilter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                        updateFilter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        updateFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        updateFilter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        updateFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                        if(db.checkData(db.RETURNS,updateFilter)){
+                            db.updateData(db.RETURNS, map, updateFilter);
+                        }
+                        else{
+                            if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                db.addData(db.RETURNS,map);
+                            }
+                        }
+                    }
+                }
+                //No bad return yet
+                else{
+                    String brPRNo= "";
+                    if(!orderID.equals("")){
+                        brPRNo = orderID;
+                    }
+                    for(Sales sale:brList){
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        map.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                        map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                        map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                        map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                        map.put(db.KEY_MATERIAL_GROUP,"");
+                        map.put(db.KEY_CASE,sale.getCases());
+                        map.put(db.KEY_UNIT,sale.getPic());
+                        map.put(db.KEY_UOM,sale.getUom());
+                        map.put(db.KEY_PRICE,sale.getPrice());
+                        map.put(db.KEY_ORDER_ID,brPRNo);
+                        map.put(db.KEY_PURCHASE_NUMBER,brPRNo);
+                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                        map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                            db.addData(db.RETURNS, map);
+                        }
+                    }
+                }
+            }
         }
         else{
             boolean value = false;
@@ -364,6 +577,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 
             if(salesInvoiceList.size()>0){
                 if(value){
+
                     for (Sales sale : salesInvoiceList) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -385,9 +599,39 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                             db.addData(db.CAPTURE_SALES_INVOICE, map);
                         }
                     }
+
+                    //Check if any GR was done before invoice
+                    HashMap<String, String> grFilter = new HashMap<>();
+                    grFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    grFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    grFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+                    grFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    //There were good returns in the table
+                    if(db.checkData(db.RETURNS,grFilter))
+                    {
+                        HashMap<String,String>grMap = new HashMap<>();
+                        grMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                        grMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                        db.updateData(db.RETURNS,grMap,grFilter);
+                    }
+
+                    //Check if any GR was done before invoice
+                    HashMap<String, String> brFilter = new HashMap<>();
+                    brFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    brFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    brFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                    brFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    //There were good returns in the table
+                    if(db.checkData(db.RETURNS,brFilter))
+                    {
+                        HashMap<String,String>grMap = new HashMap<>();
+                        grMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                        grMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                        db.updateData(db.RETURNS,grMap,grFilter);
+                    }
                 }
             }
-            if(focList.size()>0){
+            /*if(focList.size()>0){
                 if(value){
                     for (Sales sale:focList){
                         HashMap<String,String>map = new HashMap<>();
@@ -410,7 +654,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         db.addData(db.FOC_INVOICE,map);
                     }
                 }
-            }
+            }*/
             if(grList.size()>0){
                 String grPRNo= "";
                 if(value){

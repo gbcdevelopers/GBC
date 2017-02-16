@@ -99,7 +99,6 @@ public class EndTripActivity extends AppCompatActivity {
         btn_float.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String purchaseNumber = Helpers.generateNumber(db, ConfigStore.EndDay_PR_Type);
                 HashMap<String, String> map = new HashMap<>();
                 String timeStamp = Helpers.getCurrentTimeStamp();
@@ -330,9 +329,18 @@ public class EndTripActivity extends AppCompatActivity {
                     filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
                     db.updateData(db.BEGIN_DAY, map, filter);
                 }
-                new postEndTrip("CASH");
-                /*Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
-                startActivity(intent);*/
+                if(cashTotal>0){
+                    new postEndTrip("CASH");
+                }
+                else if(chequeTotal>0){
+                    new postEndTrip("CHEQUE");
+                }
+                else{
+                    Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                    startActivity(intent);
+                }
+
+                /**/
 
             } else if (this.orderID.contains("Error")) {
                 Toast.makeText(EndTripActivity.this, this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
@@ -400,6 +408,7 @@ public class EndTripActivity extends AppCompatActivity {
                         deepEntity.put(obj);
                     }
                     this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                    Log.e("Order ID","" + orderId);
                 }
                 catch (Exception e){
                     e.printStackTrace();
@@ -418,9 +427,28 @@ public class EndTripActivity extends AppCompatActivity {
                 if(chequeTotal>0){
                     new postEndTrip("CHEQ");
                 }
+                else{
+                    HashMap<String, String> altMap = new HashMap<>();
+                    altMap.put(db.KEY_IS_END_DAY, "true");
+                    HashMap<String, String> filterMap = new HashMap<>();
+                    filterMap.put(db.KEY_IS_END_DAY, "false");
+                    db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+
+                    Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
             else{
+
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_END_DAY, "true");
+                HashMap<String, String> filterMap = new HashMap<>();
+                filterMap.put(db.KEY_IS_END_DAY, "false");
+                db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+
                 Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
         }
