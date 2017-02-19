@@ -22,6 +22,15 @@ public class Customer implements Parcelable{
     private boolean merchandize;
     private boolean newcustomer;
     private String customer_name_ar;
+    private boolean openDelivery;
+
+    public boolean isOpenDelivery() {
+        return openDelivery;
+    }
+    public void setOpenDelivery(boolean openDelivery) {
+        this.openDelivery = openDelivery;
+    }
+
 
     public String getCustomer_name_ar() {
         return customer_name_ar;
@@ -169,6 +178,7 @@ public class Customer implements Parcelable{
             customer.merchandize = source.readByte()!=0;
             customer.order = source.readByte()!=0;
             customer.newcustomer = source.readByte()!=0;
+            customer.openDelivery = source.readByte()!=0;
             customer.customerItemNo = source.readString();
             customer.latitude = source.readString();
             customer.longitude = source.readString();
@@ -200,6 +210,7 @@ public class Customer implements Parcelable{
         parcel.writeByte((byte)(merchandize ? 1:0));
         parcel.writeByte((byte)(order ? 1:0));
         parcel.writeByte((byte)(newcustomer ? 1:0));
+        parcel.writeByte((byte)(openDelivery ? 1:0));
         parcel.writeString(customerItemNo);
         parcel.writeString(latitude);
         parcel.writeString(longitude);

@@ -60,7 +60,7 @@ public class SalesInvoiceAdapter extends ArrayAdapter<Sales> {
             }
             holder.tv_title.setText(salesArrayList.get(position).getName());
             final Sales sales = salesArrayList.get(pos);
-            Log.e("UOM", "" + position + sales.getMaterial_no() + sales.getUom());
+            //Log.e("UOM", "" + position + sales.getMaterial_no() + sales.getUom());
             try{
                 if(salesArrayList.get(pos).getUom().equals(App.CASE_UOM)||salesArrayList.get(pos).getUom().equals(App.CASE_UOM_NEW)||salesArrayList.get(pos).getUom().equals(App.BOTTLES_UOM)){
                     holder.tv_price.setText(getContext().getString(R.string.price_lbl) + salesArrayList.get(position).getPrice() + "/0.00");

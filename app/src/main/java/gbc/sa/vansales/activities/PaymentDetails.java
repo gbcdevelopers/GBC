@@ -119,6 +119,7 @@ public class PaymentDetails extends AppCompatActivity {
         ll_cheque_payment = (LinearLayout) findViewById(R.id.ll_cheque_payment);
         sp_item = (Spinner) findViewById(R.id.sp_item);
         sp_item.setEnabled(true);
+
         //iv_cal.setEnabled(true);
         cb_chequePayment.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -236,7 +237,13 @@ public class PaymentDetails extends AppCompatActivity {
         tv_total_amount = (TextView) findViewById(R.id.tv_total_amt);
         tv_date = (TextView) findViewById(R.id.tv_date);
         iv_cal = (ImageView) findViewById(R.id.image_cal);
-        iv_cal.setEnabled(true);
+        if(object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
+            iv_cal.setEnabled(false);
+        }
+        else{
+            iv_cal.setEnabled(true);
+        }
+
         edt_check_no = (EditText) findViewById(R.id.edt_check_no);
         edt_cash_amt = (EditText) findViewById(R.id.edt_cash_amount);
         edt_check_amt = (EditText) findViewById(R.id.edt_check_amt);
@@ -263,6 +270,7 @@ public class PaymentDetails extends AppCompatActivity {
             }
         });*/
         myCalendar = Calendar.getInstance();
+        setDefaultDate();
         iv_cal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1019,6 +1027,11 @@ public class PaymentDetails extends AppCompatActivity {
         Toast.makeText(PaymentDetails.this, "Please complete the transaction", Toast.LENGTH_SHORT).show();
     }
     private void updateLabel() {
+        String myFormat = "dd/MM/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
+        tv_date.setText(sdf.format(myCalendar.getTime()));
+    }
+    private void setDefaultDate(){
         String myFormat = "dd/MM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         tv_date.setText(sdf.format(myCalendar.getTime()));

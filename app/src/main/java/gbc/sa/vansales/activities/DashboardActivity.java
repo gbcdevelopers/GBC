@@ -50,6 +50,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+import gbc.sa.vansales.views.MarqueeLayout;
 /**
  * Created by Rakshit on 15-Nov-16.
  */
@@ -109,6 +110,11 @@ public class DashboardActivity extends AppCompatActivity
         String driverName = Settings.getString(App.LANGUAGE).equals("en")?Settings.getString(App.DRIVER_NAME_EN):Settings.getString(App.DRIVER_NAME_AR);
         tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER) + " , " + driverName);
         tv_tripid.setText(getString(R.string.trip) + Settings.getString(App.TRIP_ID));
+
+        /*TextView textView = (TextView)findViewById(R.id.vanstock_overview);
+        textView.setText("Total Van Stock: 100, Total Van Value : 5000 SAR");
+        textView.setSelected(true);*/
+
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

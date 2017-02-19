@@ -337,6 +337,11 @@ public class SelectCustomerActivity extends AppCompatActivity {
                         customer.setPaymentMethod(App.CASH_CUSTOMER);
                     }
 
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_DELIVERED, App.FALSE);
+                    filter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+
+                    customer.setOpenDelivery(db.checkData(db.CUSTOMER_DELIVERY_HEADER,filter));
                     customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
                     customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
                     customer.setCollection(db.checkData(db.COLLECTION,collectionMap)||db.checkData(db.COLLECTION,collectionMap1));
@@ -414,10 +419,15 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     collectionMap1.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
                     collectionMap1.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
 
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_DELIVERED, App.FALSE);
+                    filter.put(db.KEY_CUSTOMER_NO, cursor.getString(cursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+
+                    customer.setOpenDelivery(db.checkData(db.CUSTOMER_DELIVERY_HEADER, filter));
 
                     customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
                     customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
-                    customer.setCollection(db.checkData(db.COLLECTION,collectionMap)||db.checkData(db.COLLECTION,collectionMap1));
+                    customer.setCollection(db.checkData(db.COLLECTION, collectionMap) || db.checkData(db.COLLECTION,collectionMap1));
                     customer.setMerchandize(false);
                     customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map));
                     // customer.setCustomerItemNo(cursor.getString(cursor.getColumnIndex(db.KEY_ITEMNO)));

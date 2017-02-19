@@ -161,6 +161,10 @@ public class App extends Application {
     public static final String DELIVERY = "Delivery";
     public static final String COLLECTION = "Collection";
 
+    //Odometer types
+    public static final String ODOMETER_BEGIN_DAY = "odometerBeginDay";
+    public static final String ODOMETER_END_DAY = "odomterEndDay";
+
 
     @Override
     public void onCreate() {

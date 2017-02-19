@@ -247,6 +247,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_UOM_UNIT = "uomUnit";
     //Odometer
     public static final String KEY_ODOMETER_VALUE = "odometerValue";
+    public static final String KEY_ODOMETER_TYPE = "odometerType";
 
     //Customer Activities
     public static final String KEY_IS_ORDER_CAPTURED = "isOrderCaptured";
@@ -824,6 +825,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_TIME_STAMP + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
+                + KEY_ODOMETER_TYPE + " TEXT,"
                 + KEY_ODOMETER_VALUE + " TEXT " + ")";
 
         String TABLE_CUSTOMER_FLAGS = "CREATE TABLE " + CUSTOMER_FLAGS + "("

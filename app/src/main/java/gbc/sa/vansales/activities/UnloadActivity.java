@@ -136,33 +136,74 @@ public class UnloadActivity extends AppCompatActivity {
         processUnloadInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Dialog dialog = new Dialog(UnloadActivity.this);
-                dialog.setContentView(R.layout.dialog_doprint);
-                dialog.setCancelable(false);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                dialog.show();
-                btn_print.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(unloadVarianceExist("")){
-                            new postDataNew().execute();
-                        }
-                        else{
-                            clearVanStock();
-                            HashMap<String, String> altMap = new HashMap<>();
-                            altMap.put(db.KEY_IS_UNLOAD, "true");
-                            HashMap<String, String> filterMap = new HashMap<>();
-                            filterMap.put(db.KEY_IS_UNLOAD, "false");
-                            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UnloadActivity.this);
+                alertDialogBuilder.setTitle(getString(R.string.message))
+                        .setMessage(getString(R.string.delete_msg))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
 
-                            dialog.dismiss();
-                            Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
-                            startActivity(intent);
-                        }
-                    }
-                });
+                                final Dialog pd = new Dialog(UnloadActivity.this);
+                                pd.setContentView(R.layout.dialog_doprint);
+                                pd.setCancelable(false);
+                                pd.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                LinearLayout btn_print = (LinearLayout) pd.findViewById(R.id.ll_print);
+                                LinearLayout btn_notprint = (LinearLayout) pd.findViewById(R.id.ll_notprint);
+                                pd.show();
+                                btn_print.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (unloadVarianceExist("")) {
+                                            new postDataNew().execute();
+                                        } else {
+                                            clearVanStock();
+                                            HashMap<String, String> altMap = new HashMap<>();
+                                            altMap.put(db.KEY_IS_UNLOAD, "true");
+                                            HashMap<String, String> filterMap = new HashMap<>();
+                                            filterMap.put(db.KEY_IS_UNLOAD, "false");
+                                            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+                                            pd.dismiss();
+                                            Intent intent = new Intent(UnloadActivity.this, DashboardActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+                                btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (unloadVarianceExist("")) {
+                                            new postDataNew().execute();
+                                        } else {
+                                            clearVanStock();
+                                            HashMap<String, String> altMap = new HashMap<>();
+                                            altMap.put(db.KEY_IS_UNLOAD, "true");
+                                            HashMap<String, String> filterMap = new HashMap<>();
+                                            filterMap.put(db.KEY_IS_UNLOAD, "false");
+                                            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+                                            pd.dismiss();
+                                            Intent intent = new Intent(UnloadActivity.this, DashboardActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+
+
+
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                // show it
+                alertDialog.show();
+
             }
         });
         /*processUnloadInventory.setOnClickListener(new View.OnClickListener() {

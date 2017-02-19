@@ -491,14 +491,12 @@ public class Helpers {
         map.put("OrderValue",orderValue);
         return map;
     }
-
     public static HashMap<String, String> buildOdometerHeader(String tripId,String value) {
         HashMap<String, String> map = new HashMap<>();
         map.put("TripID",tripId);
         map.put("Value", value);
         return map;
     }
-
     public static HashMap<String,String> buildnewCustomerHeader(String customerid,String ownername,String ownername_ar,
                                                                 String tradename,String tradename_ar,String area,
                                                                 String street,String crno, String pobox,
@@ -531,7 +529,6 @@ public class Helpers {
         map.put("CustomerId", customerID);
         return map;
     }
-
     public static void createBackgroundJob(Context context){
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -578,5 +575,9 @@ public class Helpers {
             return "";
         }
 
+    }
+    public static void logData(Context context,String data){
+        Logger logger = new Logger();
+        logger.appendLog(context,data);
     }
 }

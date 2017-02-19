@@ -134,7 +134,6 @@ public class BeginDayFragment extends Fragment {
         }
         btn_continue = (Button) view.findViewById(R.id.btnBack);
         boolean isMessageClicked = ((BeginTripActivity) getActivity()).hello;
-        Log.e("=========", "" + isMessageClicked);
         setBeginDayVisibility();
        /* if(isMessageClicked){
 
@@ -253,9 +252,11 @@ public class BeginDayFragment extends Fragment {
             map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
             map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
             map.put(db.KEY_TIME_STAMP, timeStamp);
+            map.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_BEGIN_DAY);
             map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
             HashMap<String, String> filter = new HashMap<>();
             filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+            filter.put(db.KEY_ODOMETER_TYPE, App.ODOMETER_BEGIN_DAY);
             if (db.checkData(db.ODOMETER, filter)) {
                 db.updateData(db.ODOMETER, map, filter);
             } else {
@@ -303,6 +304,7 @@ public class BeginDayFragment extends Fragment {
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 HashMap<String, String> filter = new HashMap<>();
                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_BEGIN_DAY);
                 db.updateData(db.ODOMETER, map, filter);
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_BEGIN_DAY, "true");

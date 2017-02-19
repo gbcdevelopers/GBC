@@ -159,7 +159,21 @@
             android:textColor="@color/white"
             android:layout_marginTop="@dimen/h3"
             />
+
+       <!-- <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/vanstock_overview"
+            android:textSize="@dimen/label_small"
+            android:textAllCaps="true"
+            android:text="This is test"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>-->
     </LinearLayout>
+
 
     </RelativeLayout>
 

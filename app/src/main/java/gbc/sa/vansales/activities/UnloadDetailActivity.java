@@ -1066,8 +1066,10 @@ public class UnloadDetailActivity extends AppCompatActivity {
                     unload.setUom(dataStoreList.get(i).getUom());
                     float casesTotal = 0;
                     float unitsTotal = 0;
-                    casesTotal = Float.parseFloat(dataStoreList.get(i).getCases()) - Float.parseFloat(arrayList.get(i).getCases());
-                    unitsTotal = Float.parseFloat(dataStoreList.get(i).getPic()) - Float.parseFloat(arrayList.get(i).getPic());
+                    //casesTotal = Float.parseFloat(dataStoreList.get(i).getCases()) - Float.parseFloat(arrayList.get(i).getCases());
+                    casesTotal = Float.parseFloat(arrayList.get(i).getCases());
+                   // unitsTotal = Float.parseFloat(dataStoreList.get(i).getPic()) - Float.parseFloat(arrayList.get(i).getPic());
+                    unitsTotal = Float.parseFloat(arrayList.get(i).getPic());
                     unload.setCases(String.valueOf(casesTotal));
                     unload.setPic(String.valueOf(unitsTotal));
                     unload.setReasonCode(arrayList.get(i).getReasonCode());

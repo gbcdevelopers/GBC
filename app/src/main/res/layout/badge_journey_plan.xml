@@ -81,13 +81,22 @@
                 <LinearLayout
                     android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/img_customer_new"
                         android:src="@drawable/icon_new"
                         android:visibility="invisible"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+
+                    <ImageView
+                        android:id="@+id/img_customer_delivery"
+                        android:src="@drawable/icon_delivery_pending"
+                        android:visibility="invisible"
+                        android:layout_marginLeft="@dimen/all_padding"
                         android:layout_gravity="center_horizontal|center_vertical"
                         android:layout_width="30dp"
                         android:layout_height="30dp"/>
