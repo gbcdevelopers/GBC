@@ -140,6 +140,11 @@ public class ConfigStore {
     public static final String CollectionRequest_TR = "AR";
     public static final String DeliveryRequest_TR = "DLV";
     public static final String UnloadRequest_TR = "UL";
+    public static final String BeginDayRequest_TR = "BD";
+    public static final String BeginDayOdometerRequest_TR = "ODOBD";
+    public static final String EndDayRequest_TR = "ED";
+    public static final String EndDayOdometerRequest_TR = "ODOED";
+    public static final String LoadConfirmation_TR = "LCON";
 
     static {
         init();

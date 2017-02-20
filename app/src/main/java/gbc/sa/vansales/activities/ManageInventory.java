@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,10 +24,13 @@ import android.widget.Toast;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -38,9 +42,11 @@ public class ManageInventory extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     float lastValue = 0;
     LoadingSpinner loadingSpinner;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_inventery);
+        flag = DriverRouteFlags.get();
         setTitle(R.string.manage_inventory);
         loadingSpinner = new LoadingSpinner(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -68,8 +74,85 @@ public class ManageInventory extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //  Toast.makeText(getApplicationContext(), "VanStock Popup", Toast.LENGTH_LONG).show();
-                Intent i = new Intent(ManageInventory.this, VanStockActivity.class);
-                startActivity(i);
+                if(!(flag==null)){
+                    if(!flag.getIsViewVanStock().equals("")&&!flag.getIsViewVanStock().equals("0")){
+                        String passwordkey = flag.getIsViewVanStock();
+                        String password = "";
+                        if(passwordkey.equals("1")){
+                            password = flag.getPassword1();
+                        }
+                        if(passwordkey.equals("2")){
+                            password = flag.getPassword2();
+                        }
+                        if(passwordkey.equals("3")){
+                            password = flag.getPassword3();
+                        }
+                        if(passwordkey.equals("4")){
+                            password = flag.getPassword4();
+                        }
+                        if(passwordkey.equals("5")){
+                            password = flag.getPassword5();
+                        }
+                        final Dialog dialog = new Dialog(ManageInventory.this);
+                        View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                        final EditText userInput = (EditText) view
+                                .findViewById(R.id.password);
+                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                        final String finalPassword = password;
+                        btn_continue.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                hideKeyboard();
+                                String input = userInput.getText().toString();
+                                if (input.equals("")) {
+                                    dialog.cancel();
+                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    if (input.equals(finalPassword)){
+                                        try{
+                                            dialog.dismiss();
+                                            Intent i = new Intent(ManageInventory.this, VanStockActivity.class);
+                                            startActivity(i);
+                                        }
+                                        catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    else{
+                                        dialog.cancel();
+                                        hideKeyboard();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                        btn_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(dialog.getWindow().getAttributes());
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        lp.gravity = Gravity.CENTER;
+                        dialog.getWindow().setAttributes(lp);
+                        dialog.setContentView(view);
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }
+                    else{
+                        Intent i = new Intent(ManageInventory.this, VanStockActivity.class);
+                        startActivity(i);
+                    }
+                }
+                else{
+                    Intent i = new Intent(ManageInventory.this, VanStockActivity.class);
+                    startActivity(i);
+                }
+
             }
         });
         unload.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +341,7 @@ public class ManageInventory extends AppCompatActivity {
     }
 
     public class postData extends AsyncTask<Void, Void, Void> {
-        String flag = "";
+        String flag1 = "";
         String value = "";
         String purchaseNumber = "";
         @Override
@@ -277,7 +360,7 @@ public class ManageInventory extends AppCompatActivity {
             map.put("TripID", Settings.getString(App.TRIP_ID));
             map.put("Value", this.value);
             JSONArray deepEntity = new JSONArray();
-            this.flag = IntegrationService.postOdometer(ManageInventory.this, App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
+            this.flag1 = IntegrationService.postOdometer(ManageInventory.this, App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
             return null;
         }
         @Override
@@ -286,7 +369,7 @@ public class ManageInventory extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             hideKeyboard();
-            if (this.flag.equals(purchaseNumber)) {
+            if (this.flag1.equals(purchaseNumber)) {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
@@ -295,7 +378,89 @@ public class ManageInventory extends AppCompatActivity {
                 filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
                 db.updateData(db.ODOMETER, map, filter);
 
-                final Dialog dialog = new Dialog(ManageInventory.this);
+
+                if(!(flag==null)){
+                    if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
+                        String passwordkey = flag.getIsLoadSecurityGuard();
+                        String password = "";
+                        if(passwordkey.equals("1")){
+                            password = flag.getPassword1();
+                        }
+                        if(passwordkey.equals("2")){
+                            password = flag.getPassword2();
+                        }
+                        if(passwordkey.equals("3")){
+                            password = flag.getPassword3();
+                        }
+                        if(passwordkey.equals("4")){
+                            password = flag.getPassword4();
+                        }
+                        if(passwordkey.equals("5")){
+                            password = flag.getPassword5();
+                        }
+                        final Dialog dialog = new Dialog(ManageInventory.this);
+                        View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                        final EditText userInput = (EditText) view
+                                .findViewById(R.id.password);
+                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                        final String finalPassword = password;
+                        btn_continue.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                hideKeyboard();
+                                String input = userInput.getText().toString();
+                                if (input.equals("")) {
+                                    dialog.cancel();
+                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    if (input.equals(finalPassword)){
+                                        try{
+                                            dialog.dismiss();
+                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                                            startActivity(i);
+                                        }
+                                        catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    else{
+                                        dialog.cancel();
+                                        hideKeyboard();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                        btn_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(dialog.getWindow().getAttributes());
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        lp.gravity = Gravity.CENTER;
+                        dialog.getWindow().setAttributes(lp);
+                        dialog.setContentView(view);
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }
+                    else{
+                        Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                        startActivity(i);
+                    }
+                }
+                else{
+                    Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                    startActivity(i);
+                }
+
+
+
+               /* final Dialog dialog = new Dialog(ManageInventory.this);
                 View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
                 final EditText userInput = (EditText) view
                         .findViewById(R.id.password);
@@ -330,9 +495,9 @@ public class ManageInventory extends AppCompatActivity {
                 dialog.setContentView(view);
                 dialog.setCancelable(false);
                 dialog.show();
+*/
 
-
-            } else if (this.flag.equals("Y")) {
+            } else if (this.flag1.equals("Y")) {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
@@ -341,7 +506,87 @@ public class ManageInventory extends AppCompatActivity {
                 filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
                 db.updateData(db.ODOMETER, map, filter);
 
-                final Dialog dialog = new Dialog(ManageInventory.this);
+                if(!(flag==null)){
+                    if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
+                        String passwordkey = flag.getIsLoadSecurityGuard();
+                        String password = "";
+                        if(passwordkey.equals("1")){
+                            password = flag.getPassword1();
+                        }
+                        if(passwordkey.equals("2")){
+                            password = flag.getPassword2();
+                        }
+                        if(passwordkey.equals("3")){
+                            password = flag.getPassword3();
+                        }
+                        if(passwordkey.equals("4")){
+                            password = flag.getPassword4();
+                        }
+                        if(passwordkey.equals("5")){
+                            password = flag.getPassword5();
+                        }
+                        final Dialog dialog = new Dialog(ManageInventory.this);
+                        View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                        final EditText userInput = (EditText) view
+                                .findViewById(R.id.password);
+                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                        final String finalPassword = password;
+                        btn_continue.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                hideKeyboard();
+                                String input = userInput.getText().toString();
+                                if (input.equals("")) {
+                                    dialog.cancel();
+                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    if (input.equals(finalPassword)){
+                                        try{
+                                            dialog.dismiss();
+                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                                            startActivity(i);
+                                        }
+                                        catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    else{
+                                        dialog.cancel();
+                                        hideKeyboard();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                        btn_cancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        lp.copyFrom(dialog.getWindow().getAttributes());
+                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        lp.gravity = Gravity.CENTER;
+                        dialog.getWindow().setAttributes(lp);
+                        dialog.setContentView(view);
+                        dialog.setCancelable(false);
+                        dialog.show();
+                    }
+                    else{
+                        Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                        startActivity(i);
+                    }
+                }
+                else{
+                    Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                    startActivity(i);
+                }
+
+
+                /*final Dialog dialog = new Dialog(ManageInventory.this);
                 View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
                 final EditText userInput = (EditText) view
                         .findViewById(R.id.password);
@@ -375,9 +620,9 @@ public class ManageInventory extends AppCompatActivity {
                 dialog.getWindow().setAttributes(lp);
                 dialog.setContentView(view);
                 dialog.setCancelable(false);
-                dialog.show();
-            } else if (this.flag.contains("Error")) {
-                Toast.makeText(ManageInventory.this, this.flag.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                dialog.show();*/
+            } else if (this.flag1.contains("Error")) {
+                Toast.makeText(ManageInventory.this, this.flag1.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             } else {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
                 alertDialogBuilder.setTitle(R.string.error_title)

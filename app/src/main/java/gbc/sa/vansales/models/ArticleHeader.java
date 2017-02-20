@@ -197,11 +197,11 @@ public class ArticleHeader implements Parcelable {
     };
 
     public static ArticleHeader getArticle(ArrayList<ArticleHeader> list, String searchString) {
-        Log.e("Material No","" + searchString);
+        //Log.e("Material No","" + searchString);
         for (ArticleHeader article : list) {
 
             if (article.getMaterialNo().equals(searchString)){
-                Log.e("Inside if","Condition");
+               // Log.e("Inside if","Condition");
                 return article;
             }
         }

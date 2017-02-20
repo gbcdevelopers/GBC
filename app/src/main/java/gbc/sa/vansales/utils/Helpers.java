@@ -46,6 +46,7 @@ import gbc.sa.vansales.App;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.sap.BackgroundJob;
 import gbc.sa.vansales.sap.BackgroundJobLower;
@@ -381,10 +382,12 @@ public class Helpers {
     }
     public static void loadData(Context context) {
         Log.e("Helper Load", "Load Data");
+        DriverRouteFlags.loadData(context);
         ArticleHeaders.loadData(context);
         CustomerHeaders.loadData(context);
         OrderReasons.loadData(context);
         Banks.loadData(context);
+
     }
     public static HashMap<String, String> buildHeaderMap(String function, String orderId, String documentType, String customerId,
                                                          String orderValue, String purchaseNumber, String documentDate) {

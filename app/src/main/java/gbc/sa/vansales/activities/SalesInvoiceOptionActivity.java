@@ -23,6 +23,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.CustomerOperationAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Sales;
@@ -49,10 +50,12 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
     TextView tv_credit_days;
     TextView tv_credit_limit;
     TextView tv_available_limit;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
+        flag = DriverRouteFlags.get();
         strText = new String[]{getString(R.string.sales_invoice), getString(R.string.invoice_label), getString(R.string.end_invoice)};
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
@@ -138,17 +141,21 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         startActivity(intent1);
                         break;
                     case 1:
-
-                        if(invoiceExist()){
-                            Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
-                            intent2.putExtra("headerObj", object);
-                            startActivity(intent2);
+                        if(!flag.isDisplayInvoiceSummary()){
                             break;
                         }
                         else{
-                            Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
+                            if(invoiceExist()){
+                                Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
+                                intent2.putExtra("headerObj", object);
+                                startActivity(intent2);
+                                break;
+                            }
+                            else{
+                                Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                         }
-
                     case 2:
                         if(invoiceExist()){
                             Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
@@ -159,6 +166,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                         }
                         else{
                             Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
+                            break;
                         }
 
                     default:

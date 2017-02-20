@@ -179,23 +179,43 @@ public class PromotionActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String,String>map = new HashMap<>();
-            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_CUSTOMER_NO, "");
             map.put(db.KEY_MATERIAL_NO,"");
             map.put(db.KEY_AMOUNT,"");
             HashMap<String,String>filter = new HashMap<>();
+            HashMap<String,String>filter1 = new HashMap<>();
             filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            String blankCust = "";
+            filter1.put(db.KEY_CUSTOMER_NO,blankCust);
             if(promoCode.equals(App.Promotions02)){
                 filter.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
+                filter1.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
             }
             else if(promoCode.equals(App.Promotions05)){
                 filter.put(db.KEY_PROMOTION_TYPE,App.Promotions05);
+                filter1.put(db.KEY_PROMOTION_TYPE,App.Promotions05);
             }
             else if(promoCode.equals(App.Promotions07)){
                 filter.put(db.KEY_PROMOTION_TYPE,App.Promotions07);
+                filter1.put(db.KEY_PROMOTION_TYPE,App.Promotions07);
             }
-            Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
-            cursor.moveToFirst();
-            applyPromotions(cursor,from);
+            if(db.checkData(db.PROMOTIONS, filter)){
+                Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
+                cursor.moveToFirst();
+                if(cursor.getCount()>0){
+                  applyPromotions(cursor,from);
+                }
+
+            }
+            else{
+                Cursor cursor = db.getData(db.PROMOTIONS,map,filter1);
+                cursor.moveToFirst();
+                if(cursor.getCount()>0){
+                  applyPromotions(cursor,from);
+                }
+
+            }
+
             return null;
         }
         @Override
@@ -243,6 +263,8 @@ public class PromotionActivity extends AppCompatActivity {
         }
         else if(from.equals("Final Invoice")){
             do{
+                //Log.e("Promotion Cursor","" + promotionCursor.getCount());
+                //Log.e("Customer in cursor","" + promotionCursor.getString(promotionCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 HashMap<String,String>map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO,"");
                 map.put(db.KEY_MATERIAL_NO,"");

@@ -49,6 +49,7 @@ import gbc.sa.vansales.adapters.LoadRequestBadgeAdapter;
 import gbc.sa.vansales.adapters.OrderRequestBadgeAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.LoadRequest;
@@ -97,12 +98,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
     TextView tv_header;
     public ArrayList<ArticleHeader> articles;
     boolean isPrint = false;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pre_sale_order_proceed);
         View v = (View) findViewById(R.id.inc_common_header);
         tv_header = (TextView) findViewById(R.id.tv_top_header);
+        myCalendar = Calendar.getInstance();
+        flag = DriverRouteFlags.get();
         tv_header.setVisibility(View.VISIBLE);
         tv_header.setText(getString(R.string.presalesorder));
         articles = new ArrayList<>();
@@ -144,7 +148,18 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         setTitle(getString(R.string.presalesorder));
         //  list.setItemsCanFocus(true);
         if (from.equalsIgnoreCase("button")) {
-            new loadItems().execute();
+            if(!flag.getDefaultDeliveryDays().equals("")&&!flag.getDefaultDeliveryDays().equals("0")){
+                iv_calendar.setEnabled(false);
+                String days = flag.getDefaultDeliveryDays();
+                myCalendar.setTime(new Date());
+                myCalendar.add(Calendar.DAY_OF_YEAR, Integer.parseInt(days));
+                updateLabel();
+                new loadItems().execute();
+            }
+            else{
+                new loadItems().execute();
+            }
+
             //list.setEnabled(true);
         } else if (from.equalsIgnoreCase("list")) {
             new loadItemsOrder(orderList.getOrderId());
@@ -230,7 +245,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
 
             }
         });
-        myCalendar = Calendar.getInstance();
+
         iv_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -374,6 +389,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             }
         });
     }
+
+
     public void hideSoftKeyboard() {
         InputMethodManager inputMethodManager =
                 (InputMethodManager) PreSaleOrderProceedActivity.this.getSystemService(

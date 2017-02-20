@@ -27,6 +27,7 @@ import gbc.sa.vansales.models.Print;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.Settings;
 public class DataPostingAuditActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
@@ -81,7 +82,69 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
         swipeDetector = new SwipeDetector();
 
-        new loadTransactions().execute();
+
+        //new loadTransactions().execute();
+        new loadDriverTransactions().execute();
+    }
+
+    public class loadDriverTransactions extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String>beginDayMap = new HashMap<>();
+            beginDayMap.put(db.KEY_PURCHASE_NUMBER,"");
+            beginDayMap.put(db.KEY_IS_POSTED,"");
+
+            HashMap<String,String>odoMeterMap = new HashMap<>();
+            odoMeterMap.put(db.KEY_PURCHASE_NUMBER,"");
+            odoMeterMap.put(db.KEY_IS_POSTED, "");
+
+
+            HashMap<String,String>lconMap = new HashMap<>();
+            lconMap.put(db.KEY_ORDER_ID,"");
+            lconMap.put(db.KEY_IS_POSTED,"");
+
+            HashMap<String,String>filter = new HashMap<>();
+
+            HashMap<String,String>bdFilter = new HashMap<>();
+            bdFilter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
+
+            HashMap<String,String>edFilter = new HashMap<>();
+            edFilter.put(db.KEY_FUNCTION,ConfigStore.EndDayFunction);
+
+            HashMap<String,String>odometerFilter = new HashMap<>();
+            odometerFilter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_BEGIN_DAY);
+
+            HashMap<String,String>odometerEndFilter = new HashMap<>();
+            odometerEndFilter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
+
+            Cursor beginDay = db.getData(db.BEGIN_DAY,beginDayMap,bdFilter);
+            Cursor endDay = db.getData(db.BEGIN_DAY,beginDayMap,edFilter);
+            Cursor odoMeter = db.getData(db.ODOMETER,odoMeterMap,odometerFilter);
+            Cursor odoMeterEnd = db.getData(db.ODOMETER,odoMeterMap,odometerEndFilter);
+            Cursor loadConfirmation = db.getData(db.LOAD_CONFIRMATION_HEADER,lconMap,filter);
+            if(beginDay.getCount()>0){
+                beginDay.moveToFirst();
+            }
+            if(odoMeter.getCount()>0){
+                odoMeter.moveToFirst();
+            }
+            if(loadConfirmation.getCount()>0){
+                loadConfirmation.moveToFirst();
+            }
+            if(endDay.getCount()>0){
+                endDay.moveToFirst();
+            }
+            if(odoMeterEnd.getCount()>0){
+                odoMeterEnd.moveToFirst();
+            }
+            setDriverAuditItems(beginDay, odoMeter, loadConfirmation,endDay,odoMeterEnd);
+            //setAuditItems(orderRequest, salesRequest, deliveryRequest,loadRequest);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            new loadTransactions().execute();
+        }
     }
 
     public class loadTransactions extends AsyncTask<Void, Void, Void>{
@@ -119,7 +182,7 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         Cursor loadRequest = cursor4;
         ArrayList<String> temp=new ArrayList<String>();
         temp.clear();
-        arrayList.clear();
+       // arrayList.clear();
         int i= 1;
         if(orderRequest.getCount()>0){
             orderRequest.moveToFirst();
@@ -198,5 +261,115 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             }
             while (loadRequest.moveToNext());
         }
+    }
+    private void setDriverAuditItems(Cursor cursor1, Cursor cursor2, Cursor cursor3,Cursor cursor4,Cursor cursor5){
+        Cursor beginDay = cursor1;
+        Cursor odometer = cursor2;
+        Cursor loadConfirmation = cursor3;
+        Cursor endDay = cursor4;
+        Cursor odometerEnd = cursor5;
+
+        ArrayList<String> temp=new ArrayList<String>();
+        temp.clear();
+        arrayList.clear();
+        int i= 1;
+        if(beginDay.getCount()>0){
+            beginDay.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(beginDay.getString(beginDay.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.BeginDayRequest_TR);
+                print.setIsPosted(beginDay.getString(beginDay.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED)?true:false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+                //  arrayList.add(print);
+
+            }
+            while (beginDay.moveToNext());
+        }
+
+        if(odometer.getCount()>0){
+            odometer.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(odometer.getString(odometer.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.BeginDayOdometerRequest_TR);
+                print.setIsPosted(odometer.getString(odometer.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+
+            }
+            while (odometer.moveToNext());
+        }
+
+        if(loadConfirmation.getCount()>0){
+            loadConfirmation.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(loadConfirmation.getString(loadConfirmation.getColumnIndex(db.KEY_ORDER_ID)));
+                print.setTransactionType(ConfigStore.LoadConfirmation_TR);
+                print.setIsPosted(loadConfirmation.getString(loadConfirmation.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+
+            }
+            while (loadConfirmation.moveToNext());
+        }
+
+        if(endDay.getCount()>0){
+            endDay.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(endDay.getString(endDay.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.EndDayRequest_TR);
+                print.setIsPosted(endDay.getString(endDay.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED)?true:false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+                //  arrayList.add(print);
+
+            }
+            while (endDay.moveToNext());
+        }
+
+        if(odometerEnd.getCount()>0){
+            odometerEnd.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(odometerEnd.getString(odometerEnd.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.EndDayOdometerRequest_TR);
+                print.setIsPosted(odometerEnd.getString(odometerEnd.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED)?true:false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+                //  arrayList.add(print);
+
+            }
+            while (odometerEnd.moveToNext());
+        }
+
     }
 }

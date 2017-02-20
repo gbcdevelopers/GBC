@@ -1271,7 +1271,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (!filters.isEmpty()) {
             filterKeys = filterBuilder(filters, false);
             filterValues = paramsBuilder(filters, true);
-            filterArray = paramsBuilder(filters, true).split(",");
+            filterArray = paramsBuilder(filters, true).split(",",-1);
         }
      //   Log.e("Parameter", "" + parameters);
     //    Log.e("Filters in DB", "" + filterKeys);

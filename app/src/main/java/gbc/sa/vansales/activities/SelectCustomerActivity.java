@@ -36,6 +36,7 @@ import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.adapters.PagerAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Customer;
@@ -68,12 +69,13 @@ public class SelectCustomerActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<CustomerHeader> customers = new ArrayList<>();
     LoadingSpinner loadingSpinner;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
-
+        flag = DriverRouteFlags.get();
         loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
         OrderReasons.loadData(getApplicationContext());
@@ -88,6 +90,13 @@ public class SelectCustomerActivity extends AppCompatActivity {
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         floatButton = (FloatingActionButton) findViewById(R.id.float_map);
         addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
+        if(!(flag == null)){
+            if(!flag.isAddCustomer()){
+                addCustomer.setEnabled(false);
+                addCustomer.setAlpha(0.5f);
+            }
+        }
+
         /*if(!App.DriverRouteControl.isAddCustomer()){
             addCustomer.setEnabled(false);
             addCustomer.setAlpha(0.5f);

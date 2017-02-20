@@ -274,6 +274,7 @@
     <string name="owner_name_ar">Owner Name <i>(Ar)</i></string>
     <string name="paid">Paid</string>
     <string name="password">E102964</string>
+    <string name="password_mismatch">Credentials do not match. Please try again</string>
     <string name="payment">payment</string>
     <string name="payment_details">Payment Details</string>
     <string name="payment_mode">Pay By</string>

@@ -194,13 +194,13 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
 
         HashMap<String,String>filter = new HashMap<>();
         filter.put(db.KEY_PROMOTION_TYPE,Promotions02);
-        filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
         HashMap<String,String>filter1 = new HashMap<>();
         filter1.put(db.KEY_PROMOTION_TYPE,Promotions05);
-        filter1.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        //filter1.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
         HashMap<String,String>filter2 = new HashMap<>();
         filter2.put(db.KEY_PROMOTION_TYPE,Promotions07);
-        filter2.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+        //filter2.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
         if(db.checkData(db.PROMOTIONS,filter)) {
             setPromotions(Promotions02);
         }

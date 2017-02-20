@@ -29,6 +29,7 @@ import gbc.sa.vansales.activities.SelectCustomerStatus;
 import gbc.sa.vansales.adapters.CustomerStatusAdapter;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerStatus;
@@ -49,6 +50,7 @@ public class AllCustomerFragment extends Fragment {
     private ArrayList<CustomerStatus> arrayList = new ArrayList<>();
     private ArrayAdapter<CustomerStatus> adapter;
     private ArrayList<Reasons> reasonsList = new ArrayList<>();
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     ListView listView;
     DatabaseHandler db;
     View view;
@@ -57,6 +59,7 @@ public class AllCustomerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.visitall_fragment, container, false);
+        flag = DriverRouteFlags.get();
         new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
             @Override
             public void callbackSuccess(android.location.Location location) {
@@ -79,21 +82,23 @@ public class AllCustomerFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Const.customerPosition = position;
-                Customer customer = Const.allCustomerdataArrayList.get(position);
-                //Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
-               /* Intent intent = new Intent(getActivity(), SelectCustomerStatus.class);
-                intent.putExtra("headerObj", customer);
-                intent.putExtra("msg","all");
-                startActivity(intent);*/
-                showStatusDialog(customer);
-               /* boolean inSequence = checkIfinSequence(customer);
-                if(inSequence){
-                    showStatusDialog(customer);
+                Log.e("Call Sec","" + flag.isCallSequence());
+                if(!(flag==null)){
+                    if(!flag.isCallSequence()){
+                        Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Const.customerPosition = position;
+                        Customer customer = Const.allCustomerdataArrayList.get(position);
+                        showStatusDialog(customer);
+                    }
                 }
                 else{
-                    Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
-                }*/
+                    Const.customerPosition = position;
+                    Customer customer = Const.allCustomerdataArrayList.get(position);
+                    showStatusDialog(customer);
+                }
+
             }
         });
         return view;

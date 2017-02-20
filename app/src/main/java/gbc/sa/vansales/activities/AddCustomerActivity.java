@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -252,6 +253,7 @@ public class AddCustomerActivity extends AppCompatActivity {
     void showDialog(String type,String param){
         if(type.equals("Distribution")){
             final Dialog dialog = new Dialog(AddCustomerActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //dialog.setTitle(getString(R.string.shop_status));
             arrayList.clear();
 

@@ -71,6 +71,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
     TextView tv_credit_limit;
     TextView tv_available_limit;
 
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -274,16 +275,24 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         }
 
                     case 2:
-                        if(canPerformSale()&&isLimitAvailable){
-                            Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
-                            intent2.putExtra("from", "customerdetail");
-                            intent2.putExtra("headerObj", object);
-                            startActivity(intent2);
-                            break;
+                        if(!(flag==null)){
+                            if(!flag.isNoSale()){
+                                break;
+                            }
                         }
                         else{
-                            Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                            if(canPerformSale()&&isLimitAvailable){
+                                Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                                intent2.putExtra("from", "customerdetail");
+                                intent2.putExtra("headerObj", object);
+                                startActivity(intent2);
+                                break;
+                            }
+                            else{
+                                Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                            }
                         }
+
 
                     case 3:
                         Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);

@@ -10,20 +10,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.DriverRouteFlags;
 public class PrinterReportsActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
     Button btn_print;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_printer_reports);
+        flag = DriverRouteFlags.get();
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
         btn_print = (Button) findViewById(R.id.btn_print_printer_report);
+        if(!(flag==null)){
+            if(!flag.isEodSalesReports()){
+                btn_print.setAlpha(0.5f);
+                btn_print.setEnabled(false);
+            }
+        }
         btn_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

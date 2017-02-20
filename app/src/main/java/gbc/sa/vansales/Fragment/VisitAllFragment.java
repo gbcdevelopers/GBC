@@ -48,6 +48,7 @@ import gbc.sa.vansales.adapters.CustomerStatusAdapter;
 import gbc.sa.vansales.adapters.DataAdapter;
 import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerData;
@@ -77,6 +78,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     View view;
     ArrayList<CustomerHeader> customers = new ArrayList<>();
     android.location.Location myLocation = null;
+    App.DriverRouteControl flag = new App.DriverRouteControl();
 
     private EditText mPinFirstDigitEditText;
     private EditText mPinSecondDigitEditText;
@@ -92,6 +94,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view =inflater.inflate(R.layout.visitall_fragment, container, false);
+        flag = DriverRouteFlags.get();
         new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
             @Override
             public void callbackSuccess(android.location.Location location) {
