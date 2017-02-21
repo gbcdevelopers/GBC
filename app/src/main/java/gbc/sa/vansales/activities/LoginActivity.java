@@ -76,8 +76,8 @@ public class LoginActivity extends Activity {
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-        id = "E102964";
-        password = "E102964";
+        //id = "E102964";
+        //password = "E102964";
         Helpers.logData(getApplicationContext(),"Login Credentials" + id + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();

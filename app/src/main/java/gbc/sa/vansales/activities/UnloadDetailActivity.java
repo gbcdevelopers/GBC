@@ -168,8 +168,12 @@ public class UnloadDetailActivity extends AppCompatActivity {
                 } else {
                     ed_pcs.setEnabled(false);
                 }
-                ed_cases.setText(sales.getCases());
-                ed_pcs.setText(sales.getPic());
+                //ed_cases.setText(sales.getCases());
+                //ed_pcs.setText(sales.getPic());
+
+                ed_cases.setText(sales.getCases().equals("0")?"":sales.getCases());
+                ed_pcs.setText(sales.getPic().equals("0")?"":sales.getPic());
+
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -195,8 +199,12 @@ public class UnloadDetailActivity extends AppCompatActivity {
                             String strpcsinv = ed_pcs_inv.getText().toString();
                             TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                             TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                            tv_cases.setText(strCase);
-                            tv_pcs.setText(strpcs);
+                            //tv_cases.setText(strCase);
+                            //tv_pcs.setText(strpcs);
+
+                            tv_cases.setText(strCase.equals("")?"0":strCase);
+                            tv_pcs.setText(strpcs.equals("")?"0":strpcs);
+
                             if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
                                 strCase = String.valueOf(0);
                             }

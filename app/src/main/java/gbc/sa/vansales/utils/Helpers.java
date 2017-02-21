@@ -87,6 +87,10 @@ public class Helpers {
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         return Settings.getString(App.LANGUAGE).equals("ar")? convertArabicText(timeStamp):timeStamp;
     }
+    public static String getCurrentTimeStampAccessCode() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return Settings.getString(App.LANGUAGE).equals("ar")? convertArabicText(timeStamp):timeStamp;
+    }
     public static String[] parseTimeStamp(String timeStamp) {
         //This method is used for parsing the timestamp and format to send to SAP
         String date = timeStamp.substring(0, 8);

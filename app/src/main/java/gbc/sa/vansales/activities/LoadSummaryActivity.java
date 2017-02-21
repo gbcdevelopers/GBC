@@ -121,7 +121,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     rl_specify.setVisibility(View.VISIBLE);
                     //
                     final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
-                    Log.e("Adapter", "" + myAdapter.getCount());
+                   // Log.e("Adapter", "" + myAdapter.getCount());
                     spin.setAdapter(myAdapter);
 
                 /*if(item.getUom().equals(App.CASE_UOM)||item.getUom().equals(App.CASE_UOM_NEW)||item.getUom().equals(App.BOTTLES_UOM)){

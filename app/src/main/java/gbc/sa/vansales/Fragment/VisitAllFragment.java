@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
@@ -512,7 +513,7 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     }
     public void showAccessCode(final Customer customer){
         try{
-            String accessCode = customer.getCustomerID() + App.CUSTOMER_OUT_OF_RANGE;
+            String accessCode = Helpers.getCurrentTimeStampAccessCode() + StringUtils.stripStart(customer.getCustomerID(),"0") + App.CUSTOMER_OUT_OF_RANGE;
             byte[] code = accessCode.getBytes();
             final String generatedCode = OTPGenerator.generateOTP(code,1,6,false,1);
             Log.e("Generated code", "" + generatedCode);
@@ -523,6 +524,8 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setView(view);
 
+            TextView tv_access_code = (TextView)view.findViewById(R.id.tv_access_code);
+            tv_access_code.setText(getString(R.string.accesscode) + "\n" + accessCode);
             mPinFirstDigitEditText = (EditText)view.findViewById(R.id.pin_first_edittext);
             mPinSecondDigitEditText = (EditText) view.findViewById(R.id.pin_second_edittext);
             mPinThirdDigitEditText = (EditText) view.findViewById(R.id.pin_third_edittext);

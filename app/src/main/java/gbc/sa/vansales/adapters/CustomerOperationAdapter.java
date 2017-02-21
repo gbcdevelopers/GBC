@@ -85,6 +85,11 @@ public class CustomerOperationAdapter extends BaseAdapter {
         }
         if (from.equals("CustomerDetailActivity")) {
             layout.setBackgroundColor(Color.WHITE);
+            if(position==1){
+                if(!App.CustomerRouteControl.isCollection()){
+                    lock_img.setVisibility(View.VISIBLE);
+                }
+            }
             if(position==2){
                 if(!(flag==null)){
                     if(!flag.isNoSale()){

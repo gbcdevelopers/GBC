@@ -32,6 +32,7 @@
 				<string name="_50_amc_invoice_discount">50% AMC invoice discount</string>
 				<string name="_icon">أيقونة</string>
 				<string name="abn_amro">ABN AMRO</string>
+				<string name="accesscode">Access Code : </string>
 				<string name="add">إضافة</string>
 				<string name="add_customer">إضافة عميل</string>
 				<string name="add_expense">إضافة مصروف</string>

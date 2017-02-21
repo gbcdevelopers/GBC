@@ -187,8 +187,12 @@ public class  BListFragment extends Fragment {
                 } else {
                     ed_pcs.setEnabled(false);
                 }
-                ed_cases.setText(sales.getCases());
-                ed_pcs.setText(sales.getPic());
+                //ed_cases.setText(sales.getCases());
+                //ed_pcs.setText(sales.getPic());
+
+                ed_cases.setText(sales.getCases().trim().equals("0")?"":sales.getCases().trim());
+                ed_pcs.setText(sales.getPic().trim().equals("0")?"":sales.getPic().trim());
+
                 LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                 ll_1.setVisibility(View.GONE);
                 iv_cancle.setOnClickListener(new View.OnClickListener() {
@@ -218,8 +222,12 @@ public class  BListFragment extends Fragment {
                             }
                             TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                             TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                            tv_cases.setText(strCase);
-                            tv_pcs.setText(strpcs);
+                            //tv_cases.setText(strCase);
+                            //tv_pcs.setText(strpcs);
+
+                            tv_cases.setText(strCase.trim().equals("")?"0":strCase.trim());
+                            tv_pcs.setText(strpcs.trim().equals("")?"0":strpcs.trim());
+
                             Sales sales = arrProductList.get(position);
                             sales.setPic(strpcs);
                             sales.setCases(strCase);

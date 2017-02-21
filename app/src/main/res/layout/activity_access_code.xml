@@ -5,6 +5,21 @@
               android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_access_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_access_code"
+        android:textStyle="bold"
+        android:textSize="@dimen/label_medium"
+        android:textColor="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/all_padding"
+        android:layout_marginBottom="@dimen/all_padding"
+        />
+
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/enter_access_code"

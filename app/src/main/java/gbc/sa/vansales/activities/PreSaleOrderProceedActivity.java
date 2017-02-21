@@ -194,8 +194,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                     } else {
                         ed_pcs.setEnabled(false);
                     }
-                    ed_cases.setText(item.getCases());
-                    ed_pcs.setText(item.getUnits());
+
+                    ed_cases.setText(item.getCases().equals("0") ? "" : item.getCases());
+                    ed_pcs.setText(item.getUnits().equals("0")?"":item.getUnits());
+
+                    //ed_cases.setText(item.getCases());
+                   // ed_pcs.setText(item.getUnits());
+
                     LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                     iv_cancle.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -230,8 +235,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
                                 strpcsinv = String.valueOf(0);
                             }
-                            item.setCases(strCase);
-                            item.setUnits(strpcs);
+                            //item.setCases(strCase);
+                            //item.setUnits(strpcs);
+
+                            item.setCases(strCase.trim().equals("")?"0":strCase);
+                            item.setUnits(strpcs.trim().equals("")?"0":strpcs);
+
+
                             arraylist.remove(position);
                             arraylist.add(position, item);
                             hideSoftKeyboard();

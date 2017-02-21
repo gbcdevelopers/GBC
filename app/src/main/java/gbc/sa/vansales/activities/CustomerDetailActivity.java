@@ -279,6 +279,19 @@ public class CustomerDetailActivity extends AppCompatActivity {
                             if(!flag.isNoSale()){
                                 break;
                             }
+                            else{
+                                if(canPerformSale()&&isLimitAvailable){
+                                    Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                                    intent2.putExtra("from", "customerdetail");
+                                    intent2.putExtra("headerObj", object);
+                                    startActivity(intent2);
+                                    break;
+                                }
+                                else{
+                                    Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                                    break;
+                                }
+                            }
                         }
                         else{
                             if(canPerformSale()&&isLimitAvailable){
@@ -290,6 +303,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                             }
                             else{
                                 Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                                break;
                             }
                         }
 

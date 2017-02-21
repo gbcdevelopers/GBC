@@ -211,8 +211,8 @@ public class SalesFragment extends Fragment {
                 else if(sales.getUom().equals(App.CASE_UOM)||sales.getUom().equals(App.CASE_UOM_NEW)){
                     ed_pcs.setEnabled(false);
                 }*/
-                    ed_cases.setText(sales.getCases());
-                    ed_pcs.setText(sales.getPic());
+                    ed_cases.setText(sales.getCases().trim().equals("0")?"":sales.getCases());
+                    ed_pcs.setText(sales.getPic().trim().equals("0")?"":sales.getPic());
                     LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                     iv_cancle.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -230,8 +230,13 @@ public class SalesFragment extends Fragment {
                             String strpcsinv = ed_pcs_inv.getText().toString();
                             TextView tv_cases = (TextView) view.findViewById(R.id.tv_cases_value);
                             TextView tv_pcs = (TextView) view.findViewById(R.id.tv_pcs_value);
-                            tv_cases.setText(strCase);
-                            tv_pcs.setText(strpcs);
+                            //tv_cases.setText(strCase);
+                            //tv_pcs.setText(strpcs);
+
+                            tv_cases.setText(strCase.trim().equals("")?"0":strCase);
+                            tv_pcs.setText(strpcs.trim().equals("")?"0":strpcs);
+
+
                             if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
                                 strCase = String.valueOf(0);
                             }

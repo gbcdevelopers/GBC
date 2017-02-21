@@ -262,8 +262,12 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     } else {
                         ed_pcs.setEnabled(false);
                     }
-                    ed_cases.setText(item.getItemCase());
-                    ed_pcs.setText(item.getItemUnits());
+                    //ed_cases.setText(item.getItemCase());
+                    //ed_pcs.setText(item.getItemUnits());
+
+                    ed_cases.setText(item.getItemCase().equals("0")?"":item.getItemCase());
+                    ed_pcs.setText(item.getItemUnits().equals("0")?"":item.getItemUnits());
+
                     LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                     iv_cancle.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -303,8 +307,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                                 strpcs = "0";
                                 item.setItemUnits(strpcs);
                             } else {
-                                item.setItemCase(strCase);
-                                item.setItemUnits(strpcs);
+                                item.setItemCase(strCase.trim().equals("")?"0":strCase.trim());
+                                item.setItemUnits(strpcs.trim().equals("")?"0":strpcs.trim());
+                                //item.setItemCase(strCase);
+                                //item.setItemUnits(strpcs);
                                 item.setReasonCode(reasonCode[0]);
                                 arrayList.remove(position);
                                 arrayList.add(position, item);

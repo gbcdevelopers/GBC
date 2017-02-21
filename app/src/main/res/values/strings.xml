@@ -38,6 +38,7 @@
     <string name="_50_amc_invoice_discount">50% AMC invoice discount</string>
     <string name="_icon">icon</string>
     <string name="abn_amro">ABN AMRO</string>
+    <string name="accesscode">Access Code : </string>
     <string name="add">Add</string>
     <string name="add_customer">Add Customer</string>
     <string name="add_expense">Add Expense</string>
@@ -169,7 +170,7 @@
     <string name="ending_inventory">Ending Inventory</string>
     <string name="end_invoice">End Invoice</string>
     <string name="english">English</string>
-    <string name="enter_access_code">Enter Access Code</string>
+    <string name="enter_access_code">Enter OTP</string>
     <string name="enter_amount">Enter Amount</string>
     <string name="enter_category">Enter Category</string>
     <string name="enter_cash_amount">ENTER CASH AMOUNT:</string>
