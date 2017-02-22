@@ -88,6 +88,28 @@ public class DriverRouteFlags {
             while (cursor.moveToNext());
 
         }
+        else{
+            driverFlag.setRouteType("1");
+            driverFlag.setPromptOdometer(true);
+            driverFlag.setEodSalesReports(true);
+            driverFlag.setIsDeleteInvoice(false);
+            driverFlag.setIsNoSale(true);
+            driverFlag.setIsAddCustomer(true);
+            driverFlag.setDefaultDeliveryDays("0");
+            driverFlag.setPassword1("");
+            driverFlag.setPassword2("");
+            driverFlag.setPassword3("");
+            driverFlag.setPassword4("");
+            driverFlag.setPassword5("");
+            driverFlag.setIsViewVanStock("0");
+            driverFlag.setIsLoadSecurityGuard("0");
+            driverFlag.setIsStartOfDay("0");
+            driverFlag.setIsEndTrip("0");
+            driverFlag.setIsCallSequence(false);
+            driverFlag.setIsDisplayInvoiceSummary(true);
+            driverFlag.setIsAllowRadius(true);
+            driverFlag.setIsEnableGPS(true);
+        }
 
     }
 

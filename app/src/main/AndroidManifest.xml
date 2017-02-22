@@ -398,6 +398,18 @@
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
+												android:name=".activities.DriverCollectionActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+
+								<activity
+												android:name=".activities.DriverCollectionDetailsActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+
+								<activity
 												android:name=".activities.ReviewActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"

@@ -155,6 +155,9 @@
 				<string name="discount">خصم</string>
 				<string name="dismiss">رفض/انهاء</string>
 				<string name="do_not_print">عدم الطبع</string>
+				<string name="driver_name">Driver Name</string>
+				<string name="driver_id">Driver ID</string>
+				<string name="driver_collection"></string>
 				<string name="due_date">تاريخ الاستحقاق</string>
 				<string name="e2000">E102964</string>
 				<string name="edit">تعديل</string>
@@ -405,6 +408,7 @@
 				<string name="unit_price">unit price</string>
 				<string name="units">وحدات</string>
 				<string name="unload">تفريغ</string>
+				<string name="unload_msg">Are you sure you want to unload</string>
 				<string-array name="unloadReasons">
 								<item>---Please Select---</item>
 								<item>Expiry</item>

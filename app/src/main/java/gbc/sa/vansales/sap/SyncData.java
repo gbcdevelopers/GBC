@@ -161,7 +161,7 @@ public class SyncData extends IntentService {
 
     }
     public void generateBatch(String request) {
-        Log.e("Request","Request" + request);
+        //Log.e("Request","Request" + request);
         String purchaseNumber = "";
         String tempPurchaseNumber = "";
         String customerNumber = "";
@@ -1503,6 +1503,7 @@ public class SyncData extends IntentService {
                 try{
                     ArrayList<Unload> arrayListDebit  = new ArrayList<>();
                     ArrayList<Unload> arrayListCredit = new ArrayList<>();
+                    ArrayList<Unload> arrayListEndingInventory = new ArrayList<>();
                     for(ArticleHeader articleHeader:articles){
                         HashMap<String,String>map = new HashMap<>();
                         map.put(db.KEY_ID,"");
@@ -1542,10 +1543,14 @@ public class SyncData extends IntentService {
                             while (c.moveToNext());
                             unload.setCases(String.valueOf(cases));
                             unload.setPic(String.valueOf(units));
-                            if(!varianceType.equals(App.EXCESS)){
+                            if(varianceType.equals(App.TRUCK_DAMAGE)||varianceType.equals(App.THEFT)){
                                 arrayListDebit.add(unload);
                             }
-                            else{
+                            else if(varianceType.equals(App.ENDING_INVENTORY)){
+                                Log.e("I am going EI","EI");
+                                arrayListEndingInventory.add(unload);
+                            }
+                            else if(varianceType.equals(App.EXCESS)){
                                 arrayListCredit.add(unload);
                             }
 
@@ -1589,6 +1594,47 @@ public class SyncData extends IntentService {
                         OfflinePost offlinePost = new OfflinePost();
                         offlinePost.setCollectionName(App.POST_COLLECTION);
                         offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", "", ""));
+                        offlinePost.setDeepEntity(deepEntity);
+                        arrayList.add(offlinePost);
+                    }
+                    if(arrayListEndingInventory.size()>0){
+                        JSONArray deepEntity = new JSONArray();
+                        int itemno = 10;
+                        for(Unload unload:arrayListEndingInventory){
+                            if(unload.getUom().equals(App.CASE_UOM)||unload.getUom().equals(App.BOTTLES_UOM)){
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                            else{
+                                JSONObject jo = new JSONObject();
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
+                                jo.put("Material", unload.getMaterial_no());
+                                jo.put("Description", unload.getName());
+                                jo.put("Plant", App.PLANT);
+                                jo.put("Quantity", unload.getCases());
+                                jo.put("ItemValue", unload.getPrice());
+                                jo.put("UoM", unload.getUom());
+                                jo.put("Value", unload.getPrice());
+                                jo.put("Storagelocation", App.STORAGE_LOCATION);
+                                jo.put("Route", Settings.getString(App.ROUTE));
+                                itemno = itemno + 10;
+                                deepEntity.put(jo);
+                            }
+                        }
+                        OfflinePost offlinePost = new OfflinePost();
+                        offlinePost.setCollectionName(App.POST_COLLECTION);
+                        offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.EndingInventory, Settings.getString(App.DRIVER), "", "", ""));
                         offlinePost.setDeepEntity(deepEntity);
                         arrayList.add(offlinePost);
                     }
@@ -2274,6 +2320,7 @@ public class SyncData extends IntentService {
             case ConfigStore.UnloadFunction+"U":{
                 Cursor unloadFunction = db.getData(db.UNLOAD_VARIANCE,map,filter);
                 syncCount = unloadFunction.getCount();
+                Log.e("Unload Sync Count","" + syncCount);
                 break;
             }
 

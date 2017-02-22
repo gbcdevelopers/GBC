@@ -242,7 +242,15 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                         dialog.show();*/
                     }
 
-                } else if (groupPosition == 4) {
+                }
+                else if (groupPosition == 4) {
+                    if(headerTitle.isEnabled()){
+                        Intent i = new Intent(mContext, DriverCollectionActivity.class);
+                        mContext.startActivity(i);
+                    }
+
+                }
+                else if (groupPosition == 5) {
                     if(headerTitle.isEnabled()){
                         Intent i = new Intent(mContext, InformationsActivity.class);
                         mContext.startActivity(i);

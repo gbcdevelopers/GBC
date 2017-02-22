@@ -393,6 +393,9 @@ public class PrinterHelper {
                 if(request.equals(App.COLLECTION)){
                     parseCollectionResponse(jsnData, address);
                 }
+                if(request.equals(App.UNLOAD)){
+                    parseEndInventory(jsnData,address);
+                }
             }
         }
         if (this.outStream != null) {
@@ -2123,6 +2126,178 @@ public class PrinterHelper {
         }
     }
     //Printing Headers
+    void parseEndInventory(JSONObject object, String args) {
+        StringBuffer s1 = new StringBuffer();
+        try {
+            int i;
+            StringBuilder stringBuilder;
+            String string;
+            this.hashValues = new HashMap();
+            this.hashValues.put("Sl#", Integer.valueOf(0));
+            this.hashValues.put("ITEMNO", Integer.valueOf(10));
+            this.hashValues.put("DESCRIPTION", Integer.valueOf(40));
+            this.hashValues.put("INVENTORY CALCULATED",Integer.valueOf(10));  //Fresh unload
+            this.hashValues.put("RETURN TO STOCK",Integer.valueOf(10));  //Summation of all
+            this.hashValues.put("TRUCK SPOILS",Integer.valueOf(10));  //Truck Damage
+            this.hashValues.put("ACTUAL ON TRUCK",Integer.valueOf(10));  //Truck Damage
+            this.hashValues.put("BAD RETURNS",Integer.valueOf(10));  //Bad Returns
+            this.hashValues.put("VARIANCE QUANTITY AMOUNT",Integer.valueOf(20));
+            this.hashValues.put("ENDING INV.VALUE",Integer.valueOf(10));
+            this.hashValues.put("DESCRIPTION(AR)", Integer.valueOf(40));
+            //this.hashValues.put("UPO", Integer.valueOf(0));
+            this.hashValues.put("Truck Stock", Integer.valueOf(8));
+            this.hashValues.put("Fresh Unload", Integer.valueOf(9));
+            this.hashValues.put("Truck Damage", Integer.valueOf(9));
+            this.hashValues.put("Theft", Integer.valueOf(5));
+            this.hashValues.put("Closing Stock", Integer.valueOf(9));
+            this.hashValues.put("Variance Qty", Integer.valueOf(9));
+            this.hashValues.put("Total Value", Integer.valueOf(8));
+            this.hashValues.put("Description", Integer.valueOf(42));
+            this.hashValues.put("TOTAL TRUCK STOCK", Integer.valueOf(8));
+            this.hashValues.put("TOTAL FRESH UNLOAD", Integer.valueOf(9));
+            this.hashValues.put("TOTAL TRUCK DAMAGE", Integer.valueOf(9));
+            this.hashValues.put("TOTAL CLOSING STOCK", Integer.valueOf(9));
+            this.hashValues.put("TOTAL VARIANCE QTY", Integer.valueOf(9));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("Sl#", Integer.valueOf(0));
+            this.hashPositions.put("ITEMNO", Integer.valueOf(0));
+            this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("INVENTORY CALCULATED",Integer.valueOf(2));  //Fresh unload
+            this.hashPositions.put("RETURN TO STOCK",Integer.valueOf(2));  //Summation of all
+            this.hashPositions.put("TRUCK SPOILS",Integer.valueOf(2));  //Truck Damage
+            this.hashPositions.put("ACTUAL ON TRUCK",Integer.valueOf(2));  //Truck Damage
+            this.hashPositions.put("BAD RETURNS",Integer.valueOf(2));  //Bad Returns
+            this.hashPositions.put("VARIANCE QUANTITY AMOUNT",Integer.valueOf(2));
+            this.hashPositions.put("ENDING INV.VALUE",Integer.valueOf(2));
+            //this.hashPositions.put("DESCRIPTION(AR)", Integer.valueOf(2));
+            this.hashPositions.put("DESCRIPTION(AR)", Integer.valueOf(0));
+            this.hashPositions.put("UPO", Integer.valueOf(2));
+            this.hashPositions.put("Truck Stock", Integer.valueOf(2));
+            this.hashPositions.put("Fresh Unload", Integer.valueOf(2));
+            this.hashPositions.put("Truck Damage", Integer.valueOf(2));
+            this.hashPositions.put("Theft", Integer.valueOf(2));
+            this.hashPositions.put("Closing Stock", Integer.valueOf(2));
+            this.hashPositions.put("Variance Qty", Integer.valueOf(2));
+            this.hashPositions.put("Total Value", Integer.valueOf(2));
+            this.hashPositions.put("Description", Integer.valueOf(0));
+            this.hashPositions.put("TOTAL TRUCK STOCK", Integer.valueOf(0));
+            this.hashPositions.put("TOTAL FRESH UNLOAD", Integer.valueOf(0));
+            this.hashPositions.put("TOTAL TRUCK DAMAGE", Integer.valueOf(0));
+            this.hashPositions.put("TOTAL CLOSING STOCK", Integer.valueOf(0));
+            this.hashPositions.put("TOTAL VARIANCE QTY", Integer.valueOf(0));
+            line(this.startln);
+            headerinvprint(object, 3);
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            //int MAXLEngth = 80;
+            int MAXLEngth = 147;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            String strTotal = "";
+            JSONObject jTOBject = object.getJSONArray("TOTAL").getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string2;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    //string2 = headers.getString(i);
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string2 = headers.getString(i);
+                    } else {
+                        string2 = headers.getString(i).substring(0, headers.getString(i).indexOf(" "));
+                    }
+                    strheader = stringBuilder.append(getAccurateText(string2, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string2 = "";
+                    } else {
+                        string2 = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    strHeaderBottom = stringBuilder.append(getAccurateText(string2, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("DESCRIPTION")) {
+                            string2 = "TOTAL";
+                        } else {
+                            string2 = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string2, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 3);
+            printlines1(strHeaderBottom, 1, object, 1, args, 3);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 3);
+            this.outStream.write(this.CompressOff);
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    int i2;
+                    Object obj;
+                    String itemDescrion = jArr.getString(j);
+                    /*if (j == 2) {
+                        itemDescrion = "       @" + jArr.getString(j) + "!";
+                    }*/
+                    stringBuilder = new StringBuilder(String.valueOf(strData));
+                    if (j == 2) {
+                        //i2 = 60;
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    } else {
+                        i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                    }
+                    HashMap hashMap = this.hashPositions;
+                    if (j == 13) {
+                        obj = "Description";
+                    } else {
+                        obj = headers.getString(j).toString();
+                    }
+                    strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 3);
+                this.outStream.write(this.CompressOff);
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 3);
+            printlines1(strTotal, 1, object, 1, args, 3);
+            this.outStream.write(this.CompressOff);
+            this.outStream.write(this.BoldOn);
+            this.outStream.write(this.NewLine);
+            JSONObject jSONObject = object;
+            printlines1(getAccurateText("END INVENTORY VALUE : ", 40, 2) + getAccurateText(object.getString("closevalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            this.outStream.write(this.NewLine);
+            jSONObject = object;
+            printlines1(getAccurateText("AVAILABLE INVENTORY : ", 40, 2) + getAccurateText(object.getString("availvalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            jSONObject = object;
+            printlines1(getAccurateText("UNLOAD INVENTORY : ", 40, 2) + getAccurateText(object.getString("unloadvalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            printlines1(printSeprator(), 1, object, 1, args, 3);
+            jSONObject = object;
+            printlines1(getAccurateText("CALCULATED INVENTORY : ", 40, 2) + getAccurateText(object.getString("closevalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            printlines1(printSeprator(), 1, object, 1, args, 3);
+            this.outStream.write(this.BoldOff);
+            printlines1(" ", 1, object, 1, args, 3);
+            printlines1(getAccurateText("STORE KEEPER___________", 40, 1) + getAccurateText("SALESMAN__________", 40, 1), 2, object, 1, args, 3);
+            /*if (object.has("printstatus")) {
+                string = object.getString("printstatus");
+            } else {
+                string = "";
+            }*/
+            //printlines1(getAccurateText(string, 80, 1), 2, object, 2, args[0], 3);
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
+    }
 
     private void printlines1(String data, int ln, JSONObject object, int sts, String adr, int tp) throws JSONException, IOException, LinePrinterException {
         int i;
@@ -2311,7 +2486,7 @@ public class PrinterHelper {
             } else if (invtype == 2) {
                 printheaders(getAccurateText("LOAD TRANSFER SUMMARY", 40, 1), false, 1);
             } else if (invtype == 3) {
-                printheaders(getAccurateText("END INVENTORY SUMMARY", 40, 1), false, 2);
+                printheaders(getAccurateText("ENDING INVENTORY SUMMARY", 40, 1), false, 2);
             } else if (invtype == 5) {
                 printheaders(getAccurateText("LOAD REQUEST - " + Helpers.formatDate(new Date(),App.PRINT_DATE_FORMAT), 40, 1), false, 1);
             } else if (invtype == 6) {

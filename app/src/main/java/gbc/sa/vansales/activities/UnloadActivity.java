@@ -138,7 +138,7 @@ public class UnloadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UnloadActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.message))
-                        .setMessage(getString(R.string.delete_msg))
+                        .setMessage(getString(R.string.unload_msg))
                         .setCancelable(false)
                         .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                             @Override
@@ -155,10 +155,10 @@ public class UnloadActivity extends AppCompatActivity {
                                 btn_print.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (unloadVarianceExist("")) {
+                                        if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
                                             new postDataNew().execute();
                                         } else {
-                                            clearVanStock();
+                                            //clearVanStock();   //For development purpose.
                                             HashMap<String, String> altMap = new HashMap<>();
                                             altMap.put(db.KEY_IS_UNLOAD, "true");
                                             HashMap<String, String> filterMap = new HashMap<>();
@@ -173,10 +173,10 @@ public class UnloadActivity extends AppCompatActivity {
                                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (unloadVarianceExist("")) {
+                                        if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
                                             new postDataNew().execute();
                                         } else {
-                                            clearVanStock();
+                                            //clearVanStock(); for testing purpose
                                             HashMap<String, String> altMap = new HashMap<>();
                                             altMap.put(db.KEY_IS_UNLOAD, "true");
                                             HashMap<String, String> filterMap = new HashMap<>();
@@ -346,7 +346,10 @@ public class UnloadActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String s) {
-            clearVanStock();
+           // clearVanStock();
+            if(Helpers.isNetworkAvailable(getApplicationContext())){
+                Helpers.createBackgroundJob(getApplicationContext());
+            }
             HashMap<String, String> altMap = new HashMap<>();
             altMap.put(db.KEY_IS_UNLOAD, "true");
             HashMap<String, String> filterMap = new HashMap<>();
@@ -367,6 +370,7 @@ public class UnloadActivity extends AppCompatActivity {
                     map.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                     HashMap<String,String>filter = new HashMap<>();
                     filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    db.updateData(db.UNLOAD_VARIANCE,map,filter);
                 }
                 while (cursor.moveToNext());
             }

@@ -117,7 +117,7 @@ public class EndTripActivity extends AppCompatActivity {
         });
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("End Trip");
+        tv_top_header.setText(getString(R.string.endtrip));
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

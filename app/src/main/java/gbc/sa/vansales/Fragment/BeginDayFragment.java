@@ -151,86 +151,109 @@ public class BeginDayFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!(flag==null)){
-                    if(!flag.getIsStartOfDay().equals("")&&!flag.getIsStartOfDay().equals("0")){
-                        String passwordkey = flag.getIsStartOfDay();
-                        String password = "";
-                        if(passwordkey.equals("1")){
-                            password = flag.getPassword1();
-                        }
-                        if(passwordkey.equals("2")){
-                            password = flag.getPassword2();
-                        }
-                        if(passwordkey.equals("3")){
-                            password = flag.getPassword3();
-                        }
-                        if(passwordkey.equals("4")){
-                            password = flag.getPassword4();
-                        }
-                        if(passwordkey.equals("5")){
-                            password = flag.getPassword5();
-                        }
-                        final Dialog dialog = new Dialog(getActivity());
-                        View view = getActivity().getLayoutInflater().inflate(R.layout.password_prompt, null);
-                        final EditText userInput = (EditText) view
-                                .findViewById(R.id.password);
-                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
-                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
-                        final String finalPassword = password;
-                        btn_continue.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                hideKeyboard();
-                                String input = userInput.getText().toString();
-                                if (input.equals("")) {
-                                    dialog.cancel();
-                                    Toast.makeText(getActivity(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    if (input.equals(finalPassword)){
-                                        try{
-                                            dialog.dismiss();
-                                            String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
-                                            HashMap<String, String> map = new HashMap<>();
-                                            String timeStamp = Helpers.getCurrentTimeStamp();
-                                            Log.e("TimeStamp","" + timeStamp);
-                                            map.put(db.KEY_TIME_STAMP, timeStamp);
-                                            map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                            map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
-                                            map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-                                            map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
-                                            map.put(db.KEY_IS_SELECTED, "true");
-                                            map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                                            db.addData(db.BEGIN_DAY, map);
-                                            new postTrip(purchaseNumber, timeStamp);
-                                        }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else{
+                    Log.e("Flag","" + flag.getIsStartOfDay());
+                    if(!(flag.getIsStartOfDay()==null)){
+                        if(!flag.getIsStartOfDay().equals("0")&&!flag.getIsStartOfDay().equals("")){
+                            String passwordkey = flag.getIsStartOfDay();
+                            String password = "";
+                            if(passwordkey.equals("1")){
+                                password = flag.getPassword1();
+                            }
+                            if(passwordkey.equals("2")){
+                                password = flag.getPassword2();
+                            }
+                            if(passwordkey.equals("3")){
+                                password = flag.getPassword3();
+                            }
+                            if(passwordkey.equals("4")){
+                                password = flag.getPassword4();
+                            }
+                            if(passwordkey.equals("5")){
+                                password = flag.getPassword5();
+                            }
+                            final Dialog dialog = new Dialog(getActivity());
+                            View view = getActivity().getLayoutInflater().inflate(R.layout.password_prompt, null);
+                            final EditText userInput = (EditText) view
+                                    .findViewById(R.id.password);
+                            Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                            Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                            final String finalPassword = password;
+                            btn_continue.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    hideKeyboard();
+                                    String input = userInput.getText().toString();
+                                    if (input.equals("")) {
                                         dialog.cancel();
-                                        hideKeyboard();
-                                        Toast.makeText(getActivity(), getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        if (input.equals(finalPassword)){
+                                            try{
+                                                dialog.dismiss();
+                                                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
+                                                HashMap<String, String> map = new HashMap<>();
+                                                String timeStamp = Helpers.getCurrentTimeStamp();
+                                                Log.e("TimeStamp","" + timeStamp);
+                                                map.put(db.KEY_TIME_STAMP, timeStamp);
+                                                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                                map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                                                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                                                map.put(db.KEY_IS_SELECTED, "true");
+                                                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                                db.addData(db.BEGIN_DAY, map);
+                                                new postTrip(purchaseNumber, timeStamp);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        else{
+                                            dialog.cancel();
+                                            hideKeyboard();
+                                            Toast.makeText(getActivity(), getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
+                            });
+                            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.cancel();
+                                }
+                            });
+                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                            lp.copyFrom(dialog.getWindow().getAttributes());
+                            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            lp.gravity = Gravity.CENTER;
+                            dialog.getWindow().setAttributes(lp);
+                            dialog.setContentView(view);
+                            dialog.setCancelable(false);
+                            dialog.show();
+                        }
+                        else {
+                            try{
+                                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
+                                HashMap<String, String> map = new HashMap<>();
+                                String timeStamp = Helpers.getCurrentTimeStamp();
+                                Log.e("TimeStamp","" + timeStamp);
+                                map.put(db.KEY_TIME_STAMP, timeStamp);
+                                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                map.put(db.KEY_FUNCTION, ConfigStore.BeginDayFunction);
+                                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                                map.put(db.KEY_IS_SELECTED, "true");
+                                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                db.addData(db.BEGIN_DAY, map);
+                                new postTrip(purchaseNumber, timeStamp);
                             }
-                        });
-                        btn_cancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
+                            catch (Exception e){
+                                e.printStackTrace();
                             }
-                        });
-                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                        lp.copyFrom(dialog.getWindow().getAttributes());
-                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                        lp.gravity = Gravity.CENTER;
-                        dialog.getWindow().setAttributes(lp);
-                        dialog.setContentView(view);
-                        dialog.setCancelable(false);
-                        dialog.show();
+                        }
                     }
-                    else {
+                    else{
                         try{
                             String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
                             HashMap<String, String> map = new HashMap<>();
@@ -250,6 +273,7 @@ public class BeginDayFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
+
                 }
                 else{
                     try{

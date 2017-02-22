@@ -371,17 +371,29 @@ public class DashboardActivity extends AppCompatActivity
         customerOperations.setIsEnabled(isloadVerifiedEnabled&&!isEndDayEnabled?true:false);
         // customerOperations.setIsEnabled(true);
         listDataHeader.add(customerOperations);
+
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
-        endTrip.setIsEnabled(isUnloadEnabled&&!isEndDayEnabled?true:false);
+        endTrip.setIsEnabled(isUnloadEnabled && !isEndDayEnabled ? true : false);
         // endTrip.setIsEnabled(true);
         listDataHeader.add(endTrip);
+
+        ExpandedMenuModel driverbalance = new ExpandedMenuModel();
+        driverbalance.setIconName(getString(R.string.driver_collection));
+        driverbalance.setIconImg(R.drawable.ic_driver_collection);
+        driverbalance.setIsEnabled(true);
+        listDataHeader.add(driverbalance);
+
+
         ExpandedMenuModel information = new ExpandedMenuModel();
         information.setIconName(getString(R.string.information));
         information.setIconImg(R.drawable.ic_info);
         information.setIsEnabled(true);
         listDataHeader.add(information);
+
+
+
         // Adding child data
         List<String> manageInventoryItems = new ArrayList<String>();
         manageInventoryItems.add(getString(R.string.load));

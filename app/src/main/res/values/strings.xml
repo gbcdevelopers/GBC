@@ -161,6 +161,9 @@
     <string name="discount">Discount</string>
     <string name="dismiss">Dismiss</string>
     <string name="do_not_print">Do Not Print</string>
+    <string name="driver_name">Driver Name</string>
+    <string name="driver_id">Driver ID</string>
+    <string name="driver_collection">Driver Collection</string>
     <string name="due_date">Due Date</string>
     <string name="e2000">E102964</string>
     <string name="edit">Edit</string>
@@ -421,6 +424,7 @@
         <item>Past Expiry</item>
     </string-array>
     <string name="unload_inventory">Unload Inventory</string>
+    <string name="unload_msg">Are you sure you want to unload</string>
     <string name="upc">UPC</string>
     <string name="update">Update</string>
     <string name="updatingdata">Updating Data</string>

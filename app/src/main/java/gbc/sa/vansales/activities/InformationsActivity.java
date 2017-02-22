@@ -83,7 +83,7 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 1:
                         PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforCollection()); //For Sales Invoice
+                        object.execute("",createDataforUnload()); //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                       //  object.execute("",createDataForLoadRequest());
                        /* Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
@@ -673,4 +673,192 @@ public class InformationsActivity extends AppCompatActivity {
         }
         return jArr;
     }
+
+
+    public JSONArray createDataforUnload(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.UNLOAD);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
+            mainArr.put("availvalue","+1000");
+            mainArr.put("unloadvalue","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+            /*obj.put("Item#","14000000");
+            obj.put("Description","Carton 48*48 200ML");
+            obj.put("UPO","1");
+            obj.put("Open Qty","0");
+            obj.put("Load Qty","100");
+            obj.put("Adjust Qty","0");
+            obj.put("Net Qty","100");
+            obj.put("VALUE","1200");
+            obj.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj1 = new JSONObject();
+            obj1.put("Sl#","0010");
+            obj1.put("Item#","14000000");
+            obj1.put("Description","Carton 48*48 200ML");
+            obj1.put("UPO","1");
+            obj1.put("Open Qty","0");
+            obj1.put("Load Qty","100");
+            obj1.put("Adjust Qty","0");
+            obj1.put("Net Qty","100");
+            obj1.put("VALUE","1200");
+            obj1.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj2 = new JSONObject();
+            obj2.put("Sl#","0010");
+            obj2.put("Item#","14000000");
+            obj2.put("Description","Carton 48*48 200ML");
+            obj2.put("UPO","1");
+            obj2.put("Open Qty","0");
+            obj2.put("Load Qty","100");
+            obj2.put("Adjust Qty","0");
+            obj2.put("Net Qty","100");
+            obj2.put("VALUE","1200");
+            obj2.put("Description","Carton 48*48 100ML");*/
+            HEADERS.put("ITEMNO");
+            HEADERS.put("DESCRIPTION");
+            HEADERS.put("INVENTORY CALCULATED");  //Fresh unload
+            HEADERS.put("RETURN TO STOCK");  //Summation of all
+            HEADERS.put("TRUCK SPOILS");  //Truck Damage
+            HEADERS.put("ACTUAL ON TRUCK");  //Truck Damage
+            HEADERS.put("BAD RETURNS");  //Bad Returns
+            HEADERS.put("VARIANCE QUANTITY AMOUNT");
+            HEADERS.put("ENDING INV.VALUE");
+           // HEADERS.put("DESCRIPTION(AR)");
+           // HEADERS.put("DESCRIPTION(AR)");
+           // HEADERS.put("DESCRIPTION(AR)");
+            //HEADERS.put("UPC ");
+           // HEADERS.put("Truck Stock");
+           // HEADERS.put("Fresh Unload");
+           // HEADERS.put("Truck Damage");
+           // HEADERS.put("Theft");
+           // HEADERS.put("Closing Stock");
+           // HEADERS.put("Variance Qty");
+            HEADERS.put("Total Value");
+            /*HEADERS.put("TOTAL TRUCK STOCK");
+            HEADERS.put("TOTAL FRESH UNLOAD");
+            HEADERS.put("TOTAL TRUCK DAMAGE");
+            HEADERS.put("TOTAL CLOSING STOCK");
+            HEADERS.put("TOTAL VARIANCE QTY");*/
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("INVENTORY CALCULATED","+80");
+            totalObj.put("RETURN TO STOCK","+81");  //Summation of all
+            totalObj.put("TRUCK SPOILS","+82");  //Truck Damage
+            totalObj.put("ACTUAL ON TRUCK","+83");  //Truck Damage
+            totalObj.put("BAD RETURNS","+84");  //Bad Returns
+            totalObj.put("VARIANCE QUANTITY AMOUNT","+85");
+            totalObj.put("ENDING INV.VALUE","+86");
+            /*totalObj.put("TOTAL FRESH UNLOAD","+10");
+            totalObj.put("TOTAL TRUCK DAMAGE","+5");
+            totalObj.put("TOTAL CLOSING STOCK","+65");
+            totalObj.put("TOTAL VARIANCE QTY","+15");
+            totalObj.put("Total Value","+500");*/
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("Carton 48*200ml Berain Krones");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            jData1.put("+1");
+            jData1.put("+10");
+            jData1.put("+20");
+            jData1.put("+30");
+            jData1.put("+40");
+            jData1.put("+50");
+            jData1.put("+60");
+            jData1.put("+50");
+            jData1.put("+60");
+            jData1.put("+150");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("Carton 30*330ml Berain Krones");
+            jData2.put("+1");
+            jData2.put("+10");
+            jData2.put("+20");
+            jData2.put("+30");
+            jData2.put("+40");
+            jData2.put("+50");
+            jData2.put("+60");
+            jData2.put("+50");
+            jData2.put("+60");
+            jData2.put("+150");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020123");
+            jData3.put("Carton 24*600 Berain PH8 Krones");
+            jData3.put("+1");
+            jData3.put("+10");
+            jData3.put("+20");
+            jData3.put("+30");
+            jData3.put("+40");
+            jData3.put("+50");
+            jData3.put("+60");
+            jData3.put("+50");
+            jData3.put("+60");
+            jData3.put("+150");
+
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+
+            mainArr.put("data",jData);
+            //mainArr.put("data",jData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            jArr.put(HEADERS);
+
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
 }

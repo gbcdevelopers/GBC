@@ -160,6 +160,7 @@ public class App extends Application {
     public static final String SALES_INVOICE = "Invoice";
     public static final String DELIVERY = "Delivery";
     public static final String COLLECTION = "Collection";
+    public static final String UNLOAD = "unload";
 
     //Odometer types
     public static final String ODOMETER_BEGIN_DAY = "odometerBeginDay";
