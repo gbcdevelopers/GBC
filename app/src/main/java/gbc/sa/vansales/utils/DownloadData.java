@@ -283,7 +283,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                 for(int i=0;i<jsonArray.length();i++){
                     try{
                         JSONObject object = jsonArray.getJSONObject(i);
-                        Log.e("Object ", "" + object.get("CustNo"));
+                      //  Log.e("Object ", "" + object.get("CustNo"));
 
                         HashMap<String, String> params = new HashMap<>();
                         params.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
@@ -362,7 +362,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
 
                     for(int j=0;j<customerCreditArray.length();j++){
                         JSONObject customerCreditObj = customerCreditArray.getJSONObject(j);
-                        Log.e("Credit Obj","" + customerCreditObj.get("CreditLimit"));
+                        //Log.e("Credit Obj","" + customerCreditObj.get("CreditLimit"));
                         HashMap<String, String> params = new HashMap<>();
                         params.put(db.KEY_CUSTOMER_NO  ,customerCreditObj.get("CustNo").toString());
                         params.put(db.KEY_CREDIT_CONTROL_AREA ,customerCreditObj.get("CreditCtrlArea").toString());
@@ -378,7 +378,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
 
                     for(int k=0;k<customerSalesAreas.length();k++){
                         JSONObject customerSalesAreasObject = customerSalesAreas.getJSONObject(k);
-                        Log.e("Sales Are Obj", "" + customerSalesAreasObject.get("SoldToNo"));
+                        //Log.e("Sales Are Obj", "" + customerSalesAreasObject.get("SoldToNo"));
                         HashMap<String, String> params = new HashMap<>();
                         params.put(db.KEY_CUSTOMER_NO  ,customerSalesAreasObject.get("CustNo").toString());
                         params.put(db.KEY_DIVISION ,customerSalesAreasObject.get("Division").toString());

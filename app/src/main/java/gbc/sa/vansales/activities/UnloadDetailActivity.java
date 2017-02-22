@@ -560,6 +560,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                     unload.setName(UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                     unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
                     unload.setMaterial_no(c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,c.getString(c.getColumnIndex(db.KEY_MATERIAL_NO)));
                     String uomCase = c.getString(c.getColumnIndex(db.KEY_UOM_CASE));
                     String uomUnit = c.getString(c.getColumnIndex(db.KEY_UOM_UNIT));
                     unload.setUom((uomCase == null || uomCase.equals("")) ? uomUnit : uomCase);

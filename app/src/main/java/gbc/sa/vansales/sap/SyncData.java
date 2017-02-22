@@ -1525,6 +1525,7 @@ public class SyncData extends IntentService {
                         map.put(db.KEY_IS_PRINTED,"");
                         HashMap<String,String>filter = new HashMap<>();
                         filter.put(db.KEY_MATERIAL_NO,articleHeader.getMaterialNo());
+                        filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                         Cursor c = db.getData(db.UNLOAD_VARIANCE,map,filter);
                         if(c.getCount()>0){
                             c.moveToFirst();
