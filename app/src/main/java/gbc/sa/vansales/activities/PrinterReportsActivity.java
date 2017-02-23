@@ -30,6 +30,7 @@ import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.models.Collection;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.DepositReport;
+import gbc.sa.vansales.models.SalesSummary;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
@@ -42,9 +43,13 @@ public class PrinterReportsActivity extends AppCompatActivity {
     Button btn_print;
     App.DriverRouteControl flag = new App.DriverRouteControl();
     CheckBox cb_deposit_report;
+    CheckBox cb_sales_summary;
     ArrayList<String> printReports = new ArrayList<>();
     ArrayList<CustomerHeader> customers = new ArrayList<>();
     ArrayList<DepositReport>depositReports = new ArrayList<>();
+    ArrayList<SalesSummary> cashSales = new ArrayList<>();
+    ArrayList<SalesSummary> tcSales = new ArrayList<>();
+    ArrayList<SalesSummary> creditSales = new ArrayList<>();
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     @Override
@@ -60,6 +65,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         tv_top_header.setVisibility(View.VISIBLE);
         btn_print = (Button) findViewById(R.id.btn_print_printer_report);
         cb_deposit_report = (CheckBox)findViewById(R.id.cb_deposit_report);
+        cb_sales_summary = (CheckBox)findViewById(R.id.cb_sales_summary);
         cb_deposit_report.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -68,6 +74,17 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 }
                 else{
                     printReports.remove(App.DEPOSIT_REPORT);
+                }
+            }
+        });
+        cb_sales_summary.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    printReports.add(App.SALES_SUMMARY);
+                }
+                else{
+                    printReports.remove(App.SALES_SUMMARY);
                 }
             }
         });
@@ -158,6 +175,10 @@ public class PrinterReportsActivity extends AppCompatActivity {
                     //printReport(App.DEPOSIT_REPORT);
                     break;
                 }
+                case App.SALES_SUMMARY:{
+                    loadData(App.SALES_SUMMARY);
+                    break;
+                }
             }
             return null;
         }
@@ -165,6 +186,9 @@ public class PrinterReportsActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             if(invoker.equals(App.DEPOSIT_REPORT)){
                 printReport(App.DEPOSIT_REPORT);
+            }
+            if(invoker.equals(App.SALES_SUMMARY)){
+                printReport(App.SALES_SUMMARY);
             }
         }
     }
@@ -255,6 +279,72 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 }
                 break;
             }
+            case App.SALES_SUMMARY:{
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_TIME_STAMP,"");
+                map.put(db.KEY_CUSTOMER_NO,"");
+                map.put(db.KEY_CUSTOMER_TYPE,"");
+                map.put(db.KEY_ACTIVITY_TYPE,"");
+                map.put(db.KEY_ORDER_TOTAL,"");
+                map.put(db.KEY_ORDER_NET_TOTAL,"");
+                map.put(db.KEY_RETURN_TOTAL,"");
+                map.put(db.KEY_GOOD_RETURN_TOTAL,"");
+                map.put(db.KEY_ORDER_DISCOUNT,"");
+                map.put(db.KEY_ORDER_ID,"");
+                HashMap<String,String>filter = new HashMap<>();
+                Cursor c = db.getData(db.TODAYS_SUMMARY_SALES,map,filter);
+                if(c.getCount()>0){
+                    c.moveToFirst();
+                    do{
+                        SalesSummary salesSummary = new SalesSummary();
+                        salesSummary.setTransactionNo(c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
+                        salesSummary.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        if(customerHeader!=null){
+                            salesSummary.setCustomerName(customerHeader.getName1());
+                        }
+                        else{
+                            salesSummary.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        }
+                        HashMap<String,String>invoiceClearMap = new HashMap<>();
+                        invoiceClearMap.put(db.KEY_CUSTOMER_NO,"");
+                        invoiceClearMap.put(db.KEY_INVOICE_NO,"");
+                        invoiceClearMap.put(db.KEY_INVOICE_AMOUNT,"");
+                        invoiceClearMap.put(db.KEY_DUE_DATE,"");
+                        invoiceClearMap.put(db.KEY_INVOICE_DATE,"");
+                        invoiceClearMap.put(db.KEY_AMOUNT_CLEARED,"");
+                        invoiceClearMap.put(db.KEY_INDICATOR,"");
+                        invoiceClearMap.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                        HashMap<String,String>invoiceClearMapFilter = new HashMap<>();
+                        invoiceClearMapFilter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                        invoiceClearMapFilter.put(db.KEY_INVOICE_NO,c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
+                        Cursor ivCursor = db.getData(db.COLLECTION,invoiceClearMap,invoiceClearMapFilter);
+                        if(ivCursor.getCount()>0){
+                            ivCursor.moveToFirst();
+                            salesSummary.setAmountPaid(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                            salesSummary.setAmountDue(String.valueOf(Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                            Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)))));
+                        }
+                        salesSummary.setTransactionType(c.getString(c.getColumnIndex(db.KEY_ACTIVITY_TYPE)).equals(App.ACTIVITY_INVOICE) ? "INV" : "DLV");
+                        salesSummary.setTotalSales(c.getString(c.getColumnIndex(db.KEY_ORDER_NET_TOTAL)));
+                        salesSummary.setTotalReturns(c.getString(c.getColumnIndex(db.KEY_RETURN_TOTAL)));
+                        salesSummary.setTotalgoodReturns(c.getString(c.getColumnIndex(db.KEY_GOOD_RETURN_TOTAL)));
+                        salesSummary.setDiscounts(c.getString(c.getColumnIndex(db.KEY_ORDER_DISCOUNT)));
+                        salesSummary.setNetSales(c.getString(c.getColumnIndex(db.KEY_ORDER_TOTAL)));
+                        if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CASH_CUSTOMER)){
+                            cashSales.add(salesSummary);
+                        }
+                        else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.TC_CUSTOMER)){
+                            tcSales.add(salesSummary);
+                        }
+                        else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CREDIT_CUSTOMER)){
+                            creditSales.add(salesSummary);
+                        }
+                    }
+                    while (c.moveToNext());
+                }
+                break;
+            }
         }
     }
 
@@ -264,6 +354,10 @@ public class PrinterReportsActivity extends AppCompatActivity {
         switch (type){
             case App.DEPOSIT_REPORT:{
                 object.execute("",createDataforDeposit());
+                break;
+            }
+            case App.SALES_SUMMARY:{
+                object.execute("",createDataforSalesSummary());
                 break;
             }
         }
@@ -401,4 +495,132 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         return jArr;
     }
+    public JSONArray createDataforSalesSummary(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.SALES_SUMMARY);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
+            mainArr.put("availvalue","+1000");
+            mainArr.put("TOTAL DEPOSIT AMOUNT","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("Transaction No.");
+            HEADERS.put("Cust. No.");
+            HEADERS.put("Customer");
+            HEADERS.put("Type");
+            HEADERS.put("Sales");
+            HEADERS.put("Returns");//Summation of all
+            HEADERS.put("Good Rtns");  //Truck Damage
+            HEADERS.put("Net Sales");  //Truck Damage
+            HEADERS.put("Discounts");  //Bad Returns
+            HEADERS.put("Amount Paid");
+            HEADERS.put("T.C");
+
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("Cheque Amount","+200");
+            totalObj.put("Cash Amount","+100");  //Summation of all
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            JSONArray cashData = new JSONArray();
+            JSONArray tcData = new JSONArray();
+            JSONArray chequeData = new JSONArray();
+            for(SalesSummary salesSummary:cashSales){
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(salesSummary.getTransactionNo());
+                jsonArray.put(salesSummary.getCustomerNo());
+                jsonArray.put(salesSummary.getCustomerName());
+                jsonArray.put(salesSummary.getTransactionType());
+                jsonArray.put(salesSummary.getTotalSales());
+                jsonArray.put(salesSummary.getTotalReturns());
+                jsonArray.put(salesSummary.getTotalgoodReturns());
+                jsonArray.put(salesSummary.getNetSales());
+                jsonArray.put(salesSummary.getDiscounts());
+                jsonArray.put(salesSummary.getAmountPaid());
+                jsonArray.put(" "+salesSummary.getAmountDue());
+                cashData.put(jsonArray);
+            }
+            for(SalesSummary salesSummary:tcSales){
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(salesSummary.getTransactionNo());
+                jsonArray.put(salesSummary.getCustomerNo());
+                jsonArray.put(salesSummary.getCustomerName());
+                jsonArray.put(salesSummary.getTransactionType());
+                jsonArray.put(salesSummary.getTotalSales());
+                jsonArray.put(salesSummary.getTotalReturns());
+                jsonArray.put(salesSummary.getTotalgoodReturns());
+                jsonArray.put(salesSummary.getNetSales());
+                jsonArray.put(salesSummary.getDiscounts());
+                jsonArray.put(salesSummary.getAmountPaid());
+                jsonArray.put(" "+salesSummary.getAmountDue());
+                tcData.put(jsonArray);
+            }
+            for(SalesSummary salesSummary:creditSales){
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(salesSummary.getTransactionNo());
+                jsonArray.put(salesSummary.getCustomerNo());
+                jsonArray.put(salesSummary.getCustomerName());
+                jsonArray.put(salesSummary.getTransactionType());
+                jsonArray.put(salesSummary.getTotalSales());
+                jsonArray.put(salesSummary.getTotalReturns());
+                jsonArray.put(salesSummary.getTotalgoodReturns());
+                jsonArray.put(salesSummary.getNetSales());
+                jsonArray.put(salesSummary.getDiscounts());
+                jsonArray.put(salesSummary.getAmountPaid());
+                jsonArray.put(" " + salesSummary.getAmountDue());
+                chequeData.put(jsonArray);
+            }
+
+            JSONArray jData = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DATA",jData);
+            jsonObject.put("HEADERS",HEADERS);
+            jsonObject.put("TOTAL",totalObj);
+            JSONArray jDataNew = new JSONArray();
+            jDataNew.put(jsonObject);
+            mainArr.put("data",cashData);
+            mainArr.put("tcData",tcData);
+            mainArr.put("creditData",chequeData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+            jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
+
+
 }

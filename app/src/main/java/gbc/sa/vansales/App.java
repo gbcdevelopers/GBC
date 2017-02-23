@@ -162,6 +162,8 @@ public class App extends Application {
     public static final String COLLECTION = "Collection";
     public static final String UNLOAD = "unload";
     public static final String DEPOSIT_REPORT = "depositreport";
+    public static final String SALES_SUMMARY = "salessummary";
+    public static final String BAD_RETURN_REPORT = "badreturnreport";
 
     //Odometer types
     public static final String ODOMETER_BEGIN_DAY = "odometerBeginDay";

@@ -701,6 +701,35 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
                 }
                 break;
+
+            case ConfigStore.DriverOpenItemsEntity:
+                for(int i=0;i<jsonArray.length();i++){
+
+                    JSONObject customerOpenItemsObj = jsonArray.getJSONObject(i);
+                    HashMap<String,String>params = new HashMap<>();
+                    params.put(db.KEY_COLLECTION_TYPE,customerOpenItemsObj.get("DocType").toString());
+                    params.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    params.put(db.KEY_SAP_INVOICE_NO,customerOpenItemsObj.get("DocNum").toString());
+                    params.put(db.KEY_INVOICE_NO, customerOpenItemsObj.get("DocNo").toString());
+                    params.put(db.KEY_INVOICE_AMOUNT,customerOpenItemsObj.get("Amount").toString());
+                    params.put(db.KEY_INVOICE_DATE,customerOpenItemsObj.get("DocDate").toString());
+                    params.put(db.KEY_INVOICE_DAYS,customerOpenItemsObj.get("Days").toString());
+                    params.put(db.KEY_DUE_DATE,customerOpenItemsObj.get("DueDate").toString());
+                    params.put(db.KEY_INDICATOR,customerOpenItemsObj.get("DebitCreditInd").toString());
+                    params.put(db.KEY_AMOUNT_CLEARED,"0");
+                    params.put(db.KEY_CHEQUE_AMOUNT,"0");
+                    params.put(db.KEY_CHEQUE_NUMBER,"0000");
+                    params.put(db.KEY_CHEQUE_DATE,"0000");
+                    params.put(db.KEY_CHEQUE_BANK_CODE,"0000");
+                    params.put(db.KEY_CHEQUE_BANK_NAME,"0000");
+                    params.put(db.KEY_CASH_AMOUNT,"0");
+                    params.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    params.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    params.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
+                    db.addData(db.DRIVER_COLLECTION,params);
+                }
+
+                break;
         }
     }
 }

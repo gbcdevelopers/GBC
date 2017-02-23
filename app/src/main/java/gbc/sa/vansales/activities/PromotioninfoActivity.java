@@ -195,7 +195,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     todaysSummary.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_DELIVERY);
                     todaysSummary.put(db.KEY_ORDER_TOTAL, tv_net_invoice.getText().toString());
                     todaysSummary.put(db.KEY_ORDER_DISCOUNT, tv_discount.getText().toString());
+                    todaysSummary.put(db.KEY_ORDER_ID, delivery.getOrderId());
                     db.addData(db.TODAYS_SUMMARY, todaysSummary);
+
+                    HashMap<String, String> todaysSalesSummary = new HashMap<>();
+                    todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                    todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_DELIVERY);
+                    todaysSalesSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
+                    todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,tv_current_invoice.getText().toString());
+                    todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(goodreturntotal + badreturntotal));
+                    todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf(goodreturntotal));
+                    todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                    todaysSalesSummary.put(db.KEY_ORDER_ID, delivery.getOrderId());
+                    db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
+
                     final Dialog dialog = new Dialog(PromotioninfoActivity.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_doprint);
@@ -717,7 +732,35 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         if (returnType.equals(App.GOOD_RETURN)) {
+
+                                            HashMap<String, String> todaysSalesSummary = new HashMap<>();
+                                            todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                                            todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                            todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                                            todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
+                                            todaysSalesSummary.put(db.KEY_ORDER_TOTAL,String.valueOf(goodreturntotal));
+                                            todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,String.valueOf(goodreturntotal));
+                                            todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(goodreturntotal));
+                                            todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf(goodreturntotal));
+                                            todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                                            todaysSalesSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
+                                            db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
+
                                             updateStockinVan(true);
+                                        }
+                                        else{
+                                            HashMap<String, String> todaysSalesSummary = new HashMap<>();
+                                            todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                                            todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                            todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                                            todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
+                                            todaysSalesSummary.put(db.KEY_ORDER_TOTAL,String.valueOf(badreturntotal));
+                                            todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,String.valueOf(badreturntotal));
+                                            todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(badreturntotal));
+                                            todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf("0"));
+                                            todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                                            todaysSalesSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
+                                            db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
                                         }
                                         dialog.dismiss();
                                         if (object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)) {
@@ -1048,7 +1091,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 todaysSummary.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
                 todaysSummary.put(db.KEY_ORDER_TOTAL, tv_net_invoice.getText().toString());
                 todaysSummary.put(db.KEY_ORDER_DISCOUNT, tv_discount.getText().toString());
+                todaysSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
                 db.addData(db.TODAYS_SUMMARY, todaysSummary);
+
+                HashMap<String, String> todaysSalesSummary = new HashMap<>();
+                todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
+                todaysSalesSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
+                todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,tv_current_invoice.getText().toString());
+                todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(goodreturntotal + badreturntotal));
+                todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf(goodreturntotal));
+                todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                todaysSalesSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
+                db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
+
                 if (loadingSpinner.isShowing()) {
                     loadingSpinner.hide();
                 }
@@ -1382,18 +1440,40 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             map.put(db.KEY_MATERIAL_NO, "");
             map.put(db.KEY_AMOUNT, "");
             HashMap<String, String> filter = new HashMap<>();
+            HashMap<String,String>filter1 = new HashMap<>();
             filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            String blankCust = "";
+            filter1.put(db.KEY_CUSTOMER_NO,blankCust);
             if (promoCode.equals(App.Promotions02)) {
                 filter.put(db.KEY_PROMOTION_TYPE, App.Promotions02);
+                filter1.put(db.KEY_PROMOTION_TYPE, App.Promotions02);
             } else if (promoCode.equals(App.Promotions05)) {
                 filter.put(db.KEY_PROMOTION_TYPE, App.Promotions05);
+                filter1.put(db.KEY_PROMOTION_TYPE, App.Promotions05);
             } else if (promoCode.equals(App.Promotions07)) {
                 filter.put(db.KEY_PROMOTION_TYPE, App.Promotions07);
+                filter1.put(db.KEY_PROMOTION_TYPE, App.Promotions07);
             }
-            Cursor cursor = db.getData(db.PROMOTIONS, map, filter);
+            /*Cursor cursor = db.getData(db.PROMOTIONS, map, filter);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 applyPromotions(cursor, from, source);
+            }*/
+            if(db.checkData(db.PROMOTIONS, filter)){
+                Cursor cursor = db.getData(db.PROMOTIONS,map,filter);
+                cursor.moveToFirst();
+                if(cursor.getCount()>0){
+                    applyPromotions(cursor,from,source);
+                }
+
+            }
+            else{
+                Cursor cursor = db.getData(db.PROMOTIONS,map,filter1);
+                cursor.moveToFirst();
+                if(cursor.getCount()>0){
+                    applyPromotions(cursor,from,source);
+                }
+
             }
             return null;
         }

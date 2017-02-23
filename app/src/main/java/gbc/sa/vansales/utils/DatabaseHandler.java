@@ -57,6 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String RETURNS = "RETURNS";
     public static final String UNLOAD_VARIANCE = "UNLOAD_VARIANCE";
     public static final String COLLECTION = "COLLECTION";
+    public static final String DRIVER_COLLECTION = "DRIVER_COLLECTION";
     public static final String BANKS = "BANKS";
     public static final String DAYACTIVITY = "DAYACTIVITY";
     public static final String LOAD_VARIANCE_ITEMS_POST = "LOAD_VARIANCE_ITEMS_POST";
@@ -67,6 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String VISIT_LIST_ID_GENERATE = "VISIT_LIST_ID_GENERATE";
     public static final String NEW_CUSTOMER_POST = "NEW_CUSTOMER_POST";
     public static final String TODAYS_SUMMARY = "TODAYS_SUMMARY";
+    public static final String TODAYS_SUMMARY_SALES = "TODAYS_SUMMARY_SALES";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -394,6 +396,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     //Todays Summary
     public static final String KEY_CUSTOMER_TYPE = "customerType";
     public static final String KEY_ORDER_TOTAL = "totalOrderValue";
+    public static final String KEY_ORDER_NET_TOTAL = "totalOrderNetValue";
+    public static final String KEY_RETURN_TOTAL = "totalreturnValue";
+    public static final String KEY_GOOD_RETURN_TOTAL = "totalGoodReturnValue";
     public static final String KEY_ORDER_DISCOUNT = "totalOrderDiscount";
 
 
@@ -967,6 +972,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_PRINTED + " TEXT,"
                 + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
 
+
+        String TABLE_DRIVER_COLLECTION = "CREATE TABLE " + DRIVER_COLLECTION + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_COLLECTION_TYPE + " TEXT,"
+                + KEY_CUSTOMER_TYPE + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_INVOICE_NO + " TEXT,"
+                + KEY_INVOICE_AMOUNT + " TEXT,"
+                + KEY_DUE_DATE + " TEXT,"
+                + KEY_INVOICE_DATE + " TEXT,"
+                + KEY_AMOUNT_CLEARED + " TEXT,"
+                + KEY_CASH_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_NUMBER + " TEXT,"
+                + KEY_CHEQUE_DATE + " TEXT,"
+                + KEY_CHEQUE_BANK_CODE + " TEXT,"
+                + KEY_CHEQUE_BANK_NAME + " TEXT,"
+                + KEY_SAP_INVOICE_NO + " TEXT,"
+                + KEY_INVOICE_DAYS + " TEXT,"
+                + KEY_INDICATOR + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT,"
+                + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
+
         String TABLE_BANKS = "CREATE TABLE " + BANKS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_BANK_CODE + " TEXT,"
@@ -1088,6 +1118,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ORDER_DISCOUNT + " TEXT,"
                 + KEY_ORDER_ID + " TEXT " + ")";
 
+        String TABLE_TODAY_SUMMARY_SALES = "CREATE TABLE " + TODAYS_SUMMARY_SALES + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_CUSTOMER_TYPE + " TEXT,"
+                + KEY_ACTIVITY_TYPE + " TEXT,"
+                + KEY_ORDER_TOTAL + " TEXT,"
+                + KEY_ORDER_NET_TOTAL + " TEXT,"
+                + KEY_RETURN_TOTAL + " TEXT,"
+                + KEY_GOOD_RETURN_TOTAL + " TEXT,"
+                + KEY_ORDER_DISCOUNT + " TEXT,"
+                + KEY_ORDER_ID + " TEXT " + ")";
+
         String TABLE_VISIT_LIST_ID_GENERATE = "CREATE TABLE " + VISIT_LIST_ID_GENERATE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_DOCUMENT_TYPE + " TEXT,"
@@ -1139,6 +1182,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_VISIT_LIST_ID_GENERATE);
         db.execSQL(TABLE_NEW_CUSTOMER_POST);
         db.execSQL(TABLE_TODAY_SUMMARY);
+        db.execSQL(TABLE_TODAY_SUMMARY_SALES);
+        db.execSQL(TABLE_DRIVER_COLLECTION);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1186,7 +1231,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + VISIT_LIST_ID_GENERATE);
         db.execSQL("DROP TABLE IF EXISTS " + NEW_CUSTOMER_POST);
         db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY_SALES);
+        db.execSQL("DROP TABLE IF EXISTS " + DRIVER_COLLECTION);
         onCreate(db);
     }
     //Storing Secured Credentials

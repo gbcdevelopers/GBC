@@ -17,6 +17,7 @@ import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerDelivery;
 import gbc.sa.vansales.data.CustomerHeaders;
+import gbc.sa.vansales.data.DriverOpenItems;
 import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.FOCData;
 import gbc.sa.vansales.data.LoadDelivery;
@@ -329,6 +330,7 @@ public class LoginActivity extends Activity {
                         Pricing.load(LoginActivity.this, username, db);
                         Banks.load(LoginActivity.this,"",db);
                         FOCData.load(LoginActivity.this,"",db);
+                        DriverOpenItems.load(LoginActivity.this,username,db);
                     }
                 });
 

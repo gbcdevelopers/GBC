@@ -74,13 +74,15 @@ public class PromotionActivity extends AppCompatActivity {
             if (from.equals("Final Invoice")) {
                 calculateTotal(from);
                 new loadPromotions(promoCode,from);
-                ll_bottom.setVisibility(View.VISIBLE);
+                ll_bottom.setVisibility(View.GONE);
+                //ll_bottom.setVisibility(View.VISIBLE);
                 tv_top_header.setText("Final Invoice");
             } else {
                 if (from.equals("delivery")) {
                     calculateTotal(from);
                     new loadPromotions(promoCode,from);
-                    ll_bottom.setVisibility(View.VISIBLE);
+                    ll_bottom.setVisibility(View.GONE);
+                    //ll_bottom.setVisibility(View.VISIBLE);
                 } else {
                     ll_bottom.setVisibility(View.GONE);
                 }
@@ -187,6 +189,7 @@ public class PromotionActivity extends AppCompatActivity {
             filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             String blankCust = "";
             filter1.put(db.KEY_CUSTOMER_NO,blankCust);
+
             if(promoCode.equals(App.Promotions02)){
                 filter.put(db.KEY_PROMOTION_TYPE,App.Promotions02);
                 filter1.put(db.KEY_PROMOTION_TYPE,App.Promotions02);

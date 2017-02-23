@@ -83,7 +83,7 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 1:
                         PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforDeposit()); //For Sales Invoice
+                        object.execute("",createDataforBadReturns()); //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                       //  object.execute("",createDataForLoadRequest());
                        /*Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
@@ -987,5 +987,251 @@ public class InformationsActivity extends AppCompatActivity {
         }
         return jArr;
     }
+    public JSONArray createDataforSalesSummary(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.SALES_SUMMARY);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
+            mainArr.put("availvalue","+1000");
+            mainArr.put("TOTAL DEPOSIT AMOUNT","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("Transaction No.");
+            HEADERS.put("Cust. No.");
+            HEADERS.put("Customer");
+            HEADERS.put("Type");
+            HEADERS.put("Sales");
+            HEADERS.put("Returns");//Summation of all
+            HEADERS.put("Good Rtns");  //Truck Damage
+            HEADERS.put("Net Sales");  //Truck Damage
+            HEADERS.put("Discounts");  //Bad Returns
+            HEADERS.put("Amount Paid");
+            HEADERS.put("T.C");
+
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("Cheque Amount","+200");
+            totalObj.put("Cash Amount","+100");  //Summation of all
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("200001");
+            jData1.put("Test Customer");
+            jData1.put("INV");
+            jData1.put("+200");
+            jData1.put("-30");
+            jData1.put("+10");
+            jData1.put("+170");
+            jData1.put("-30");
+            jData1.put("+100");
+            jData1.put("+20");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("200001");
+            jData2.put("Test Customer");
+            jData2.put("INV");
+            jData2.put("+200");
+            jData2.put("-30");
+            jData2.put("+10");
+            jData2.put("+170");
+            jData2.put("-30");
+            jData2.put("+100");
+            jData2.put("+20");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020108");
+            jData3.put("200001");
+            jData3.put("Test Customer");
+            jData3.put("INV");
+            jData3.put("+200");
+            jData3.put("-30");
+            jData3.put("+10");
+            jData3.put("+170");
+            jData3.put("-30");
+            jData3.put("+100");
+            jData3.put("+20");
+
+
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DATA",jData);
+            jsonObject.put("HEADERS",HEADERS);
+            jsonObject.put("TOTAL",totalObj);
+            JSONArray jDataNew = new JSONArray();
+            jDataNew.put(jsonObject);
+            mainArr.put("data",jData);
+            mainArr.put("tcData",jData);
+            mainArr.put("creditData",jData);
+
+            /*mainArr.put("data",jData);
+            mainArr.put("data",jData);
+            mainArr.put("data",jData);
+*/
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+            jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+    public JSONArray createDataforBadReturns(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.BAD_RETURN_REPORT);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
+            mainArr.put("damagevariance","+1000");
+            mainArr.put("TOTAL_DAMAGE_VALUE","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("ITEM#");
+            HEADERS.put("DESCRIPTION");
+            HEADERS.put("INVOICE CREDIT");
+            HEADERS.put("LOADED IN");
+            HEADERS.put("PRICE");//Summation of all
+            HEADERS.put("-----VARIANCE----- QTY         AMOUNT");  //Truck Damage
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("INVOICE CREDIT","+200");
+            totalObj.put("LOADED IN","+100");  //Summation of all
+            totalObj.put("-----VARIANCE----- QTY         AMOUNT","+100");  //Summation of all
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("Test Material");
+            jData1.put("+10");
+            jData1.put("+9");
+            jData1.put("+12");
+            jData1.put("-1         +12");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020106");
+            jData2.put("Test Material");
+            jData2.put("+10");
+            jData2.put("+9");
+            jData2.put("+12");
+            jData2.put("-1         +12");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020106");
+            jData3.put("Test Material");
+            jData3.put("+10");
+            jData3.put("+9");
+            jData3.put("+12");
+            jData3.put("-1         +12");
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DATA",jData);
+            jsonObject.put("HEADERS",HEADERS);
+            jsonObject.put("TOTAL",totalObj);
+            JSONArray jDataNew = new JSONArray();
+            jDataNew.put(jsonObject);
+            mainArr.put("data",jData);
+           // mainArr.put("tcData",jData);
+          //  mainArr.put("creditData",jData);
+
+            /*mainArr.put("data",jData);
+            mainArr.put("data",jData);
+            mainArr.put("data",jData);
+*/
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+            jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
 
 }
+
+
