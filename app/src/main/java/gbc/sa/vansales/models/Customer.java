@@ -4,6 +4,8 @@ package gbc.sa.vansales.models;
  */
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
 public class Customer implements Parcelable{
     private String customer_id;
     private String customer_name;
@@ -216,5 +218,18 @@ public class Customer implements Parcelable{
         parcel.writeString(longitude);
         parcel.writeString(visitListID);
         parcel.writeString(customer_name_ar);
+    }
+
+    public static Customer getCustomer(ArrayList<Customer> list, String searchString) {
+        //Log.e("Material No","" + searchString);
+        for (Customer customer : list) {
+
+            if (customer.getCustomerID().equals(searchString)){
+                // Log.e("Inside if","Condition");
+                return customer;
+            }
+        }
+
+        return null;
     }
 }

@@ -83,10 +83,10 @@ public class InformationsActivity extends AppCompatActivity {
                         break;
                     case 1:
                         PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforUnload()); //For Sales Invoice
+                        object.execute("",createDataforDeposit()); //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                       //  object.execute("",createDataForLoadRequest());
-                       /* Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
+                       /*Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
                         startActivity(itemlist);*/
                         break;
                     case 2:
@@ -754,8 +754,8 @@ public class InformationsActivity extends AppCompatActivity {
             HEADERS.put("RETURN TO STOCK");  //Summation of all
             HEADERS.put("TRUCK SPOILS");  //Truck Damage
             HEADERS.put("ACTUAL ON TRUCK");  //Truck Damage
-            HEADERS.put("BAD RETURNS");  //Bad Returns
-            HEADERS.put("VARIANCE QUANTITY AMOUNT");
+            HEADERS.put("BAD RTRNS");  //Bad Returns
+            HEADERS.put("----VARIANCE---- QTY AMNT");
             HEADERS.put("ENDING INV.VALUE");
            // HEADERS.put("DESCRIPTION(AR)");
            // HEADERS.put("DESCRIPTION(AR)");
@@ -767,7 +767,7 @@ public class InformationsActivity extends AppCompatActivity {
            // HEADERS.put("Theft");
            // HEADERS.put("Closing Stock");
            // HEADERS.put("Variance Qty");
-            HEADERS.put("Total Value");
+            HEADERS.put("TOTAL VALUE");
             /*HEADERS.put("TOTAL TRUCK STOCK");
             HEADERS.put("TOTAL FRESH UNLOAD");
             HEADERS.put("TOTAL TRUCK DAMAGE");
@@ -784,8 +784,8 @@ public class InformationsActivity extends AppCompatActivity {
             totalObj.put("RETURN TO STOCK","+81");  //Summation of all
             totalObj.put("TRUCK SPOILS","+82");  //Truck Damage
             totalObj.put("ACTUAL ON TRUCK","+83");  //Truck Damage
-            totalObj.put("BAD RETURNS","+84");  //Bad Returns
-            totalObj.put("VARIANCE QUANTITY AMOUNT","+85");
+            totalObj.put("BAD RTRNS","+84");  //Bad Returns
+            totalObj.put("----VARIANCE---- QTY AMNT","+85");
             totalObj.put("ENDING INV.VALUE","+86");
             /*totalObj.put("TOTAL FRESH UNLOAD","+10");
             totalObj.put("TOTAL TRUCK DAMAGE","+5");
@@ -798,43 +798,43 @@ public class InformationsActivity extends AppCompatActivity {
             jData1.put("14020106");
             jData1.put("Carton 48*200ml Berain Krones");
             //jData1.put("شد 48*200مل بيرين PH8");
-            jData1.put("+1");
+            //jData1.put("+1");
             jData1.put("+10");
             jData1.put("+20");
             jData1.put("+30");
             jData1.put("+40");
             jData1.put("+50");
             jData1.put("+60");
-            jData1.put("+50");
-            jData1.put("+60");
+            jData1.put("+50 +60");
+            //jData1.put("+60");
             jData1.put("+150");
 
             JSONArray jData2 = new JSONArray();
             jData2.put("14020107");
             jData2.put("Carton 30*330ml Berain Krones");
-            jData2.put("+1");
+            //jData2.put("+1");
             jData2.put("+10");
             jData2.put("+20");
             jData2.put("+30");
             jData2.put("+40");
             jData2.put("+50");
             jData2.put("+60");
-            jData2.put("+50");
-            jData2.put("+60");
+            jData2.put("+50 +60");
+            //jData2.put("+60");
             jData2.put("+150");
 
             JSONArray jData3 = new JSONArray();
             jData3.put("14020123");
             jData3.put("Carton 24*600 Berain PH8 Krones");
-            jData3.put("+1");
+            //jData3.put("+1");
             jData3.put("+10");
             jData3.put("+20");
             jData3.put("+30");
             jData3.put("+40");
             jData3.put("+50");
             jData3.put("+60");
-            jData3.put("+50");
-            jData3.put("+60");
+            jData3.put("+50 +60");
+            //jData3.put("+60");
             jData3.put("+150");
 
 
@@ -844,6 +844,133 @@ public class InformationsActivity extends AppCompatActivity {
             jData.put(jData3);
 
             mainArr.put("data",jData);
+            //mainArr.put("data",jData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            jArr.put(HEADERS);
+
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
+    public JSONArray createDataforDeposit(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.DEPOSIT_REPORT);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
+            mainArr.put("availvalue","+1000");
+            mainArr.put("TOTAL DEPOSIT AMOUNT","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("Transaction Number");
+            HEADERS.put("Customer Code");
+            HEADERS.put("Customer Name");  //Fresh unload
+            HEADERS.put("Cheque No");  //Summation of all
+            HEADERS.put("Cheque Date");  //Truck Damage
+            HEADERS.put("Bank Name");  //Truck Damage
+            HEADERS.put("Cheque Amount");  //Bad Returns
+            HEADERS.put("Cash Amount");
+
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("Cheque Amount","+200");
+            totalObj.put("Cash Amount","+100");  //Summation of all
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("200001");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            //jData1.put("+1");
+            jData1.put("Test Customer");
+            jData1.put("1234");
+            jData1.put("20/02/2016");
+            jData1.put("Emirates NBD");
+            jData1.put("100");
+            jData1.put("0");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("200001");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            //jData1.put("+1");
+            jData2.put("Test Customer");
+            jData2.put("1234");
+            jData2.put("20/02/2016");
+            jData2.put("Emirates NBD");
+            jData2.put("100");
+            jData2.put("0");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020106");
+            jData3.put("200001");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            //jData1.put("+1");
+            jData3.put("Test Customer");
+            jData3.put("-");
+            jData3.put("-");
+            jData3.put("-");
+            jData3.put("0");
+            jData3.put("100");
+
+
+
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DATA",jData);
+            jsonObject.put("HEADERS",HEADERS);
+            jsonObject.put("TOTAL",totalObj);
+            JSONArray jDataNew = new JSONArray();
+            jDataNew.put(jsonObject);
+            mainArr.put("data",jDataNew);
             //mainArr.put("data",jData);
 
             jDict.put("mainArr",mainArr);

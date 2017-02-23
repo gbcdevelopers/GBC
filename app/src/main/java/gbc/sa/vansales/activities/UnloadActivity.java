@@ -24,22 +24,27 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.models.ArticleHeader;
+import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.Unload;
+import gbc.sa.vansales.models.UnloadSummaryPrint;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.PrinterHelper;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 public class UnloadActivity extends AppCompatActivity {
@@ -58,6 +63,8 @@ public class UnloadActivity extends AppCompatActivity {
     private ArrayList<Unload>arrayList = new ArrayList<>();
     public ArrayList<ArticleHeader> articles;
     private ArrayList<Unload> dataStoreList = new ArrayList<>();
+    private ArrayList<UnloadSummaryPrint> printUnloadList = new ArrayList<>();
+    boolean isPrint = false;
 
     static final String[] badReturnitems = new String[]{
             "Bad Return", "Truck Damage", "Fresh Unload", "Ending Inventory", "INV. Variance", "Bad RTN. Variance"};
@@ -75,7 +82,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_ending_inventory = (Button)findViewById(R.id.btn_ending_inventory);
         btn_inventory_variance = (Button)findViewById(R.id.btn_inventory_variance);
         btn_truck_damage = (Button)findViewById(R.id.btn_truck_damage);
-
+        new loadDataforPrint().execute();
         btn_bad_return.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,10 +162,12 @@ public class UnloadActivity extends AppCompatActivity {
                                 btn_print.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        //new loadDataforPrint().execute();
                                         if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
+                                            isPrint = true;
                                             new postDataNew().execute();
                                         } else {
-                                            //clearVanStock();   //For development purpose.
+                                            clearVanStock();   //For development purpose.
                                             HashMap<String, String> altMap = new HashMap<>();
                                             altMap.put(db.KEY_IS_UNLOAD, "true");
                                             HashMap<String, String> filterMap = new HashMap<>();
@@ -176,7 +185,7 @@ public class UnloadActivity extends AppCompatActivity {
                                         if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
                                             new postDataNew().execute();
                                         } else {
-                                            //clearVanStock(); for testing purpose
+                                            clearVanStock(); //for testing purpose
                                             HashMap<String, String> altMap = new HashMap<>();
                                             altMap.put(db.KEY_IS_UNLOAD, "true");
                                             HashMap<String, String> filterMap = new HashMap<>();
@@ -322,7 +331,6 @@ public class UnloadActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
     public class postDataNew extends AsyncTask<String,String,String>{
         @Override
         protected String doInBackground(String... params) {
@@ -346,7 +354,8 @@ public class UnloadActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(String s) {
-           // clearVanStock();
+            //clearVanStock();
+            Log.e("I am here","Here");
             if(Helpers.isNetworkAvailable(getApplicationContext())){
                 Helpers.createBackgroundJob(getApplicationContext());
             }
@@ -355,11 +364,42 @@ public class UnloadActivity extends AppCompatActivity {
             HashMap<String, String> filterMap = new HashMap<>();
             filterMap.put(db.KEY_IS_UNLOAD, "false");
             db.updateData(db.LOCK_FLAGS, altMap, filterMap);
-            Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
-            startActivity(intent);
+
+            if(isPrint){
+                /*runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        PrinterDataHelper dataHelper = new PrinterDataHelper();
+                        HashMap<String,String> header = new HashMap<>();
+                        header.put("ROUTE",Settings.getString(App.ROUTE));
+                        header.put("DOC DATE",Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+                        header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+                        header.put("SALESMAN", Settings.getString(App.DRIVER));
+                        header.put("CONTACTNO","1234");
+                        header.put("DOCUMENT NO", object.getDeliveryNo());  //Load Summary No
+                        header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+                        header.put("supervisorname","-");
+                        header.put("TripID",Settings.getString(App.TRIP_ID));
+                        header.put("Load Number", "1");
+                        JSONArray data = dataHelper.createJSONDataLoadSummary(App.LOAD_SUMMARY_REQUEST, header, dataNew, dataOld,null);
+                        PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+                        object.execute(App.LOAD_SUMMARY_REQUEST,data);
+                    }
+                });*/
+                JSONArray jsonArray = createPrintData();
+                PrinterHelper object = new PrinterHelper(UnloadActivity.this,UnloadActivity.this);
+                object.execute("", jsonArray);
+                /*Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+                startActivity(intent);*/
+            }
+            else{
+                Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+                startActivity(intent);
+            }
+
+
         }
     }
-
     public void setUnloadData(Cursor c){
         try{
             Cursor cursor = c;
@@ -847,8 +887,7 @@ public class UnloadActivity extends AppCompatActivity {
         HashMap<String,String> map = new HashMap<>();
         map.put(db.KEY_TIME_STAMP,"");
         HashMap<String,String>filter = new HashMap<>();
-        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-
+        //filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
         if(varianceType.equals("")||varianceType==null){
 
         }
@@ -947,11 +986,365 @@ public class UnloadActivity extends AppCompatActivity {
         //dataStoreList = vanData;
     }
     private void clearVanStock(){
-        Log.e("Tst","Test");
         for(int i=0;i<articles.size();i++){
             HashMap<String,String>map = new HashMap<>();
-            map.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
-            db.deleteData(db.VAN_STOCK_ITEMS,map);
+            map.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+            //db.deleteData(db.VAN_STOCK_ITEMS, map);
         }
+    }
+
+    public JSONArray createPrintData(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.UNLOAD);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+
+            mainArr.put("availvalue","+1000");
+            mainArr.put("unloadvalue","+2000");
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("ITEMNO");
+            HEADERS.put("DESCRIPTION");
+            HEADERS.put("INVENTORY CALCULATED");  //Fresh unload
+            HEADERS.put("RETURN TO STOCK");  //Summation of all
+            HEADERS.put("TRUCK SPOILS");  //Truck Damage
+            HEADERS.put("ACTUAL ON TRUCK");  //Truck Damage
+            HEADERS.put("BAD RTRNS");  //Bad Returns
+            HEADERS.put("----VARIANCE---- QTY        AMNT");
+            HEADERS.put("ENDING INV.VALUE");
+            //HEADERS.put("TOTAL VALUE");
+
+            mainArr.put("HEADERS",HEADERS);
+
+
+            JSONArray jData = new JSONArray();
+            double totalEndingInventory = 0;
+            double totalfreshUnload = 0;
+            double totalTruckDamange = 0;
+            double totalVanStock = 0;
+            double totalBadReturns = 0;
+            double totalVariance = 0;
+            double totalVarianceAmount = 0;
+            double totalEndingInventoryValue = 0;
+
+            for(UnloadSummaryPrint obj:printUnloadList){
+                JSONArray data = new JSONArray();
+                data.put(StringUtils.stripStart(obj.getItemNo(), "0"));
+                data.put(UrlBuilder.decodeString(obj.getItemDescription()));
+                data.put("+" + obj.getEndingInventory());
+                totalEndingInventory += Double.parseDouble(obj.getEndingInventory());
+                data.put("+" + obj.getFreshUnload());
+                totalfreshUnload += Double.parseDouble(obj.getFreshUnload());
+                data.put("-" + obj.getTruckDamage());
+                totalTruckDamange += Double.parseDouble(obj.getTruckDamage());
+                data.put("+" + obj.getVanStock());
+                totalVanStock += Double.parseDouble(obj.getVanStock());
+                data.put("+" + obj.getBadReturns());
+                totalBadReturns += Double.parseDouble(obj.getBadReturns());
+                data.put(" " +obj.getVarianceQty() + "        " + String.valueOf(Double.parseDouble(obj.getVarianceQty())*Double.parseDouble(obj.getItemPrice())));
+                totalVariance += Double.parseDouble(obj.getVarianceQty());
+                totalVarianceAmount += Double.parseDouble(obj.getVarianceQty())*Double.parseDouble(obj.getItemPrice());
+                data.put(String.valueOf(Double.parseDouble(obj.getEndingInventory())*Double.parseDouble(obj.getItemPrice())));
+                totalEndingInventoryValue += Double.parseDouble(obj.getEndingInventory())*Double.parseDouble(obj.getItemPrice());
+                jData.put(data);
+            }
+
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("INVENTORY CALCULATED",String.valueOf(totalEndingInventory));
+            totalObj.put("RETURN TO STOCK",String.valueOf(totalfreshUnload));  //Summation of all
+            totalObj.put("TRUCK SPOILS",String.valueOf(totalTruckDamange));  //Truck Damage
+            totalObj.put("ACTUAL ON TRUCK",String.valueOf(totalVanStock));  //Truck Damage
+            totalObj.put("BAD RTRNS",String.valueOf(totalBadReturns));  //Bad Returns
+            totalObj.put("----VARIANCE---- QTY        AMNT"," " + String.valueOf(totalVariance) + "       " + String.valueOf(totalVarianceAmount));
+            totalObj.put("ENDING INV.VALUE",String.valueOf(totalEndingInventoryValue));
+
+            mainArr.put("closevalue","+" + String.valueOf(totalEndingInventoryValue));
+            /*totalObj.put("TOTAL FRESH UNLOAD","+10");
+            totalObj.put("TOTAL TRUCK DAMAGE","+5");
+            totalObj.put("TOTAL CLOSING STOCK","+65");
+            totalObj.put("TOTAL VARIANCE QTY","+15");
+            totalObj.put("Total Value","+500");*/
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+
+            /*JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("Carton 48*200ml Berain Krones");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            //jData1.put("+1");
+            jData1.put("+10");
+            jData1.put("+20");
+            jData1.put("+30");
+            jData1.put("+40");
+            jData1.put("+50");
+            jData1.put("+60");
+            jData1.put("+50 +60");
+            //jData1.put("+60");
+            jData1.put("+150");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("Carton 30*330ml Berain Krones");
+            //jData2.put("+1");
+            jData2.put("+10");
+            jData2.put("+20");
+            jData2.put("+30");
+            jData2.put("+40");
+            jData2.put("+50");
+            jData2.put("+60");
+            jData2.put("+50 +60");
+            //jData2.put("+60");
+            jData2.put("+150");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020123");
+            jData3.put("Carton 24*600 Berain PH8 Krones");
+            //jData3.put("+1");
+            jData3.put("+10");
+            jData3.put("+20");
+            jData3.put("+30");
+            jData3.put("+40");
+            jData3.put("+50");
+            jData3.put("+60");
+            jData3.put("+50 +60");
+            //jData3.put("+60");
+            jData3.put("+150");
+
+
+
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);*/
+
+            mainArr.put("data",jData);
+            //mainArr.put("data",jData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            jArr.put(HEADERS);
+
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+    public class loadDataforPrint extends AsyncTask<String,String,String>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            loadData();
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String s) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            Log.e("Unload Summary","" + printUnloadList.size());
+        }
+    }
+    private void loadData(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for(ArticleHeader articleHeader:articles){
+                    double vanCase = 0;
+                    double vanQty = 0;
+                    double totalVarianceQty = 0;
+                    double totalVarianceAmount = 0;
+                    double brCase = 0;
+                    double brUnits = 0;
+                    double eiCase = 0;
+                    double eiUnits = 0;
+                    double freshUnloadCase = 0;
+                    double freshUnloadUnits = 0;
+                    double truckDamageCase = 0;
+                    double truckDamageUnits = 0;
+                    double itemPrice = 0;
+
+                    UnloadSummaryPrint unloadSummaryPrint = new UnloadSummaryPrint();
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_MATERIAL_NO, "");
+                    map.put(db.KEY_RESERVED_QTY_CASE, "");
+                    map.put(db.KEY_RESERVED_QTY_UNIT, "");
+                    map.put(db.KEY_REMAINING_QTY_CASE, "");
+                    map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                    map.put(db.KEY_UOM_CASE, "");
+                    map.put(db.KEY_UOM_UNIT, "");
+                    map.put(db.KEY_DIST_CHANNEL, "");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_MATERIAL_NO,articleHeader.getMaterialNo());
+                    Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
+                        unloadSummaryPrint.setItemNo(articleHeader.getMaterialNo());
+                        unloadSummaryPrint.setItemDescription(UrlBuilder.decodeString(articleHeader.getMaterialDesc1()));
+                        String cases = String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))
+                                +Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE))));
+                        String units = String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))
+                                +Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE))));
+                        vanCase = Double.parseDouble(cases);
+                        unloadSummaryPrint.setVanStock(cases);
+
+                        //Searching for material bad return
+
+                        HashMap<String, String> brMap = new HashMap<>();
+                        brMap.put(db.KEY_MATERIAL_NO, "");
+                        brMap.put(db.KEY_CASE, "");
+                        brMap.put(db.KEY_UNIT, "");
+                        HashMap<String, String> brMapFilter = new HashMap<>();
+                        brMapFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                        brMapFilter.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        Cursor brCursor = db.getData(db.RETURNS, brMap, brMapFilter);
+                        if(brCursor.getCount()>0){
+                            brCursor.moveToFirst();
+                            do{
+                                brCase += Double.parseDouble(brCursor.getString(brCursor.getColumnIndex(db.KEY_CASE)));
+                                brUnits += Double.parseDouble(brCursor.getString(brCursor.getColumnIndex(db.KEY_UNIT)));
+                            }
+                            while (brCursor.moveToNext());
+                        }
+                        unloadSummaryPrint.setBadReturns(String.valueOf(brCase));
+
+                        HashMap<String, String> filterPart = new HashMap<>();
+                        filterPart.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        HashMap<String, String> priceMap = new HashMap<>();
+                        priceMap.put(db.KEY_MATERIAL_NO, "");
+                        priceMap.put(db.KEY_AMOUNT, "");
+                        Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                        if(priceCursor.getCount()>0){
+                            priceCursor.moveToFirst();
+                            do{
+                                itemPrice = Double.parseDouble(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                            }
+                            while (priceCursor.moveToNext());
+                        }
+                        unloadSummaryPrint.setItemPrice(String.valueOf(itemPrice));
+                        HashMap<String, String> brVariance = new HashMap<>();
+                        brVariance.put(db.KEY_ITEM_NO, "");
+                        brVariance.put(db.KEY_MATERIAL_DESC1, "");
+                        brVariance.put(db.KEY_MATERIAL_NO, "");
+                        brVariance.put(db.KEY_MATERIAL_GROUP, "");
+                        brVariance.put(db.KEY_CASE, "");
+                        brVariance.put(db.KEY_UNIT, "");
+                        brVariance.put(db.KEY_UOM, "");
+                        HashMap<String, String> brVarianceFilter = new HashMap<>();
+                        brVarianceFilter.put(db.KEY_VARIANCE_TYPE, App.BAD_RETURN_VARIANCE);
+                        brVarianceFilter.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        Cursor brVarianceCursor = db.getData(db.UNLOAD_VARIANCE, brVariance, brVarianceFilter);
+
+                        if(brVarianceCursor.getCount()>0){
+                            brVarianceCursor.moveToFirst();
+                            do{
+                                totalVarianceQty += Double.parseDouble(brVarianceCursor.getString(brVarianceCursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (brVarianceCursor.moveToNext());
+                        }
+
+                        HashMap<String, String> theftMap = new HashMap<>();
+                        theftMap.put(db.KEY_ITEM_NO, "");
+                        theftMap.put(db.KEY_MATERIAL_NO, "");
+                        theftMap.put(db.KEY_CASE, "");
+                        theftMap.put(db.KEY_UNIT, "");
+                        HashMap<String, String> theftMapFilter = new HashMap<>();
+                        theftMapFilter.put(db.KEY_VARIANCE_TYPE, App.THEFT);
+                        theftMapFilter.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        Cursor theftCursor = db.getData(db.UNLOAD_VARIANCE, theftMap, theftMapFilter);
+                        if (theftCursor.getCount() > 0) {
+                            theftCursor.moveToFirst();
+                            do{
+                                totalVarianceQty += Double.parseDouble(theftCursor.getString(theftCursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (theftCursor.moveToNext());
+                        }
+
+                        unloadSummaryPrint.setVarianceQty(String.valueOf(totalVarianceQty));
+
+                        HashMap<String, String> eiMap = new HashMap<>();
+                        eiMap.put(db.KEY_CASE, "");
+                        eiMap.put(db.KEY_UNIT, "");
+                        HashMap<String, String> eiMapFilter = new HashMap<>();
+                        eiMapFilter.put(db.KEY_VARIANCE_TYPE, App.ENDING_INVENTORY);
+                        eiMapFilter.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        Cursor eiCursor = db.getData(db.UNLOAD_VARIANCE, eiMap, eiMapFilter);
+                        if(eiCursor.getCount()>0){
+                            eiCursor.moveToFirst();
+                            do{
+                                eiCase += Double.parseDouble(eiCursor.getString(eiCursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (eiCursor.moveToNext());
+                        }
+                        unloadSummaryPrint.setEndingInventory(String.valueOf(eiCase));
+
+                        HashMap<String, String> truckDamageMap = new HashMap<>();
+                        truckDamageMap.put(db.KEY_MATERIAL_NO, "");
+                        truckDamageMap.put(db.KEY_CASE, "");
+                        truckDamageMap.put(db.KEY_UNIT, "");
+                        HashMap<String, String> truckDamageFilter = new HashMap<>();
+                        truckDamageFilter.put(db.KEY_VARIANCE_TYPE, App.TRUCK_DAMAGE);
+                        truckDamageFilter.put(db.KEY_MATERIAL_NO, articleHeader.getMaterialNo());
+                        Cursor truckDamageCursor = db.getData(db.UNLOAD_VARIANCE, truckDamageMap, truckDamageFilter);
+                        if (truckDamageCursor.getCount() > 0) {
+                            truckDamageCursor.moveToFirst();
+                            do{
+                                truckDamageCase += Double.parseDouble(truckDamageCursor.getString(truckDamageCursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (truckDamageCursor.moveToNext());
+                        }
+
+                        unloadSummaryPrint.setTruckDamage(String.valueOf(truckDamageCase));
+                        freshUnloadCase = vanCase - eiCase - truckDamageCase - totalVarianceQty - brCase;
+                        unloadSummaryPrint.setFreshUnload(String.valueOf(freshUnloadCase));
+                        printUnloadList.add(unloadSummaryPrint);
+                    }
+                }
+            }
+        });
+
+    }
+
+    public void callbackFunction(){
+        Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+        startActivity(intent);
     }
 }

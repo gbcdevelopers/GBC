@@ -670,7 +670,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         Log.e("ORDERID", "" + orderID);
         return orderID + "," + purchaseNumber;
     }
-
     public class postData extends AsyncTask<Void, Void, Void> {
         String orderID = "";
         String tempOrderID = "";
@@ -986,7 +985,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
-
     public JSONArray createPrintData(String orderDate,String orderNo){
         JSONArray jArr = new JSONArray();
         try{
@@ -1064,7 +1062,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         return jArr;
     }
-
     public void callbackFunction(){
         Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
         startActivity(intent);

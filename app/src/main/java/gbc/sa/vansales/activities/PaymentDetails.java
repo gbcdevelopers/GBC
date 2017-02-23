@@ -467,6 +467,7 @@ public class PaymentDetails extends AppCompatActivity {
                         HashMap<String, String> updateMap = new HashMap<String, String>();
                         updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
                         updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                        updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                         updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                         updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
                         updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);

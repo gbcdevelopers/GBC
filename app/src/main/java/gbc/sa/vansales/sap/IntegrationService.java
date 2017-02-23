@@ -988,14 +988,14 @@ public class IntegrationService extends IntentService {
                                             }
                                         }
                                     }
-                                    if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
+                                    /*if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
                                         offlineResponse.setFunction(jsonObject.getString("Function"));
                                         offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                                         offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                                         Log.e("Response Order","" + jsonObject.getString("OrderId"));
                                         offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
                                         arrayList.add(offlineResponse);
-                                    }
+                                    }*/
                                 }
                                 if(jsonObject.getString("Function").equals(ConfigStore.CustomerDeliveryRequestFunction)){
                                     if(offlineResponse.getResponse_code().equals("201")){
