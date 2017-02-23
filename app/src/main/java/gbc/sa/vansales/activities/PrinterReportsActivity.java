@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,10 +26,13 @@ import java.util.HashMap;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.CustomerHeaders;
 import gbc.sa.vansales.data.DriverRouteFlags;
+import gbc.sa.vansales.models.ArticleHeader;
 import gbc.sa.vansales.models.Collection;
 import gbc.sa.vansales.models.CustomerHeader;
+import gbc.sa.vansales.models.DamageReport;
 import gbc.sa.vansales.models.DepositReport;
 import gbc.sa.vansales.models.SalesSummary;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -44,12 +48,15 @@ public class PrinterReportsActivity extends AppCompatActivity {
     App.DriverRouteControl flag = new App.DriverRouteControl();
     CheckBox cb_deposit_report;
     CheckBox cb_sales_summary;
+    CheckBox cb_damaged_reports;
     ArrayList<String> printReports = new ArrayList<>();
     ArrayList<CustomerHeader> customers = new ArrayList<>();
+    ArrayList<ArticleHeader> articles = new ArrayList<>();
     ArrayList<DepositReport>depositReports = new ArrayList<>();
     ArrayList<SalesSummary> cashSales = new ArrayList<>();
     ArrayList<SalesSummary> tcSales = new ArrayList<>();
     ArrayList<SalesSummary> creditSales = new ArrayList<>();
+    ArrayList<DamageReport>damageReports = new ArrayList<>();
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     @Override
@@ -58,6 +65,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_printer_reports);
         flag = DriverRouteFlags.get();
         customers = CustomerHeaders.get();
+        articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(this);
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -66,6 +74,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         btn_print = (Button) findViewById(R.id.btn_print_printer_report);
         cb_deposit_report = (CheckBox)findViewById(R.id.cb_deposit_report);
         cb_sales_summary = (CheckBox)findViewById(R.id.cb_sales_summary);
+        cb_damaged_reports = (CheckBox)findViewById(R.id.cb_damaged_reports);
         cb_deposit_report.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -85,6 +94,17 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 }
                 else{
                     printReports.remove(App.SALES_SUMMARY);
+                }
+            }
+        });
+        cb_damaged_reports.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    printReports.add(App.BAD_RETURN_REPORT);
+                }
+                else{
+                    printReports.remove(App.BAD_RETURN_REPORT);
                 }
             }
         });
@@ -179,6 +199,10 @@ public class PrinterReportsActivity extends AppCompatActivity {
                     loadData(App.SALES_SUMMARY);
                     break;
                 }
+                case App.BAD_RETURN_REPORT:{
+                    loadData(App.BAD_RETURN_REPORT);
+                    break;
+                }
             }
             return null;
         }
@@ -189,6 +213,9 @@ public class PrinterReportsActivity extends AppCompatActivity {
             }
             if(invoker.equals(App.SALES_SUMMARY)){
                 printReport(App.SALES_SUMMARY);
+            }
+            if(invoker.equals(App.BAD_RETURN_REPORT)){
+                printReport(App.BAD_RETURN_REPORT);
             }
         }
     }
@@ -345,6 +372,73 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 }
                 break;
             }
+            case App.BAD_RETURN_REPORT:{
+                for (int i = 0; i < articles.size(); i++) {
+                    DamageReport damageReport = new DamageReport();
+                    float badReturnQuantity = 0;
+                    float badReturnVariance = 0;
+                    damageReport.setItemNo(articles.get(i).getMaterialNo());
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
+                    if(articleHeader!=null){
+                        damageReport.setItemDescription(articleHeader.getMaterialDesc1());
+                    }
+                    else{
+                        damageReport.setItemDescription(articles.get(i).getMaterialNo());
+                    }
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_MATERIAL_NO, "");
+                    map.put(db.KEY_CASE, "");
+                    map.put(db.KEY_UNIT, "");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                    filter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                    Cursor cursor = db.getData(db.RETURNS, map, filter);
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        do{
+                            badReturnQuantity += Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                        }
+                        while (cursor.moveToNext());
+                        HashMap<String, String> varMap = new HashMap<>();
+                        varMap.put(db.KEY_MATERIAL_NO, "");
+                        varMap.put(db.KEY_CASE, "");
+                        varMap.put(db.KEY_UNIT, "");
+                        HashMap<String, String> varFilter = new HashMap<>();
+                        varFilter.put(db.KEY_VARIANCE_TYPE, App.BAD_RETURN_VARIANCE);
+                        varFilter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                        Cursor varCursor = db.getData(db.UNLOAD_VARIANCE, varMap, varFilter);
+                        if(varCursor.getCount()>0){
+                            varCursor.moveToFirst();
+                            do{
+                                badReturnVariance+= Float.parseFloat(varCursor.getString(varCursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (varCursor.moveToNext());
+                        }
+                        damageReport.setItemQuantity(String.valueOf(badReturnQuantity));
+                        damageReport.setItemVariance(String.valueOf(badReturnVariance));
+                    }
+
+                    HashMap<String, String> priceMap = new HashMap<>();
+                    priceMap.put(db.KEY_AMOUNT, "");
+                    HashMap<String, String> filterPrice = new HashMap<>();
+                    filterPrice.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                    filterPrice.put(db.KEY_PRIORITY, "2");
+                    Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
+                    if (priceCursor.getCount() > 0) {
+                        priceCursor.moveToFirst();
+                        damageReport.setItemPrice(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                    } else {
+                        damageReport.setItemPrice("0");
+                    }
+
+
+                    if(badReturnQuantity>0){
+                        damageReports.add(damageReport);
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -360,9 +454,12 @@ public class PrinterReportsActivity extends AppCompatActivity {
                 object.execute("",createDataforSalesSummary());
                 break;
             }
+            case App.BAD_RETURN_REPORT:{
+                object.execute("",createDataforBadReturns());
+                break;
+            }
         }
     }
-
     public JSONArray createDataforDeposit(){
         JSONArray jArr = new JSONArray();
         try{
@@ -620,7 +717,145 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         return jArr;
     }
+    public JSONArray createDataforBadReturns(){
+        JSONArray jArr = new JSONArray();
+        try{
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            float totalInventoryCredit = 0;
+            float totalLoadedIn = 0;
+            float totalVarianceQty = 0;
+            float totalVarianceAmount = 0;
+            float totalInventoryCreditValue = 0;
+            float totalLoadedInValue = 0;
+            jDict.put(App.REQUEST,App.BAD_RETURN_REPORT);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO","80001234");  //Load Summary No
+            mainArr.put("ORDERNO","80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("invheadermsg","HAPPY NEW YEAR");
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("invoicenumber","1300000001");
+            mainArr.put("INVOICETYPE","SALES INVOICE");
+            String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMER","LULU HYPER MARKET" + "-" + arabicCustomer);
+            mainArr.put("ADDRESS","3101, 21st Street, Riyadh");
+            mainArr.put("ARBADDRESS","");
+            mainArr.put("displayupc","0");
+            mainArr.put("invoicepriceprint","1");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            mainArr.put("closevalue","+5000");
 
+
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("ITEM#");
+            HEADERS.put("DESCRIPTION");
+            HEADERS.put("INVOICE CREDIT");
+            HEADERS.put("LOADED IN");
+            HEADERS.put("PRICE");//Summation of all
+            HEADERS.put("-----VARIANCE----- QTY         AMOUNT");  //Truck Damage
+
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONArray jData = new JSONArray();
+            for(DamageReport obj:damageReports){
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(StringUtils.stripStart(obj.getItemNo(), "0"));
+                jsonArray.put(UrlBuilder.decodeString(obj.getItemDescription()));
+                jsonArray.put(obj.getItemQuantity());
+                double inventoryCredit = Double.parseDouble(obj.getItemQuantity());
+                totalInventoryCredit += Double.parseDouble(obj.getItemQuantity());
+                jsonArray.put(String.valueOf(Double.parseDouble(obj.getItemQuantity()) - Double.parseDouble(obj.getItemVariance())));
+                double loadedIn = Double.parseDouble(obj.getItemQuantity())-Double.parseDouble(obj.getItemVariance());
+                totalLoadedIn += loadedIn;
+                jsonArray.put(obj.getItemPrice());
+                double itemPrice = Double.parseDouble(obj.getItemPrice());
+                totalLoadedInValue += loadedIn*itemPrice;
+                totalInventoryCreditValue += inventoryCredit*itemPrice;
+                double varianceValue = Double.parseDouble(obj.getItemVariance())*itemPrice;
+                jsonArray.put(obj.getItemVariance()+"         "+String.valueOf(varianceValue));
+                totalVarianceQty += Double.parseDouble(obj.getItemVariance());
+                totalVarianceAmount += varianceValue;
+                jData.put(jsonArray);
+            }
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("INVOICE CREDIT","+" + String.valueOf(totalInventoryCredit));
+            totalObj.put("LOADED IN","+" + String.valueOf(totalLoadedIn));  //Summation of all
+            totalObj.put("-----VARIANCE----- QTY         AMOUNT",String.valueOf(totalVarianceQty)+ "         " + String.valueOf(totalVarianceAmount));  //Summation of all
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            mainArr.put("damagevariance","+" + String.valueOf(totalLoadedInValue));
+            mainArr.put("TOTAL_DAMAGE_VALUE","+" + String.valueOf(totalInventoryCreditValue));
+            /*JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("Test Material");
+            jData1.put("+10");
+            jData1.put("+9");
+            jData1.put("+12");
+            jData1.put("-1         +12");
+
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020106");
+            jData2.put("Test Material");
+            jData2.put("+10");
+            jData2.put("+9");
+            jData2.put("+12");
+            jData2.put("-1         +12");
+
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020106");
+            jData3.put("Test Material");
+            jData3.put("+10");
+            jData3.put("+9");
+            jData3.put("+12");
+            jData3.put("-1         +12");
+
+
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);*/
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("DATA",jData);
+            jsonObject.put("HEADERS",HEADERS);
+            jsonObject.put("TOTAL",totalObj);
+            JSONArray jDataNew = new JSONArray();
+            jDataNew.put(jsonObject);
+            mainArr.put("data",jData);
+            // mainArr.put("tcData",jData);
+            //  mainArr.put("creditData",jData);
+
+            /*mainArr.put("data",jData);
+            mainArr.put("data",jData);
+            mainArr.put("data",jData);
+*/
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+            jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
 
 
 }

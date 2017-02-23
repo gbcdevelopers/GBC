@@ -2839,6 +2839,8 @@ public class PrinterHelper {
             printlines1(getAccurateText("TOTAL LOADED IN RETURNS : ", 40, 2) + getAccurateText(string2, 30, 1), 1, object, 1, args, 2);
             //printlines2(stringBuilder2.append(getAccurateText(string2, 16, 1)).toString(), 1, object, 1, args, 7, 7);
             this.outStream.write(this.BoldOff);
+            this.outStream.write(this.NewLine);
+            this.outStream.write(this.NewLine);
             //printlines2(" ", 2, object, 1, args, 7, 7);
             printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
             printlines1(getAccurateText("SUPERVISOR", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
@@ -3278,9 +3280,10 @@ public class PrinterHelper {
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
             } else if (type == 7) {
+                this.outStream.write(this.NewLine);
                 this.outStream.write(this.BoldOn);
                 this.outStream.write(this.DoubleWideOn);
-                printheaders(getAccurateText("DAMAGE/EXPIRY SUMMARY", 40, 1), false, 3);
+                printheaders(getAccurateText("DAMAGE/EXPIRY REPORT", 40, 1), false, 3);
                 this.outStream.write(this.DoubleWideOff);
                 this.outStream.write(this.BoldOff);
                 this.outStream.write(this.NewLine);
