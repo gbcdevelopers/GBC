@@ -23,6 +23,7 @@ public class Const {
     public static ArrayList<Customer> allCustomerdataArrayList;
     public static  ArrayList<String> addlist=new ArrayList<>();
     public static ArrayList<Sales> salesarrayList;
+    public static int loadNumber=0;
 
     public static List<LoadRequestConstants> loadRequestConstantsList=new ArrayList<>();
     public static HashMap<Integer,List<LoadRequestConstants>> constantsHashMap=new HashMap<>();

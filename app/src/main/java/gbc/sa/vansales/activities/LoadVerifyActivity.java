@@ -1,5 +1,7 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -198,9 +200,32 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
     }
     public void cancel(View v) {
-        Intent intent = new Intent(LoadVerifyActivity.this, LoadSummaryActivity.class);
-        intent.putExtra("headerObj", object);
-        startActivity(intent);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadVerifyActivity.this);
+        alertDialogBuilder.setTitle(getString(R.string.message))
+                .setMessage(getString(R.string.cancel_msg))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(LoadVerifyActivity.this, LoadSummaryActivity.class);
+                        intent.putExtra("headerObj", object);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
+
+
     }
     private boolean checkIfLoadExists() {
         try{
@@ -881,8 +906,26 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 startActivity(intent);*/
             }
             else{
-                Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
-                startActivity(intent);
+                try{
+                    JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    map.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    //map.put(db.KEY_DATA,jsonArray.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+
+                    Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+                    startActivity(intent);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
 
         }

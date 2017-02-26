@@ -13,6 +13,8 @@
 				<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 				<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 				<uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+				<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 				<application
 								android:name="gbc.sa.vansales.activities.AppController"
@@ -270,7 +272,11 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.PaymentDetails"
-
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateAlwaysHidden"/>
+								<activity
+												android:name=".activities.DriverPaymentDetails"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateAlwaysHidden"/>
@@ -399,6 +405,12 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.DriverCollectionActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+
+								<activity
+												android:name=".activities.DriverCollectionsActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>

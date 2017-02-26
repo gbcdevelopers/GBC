@@ -260,6 +260,7 @@
 				<string name="odometer">آخر قرائة للعداد</string>
 				<string name="odometer_reading">آخر قرائة للعداد</string>
 				<string name="ok">حسنا الترجمة المقترحة (تم)</string>
+				<string name="oneatattime">حاول الطباعة وثيقة واحدة في وقت واحد</string>
 				<string name="order">أمر</string>
 				<string name="order_date">تاريخ الامر</string>
 				<string name="order_no">رقم الامر</string>
@@ -283,6 +284,7 @@
 				<string name="pcs_100">PCS : 100</string>
 				<string name="pending_invoice">الرجاء مسح الفواتير المعلقة</string>
 				<string name="please_enter_odometer">الرجاء ادخال عداد السيارة</string>
+				<string name="please_select_report">الرجاء تحديد أتلست وثيقة واحدة لطباعة</string>
 				<string name="pobox">ص.ب.</string>
 				<string name="posting">بينات الترحيل</string>
 				<string name="preferred_lang">الرجاء اختيار لغتك المفضلة</string>

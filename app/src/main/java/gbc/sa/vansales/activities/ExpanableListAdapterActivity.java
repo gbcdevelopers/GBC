@@ -245,7 +245,7 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                 }
                 else if (groupPosition == 4) {
                     if(headerTitle.isEnabled()){
-                        Intent i = new Intent(mContext, DriverCollectionActivity.class);
+                        Intent i = new Intent(mContext, DriverCollectionsActivity.class);
                         mContext.startActivity(i);
                     }
 

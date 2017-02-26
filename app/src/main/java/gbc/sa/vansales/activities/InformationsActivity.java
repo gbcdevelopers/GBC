@@ -82,12 +82,12 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
-                        PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforBadReturns()); //For Sales Invoice
+                       /* PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.execute("",createDataforCollection());*/ //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                       //  object.execute("",createDataForLoadRequest());
-                       /*Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
-                        startActivity(itemlist);*/
+                        Intent itemlist = new Intent(InformationsActivity.this,ItemListActivity.class);
+                        startActivity(itemlist);
                         break;
                     case 2:
                         /*new Location(InformationsActivity.this, new Callback() {

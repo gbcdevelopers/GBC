@@ -505,6 +505,23 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+                                try{
+                                    JSONArray jsonArray = createPrintData("COLLECTION", "", invoiceNo);
+                                    JSONObject data = new JSONObject();
+                                    data.put("data",(JSONArray)jsonArray);
+
+                                    HashMap<String,String>map = new HashMap<>();
+                                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                    map.put(db.KEY_ORDER_ID,invoiceNo);
+                                    map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                    map.put(db.KEY_DATA,data.toString());
+                                    //map.put(db.KEY_DATA,jsonArray.toString());
+                                    db.addDataPrint(db.DELAY_PRINT,map);
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
                                 if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }
@@ -641,6 +658,24 @@ public class PaymentDetails extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+
+                                try{
+                                    JSONArray jsonArray = createPrintData("COLLECTION", "", invoiceNo);
+                                    JSONObject data = new JSONObject();
+                                    data.put("data",(JSONArray)jsonArray);
+
+                                    HashMap<String,String>map = new HashMap<>();
+                                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                    map.put(db.KEY_ORDER_ID,invoiceNo);
+                                    map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                    map.put(db.KEY_DATA,data.toString());
+                                    //map.put(db.KEY_DATA,jsonArray.toString());
+                                    db.addDataPrint(db.DELAY_PRINT,map);
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
                                 if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }
@@ -836,6 +871,7 @@ public class PaymentDetails extends AppCompatActivity {
                             HashMap<String, String> updateMap = new HashMap<String, String>();
                             updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
                             updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                             updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                             updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
                             updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
@@ -893,6 +929,7 @@ public class PaymentDetails extends AppCompatActivity {
                             HashMap<String, String> updateMap = new HashMap<String, String>();
                             updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
                             updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                             updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                             updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
                             updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
@@ -961,6 +998,22 @@ public class PaymentDetails extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     dialog.dismiss();
+                                    try{
+                                        JSONArray jsonArray = createPrintData("COLLECTION", "", invoiceNo);
+                                        JSONObject data = new JSONObject();
+                                        data.put("data",(JSONArray)jsonArray);
+
+                                        HashMap<String,String>map = new HashMap<>();
+                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        map.put(db.KEY_ORDER_ID,invoiceNo);
+                                        map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                        map.put(db.KEY_DATA,data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT,map);
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
                                     if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                         Helpers.createBackgroundJob(getApplicationContext());
                                     }

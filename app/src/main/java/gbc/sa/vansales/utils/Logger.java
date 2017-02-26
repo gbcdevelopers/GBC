@@ -22,30 +22,37 @@ public class Logger {
     public void appendLog(Context context,String text) {
         if (this.isAppenlog) {
             File dir = new File(Environment.getExternalStorageDirectory() + "/sfa/");
-            File mydir = context.getFilesDir();
-            String documents = "documents/berain";
-            File documentsFolder = new File(mydir, documents);
-            if (!documentsFolder.exists()) {
-                documentsFolder.mkdirs();
-            }
-           // File logFile = new File(Environment.getExternalStorageDirectory() + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
-            File logFile = new File(documentsFolder + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
-            if (!logFile.exists()) {
+            String storagestate = Environment.getExternalStorageState();
+            File documentsFolder = null;
+            if (storagestate.equals(Environment.MEDIA_MOUNTED)){
+                documentsFolder = new File(Environment.getExternalStorageDirectory(),
+                        "Download");
+                if (!documentsFolder.exists()) {
+                    documentsFolder.mkdirs();
+                }
+                //File logFile = new File(documentsFolder + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
+                File logFile = new File(documentsFolder.getPath() + File.separator + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
+                if (!logFile.exists()) {
+                    try {
+                        logFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 try {
-                    logFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+                    buf.append(new StringBuilder(String.valueOf(new Date().toString())).append(StringUtilities.LF).toString());
+                    buf.append(text);
+                    buf.newLine();
+                    buf.close();
+                } catch (IOException e2) {
+                    e2.printStackTrace();
                 }
             }
-            try {
-                BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
-                buf.append(new StringBuilder(String.valueOf(new Date().toString())).append(StringUtilities.LF).toString());
-                buf.append(text);
-                buf.newLine();
-                buf.close();
-            } catch (IOException e2) {
-                e2.printStackTrace();
-            }
+
+
+           // File logFile = new File(Environment.getExternalStorageDirectory() + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
+
         }
     }
 }

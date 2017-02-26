@@ -322,12 +322,15 @@ public class SyncData extends IntentService {
                     Cursor cursor = db.getData(db.LOAD_CONFIRMATION_HEADER,map,filter);
                     if(cursor.getCount()>0){
                         cursor.moveToFirst();
-                        OfflinePost object = new OfflinePost();
-                        object.setCollectionName(App.POST_COLLECTION);
-                        object.setMap(Helpers.buildLoadConfirmationHeader(cursor.getString(cursor.getColumnIndex(db.KEY_FUNCTION)),
-                                cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)), Settings.getString(App.DRIVER)));
-                        object.setDeepEntity(deepEntity);
-                        arrayList.add(object);
+                        do{
+                            OfflinePost object = new OfflinePost();
+                            object.setCollectionName(App.POST_COLLECTION);
+                            object.setMap(Helpers.buildLoadConfirmationHeader(cursor.getString(cursor.getColumnIndex(db.KEY_FUNCTION)),
+                                    cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)), Settings.getString(App.DRIVER)));
+                            object.setDeepEntity(deepEntity);
+                            arrayList.add(object);
+                        }
+                        while (cursor.moveToNext());
                     }
                 }
                 catch (Exception e){
@@ -2245,6 +2248,7 @@ public class SyncData extends IntentService {
             case ConfigStore.LoadConfirmationFunction:{
                 Cursor loadConfirmationRequest = db.getData(db.LOAD_CONFIRMATION_HEADER,map,filter);
                 syncCount = loadConfirmationRequest.getCount();
+                Log.e("LCO Count","" + syncCount);
                 break;
             }
             case ConfigStore.LoadVarianceFunction+"D":{

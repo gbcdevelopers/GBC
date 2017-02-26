@@ -158,8 +158,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     btn_save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //Log.e("Spin Select","" + spin.getSelectedItem().toString());
-                            if (spin.getSelectedItem().toString().equals("Select Reason")) {
+                            Log.e("Spin Select","" + spin.getSelectedItem().toString() + myAdapter.getItem(position).getReasonID());
+                            if (item.getReasonCode().equals("99")/*spin.getSelectedItem().toString().equals("Select Reason")*/) {
                                 ((TextView) spin.getSelectedView()).setError("select reason");
                             } else {
                                 String strCase = ed_cases.getText().toString();

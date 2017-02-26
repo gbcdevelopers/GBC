@@ -137,6 +137,8 @@ public class ConfigStore {
     public static final String LoadRequest_TR = "LR";
     public static final String OrderRequest_TR = "OR";
     public static final String SalesInvoice_TR = "SI";
+    public static final String GoodReturns_TR = "GR";
+    public static final String BadReturns_TR = "BR";
     public static final String InventoryRequest_TR = "INV";
     public static final String CollectionRequest_TR = "AR";
     public static final String DeliveryRequest_TR = "DLV";

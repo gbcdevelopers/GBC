@@ -69,6 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String NEW_CUSTOMER_POST = "NEW_CUSTOMER_POST";
     public static final String TODAYS_SUMMARY = "TODAYS_SUMMARY";
     public static final String TODAYS_SUMMARY_SALES = "TODAYS_SUMMARY_SALES";
+    public static final String DELAY_PRINT = "DELAY_PRINT";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -184,6 +185,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_RECEIVABLES = "receivables";
     public static final String KEY_CURRENCY = "currency";
     public static final String KEY_RISK_CAT = "riskCategory";
+    public static final String KEY_CREDIT_DAYS = "creditDays";
     //Load Delivery Header
     public static final String KEY_DELIVERY_NO = "deliveryNo";
     public static final String KEY_ENTRY_TIME = "entryTime";
@@ -401,6 +403,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_GOOD_RETURN_TOTAL = "totalGoodReturnValue";
     public static final String KEY_ORDER_DISCOUNT = "totalOrderDiscount";
 
+    //Delay Print
+    public static final String KEY_DATA = "data";
+
 
 
     private static DatabaseHandler sInstance;
@@ -573,6 +578,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_SPECIAL_LIABILITIES + " TEXT,"
                 + KEY_RECEIVABLES + " TEXT,"
                 + KEY_CURRENCY + " TEXT,"
+                + KEY_CREDIT_DAYS + " TEXT,"
                 + KEY_RISK_CAT + " TEXT " + ")";
         String TABLE_LOAD_DELIVERY_HEADER = "CREATE TABLE " + LOAD_DELIVERY_HEADER + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -1136,6 +1142,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DOCUMENT_TYPE + " TEXT,"
                 + KEY_VISITLISTID + " TEXT " + ")";
 
+        String TABLE_DELAY_PRINT = "CREATE TABLE " + DELAY_PRINT + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_DOC_TYPE + " TEXT,"
+                + KEY_DATA + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -1184,6 +1197,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_TODAY_SUMMARY);
         db.execSQL(TABLE_TODAY_SUMMARY_SALES);
         db.execSQL(TABLE_DRIVER_COLLECTION);
+        db.execSQL(TABLE_DELAY_PRINT);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1233,6 +1247,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY);
         db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY_SALES);
         db.execSQL("DROP TABLE IF EXISTS " + DRIVER_COLLECTION);
+        db.execSQL("DROP TABLE IF EXISTS " + DELAY_PRINT);
         onCreate(db);
     }
     //Storing Secured Credentials
@@ -1271,6 +1286,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+            values.put(entry.getKey().toString(), value);
+        }
+        db.insert(tablename, null, values);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+    public void addDataPrint(String tablename, HashMap<String, String> keyMap) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        ContentValues values = new ContentValues();
+        for (Map.Entry entry : keyMap.entrySet()) {
+            String value = entry.getValue() == null ? null : entry.getValue().toString();
             values.put(entry.getKey().toString(), value);
         }
         db.insert(tablename, null, values);

@@ -23,6 +23,7 @@ import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.activities.ShelfStockActivity;
 import gbc.sa.vansales.data.Const;
+import gbc.sa.vansales.models.Print;
 import gbc.sa.vansales.utils.Settings;
 
 import static gbc.sa.vansales.data.Const.addlist;
@@ -33,6 +34,7 @@ public class ProductListAdapter extends BaseAdapter {
     Context context;
     int resource;
     ArrayList<String> dataList;
+    ArrayList<Print> arrayList = new ArrayList<>();
     String from = "";
     public ProductListAdapter(Context context, ArrayList<String> item, int resource, String from) {
         this.context = context;

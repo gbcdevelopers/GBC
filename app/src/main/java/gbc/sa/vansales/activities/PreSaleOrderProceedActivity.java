@@ -378,7 +378,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 btn_print.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        createPrintout(true,orderList.getOrderDate(),orderList.getOrderId());
+                        createPrintout(true,orderList.getOrderDate(),orderList.getOrderId(),false);
                         //finish();
                     }
                 });
@@ -638,7 +638,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                                     }
                                     if(isPrint){
                                         dialog.dismiss();
-                                        createPrintout(false,tv_date.getText().toString(),tokens[0].toString());
+                                        createPrintout(false,tv_date.getText().toString(),tokens[0].toString(),false);
                                        /* Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         intent.putExtra("headerObj", object);
@@ -646,7 +646,9 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                                         finish();*/
                                     }
                                     else{
+
                                         dialog.dismiss();
+                                        createPrintout(false,tv_date.getText().toString(),tokens[0].toString(),true);
                                         Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         intent.putExtra("headerObj", object);
@@ -939,18 +941,62 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
         return db.checkData(db.ORDER_REQUEST,map);
     }
-    private void createPrintout(boolean fromList,String orderDate,String orderNo){
+    private void createPrintout(boolean fromList,String orderDate,String orderNo,boolean isDelayPrint){
         Log.e("Came for Print", "Came for");
-        if(fromList){
-            JSONArray jsonArray = createPrintData(orderDate,orderNo);
-            PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
-            object.execute("", jsonArray);
+        if(!isDelayPrint){
+            if(fromList){
+                JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
+                object.execute("", jsonArray);
+            }
+            else{
+                JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
+                object.execute("", jsonArray);
+            }
         }
         else{
-            JSONArray jsonArray = createPrintData(orderDate,orderNo);
-            PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
-            object.execute("", jsonArray);
+            if(fromList){
+                try{
+                    JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_ORDER_ID,orderNo);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+            else{
+                try{
+                    JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_ORDER_ID,orderNo);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    //map.put(db.KEY_DATA,jsonArray.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                /*JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
+                object.execute("", jsonArray);*/
+            }
         }
+
     }
     public JSONArray createPrintData(String orderDate,String orderNo){
         JSONArray jArr = new JSONArray();
@@ -974,7 +1020,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             mainArr.put("ORDERNO",orderNo);
             mainArr.put("invoicepaymentterms","3");
             String testAr = "هذا هو اختبار النص العربي";
-            mainArr.put("CUSTOMER", object.getCustomerName() + "-" + (object.getCustomer_name_ar().equals("")?testAr: object.getCustomer_name_ar()));
+            mainArr.put("CUSTOMER", object.getCustomerName() + "-" + (object.getCustomer_name_ar()==null||object.getCustomer_name_ar().equals("")?testAr: object.getCustomer_name_ar()));
             mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?object.getCustomerAddress():"This is just test address");
             mainArr.put("ARBADDRESS",object.getCustomerAddress());
             mainArr.put("TripID",Settings.getString(App.TRIP_ID));

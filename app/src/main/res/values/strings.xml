@@ -74,6 +74,7 @@
     <string name="br">B.R</string>
     <string name="buyback_free">BUYBACK FREE</string>
     <string name="cancel">Cancel</string>
+    <string name="cancel_msg">Are you sure you want to cancel. All your changes will be reverted.</string>
     <string name="calendar">Calendar</string>
     <string name="caseLabel">"Cases : "</string>
     <string name="case_price">Cases</string>
@@ -266,6 +267,7 @@
     <string name="odometer">Last Odometer Reading</string>
     <string name="odometer_reading">Last Odometer Reading</string>
     <string name="ok">Ok</string>
+    <string name="oneatattime">Try printing one at a time</string>
     <string name="order">order</string>
     <string name="order_date">Order Date</string>
     <string name="order_no">Order No</string>
@@ -290,6 +292,7 @@
     <string name="pcs_100">PCS : 100</string>
     <string name="pending_invoice">Operation cannot be performed as there are due invoices. Please clear the pending invoices</string>
     <string name="please_enter_odometer">Please enter Odometer :</string>
+    <string name="please_select_report">Please select atleast one document to print</string>
     <string name="pobox">PO Box</string>
     <string name="posting">Posting Data</string>
     <string name="preferred_lang">Preferred Language</string>

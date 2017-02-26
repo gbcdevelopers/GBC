@@ -105,7 +105,7 @@ public class DriverRouteFlags {
             driverFlag.setIsLoadSecurityGuard("0");
             driverFlag.setIsStartOfDay("0");
             driverFlag.setIsEndTrip("0");
-            driverFlag.setIsCallSequence(false);
+            driverFlag.setIsCallSequence(true);
             driverFlag.setIsDisplayInvoiceSummary(true);
             driverFlag.setIsAllowRadius(true);
             driverFlag.setIsEnableGPS(true);

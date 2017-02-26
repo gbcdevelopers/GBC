@@ -1125,11 +1125,44 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                 dialog.dismiss();
                                 orderID = tokens[0].toString();
                                 if(isPrint){
-                                    JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
-                                    PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
-                                    object.execute("", jsonArray);
+                                    try{
+                                        JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                        JSONObject data = new JSONObject();
+                                        data.put("data",(JSONArray)jsonArray);
+
+                                        HashMap<String,String>map = new HashMap<>();
+                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        map.put(db.KEY_ORDER_ID,tokens[0].toString());
+                                        map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
+                                        map.put(db.KEY_DATA,data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT,map);
+
+                                        PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
+                                        object.execute("", jsonArray);
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
                                 }
                                 else{
+                                    try{
+                                        JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                        JSONObject data = new JSONObject();
+                                        data.put("data",(JSONArray)jsonArray);
+
+                                        HashMap<String,String>map = new HashMap<>();
+                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        map.put(db.KEY_ORDER_ID,tokens[0].toString());
+                                        map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
+                                        map.put(db.KEY_DATA,data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT,map);
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
                                     if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
                                         Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
                                         intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -1820,9 +1853,69 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     Helpers.createBackgroundJob(PromotioninfoActivity.this);
                                 }
                                 orderID = tokens[0].toString();
-                                JSONArray jsonArray = createPrintDeliveryData("DELIVERY", delivery.getOrderDate(), delivery.getOrderId());
-                                PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
-                                object.execute("", jsonArray);
+                                if(isPrint){
+                                    try{
+                                        JSONArray jsonArray = createPrintDeliveryData("DELIVERY", delivery.getOrderDate(), delivery.getOrderId());
+                                        JSONObject data = new JSONObject();
+                                        data.put("data",(JSONArray)jsonArray);
+
+                                        HashMap<String,String>delayMap = new HashMap<>();
+                                        delayMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        delayMap.put(db.KEY_ORDER_ID,delivery.getOrderId());
+                                        delayMap.put(db.KEY_DOC_TYPE,ConfigStore.DeliveryRequest_TR);
+                                        delayMap.put(db.KEY_DATA,data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT,delayMap);
+
+                                        PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
+                                        object.execute("", jsonArray);
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                else{
+
+                                    try{
+                                        JSONArray jsonArray = createPrintDeliveryData("DELIVERY", delivery.getOrderDate(), delivery.getOrderId());
+                                        JSONObject data = new JSONObject();
+                                        data.put("data",(JSONArray)jsonArray);
+
+                                        HashMap<String,String>delayMap = new HashMap<>();
+                                        delayMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        delayMap.put(db.KEY_ORDER_ID,delivery.getOrderId());
+                                        delayMap.put(db.KEY_DOC_TYPE,ConfigStore.DeliveryRequest_TR);
+                                        delayMap.put(db.KEY_DATA,data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT,delayMap);
+
+                                        if (object.getPaymentMethod().equals(App.CASH_CUSTOMER)) {
+                                            Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                            intent.putExtra("msg", str_promotion_message);
+                                            intent.putExtra("from", from);
+                                            intent.putExtra("headerObj", object);
+                                            intent.putExtra("delivery", delivery);
+                                            intent.putExtra("invoiceno", orderID);
+                                            intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Intent intent = new Intent(PromotioninfoActivity.this, DeliveryActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                }
+
 
                                 /*if(object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
                                     Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);

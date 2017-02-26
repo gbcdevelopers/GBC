@@ -458,6 +458,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, "");
             map.put(db.KEY_CREDIT_LIMIT, "");
+            map.put(db.KEY_CREDIT_DAYS,"");
             HashMap<String, String> filters = new HashMap<>();
             filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
             Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
@@ -489,6 +490,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     isLimitAvailable = false;
                 }
                 tv_available_limit.setText(String.valueOf(limit-totalInvoiceAmount));
+                tv_credit_days.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_DAYS)));
             }
             else{
                 tv_credit_days.setText("0");

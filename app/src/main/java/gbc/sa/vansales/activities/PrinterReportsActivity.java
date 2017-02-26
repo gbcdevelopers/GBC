@@ -119,10 +119,10 @@ public class PrinterReportsActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(printReports.size()==0){
-                    Toast.makeText(getApplicationContext(),"Please select atleast one report to print",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),getString(R.string.please_select_report),Toast.LENGTH_SHORT).show();
                 }
                 else if(printReports.size()>1){
-                    Toast.makeText(getApplicationContext(),"Try printing one at a time",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),getString(R.string.oneatattime),Toast.LENGTH_SHORT).show();
                 }
                 else{
                     final Dialog dialog = new Dialog(PrinterReportsActivity.this);
@@ -296,7 +296,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
                             depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
                             depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
                             depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
-                            depositReport.setChequeDate(chequeDate[0].equals("0000")?"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
+                            depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
                             depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
                             depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
                         }

@@ -2098,9 +2098,10 @@ public class PrinterHelper {
                     printlines2(getAccurateText("CASH:" + jCash.getString("Amount"), 80, 1), 2, jSONObject, 1, args, 2, 2);
                     this.outStream.write(this.BoldOff);
                     this.outStream.write(this.BoldOn);
-                    printlines2(getAccurateText("CHEQUE", 80, 1), 1, object, 2, args, 2, 2);
+                    //printlines2(getAccurateText("CHEQUE", 80, 1), 1, jSONObject, 2, args, 2, 2);
+                    printlines2(getAccurateText("CHEQUE", 80, 1), 2, jSONObject, 1, args, 2, 2);
                     this.outStream.write(this.BoldOff);
-                    printlines2(getAccurateText("Cheque Date:", 20, 0) + getAccurateText("Cheque No:", 20, 0) + getAccurateText("Bank:", 20, 0) + getAccurateText("Amount:", 20, 2), 1, object, 1, args, 2, 2);
+                    printlines2(getAccurateText("Cheque Date:", 20, 0) + getAccurateText("Cheque No:", 20, 0) + getAccurateText("Bank:", 20, 0) + getAccurateText("Amount:", 20, 2), 1, jSONObject, 1, args, 2, 2);
                     printlines2(printSeprator(), 1, object, 1, args, 2, 2);
                     for (j = 0; j < jCheques.length(); j++) {
                         jChequeDetails = jCheques.getJSONObject(j);
@@ -2953,9 +2954,9 @@ public class PrinterHelper {
             } catch (InterruptedException e3) {
                 e3.printStackTrace();
             }
-            this.status.put("status", true);
-            this.status.put("isconnected", 0);
-            sendUpdate(this.status, true);
+//            this.status.put("status", true);
+//            this.status.put("isconnected", 0);
+ //           sendUpdate(this.status, true);
         }
         if (!isEnd) {
             printArabic(data);

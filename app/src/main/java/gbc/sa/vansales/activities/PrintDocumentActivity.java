@@ -103,6 +103,16 @@ public class PrintDocumentActivity extends AppCompatActivity {
             Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
             Cursor salesRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
             Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
+
+            HashMap<String,String> collection = new HashMap<>();
+            collection.put(db.KEY_TIME_STAMP,"");
+            collection.put(db.KEY_PURCHASE_NUMBER,"");
+            collection.put(db.KEY_CUSTOMER_NO,"");
+            HashMap<String,String> collectionFilter = new HashMap<>();
+            /*filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());*/
+
+
+
             if(orderRequest.getCount()>0){
                 orderRequest.moveToFirst();
             }
