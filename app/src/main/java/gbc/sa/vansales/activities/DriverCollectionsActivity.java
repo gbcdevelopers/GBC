@@ -49,9 +49,7 @@ public class DriverCollectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
-
         loadingSpinner = new LoadingSpinner(this);
-
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_method_of_payment = (TextView) findViewById(R.id.tv_method_of_payment);
         tv_customer_name.setText(Settings.getString(App.DRIVER) + " " + Settings.getString(App.DRIVER_NAME_EN));
@@ -84,17 +82,7 @@ public class DriverCollectionsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                intent.putExtra("from", "collection");
-                intent.putExtra("msg", "collection");
-                intent.putExtra("headerObj", object);
-                intent.putExtra("amountdue","0");
-                intent.putExtra("customer",object.getCustomerID());
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);*/
-//                startActivityForResult(intent, 1);
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+
             }
         });
        // setData();
@@ -102,28 +90,30 @@ public class DriverCollectionsActivity extends AppCompatActivity {
         lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
-                if(amountdue==0){
-                    Toast.makeText(DriverCollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
-                        Intent intent = new Intent(DriverCollectionsActivity.this, DriverPaymentDetails.class);
-                        intent.putExtra("msg", "drivercollection");
-                        intent.putExtra("from","drivercollection");
-                        intent.putExtra("pos", position);
-                        float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                        intent.putExtra("drivercollection",colletionDatas.get(position));
-                        intent.putExtra("amountdue",String.valueOf(dueamount));
-                        startActivity(intent);
+                try{
+                    double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
+                    if(amountdue==0){
+                        Toast.makeText(DriverCollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        Toast.makeText(DriverCollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                        if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
+                            Intent intent = new Intent(DriverCollectionsActivity.this, DriverPaymentDetails.class);
+                            intent.putExtra("msg", "drivercollection");
+                            intent.putExtra("from","drivercollection");
+                            intent.putExtra("pos", position);
+                            float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
+                            intent.putExtra("drivercollection",colletionDatas.get(position));
+                            intent.putExtra("amountdue",String.valueOf(dueamount));
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(DriverCollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-
-
-//                startActivityForResult(intent, 1);
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -142,17 +132,35 @@ public class DriverCollectionsActivity extends AppCompatActivity {
                     Log.v("pos", amt + "--");
                     tv_amt_paid.setText(amt);
                     amount = Double.parseDouble(amt);
-                    /*ColletionData colletionData = colletionDatas.get(pos);
-                    colletionData.setAmoutAde(amt);
-                    double amountdue = Double.parseDouble(colletionData.getAmoutDue()) - amount;
-                    Log.v("amountdue", colletionData.getAmoutDue() + "");
-                    colletionData.setAmoutDue(String.valueOf(amountdue));
-                    colletionAdapter.notifyDataSetChanged();*/
                 }
             }
         }
     }
+    private void setCollectionData(Cursor cursor){
+        try{
+            Cursor c = cursor;
+            do{
+                int indicator = 1;
+                String invoiceAmount = "";
+                Collection collection = new Collection();
+                collection.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_SAP_INVOICE_NO)));
+                collection.setInvoiceDate(c.getString(c.getColumnIndex(db.KEY_INVOICE_DATE)));
+                collection.setIndicator(c.getString(c.getColumnIndex(db.KEY_INDICATOR)));
+                indicator = c.getString(c.getColumnIndex(db.KEY_INDICATOR)).equals(App.ADD_INDICATOR)?indicator:indicator*-1;
+                invoiceAmount = c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)).equals("")?"0":c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT));
+                collection.setInvoiceAmount(String.valueOf(Double.parseDouble(invoiceAmount)*indicator));
+                collection.setAmountCleared(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)).equals("") ? "0" : c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                amount_paid += Double.parseDouble(collection.getAmountCleared());
+                collection.setInvoiceDueDate(c.getString(c.getColumnIndex(db.KEY_DUE_DATE)));
+                colletionDatas.add(collection);
+            }
+            while (c.moveToNext());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
+    }
     public class loadCollections extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -182,39 +190,19 @@ public class DriverCollectionsActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
+            try{
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                colletionAdapter.notifyDataSetChanged();
+                lv_colletions_view.setAdapter(colletionAdapter);
+                tv_amt_paid.setText(String.valueOf(amount_paid));
             }
-            colletionAdapter.notifyDataSetChanged();
-            lv_colletions_view.setAdapter(colletionAdapter);
-            tv_amt_paid.setText(String.valueOf(amount_paid));
-        }
-    }
-
-    private void setCollectionData(Cursor cursor){
-        try{
-            Cursor c = cursor;
-            do{
-                int indicator = 1;
-                String invoiceAmount = "";
-                Collection collection = new Collection();
-                collection.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_SAP_INVOICE_NO)));
-                collection.setInvoiceDate(c.getString(c.getColumnIndex(db.KEY_INVOICE_DATE)));
-                collection.setIndicator(c.getString(c.getColumnIndex(db.KEY_INDICATOR)));
-                indicator = c.getString(c.getColumnIndex(db.KEY_INDICATOR)).equals(App.ADD_INDICATOR)?indicator:indicator*-1;
-                invoiceAmount = c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)).equals("")?"0":c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT));
-                collection.setInvoiceAmount(String.valueOf(Double.parseDouble(invoiceAmount)*indicator));
-                collection.setAmountCleared(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)).equals("") ? "0" : c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-                amount_paid += Double.parseDouble(collection.getAmountCleared());
-                collection.setInvoiceDueDate(c.getString(c.getColumnIndex(db.KEY_DUE_DATE)));
-                colletionDatas.add(collection);
+            catch (Exception e){
+                e.printStackTrace();
             }
-            while (c.moveToNext());
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
 
+        }
     }
 
 }

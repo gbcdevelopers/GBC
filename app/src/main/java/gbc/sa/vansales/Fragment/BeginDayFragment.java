@@ -126,8 +126,6 @@ public class BeginDayFragment extends Fragment {
             else{
                 salesManName.setText(Settings.getString(App.DRIVER_NAME_EN));
             }
-
-
             salesDate.setText(data.getString("psDate"));
             //tripID.setText(Settings.getString(App.TRIP_ID));
            // delieveryDate.setText(data.getString("asDate"));

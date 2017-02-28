@@ -111,8 +111,6 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             }
         });
 
-
-
         final SwipeDetector swipeDetector = new SwipeDetector();
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
@@ -211,7 +209,6 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
             setPromotions(Promotions07);
         }
     }
-
     public class loadPromotions extends AsyncTask<Void,Void,Void>{
         String promotionType = "";
         String Promotions02 = App.Promotions02;

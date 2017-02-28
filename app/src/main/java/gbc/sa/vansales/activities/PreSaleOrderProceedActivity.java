@@ -650,7 +650,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if(Helpers.isNetworkAvailable(PreSaleOrderProceedActivity.this)){
+                                    if(Helpers.isNetworkAvailable(getApplicationContext())){
                                         Helpers.createBackgroundJob(getApplicationContext());
                                     }
                                     if(isPrint){

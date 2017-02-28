@@ -20,7 +20,7 @@ public class FOCData {
         HashMap<String,String>expansion = new HashMap<>();
 
         new DownloadData(context,COLLECTION_NAME,params,expansion,db);*/
-        generateData(db);
+       // generateData(db);
     }
 
     public static void generateData(DatabaseHandler db){

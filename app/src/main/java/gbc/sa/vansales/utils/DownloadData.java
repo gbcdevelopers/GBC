@@ -83,6 +83,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     Settings.setString(App.DRIVER_NAME_AR, headerObj.get("Name_AR").toString());
                     Settings.setString(App.DRIVER_NAME_EN,headerObj.get("Name").toString());
 
+                    Settings.setString(App.LANGUAGE,"en");
+
                     db.addData(db.TRIP_HEADER, headerParams);
 
                     for(int j=0;j<tripSalesArea.length();j++){

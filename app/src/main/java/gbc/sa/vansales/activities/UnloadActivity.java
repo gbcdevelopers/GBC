@@ -355,73 +355,76 @@ public class UnloadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             //clearVanStock();
-            Log.e("I am here", "Here");
-            if(Helpers.isNetworkAvailable(getApplicationContext())){
-                Helpers.createBackgroundJob(getApplicationContext());
-            }
-            HashMap<String, String> altMap = new HashMap<>();
-            altMap.put(db.KEY_IS_UNLOAD, "true");
-            HashMap<String, String> filterMap = new HashMap<>();
-            filterMap.put(db.KEY_IS_UNLOAD, "false");
-            db.updateData(db.LOCK_FLAGS, altMap, filterMap);
-
-            String purchaseNumber = Helpers.generateNumber(db,ConfigStore.Unload_PR_Type);
-            HashMap<String,String> logMap = new HashMap<>();
-            logMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-            logMap.put(db.KEY_ORDER_ID,purchaseNumber);
-            logMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
-            logMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-            logMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
-            db.addData(db.UNLOAD_TRANSACTION,logMap);
-
-            if(isPrint){
-                try{
-                    JSONArray jsonArray = createPrintData();
-
-                    JSONObject data = new JSONObject();
-                    data.put("data",(JSONArray)jsonArray);
-
-                    HashMap<String,String>map = new HashMap<>();
-                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-                    map.put(db.KEY_ORDER_ID,purchaseNumber);
-                    map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
-                    map.put(db.KEY_DATA,data.toString());
-                    db.addDataPrint(db.DELAY_PRINT,map);
-
-                    PrinterHelper object = new PrinterHelper(UnloadActivity.this,UnloadActivity.this);
-                    object.execute("", jsonArray);
+            try{
+                Log.e("I am here", "Here");
+                if(Helpers.isNetworkAvailable(getApplicationContext())){
+                    Helpers.createBackgroundJob(getApplicationContext());
                 }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
+                HashMap<String, String> altMap = new HashMap<>();
+                altMap.put(db.KEY_IS_UNLOAD, "true");
+                HashMap<String, String> filterMap = new HashMap<>();
+                filterMap.put(db.KEY_IS_UNLOAD, "false");
+                db.updateData(db.LOCK_FLAGS, altMap, filterMap);
+
+                String purchaseNumber = Helpers.generateNumber(db,ConfigStore.Unload_PR_Type);
+                HashMap<String,String> logMap = new HashMap<>();
+                logMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                logMap.put(db.KEY_ORDER_ID,purchaseNumber);
+                logMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                logMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                logMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                db.addData(db.UNLOAD_TRANSACTION,logMap);
+
+                if(isPrint){
+                    try{
+                        JSONArray jsonArray = createPrintData();
+
+                        JSONObject data = new JSONObject();
+                        data.put("data",(JSONArray)jsonArray);
+
+                        HashMap<String,String>map = new HashMap<>();
+                        map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                        map.put(db.KEY_ORDER_ID,purchaseNumber);
+                        map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
+                        map.put(db.KEY_DATA,data.toString());
+                        db.addDataPrint(db.DELAY_PRINT,map);
+
+                        PrinterHelper object = new PrinterHelper(UnloadActivity.this,UnloadActivity.this);
+                        object.execute("", jsonArray);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
 
                 /*Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
                 startActivity(intent);*/
-            }
-            else{
-                try{
-                    JSONArray jsonArray = createPrintData();
-
-                    JSONObject data = new JSONObject();
-                    data.put("data",(JSONArray)jsonArray);
-
-                    HashMap<String,String>map = new HashMap<>();
-                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-                    map.put(db.KEY_ORDER_ID,purchaseNumber);
-                    map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
-                    map.put(db.KEY_DATA,data.toString());
-                    db.addDataPrint(db.DELAY_PRINT, map);
-
-                    Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
-                    startActivity(intent);
                 }
-                catch (Exception e){
-                    e.printStackTrace();
+                else{
+                    try{
+                        JSONArray jsonArray = createPrintData();
+
+                        JSONObject data = new JSONObject();
+                        data.put("data",(JSONArray)jsonArray);
+
+                        HashMap<String,String>map = new HashMap<>();
+                        map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                        map.put(db.KEY_ORDER_ID,purchaseNumber);
+                        map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
+                        map.put(db.KEY_DATA,data.toString());
+                        db.addDataPrint(db.DELAY_PRINT, map);
+
+                        Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+                        startActivity(intent);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }
-
             }
-
-
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
     public void setUnloadData(Cursor c){
@@ -574,79 +577,85 @@ public class UnloadActivity extends AppCompatActivity {
         return docType;
     }
     private void fetchTruckTheftData(){
-        for(int i=0;i<articles.size();i++){
-            HashMap<String, String> itemMap = new HashMap<>();
-            itemMap.put(db.KEY_ITEM_NO,"");
-            itemMap.put(db.KEY_MATERIAL_DESC1,"");
-            itemMap.put(db.KEY_MATERIAL_NO,"");
-            itemMap.put(db.KEY_MATERIAL_GROUP,"");
-            itemMap.put(db.KEY_CASE,"");
-            itemMap.put(db.KEY_UNIT,"");
-            itemMap.put(db.KEY_UOM,"");
-            itemMap.put(db.KEY_PRICE,"");
-            itemMap.put(db.KEY_ORDER_ID,"");
-            itemMap.put(db.KEY_PURCHASE_NUMBER,"");
-            itemMap.put(db.KEY_IS_POSTED,"");
-            HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-            filter.put(db.KEY_VARIANCE_TYPE,App.TRUCK_DAMAGE);
-            filter.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
-            HashMap<String, String> filter2 = new HashMap<>();
-            filter2.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-            filter2.put(db.KEY_VARIANCE_TYPE,App.THEFT);
-            filter2.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
+        try{
+            for(int i=0;i<articles.size();i++){
+                HashMap<String, String> itemMap = new HashMap<>();
+                itemMap.put(db.KEY_ITEM_NO,"");
+                itemMap.put(db.KEY_MATERIAL_DESC1,"");
+                itemMap.put(db.KEY_MATERIAL_NO,"");
+                itemMap.put(db.KEY_MATERIAL_GROUP,"");
+                itemMap.put(db.KEY_CASE,"");
+                itemMap.put(db.KEY_UNIT,"");
+                itemMap.put(db.KEY_UOM,"");
+                itemMap.put(db.KEY_PRICE,"");
+                itemMap.put(db.KEY_ORDER_ID,"");
+                itemMap.put(db.KEY_PURCHASE_NUMBER,"");
+                itemMap.put(db.KEY_IS_POSTED,"");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                filter.put(db.KEY_VARIANCE_TYPE,App.TRUCK_DAMAGE);
+                filter.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
+                HashMap<String, String> filter2 = new HashMap<>();
+                filter2.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                filter2.put(db.KEY_VARIANCE_TYPE,App.THEFT);
+                filter2.put(db.KEY_MATERIAL_NO,articles.get(i).getMaterialNo());
 
 
-            Cursor c1 = db.getData(db.UNLOAD_VARIANCE,itemMap,filter);
-            Cursor c2 = db.getData(db.UNLOAD_VARIANCE,itemMap,filter2);
-            if(c1.getCount()>0 && c2.getCount()>0){
-                c1.moveToFirst();
-                c2.moveToFirst();
-                Unload unload = new Unload();
-                unload.setItem_code(c1.getString(c1.getColumnIndex(db.KEY_ITEM_NO)));
-                unload.setName(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                unload.setMaterial_no(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_NO)));
+                Cursor c1 = db.getData(db.UNLOAD_VARIANCE,itemMap,filter);
+                Cursor c2 = db.getData(db.UNLOAD_VARIANCE,itemMap,filter2);
+                if(c1.getCount()>0 && c2.getCount()>0){
+                    c1.moveToFirst();
+                    c2.moveToFirst();
+                    Unload unload = new Unload();
+                    unload.setItem_code(c1.getString(c1.getColumnIndex(db.KEY_ITEM_NO)));
+                    unload.setName(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    unload.setMaterial_no(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_NO)));
 
-                float cases = Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE))) + Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
-                float units = Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_UNIT))) + Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_UNIT)));
+                    float cases = Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_CASE))) + Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                    float units = Float.parseFloat(c1.getString(c1.getColumnIndex(db.KEY_UNIT))) + Float.parseFloat(c2.getString(c2.getColumnIndex(db.KEY_UNIT)));
 
-                ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
-                unload.setCases(String.valueOf(cases));
-                unload.setPic(String.valueOf(units));
-                unload.setUom(articleHeader.getBaseUOM());
-                unload.setPrice(c1.getString(c1.getColumnIndex(db.KEY_PRICE)));
-                arrayList.add(unload);
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
+                    unload.setCases(String.valueOf(cases));
+                    unload.setPic(String.valueOf(units));
+                    unload.setUom(articleHeader.getBaseUOM());
+                    unload.setPrice(c1.getString(c1.getColumnIndex(db.KEY_PRICE)));
+                    arrayList.add(unload);
 
-            }
-            else if(c1.getCount()>0){
-                c1.moveToFirst();
-                Unload unload = new Unload();
-                unload.setItem_code(c1.getString(c1.getColumnIndex(db.KEY_ITEM_NO)));
-                unload.setName(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                unload.setMaterial_no(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_NO)));
+                }
+                else if(c1.getCount()>0){
+                    c1.moveToFirst();
+                    Unload unload = new Unload();
+                    unload.setItem_code(c1.getString(c1.getColumnIndex(db.KEY_ITEM_NO)));
+                    unload.setName(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    unload.setMaterial_no(c1.getString(c1.getColumnIndex(db.KEY_MATERIAL_NO)));
 
-                ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
-                unload.setCases(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
-                unload.setPic(c1.getString(c1.getColumnIndex(db.KEY_UNIT)));
-                unload.setUom(articleHeader.getBaseUOM());
-                unload.setPrice(c1.getString(c1.getColumnIndex(db.KEY_PRICE)));
-                arrayList.add(unload);
-            }
-            else if(c2.getCount()>0) {
-                c2.moveToFirst();
-                Unload unload = new Unload();
-                unload.setItem_code(c2.getString(c2.getColumnIndex(db.KEY_ITEM_NO)));
-                unload.setName(c2.getString(c2.getColumnIndex(db.KEY_MATERIAL_DESC1)));
-                unload.setMaterial_no(c2.getString(c2.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
+                    unload.setCases(c1.getString(c1.getColumnIndex(db.KEY_CASE)));
+                    unload.setPic(c1.getString(c1.getColumnIndex(db.KEY_UNIT)));
+                    unload.setUom(articleHeader.getBaseUOM());
+                    unload.setPrice(c1.getString(c1.getColumnIndex(db.KEY_PRICE)));
+                    arrayList.add(unload);
+                }
+                else if(c2.getCount()>0) {
+                    c2.moveToFirst();
+                    Unload unload = new Unload();
+                    unload.setItem_code(c2.getString(c2.getColumnIndex(db.KEY_ITEM_NO)));
+                    unload.setName(c2.getString(c2.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                    unload.setMaterial_no(c2.getString(c2.getColumnIndex(db.KEY_MATERIAL_NO)));
 
-                ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
-                unload.setCases(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
-                unload.setPic(c2.getString(c2.getColumnIndex(db.KEY_UNIT)));
-                unload.setUom(articleHeader.getBaseUOM());
-                unload.setPrice(c2.getString(c2.getColumnIndex(db.KEY_PRICE)));
-                arrayList.add(unload);
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
+                    unload.setCases(c2.getString(c2.getColumnIndex(db.KEY_CASE)));
+                    unload.setPic(c2.getString(c2.getColumnIndex(db.KEY_UNIT)));
+                    unload.setUom(articleHeader.getBaseUOM());
+                    unload.setPrice(c2.getString(c2.getColumnIndex(db.KEY_PRICE)));
+                    arrayList.add(unload);
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public String postData(final String param1, final String param2){
         //There is no post for truck and theft
@@ -927,86 +936,92 @@ public class UnloadActivity extends AppCompatActivity {
         }
     }
     private void recalculateFreshUnload(ArrayList<Unload>data){
-        ArrayList<Unload>vanData = data;
-        for(int i=0;i<vanData.size();i++){
-            Unload unload = vanData.get(i);
-            HashMap<String,String>map = new HashMap<>();
-            map.put(db.KEY_CASE,"");
-            map.put(db.KEY_UNIT,"");
-            HashMap<String,String>checkInventoryFilter = new HashMap<>();
-            checkInventoryFilter.put(db.KEY_VARIANCE_TYPE,App.ENDING_INVENTORY);
-            checkInventoryFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
-            HashMap<String,String>truckDamageFilter = new HashMap<>();
-            truckDamageFilter.put(db.KEY_VARIANCE_TYPE,App.TRUCK_DAMAGE);
-            truckDamageFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
-            HashMap<String,String>theftFilter = new HashMap<>();
-            theftFilter.put(db.KEY_VARIANCE_TYPE,App.THEFT);
-            theftFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
-            HashMap<String,String>excessFilter = new HashMap<>();
-            excessFilter.put(db.KEY_VARIANCE_TYPE,App.EXCESS);
-            excessFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
-            //Inventory Exists
-            float cases = 0;
-            float units = 0;
-            float excessCases = 0;
-            float excessUnits = 0;
+        try{
+            ArrayList<Unload>vanData = data;
+            for(int i=0;i<vanData.size();i++){
+                Unload unload = vanData.get(i);
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_CASE,"");
+                map.put(db.KEY_UNIT,"");
+                HashMap<String,String>checkInventoryFilter = new HashMap<>();
+                checkInventoryFilter.put(db.KEY_VARIANCE_TYPE,App.ENDING_INVENTORY);
+                checkInventoryFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
+                HashMap<String,String>truckDamageFilter = new HashMap<>();
+                truckDamageFilter.put(db.KEY_VARIANCE_TYPE,App.TRUCK_DAMAGE);
+                truckDamageFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
+                HashMap<String,String>theftFilter = new HashMap<>();
+                theftFilter.put(db.KEY_VARIANCE_TYPE,App.THEFT);
+                theftFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
+                HashMap<String,String>excessFilter = new HashMap<>();
+                excessFilter.put(db.KEY_VARIANCE_TYPE,App.EXCESS);
+                excessFilter.put(db.KEY_MATERIAL_NO,unload.getMaterial_no());
+                //Inventory Exists
+                float cases = 0;
+                float units = 0;
+                float excessCases = 0;
+                float excessUnits = 0;
 
-            if(db.checkData(db.UNLOAD_VARIANCE,checkInventoryFilter)){
-                Cursor c = db.getData(db.UNLOAD_VARIANCE,map,checkInventoryFilter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
+                if(db.checkData(db.UNLOAD_VARIANCE,checkInventoryFilter)){
+                    Cursor c = db.getData(db.UNLOAD_VARIANCE,map,checkInventoryFilter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
 
-                    do{
-                        cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
-                        units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        do{
+                            cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
+                            units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        }
+                        while (c.moveToNext());
                     }
-                    while (c.moveToNext());
                 }
-            }
-            if(db.checkData(db.UNLOAD_VARIANCE,truckDamageFilter)){
-                Cursor c = db.getData(db.UNLOAD_VARIANCE,map,truckDamageFilter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
+                if(db.checkData(db.UNLOAD_VARIANCE,truckDamageFilter)){
+                    Cursor c = db.getData(db.UNLOAD_VARIANCE,map,truckDamageFilter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
 
-                    do{
-                        cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
-                        units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        do{
+                            cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
+                            units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        }
+                        while (c.moveToNext());
                     }
-                    while (c.moveToNext());
                 }
-            }
-            if(db.checkData(db.UNLOAD_VARIANCE,theftFilter)){
-                Cursor c = db.getData(db.UNLOAD_VARIANCE,map,theftFilter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
+                if(db.checkData(db.UNLOAD_VARIANCE,theftFilter)){
+                    Cursor c = db.getData(db.UNLOAD_VARIANCE,map,theftFilter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
 
-                    do{
-                        cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
-                        units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        do{
+                            cases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
+                            units += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        }
+                        while (c.moveToNext());
                     }
-                    while (c.moveToNext());
                 }
-            }
-            if(db.checkData(db.UNLOAD_VARIANCE,excessFilter)){
-                Cursor c = db.getData(db.UNLOAD_VARIANCE,map,excessFilter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
+                if(db.checkData(db.UNLOAD_VARIANCE,excessFilter)){
+                    Cursor c = db.getData(db.UNLOAD_VARIANCE,map,excessFilter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
 
-                    do{
-                        excessCases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
-                        excessUnits += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        do{
+                            excessCases += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASE)));
+                            excessUnits += Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_UNIT)));
+                        }
+                        while (c.moveToNext());
                     }
-                    while (c.moveToNext());
                 }
+                float finalCases = Float.parseFloat(unload.getCases())-cases+(excessCases*-1);
+                float finalUnits = Float.parseFloat(unload.getPic())-units+(excessUnits*-1);
+                unload.setCases(String.valueOf(finalCases));
+                unload.setPic(String.valueOf(finalUnits));
+                vanData.remove(i);
+                vanData.add(i,unload);
             }
-            float finalCases = Float.parseFloat(unload.getCases())-cases+(excessCases*-1);
-            float finalUnits = Float.parseFloat(unload.getPic())-units+(excessUnits*-1);
-            unload.setCases(String.valueOf(finalCases));
-            unload.setPic(String.valueOf(finalUnits));
-            vanData.remove(i);
-            vanData.add(i,unload);
+            arrayList = vanData;
         }
-        arrayList = vanData;
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         //dataStoreList = vanData;
     }
     private void clearVanStock(){

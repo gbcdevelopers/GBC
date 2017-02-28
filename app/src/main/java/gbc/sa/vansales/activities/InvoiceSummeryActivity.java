@@ -143,47 +143,43 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             }
         });
 
-       /* tv_sales_expand.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.e("TAG","" + event.getAction());
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    showDialog(App.SALES_INVOICE);
+        try{
+            if (db.checkData(db.CAPTURE_SALES_INVOICE, map)) {
+                salesInvoiceExist = true;
+                new loadData().execute();
+            } else {
+                HashMap<String, String> gRMap = new HashMap<>();
+                gRMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                gRMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                gRMap.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+                HashMap<String, String> bRMap = new HashMap<>();
+                bRMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                bRMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                bRMap.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                boolean gRexists = false;
+                boolean bRexists = false;
+                if (db.checkData(db.RETURNS, gRMap)) {
+                    gRexists = true;
+                    grExist = true;
                 }
-                return false;
-            }
-        });*/
-        if (db.checkData(db.CAPTURE_SALES_INVOICE, map)) {
-            salesInvoiceExist = true;
-            new loadData().execute();
-        } else {
-            HashMap<String, String> gRMap = new HashMap<>();
-            gRMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-            gRMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-            gRMap.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
-            HashMap<String, String> bRMap = new HashMap<>();
-            bRMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-            bRMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-            bRMap.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
-            boolean gRexists = false;
-            boolean bRexists = false;
-            if (db.checkData(db.RETURNS, gRMap)) {
-                gRexists = true;
-                grExist = true;
-            }
-            if (db.checkData(db.RETURNS, bRMap)) {
-                bRexists = true;
-                brExist = true;
-            }
-            if (gRexists && bRexists) {
-                new loadReturns(App.GOOD_RETURN);
-                new loadReturns(App.BAD_RETURN);
-            } else if (gRexists) {
-                new loadReturns(App.GOOD_RETURN);
-            } else if (bRexists) {
-                new loadReturns(App.BAD_RETURN);
+                if (db.checkData(db.RETURNS, bRMap)) {
+                    bRexists = true;
+                    brExist = true;
+                }
+                if (gRexists && bRexists) {
+                    new loadReturns(App.GOOD_RETURN);
+                    new loadReturns(App.BAD_RETURN);
+                } else if (gRexists) {
+                    new loadReturns(App.GOOD_RETURN);
+                } else if (bRexists) {
+                    new loadReturns(App.BAD_RETURN);
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
         Button btn_complete_invoice = (Button) findViewById(R.id.btn_complete_invoice);
         btn_complete_invoice.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -576,92 +572,104 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         return orderID;
     }
     public void updateStockinVan() {
-        loadingSpinner.show();
-        //Log.e("ArrayList Size", "" + arraylist.size());
-        for (Sales sale : arraylist) {
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_MATERIAL_NO, "");
-            map.put(db.KEY_REMAINING_QTY_CASE, "");
-            map.put(db.KEY_REMAINING_QTY_UNIT, "");
-            HashMap<String, String> filter = new HashMap<>();
-            //Log.e("Filter MN", "" + sale.getMaterial_no());
-            filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-            Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-            //Log.e("Cursor count", "" + cursor.getCount());
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-            }
-            do {
-                HashMap<String, String> updateDataMap = new HashMap<>();
-                float remainingCase = 0;
-                float remainingUnit = 0;
-                remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
-                //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
-                if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
-                    remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+        try{
+            loadingSpinner.show();
+            //Log.e("ArrayList Size", "" + arraylist.size());
+            for (Sales sale : arraylist) {
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_MATERIAL_NO, "");
+                map.put(db.KEY_REMAINING_QTY_CASE, "");
+                map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                HashMap<String, String> filter = new HashMap<>();
+                //Log.e("Filter MN", "" + sale.getMaterial_no());
+                filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                //Log.e("Cursor count", "" + cursor.getCount());
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
                 }
-                if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
-                    remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                do {
+                    HashMap<String, String> updateDataMap = new HashMap<>();
+                    float remainingCase = 0;
+                    float remainingUnit = 0;
+                    remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                    remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                    //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                    //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                    if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                        remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+                    }
+                    if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                        remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                    }
+                    updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                    updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                    HashMap<String, String> filterInter = new HashMap<>();
+                    filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
                 }
-                updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
-                updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
-                HashMap<String, String> filterInter = new HashMap<>();
-                filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                while (cursor.moveToNext());
             }
-            while (cursor.moveToNext());
+            loadingSpinner.hide();
         }
-        loadingSpinner.hide();
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     public void showDialog(String type) {
-        final Dialog dialog = new Dialog(InvoiceSummeryActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.setTitle(getString(R.string.shop_status));
-        View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
-        ListView lv = (ListView) view.findViewById(R.id.statusList);
-        Button cancel = (Button) view.findViewById(R.id.btnCancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+        try{
+            final Dialog dialog = new Dialog(InvoiceSummeryActivity.this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            //dialog.setTitle(getString(R.string.shop_status));
+            View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+            TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
+            ListView lv = (ListView) view.findViewById(R.id.statusList);
+            Button cancel = (Button) view.findViewById(R.id.btnCancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            if (type.equals(App.SALES_INVOICE)) {
+                if (salesInvoiceExist) {
+                    tv.setText("Total Amount - " + salesAmount);
+                    adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, salesList);
+                    lv.setAdapter(adapter);
+                    dialog.show();
+                }
+            } else if (type.equals(App.GOOD_RETURN)) {
+                if (grExist) {
+                    tv.setText("Total Amount - " + et_good_amount.getText().toString());
+                    adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, grList);
+                    adapter.notifyDataSetChanged();
+                    lv.setAdapter(adapter);
+                    dialog.show();
+                }
+            } else if (type.equals(App.BAD_RETURN)) {
+                if (brExist) {
+                    tv.setText("Total Amount - " + et_bad_amount.getText().toString());
+                    adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, brList);
+                    adapter.notifyDataSetChanged();
+                    lv.setAdapter(adapter);
+                    dialog.show();
+                }
             }
-        });
-        if (type.equals(App.SALES_INVOICE)) {
-            if (salesInvoiceExist) {
-                tv.setText("Total Amount - " + salesAmount);
-                adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, salesList);
-                lv.setAdapter(adapter);
-                dialog.show();
-            }
-        } else if (type.equals(App.GOOD_RETURN)) {
-            if (grExist) {
-                tv.setText("Total Amount - " + et_good_amount.getText().toString());
-                adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, grList);
-                adapter.notifyDataSetChanged();
-                lv.setAdapter(adapter);
-                dialog.show();
-            }
-        } else if (type.equals(App.BAD_RETURN)) {
-            if (brExist) {
-                tv.setText("Total Amount - " + et_bad_amount.getText().toString());
-                adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, brList);
-                adapter.notifyDataSetChanged();
-                lv.setAdapter(adapter);
-                dialog.show();
-            }
-        }
-        //lv.setAdapter(statusAdapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //dialog.dismiss();
-            }
-        });
+            //lv.setAdapter(statusAdapter);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //dialog.dismiss();
+                }
+            });
         /*dialog.show();*/
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

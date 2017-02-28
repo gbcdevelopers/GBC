@@ -90,59 +90,62 @@ public class EndTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_end_trip);
         customers = CustomerHeaders.get();
-        loadingSpinner = new LoadingSpinner(this);
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        btn_float = (FloatingActionButton) findViewById(R.id.btn_float);
-        ll_add_expense = (LinearLayout)findViewById(R.id.add_expense);
-        expenseListView = (ListView)findViewById(R.id.expenseListView);
-        tv_cheque_amnt = (TextView)findViewById(R.id.tv_cheque_amnt);
-        tv_cash_amnt = (TextView)findViewById(R.id.tv_cash_amnt);
-        tv_total_amount = (TextView)findViewById(R.id.tv_total_amount);
-        tv_driver_cheque_amnt = (TextView)findViewById(R.id.tv_driver_cheque_amnt);
-        tv_driver_cash_amnt = (TextView)findViewById(R.id.tv_driver_cash_amnt);
-        tv_driver_total_amount = (TextView)findViewById(R.id.tv_driver_total_amount);
-        tv_due_amount = (TextView)findViewById(R.id.tv_due_amount);
-        adapter = new ExpenseAdapter(this,arrayList);
-        expenseListView.setAdapter(adapter);
-        btn_float.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String purchaseNumber = Helpers.generateNumber(db, ConfigStore.EndDay_PR_Type);
-                HashMap<String, String> map = new HashMap<>();
-                String timeStamp = Helpers.getCurrentTimeStamp();
-                map.put(db.KEY_TIME_STAMP, timeStamp);
-                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                map.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
-                map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-                map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
-                map.put(db.KEY_IS_SELECTED, "true");
-                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                db.addData(db.BEGIN_DAY, map);
+        try{
+            loadingSpinner = new LoadingSpinner(this);
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            btn_float = (FloatingActionButton) findViewById(R.id.btn_float);
+            ll_add_expense = (LinearLayout)findViewById(R.id.add_expense);
+            expenseListView = (ListView)findViewById(R.id.expenseListView);
+            tv_cheque_amnt = (TextView)findViewById(R.id.tv_cheque_amnt);
+            tv_cash_amnt = (TextView)findViewById(R.id.tv_cash_amnt);
+            tv_total_amount = (TextView)findViewById(R.id.tv_total_amount);
+            tv_driver_cheque_amnt = (TextView)findViewById(R.id.tv_driver_cheque_amnt);
+            tv_driver_cash_amnt = (TextView)findViewById(R.id.tv_driver_cash_amnt);
+            tv_driver_total_amount = (TextView)findViewById(R.id.tv_driver_total_amount);
+            tv_due_amount = (TextView)findViewById(R.id.tv_due_amount);
+            adapter = new ExpenseAdapter(this,arrayList);
+            expenseListView.setAdapter(adapter);
+            btn_float.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String purchaseNumber = Helpers.generateNumber(db, ConfigStore.EndDay_PR_Type);
+                    HashMap<String, String> map = new HashMap<>();
+                    String timeStamp = Helpers.getCurrentTimeStamp();
+                    map.put(db.KEY_TIME_STAMP, timeStamp);
+                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    map.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                    map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                    map.put(db.KEY_DATE, new SimpleDateFormat("yyyy.MM.dd").format(new Date()));
+                    map.put(db.KEY_IS_SELECTED, "true");
+                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    db.addData(db.BEGIN_DAY, map);
+                    new postTrip(purchaseNumber, timeStamp);
 
-                new postTrip(purchaseNumber, timeStamp);
-
-            }
-        });
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.endtrip));
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        ll_add_expense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //showDialog();
-            }
-        });
-        new loadCollectionData().execute();
-        calculateDueAmount();
+                }
+            });
+            iv_back.setVisibility(View.VISIBLE);
+            tv_top_header.setVisibility(View.VISIBLE);
+            tv_top_header.setText(getString(R.string.endtrip));
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            ll_add_expense.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //showDialog();
+                }
+            });
+            new loadCollectionData().execute();
+            calculateDueAmount();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
-
 
     public class loadDriverCollectionData extends AsyncTask<Void,Void,Void>{
         @Override
@@ -253,15 +256,29 @@ public class EndTripActivity extends AppCompatActivity {
             driverchequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
             drivercashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
             ChequeCollection chequeCollection = new ChequeCollection();
-            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
-            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
+            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).replaceAll("2C",",").split(",");
+            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).replaceAll("2C", ",").split(",");
+            String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).replaceAll("2C",",").split(",");
 
-            if(cheques.length>1){
+            if(cheques.length>1&&cheques.length<2){
                 chequeCollection.setChequeNo(cheques[1]);
                 chequeCollection.setBankCode(bankCode[1]);
-                chequeCollection.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                chequeCollection.setCustomerNo(Settings.getString(App.DRIVER));
                 chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
                 driverchequeList.add(chequeCollection);
+            }
+            else if(cheques.length>2){
+                for(int i=0;i<cheques.length;i++){
+                    ChequeCollection cQ = new ChequeCollection();
+                    cQ.setChequeNo(cheques[i]);
+                    cQ.setBankCode(bankCode[i]);
+                    cQ.setCustomerNo(Settings.getString(App.DRIVER));
+                    cQ.setChequeAmount(chequeAmount[i]);
+                    if(!cheques[i].equals("0000")){
+                        driverchequeList.add(cQ);
+                    }
+
+                }
             }
         }
         while(c.moveToNext());
@@ -444,6 +461,7 @@ public class EndTripActivity extends AppCompatActivity {
     public class postEndTrip extends AsyncTask<Void,Void,Void>{
         private String source;
         private String orderId;
+        private String orderIdDriver;
 
         private postEndTrip(String source){
             this.source = source;
@@ -457,10 +475,18 @@ public class EndTripActivity extends AppCompatActivity {
                 map.put("VisitID",source);
                 map.put("Function",ConfigStore.ClearingFunction);
                 map.put("CustomerId",Settings.getString(App.DRIVER));
+
+                HashMap<String,String>driverMap = new HashMap<>();
+                driverMap.put("OrderValue",String.valueOf(drivercashTotal));
+                driverMap.put("VisitID",source);
+                driverMap.put("Function",ConfigStore.ClearingFunction);
+                driverMap.put("CustomerId",Settings.getString(App.DRIVER));
+
                 JSONArray deepEntity = new JSONArray();
                 JSONObject obj = new JSONObject();
                 deepEntity.put(obj);
                 this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                this.orderIdDriver = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,driverMap,deepEntity);
                 Log.e("Order ID","" + orderId);
             }
             else if(source.equals("CHEQ")){
@@ -485,6 +511,26 @@ public class EndTripActivity extends AppCompatActivity {
                     }
                     this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
                     Log.e("Order ID","" + orderId);
+
+                    HashMap<String,String>driverMap = new HashMap<>();
+                    driverMap.put("OrderValue",String.valueOf(driverchequeTotal));
+                    driverMap.put("VisitID",source);
+                    driverMap.put("Function",ConfigStore.ClearingFunction);
+                    driverMap.put("CustomerId",Settings.getString(App.DRIVER));
+                    JSONArray deepEntityDriver = new JSONArray();
+                    for(ChequeCollection chequeCollection:driverchequeList){
+                        JSONObject obj = new JSONObject();
+                        obj.put("OrderId",chequeCollection.getChequeNo().toString());
+                        obj.put("Material", chequeCollection.getCustomerNo().toString());
+                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
+                        if(customerHeader!=null){
+                            obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
+                        }
+                        obj.put("Value",chequeCollection.getChequeAmount().toString());
+                        obj.put("Route",chequeCollection.getBankCode().toString());
+                        deepEntityDriver.put(obj);
+                    }
+
                 }
                 catch (Exception e){
                     e.printStackTrace();

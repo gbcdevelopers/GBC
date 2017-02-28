@@ -372,7 +372,7 @@ public class PrinterHelper {
         Log.e("Array Length", "" + this.jArr.length());
  //       Log.d("Print Report", this.jArr.toString());
         //printVanStockReport();
-        for(int j=0; j<this.jArr.length();j++){
+        for(int j=0; j<(this.jArr.length()>1?1:this.jArr.length());j++){
             JSONArray jInner = this.jArr.getJSONArray(j);
             for (int i = 0; i < jInner.length(); i++) {
                 JSONObject jDict = jInner.getJSONObject(i);
@@ -892,6 +892,7 @@ public class PrinterHelper {
             printlines1(getAccurateText("STORE KEEPER", 26, 1) + getAccurateText("DUTY SUPERVISOR", 26, 1) + getAccurateText("SALESMAN", 26, 1), 2, object, 1, args, 1);
             jSONObject = object;
            // printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 1);
+            //closeConnection();
             if(context instanceof LoadVerifyActivity){
                 ((LoadVerifyActivity) context).callbackFunction();
             }
@@ -900,7 +901,6 @@ public class PrinterHelper {
             e.printStackTrace();
         }
     }
-
     //Load Request
     void printLoadRequestReport(JSONObject object,String args){
         try{
@@ -1031,6 +1031,7 @@ public class PrinterHelper {
             printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
             printlines1(getAccurateText("STORE KEEPER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
 
+            //closeConnection();
             if(context instanceof LoadRequestActivity){
                 ((LoadRequestActivity)context).callback();
             }
@@ -1499,10 +1500,11 @@ public class PrinterHelper {
             this.outStream.write(this.NewLine);
             this.outStream.write(this.NewLine);
 
-            printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
+            printlines1(getAccurateText(object.getString("invoicefooter"), 80, 1), 1, object, 1, args, 5);
            // printlines1(getAccurateText("For any complaints please contact " + object.getString("supervisorname") + "on" + object.getString("supervisorno"), 40, 0), false, 1);
 
             //jSONObject = object;
+
             if(context instanceof PromotioninfoActivity){
                 closeConnection();
                 ((PromotioninfoActivity)context).callback(App.SALES_INVOICE);
@@ -1512,7 +1514,6 @@ public class PrinterHelper {
             e.printStackTrace();
         }
     }
-
     //Delivery
     void printDelivery(JSONObject object,String args){
         StringBuffer s1 = new StringBuffer();
@@ -1731,7 +1732,6 @@ public class PrinterHelper {
             e.printStackTrace();
         }
     }
-
     //Invoice Receipts
     void printInvoiceReceipt(JSONObject object,String args){
         StringBuffer s1 = new StringBuffer();

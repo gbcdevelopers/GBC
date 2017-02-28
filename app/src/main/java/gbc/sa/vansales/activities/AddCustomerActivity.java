@@ -227,111 +227,53 @@ public class AddCustomerActivity extends AppCompatActivity {
     }
 
     private boolean checkNullValues(){
-
         boolean returnvalue = false;
-        if(et_customer_name.getText().toString().matches("")||
-                et_customer_name_ar.getText().toString().matches("")||
-                et_trade_name.getText().toString().matches("")||
-                et_trade_name_ar.getText().toString().matches("")||
-                et_customer_address1.getText().toString().matches("")||
-                et_customer_address2.getText().toString().matches("")||
-                et_cr_no.getText().toString().matches("")||
-                et_customer_pobox.getText().toString().matches("")||
-                et_customer_email.getText().toString().matches("")||
-                et_customer_telephone.getText().toString().matches("")||
-                et_customer_fax.getText().toString().matches("")||
-                distribution==null||
-                division==null){
+        try{
 
+            if(et_customer_name.getText().toString().matches("")||
+                    et_customer_name_ar.getText().toString().matches("")||
+                    et_trade_name.getText().toString().matches("")||
+                    et_trade_name_ar.getText().toString().matches("")||
+                    et_customer_address1.getText().toString().matches("")||
+                    et_customer_address2.getText().toString().matches("")||
+                    et_cr_no.getText().toString().matches("")||
+                    et_customer_pobox.getText().toString().matches("")||
+                    et_customer_email.getText().toString().matches("")||
+                    et_customer_telephone.getText().toString().matches("")||
+                    et_customer_fax.getText().toString().matches("")||
+                    distribution==null||
+                    division==null){
+
+            }
+            else{
+                returnvalue = true;
+            }
         }
-        else{
-            returnvalue = true;
+        catch (Exception e){
+            e.printStackTrace();
         }
+
         return returnvalue;
     }
 
     void showDialog(String type,String param){
-        if(type.equals("Distribution")){
-            final Dialog dialog = new Dialog(AddCustomerActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            //dialog.setTitle(getString(R.string.shop_status));
-            arrayList.clear();
-
-            //Inserting values hardcoded
-            CustomerStatus directDistObj =  new CustomerStatus();
-            directDistObj.setReasonCode("20");
-            directDistObj.setReasonDescription("Direct Distribution");
-            arrayList.add(directDistObj);
-
-            CustomerStatus homeDelObj = new CustomerStatus();
-            homeDelObj.setReasonCode("30");
-            homeDelObj.setReasonDescription("Home Delivery");
-            arrayList.add(homeDelObj);
-
-            adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
-
-            View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-            TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
-            tv.setText(getString(R.string.select_category));
-            ListView lv = (ListView) view.findViewById(R.id.statusList);
-            Button cancel = (Button) view.findViewById(R.id.btnCancel);
-            cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            lv.setAdapter(adapter);
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    distribution = arrayList.get(position).getReasonCode();
-                    btn_distribution.setText(arrayList.get(position).getReasonDescription());
-                    dialog.dismiss();
-                }
-            });
-            dialog.setContentView(view);
-            dialog.setCancelable(false);
-            dialog.show();
-        }
-        else{
-            if(distribution.equals("20")){
-
+        try{
+            if(type.equals("Distribution")){
                 final Dialog dialog = new Dialog(AddCustomerActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 //dialog.setTitle(getString(R.string.shop_status));
                 arrayList.clear();
 
                 //Inserting values hardcoded
+                CustomerStatus directDistObj =  new CustomerStatus();
+                directDistObj.setReasonCode("20");
+                directDistObj.setReasonDescription("Direct Distribution");
+                arrayList.add(directDistObj);
 
-                CustomerStatus smbObj =  new CustomerStatus();
-                smbObj.setReasonCode("10");
-                smbObj.setReasonDescription("SMB");
-                arrayList.add(smbObj);
-
-                CustomerStatus miniMarketObj =  new CustomerStatus();
-                miniMarketObj.setReasonCode("15");
-                miniMarketObj.setReasonDescription("Mini Market");
-                arrayList.add(miniMarketObj);
-
-                CustomerStatus largeGrocery =  new CustomerStatus();
-                largeGrocery.setReasonCode("20");
-                largeGrocery.setReasonDescription("Large Grocery");
-                arrayList.add(largeGrocery);
-
-                CustomerStatus smallGrocery =  new CustomerStatus();
-                smallGrocery.setReasonCode("25");
-                smallGrocery.setReasonDescription("Small Grocery");
-                arrayList.add(smallGrocery);
-
-                CustomerStatus buffet =  new CustomerStatus();
-                buffet.setReasonCode("30");
-                buffet.setReasonDescription("Buffet");
-                arrayList.add(buffet);
-
-                CustomerStatus cafe = new CustomerStatus();
-                cafe.setReasonCode("35");
-                cafe.setReasonDescription("Cafe");
-                arrayList.add(cafe);
+                CustomerStatus homeDelObj = new CustomerStatus();
+                homeDelObj.setReasonCode("30");
+                homeDelObj.setReasonDescription("Home Delivery");
+                arrayList.add(homeDelObj);
 
                 adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
 
@@ -350,8 +292,8 @@ public class AddCustomerActivity extends AppCompatActivity {
                 lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        division = arrayList.get(position).getReasonCode();
-                        btn_division.setText(arrayList.get(position).getReasonDescription());
+                        distribution = arrayList.get(position).getReasonCode();
+                        btn_distribution.setText(arrayList.get(position).getReasonDescription());
                         dialog.dismiss();
                     }
                 });
@@ -359,60 +301,129 @@ public class AddCustomerActivity extends AppCompatActivity {
                 dialog.setCancelable(false);
                 dialog.show();
             }
-            else if(distribution.equals("30")){
+            else{
+                if(distribution.equals("20")){
 
-                final Dialog dialog = new Dialog(AddCustomerActivity.this);
-                //dialog.setTitle(getString(R.string.shop_status));
-                arrayList.clear();
+                    final Dialog dialog = new Dialog(AddCustomerActivity.this);
+                    //dialog.setTitle(getString(R.string.shop_status));
+                    arrayList.clear();
 
-                //Inserting values hardcoded
+                    //Inserting values hardcoded
 
-                CustomerStatus smbObj =  new CustomerStatus();
-                smbObj.setReasonCode("40");
-                smbObj.setReasonDescription("House");
-                arrayList.add(smbObj);
+                    CustomerStatus smbObj =  new CustomerStatus();
+                    smbObj.setReasonCode("10");
+                    smbObj.setReasonDescription("SMB");
+                    arrayList.add(smbObj);
 
-                CustomerStatus miniMarketObj =  new CustomerStatus();
-                miniMarketObj.setReasonCode("85");
-                miniMarketObj.setReasonDescription("Schools");
-                arrayList.add(miniMarketObj);
+                    CustomerStatus miniMarketObj =  new CustomerStatus();
+                    miniMarketObj.setReasonCode("15");
+                    miniMarketObj.setReasonDescription("Mini Market");
+                    arrayList.add(miniMarketObj);
 
-                CustomerStatus largeGrocery =  new CustomerStatus();
-                largeGrocery.setReasonCode("90");
-                largeGrocery.setReasonDescription("Mosque");
-                arrayList.add(largeGrocery);
+                    CustomerStatus largeGrocery =  new CustomerStatus();
+                    largeGrocery.setReasonCode("20");
+                    largeGrocery.setReasonDescription("Large Grocery");
+                    arrayList.add(largeGrocery);
 
-                CustomerStatus smallGrocery =  new CustomerStatus();
-                smallGrocery.setReasonCode("95");
-                smallGrocery.setReasonDescription("Office");
-                arrayList.add(smallGrocery);
+                    CustomerStatus smallGrocery =  new CustomerStatus();
+                    smallGrocery.setReasonCode("25");
+                    smallGrocery.setReasonDescription("Small Grocery");
+                    arrayList.add(smallGrocery);
 
-                adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
+                    CustomerStatus buffet =  new CustomerStatus();
+                    buffet.setReasonCode("30");
+                    buffet.setReasonDescription("Buffet");
+                    arrayList.add(buffet);
 
-                View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-                TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
-                tv.setText(getString(R.string.select_reason));
-                ListView lv = (ListView) view.findViewById(R.id.statusList);
-                Button cancel = (Button) view.findViewById(R.id.btnCancel);
-                cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                lv.setAdapter(adapter);
-                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        division = arrayList.get(position).getReasonCode();
-                        btn_division.setText(arrayList.get(position).getReasonDescription());
-                        dialog.dismiss();
-                    }
-                });
-                dialog.setContentView(view);
-                dialog.setCancelable(false);
-                dialog.show();
+                    CustomerStatus cafe = new CustomerStatus();
+                    cafe.setReasonCode("35");
+                    cafe.setReasonDescription("Cafe");
+                    arrayList.add(cafe);
+
+                    adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
+
+                    View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+                    TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
+                    tv.setText(getString(R.string.select_category));
+                    ListView lv = (ListView) view.findViewById(R.id.statusList);
+                    Button cancel = (Button) view.findViewById(R.id.btnCancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    lv.setAdapter(adapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            division = arrayList.get(position).getReasonCode();
+                            btn_division.setText(arrayList.get(position).getReasonDescription());
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(view);
+                    dialog.setCancelable(false);
+                    dialog.show();
+                }
+                else if(distribution.equals("30")){
+
+                    final Dialog dialog = new Dialog(AddCustomerActivity.this);
+                    //dialog.setTitle(getString(R.string.shop_status));
+                    arrayList.clear();
+
+                    //Inserting values hardcoded
+
+                    CustomerStatus smbObj =  new CustomerStatus();
+                    smbObj.setReasonCode("40");
+                    smbObj.setReasonDescription("House");
+                    arrayList.add(smbObj);
+
+                    CustomerStatus miniMarketObj =  new CustomerStatus();
+                    miniMarketObj.setReasonCode("85");
+                    miniMarketObj.setReasonDescription("Schools");
+                    arrayList.add(miniMarketObj);
+
+                    CustomerStatus largeGrocery =  new CustomerStatus();
+                    largeGrocery.setReasonCode("90");
+                    largeGrocery.setReasonDescription("Mosque");
+                    arrayList.add(largeGrocery);
+
+                    CustomerStatus smallGrocery =  new CustomerStatus();
+                    smallGrocery.setReasonCode("95");
+                    smallGrocery.setReasonDescription("Office");
+                    arrayList.add(smallGrocery);
+
+                    adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
+
+                    View view = getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+                    TextView tv = (TextView) view.findViewById(R.id.tv_top_header);
+                    tv.setText(getString(R.string.select_reason));
+                    ListView lv = (ListView) view.findViewById(R.id.statusList);
+                    Button cancel = (Button) view.findViewById(R.id.btnCancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    lv.setAdapter(adapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            division = arrayList.get(position).getReasonCode();
+                            btn_division.setText(arrayList.get(position).getReasonDescription());
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.setContentView(view);
+                    dialog.setCancelable(false);
+                    dialog.show();
+                }
             }
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

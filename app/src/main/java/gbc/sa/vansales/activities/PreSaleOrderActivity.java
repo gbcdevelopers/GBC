@@ -57,95 +57,101 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
-        Helpers.logData(PreSaleOrderActivity.this, "On Order Request Screen");
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        loadingSpinner = new LoadingSpinner(this);
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
-        arrayList = new ArrayList<>();
-        new loadOrders().execute();
-        new loadOrdersLocal().execute();
-        adapter = new OrderListBadgeAdapter(this, arrayList);
-        Const.constantsHashMap.clear();
-        customers = CustomerHeaders.get();
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
-        TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
-        TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
-        TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
-        TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
-        if (!(customerHeader == null)) {
-            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
-            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
-            tv_customer_contact.setText(customerHeader.getPhone());
-        } else {
-            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
-            tv_customer_address.setText(object.getCustomerAddress().toString());
-            tv_customer_pobox.setText("");
-            tv_customer_contact.setText("");
-        }
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        flt_presale = (FloatingActionButton) findViewById(R.id.flt_presale);
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.order_request));
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        try{
+            Helpers.logData(PreSaleOrderActivity.this, "On Order Request Screen");
+            Intent i = this.getIntent();
+            object = (Customer) i.getParcelableExtra("headerObj");
+            loadingSpinner = new LoadingSpinner(this);
+            refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+            arrayList = new ArrayList<>();
+            new loadOrders().execute();
+            new loadOrdersLocal().execute();
+            adapter = new OrderListBadgeAdapter(this, arrayList);
+            Const.constantsHashMap.clear();
+            customers = CustomerHeaders.get();
+            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+            TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
+            TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
+            TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
+            TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
+            if (!(customerHeader == null)) {
+                tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
+                tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+                tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
+                tv_customer_contact.setText(customerHeader.getPhone());
+            } else {
+                tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(),"0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
+                tv_customer_address.setText(object.getCustomerAddress().toString());
+                tv_customer_pobox.setText("");
+                tv_customer_contact.setText("");
             }
-        });
-        list_delivery = (ListView) findViewById(R.id.list_delivery);
-        iv_refresh = (ImageView) findViewById(R.id.img_refresh);
-        iv_refresh.setVisibility(View.INVISIBLE);
-        proceedArrayList = new ArrayList<>();
-        presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
-        list_delivery.setAdapter(adapter);
-        flt_presale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helpers.logData(PreSaleOrderActivity.this, "Creating an order Request button clicked");
-                Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
-                intent.putExtra("from", "button");
-                intent.putExtra("headerObj", object);
-                startActivity(intent);
-            }
-        });
-        list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                OrderList orderList = arrayList.get(position);
-                Helpers.logData(PreSaleOrderActivity.this, "Viewing details of order from list" + orderList.getOrderId());
-                Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
-                intent.putExtra("from", "list");
-                intent.putExtra("pos", position);
-                intent.putExtra("orderList", orderList);
-                intent.putExtra("headerObj", object);
-                startActivity(intent);
-            }
-        });
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (refreshLayout.isRefreshing()) {
-                            refreshLayout.setRefreshing(false);
-                            adapter.notifyDataSetChanged();
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            flt_presale = (FloatingActionButton) findViewById(R.id.flt_presale);
+            iv_back.setVisibility(View.VISIBLE);
+            tv_top_header.setVisibility(View.VISIBLE);
+            tv_top_header.setText(getString(R.string.order_request));
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            list_delivery = (ListView) findViewById(R.id.list_delivery);
+            iv_refresh = (ImageView) findViewById(R.id.img_refresh);
+            iv_refresh.setVisibility(View.INVISIBLE);
+            proceedArrayList = new ArrayList<>();
+            presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
+            list_delivery.setAdapter(adapter);
+            flt_presale.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Helpers.logData(PreSaleOrderActivity.this, "Creating an order Request button clicked");
+                    Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
+                    intent.putExtra("from", "button");
+                    intent.putExtra("headerObj", object);
+                    startActivity(intent);
+                }
+            });
+            list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    OrderList orderList = arrayList.get(position);
+                    Helpers.logData(PreSaleOrderActivity.this, "Viewing details of order from list" + orderList.getOrderId());
+                    Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
+                    intent.putExtra("from", "list");
+                    intent.putExtra("pos", position);
+                    intent.putExtra("orderList", orderList);
+                    intent.putExtra("headerObj", object);
+                    startActivity(intent);
+                }
+            });
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (refreshLayout.isRefreshing()) {
+                                refreshLayout.setRefreshing(false);
+                                adapter.notifyDataSetChanged();
+                            }
                         }
-                    }
-                }, 2000);
-            }
-        });
-        iv_refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchRefresh();
-            }
-        });
+                    }, 2000);
+                }
+            });
+            iv_refresh.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchRefresh();
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     @Override
     protected void onResume() {

@@ -620,7 +620,6 @@ public class LoadRequestActivity extends AppCompatActivity {
                 catch (Exception e){
                     e.printStackTrace();
                 }
-
             }
         });
     }
@@ -933,8 +932,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                             .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    if(Helpers.isNetworkAvailable(LoadRequestActivity.this)){
-                                        Helpers.createBackgroundJob(LoadRequestActivity.this);
+                                    if(Helpers.isNetworkAvailable(getApplicationContext())){
+                                        Helpers.createBackgroundJob(getApplicationContext());
                                     }
 
                                     if(isPrint){

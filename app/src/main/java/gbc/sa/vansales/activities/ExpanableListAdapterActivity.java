@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseExpandableListAdapter;
@@ -111,116 +112,118 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
             @Override
             public void onClick(View v) {
                // Log.e("position", groupPosition + "");
-                if (groupPosition == 0) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "Clicked on Begin Trip from Adapter");
-                        Intent i = new Intent(mContext, BeginTripActivity.class);
-                        mContext.startActivity(i);
-                    }
+                try{
+                    if (groupPosition == 0) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "Clicked on Begin Trip from Adapter");
+                            Intent i = new Intent(mContext, BeginTripActivity.class);
+                            mContext.startActivity(i);
+                        }
 
-                } else if (groupPosition == 1) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "Clicked on Manage Inventory from Adapter");
-                        Intent i = new Intent(mContext, ManageInventory.class);
-                        mContext.startActivity(i);
-                    }
+                    } else if (groupPosition == 1) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "Clicked on Manage Inventory from Adapter");
+                            Intent i = new Intent(mContext, ManageInventory.class);
+                            mContext.startActivity(i);
+                        }
 
-                } else if (groupPosition == 2) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "Clicked on My Calendar from Adapter");
-                        Intent i = new Intent(mContext, MyCalendarActivity.class);
-                        mContext.startActivity(i);
-                    }
+                    } else if (groupPosition == 2) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "Clicked on My Calendar from Adapter");
+                            Intent i = new Intent(mContext, MyCalendarActivity.class);
+                            mContext.startActivity(i);
+                        }
 
-                } else if (groupPosition == 3) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "Clicked on End Trip from Adapter");
-                        if(!(flag==null)){
-                            if(!flag.getIsEndTrip().equals("")&&!flag.getIsEndTrip().equals("0")){
-                                Helpers.logData(mContext, "Prompt for End Trip Password");
-                                String passwordkey = flag.getIsEndTrip();
-                                String password = "";
-                                if(passwordkey.equals("1")){
-                                    password = flag.getPassword1();
-                                }
-                                if(passwordkey.equals("2")){
-                                    password = flag.getPassword2();
-                                }
-                                if(passwordkey.equals("3")){
-                                    password = flag.getPassword3();
-                                }
-                                if(passwordkey.equals("4")){
-                                    password = flag.getPassword4();
-                                }
-                                if(passwordkey.equals("5")){
-                                    password = flag.getPassword5();
-                                }
-                                final Dialog dialog = new Dialog(mContext);
-                                LayoutInflater li = LayoutInflater.from(mContext);
-                                View view = li.inflate(R.layout.password_prompt, null);
-                                //View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
-                                final EditText userInput = (EditText) view
-                                        .findViewById(R.id.password);
-                                Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
-                                Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
-                                final String finalPassword = password;
-                                btn_continue.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        //hideKeyboard();
-                                        String input = userInput.getText().toString();
-                                        Helpers.logData(mContext, "User input password" + input + "on End trip screen");
-                                        if (input.equals("")) {
-                                            dialog.cancel();
-                                            Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            if (input.equals(finalPassword)){
-                                                try{
-                                                    Helpers.logData(mContext, "Password validation passed for End Trip");
-                                                    dialog.dismiss();
-                                                    Intent i = new Intent(mContext, EndTripActivity.class);
-                                                    mContext.startActivity(i);
-                                                }
-                                                catch (Exception e){
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                            else{
-                                                Helpers.logData(mContext, "Password validation failed for End Trip");
+                    } else if (groupPosition == 3) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "Clicked on End Trip from Adapter");
+                            if(!(flag==null)){
+                                if(!flag.getIsEndTrip().equals("")&&!flag.getIsEndTrip().equals("0")){
+                                    Helpers.logData(mContext, "Prompt for End Trip Password");
+                                    String passwordkey = flag.getIsEndTrip();
+                                    String password = "";
+                                    if(passwordkey.equals("1")){
+                                        password = flag.getPassword1();
+                                    }
+                                    if(passwordkey.equals("2")){
+                                        password = flag.getPassword2();
+                                    }
+                                    if(passwordkey.equals("3")){
+                                        password = flag.getPassword3();
+                                    }
+                                    if(passwordkey.equals("4")){
+                                        password = flag.getPassword4();
+                                    }
+                                    if(passwordkey.equals("5")){
+                                        password = flag.getPassword5();
+                                    }
+                                    final Dialog dialog = new Dialog(mContext);
+                                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                    LayoutInflater li = LayoutInflater.from(mContext);
+                                    View view = li.inflate(R.layout.password_prompt, null);
+                                    //View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                                    final EditText userInput = (EditText) view
+                                            .findViewById(R.id.password);
+                                    Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                                    Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                                    final String finalPassword = password;
+                                    btn_continue.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            //hideKeyboard();
+                                            String input = userInput.getText().toString();
+                                            Helpers.logData(mContext, "User input password" + input + "on End trip screen");
+                                            if (input.equals("")) {
                                                 dialog.cancel();
-                                                Toast.makeText(mContext, mContext.getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, mContext.getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                if (input.equals(finalPassword)){
+                                                    try{
+                                                        Helpers.logData(mContext, "Password validation passed for End Trip");
+                                                        dialog.dismiss();
+                                                        Intent i = new Intent(mContext, EndTripActivity.class);
+                                                        mContext.startActivity(i);
+                                                    }
+                                                    catch (Exception e){
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                                else{
+                                                    Helpers.logData(mContext, "Password validation failed for End Trip");
+                                                    dialog.cancel();
+                                                    Toast.makeText(mContext, mContext.getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         }
-                                    }
-                                });
-                                btn_cancel.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Helpers.logData(mContext, "Dialog closed by user for End Trip password prompt");
-                                        dialog.cancel();
-                                    }
-                                });
-                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                                lp.copyFrom(dialog.getWindow().getAttributes());
-                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                                lp.gravity = Gravity.CENTER;
-                                dialog.getWindow().setAttributes(lp);
-                                dialog.setContentView(view);
-                                dialog.setCancelable(false);
-                                dialog.show();
+                                    });
+                                    btn_cancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Helpers.logData(mContext, "Dialog closed by user for End Trip password prompt");
+                                            dialog.cancel();
+                                        }
+                                    });
+                                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                    lp.copyFrom(dialog.getWindow().getAttributes());
+                                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                    lp.gravity = Gravity.CENTER;
+                                    dialog.getWindow().setAttributes(lp);
+                                    dialog.setContentView(view);
+                                    dialog.setCancelable(false);
+                                    dialog.show();
+                                }
+                                else{
+                                    Helpers.logData(mContext, "No password flag set for user for end trip. Directly going for End Trip");
+                                    Intent i = new Intent(mContext, EndTripActivity.class);
+                                    mContext.startActivity(i);
+                                }
                             }
                             else{
                                 Helpers.logData(mContext, "No password flag set for user for end trip. Directly going for End Trip");
                                 Intent i = new Intent(mContext, EndTripActivity.class);
                                 mContext.startActivity(i);
                             }
-                        }
-                        else{
-                            Helpers.logData(mContext, "No password flag set for user for end trip. Directly going for End Trip");
-                            Intent i = new Intent(mContext, EndTripActivity.class);
-                            mContext.startActivity(i);
-                        }
                         /*final Dialog dialog = new Dialog(mContext);
                         LayoutInflater li = LayoutInflater.from(mContext);
                         View view = li.inflate(R.layout.password_prompt, null);
@@ -251,25 +254,30 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                         dialog.setContentView(view);
                         dialog.setCancelable(false);
                         dialog.show();*/
-                    }
+                        }
 
-                }
-                else if (groupPosition == 4) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "User clicked on Driver Collection from Adapter");
-                        Intent i = new Intent(mContext, DriverCollectionsActivity.class);
-                        mContext.startActivity(i);
                     }
+                    else if (groupPosition == 4) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "User clicked on Driver Collection from Adapter");
+                            Intent i = new Intent(mContext, DriverCollectionsActivity.class);
+                            mContext.startActivity(i);
+                        }
 
-                }
-                else if (groupPosition == 5) {
-                    if(headerTitle.isEnabled()){
-                        Helpers.logData(mContext, "User clicked on Information from Adapter");
-                        Intent i = new Intent(mContext, InformationsActivity.class);
-                        mContext.startActivity(i);
                     }
+                    else if (groupPosition == 5) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "User clicked on Information from Adapter");
+                            Intent i = new Intent(mContext, InformationsActivity.class);
+                            mContext.startActivity(i);
+                        }
 
+                    }
                 }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         });
         return convertView;

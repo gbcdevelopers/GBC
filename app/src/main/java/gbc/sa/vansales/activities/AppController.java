@@ -1,5 +1,4 @@
 package gbc.sa.vansales.activities;
-
 /**
  * Created by Muhammad Umair on 29/11/2016.
  */
@@ -17,7 +16,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 import gbc.sa.vansales.App;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
+
 import com.crashlytics.android.Crashlytics;
 
 import java.io.IOException;
@@ -29,9 +30,7 @@ public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
     private RequestQueue mRequestQueue;
     String lang;
-
     private static AppController mInstance;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -40,32 +39,26 @@ public class AppController extends Application {
         System.out.println("On Create");
         Settings.initialize(getApplicationContext());
         lang = "";
-        try{
+        try {
             lang = Settings.getString(App.LANGUAGE);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        if(lang==null){
-            Settings.setString(App.LANGUAGE,"en");
-            changeLanguage(getBaseContext(),"en");
-        }
-        else if(!(lang.isEmpty()||lang==null||lang.equalsIgnoreCase(""))){
+//        Helpers.logData(getApplicationContext(),"Start of Application");
+        if (lang == null) {
+            Settings.setString(App.LANGUAGE, "en");
+            changeLanguage(getBaseContext(), "en");
+        } else if (!(lang.isEmpty() || lang == null || lang.equalsIgnoreCase(""))) {
             changeLanguage(getBaseContext(), lang);
+        } else {
+            changeLanguage(getBaseContext(), "en");
         }
-        else {
-            changeLanguage(getBaseContext(),"en");
-        }
-
     }
-
-    public  static void restartApp(Context context){
+    public static void restartApp(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);
-
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 mInstance.getInstance().getBaseContext(), 0, intent, 0);
         //Following code will restart your application after 2 seconds
@@ -77,55 +70,45 @@ public class AppController extends Application {
         //This will stop your application and take out from it.
         System.exit(2);
     }
-
-    public static void changeLanguage(Context context,String lang)
-    {
+    public static void changeLanguage(Context context, String lang) {
         //Log.e("Language", "" + lang);
-        if (lang.equalsIgnoreCase(""))
-            return;
-        Locale myLocale= new Locale(lang);
-        saveLocale(lang);
-        Locale.setDefault(myLocale);
-        android.content.res.Configuration config = new android.content.res.Configuration();
-        config.locale = myLocale;
-        Resources resources = context.getResources();
-        resources.updateConfiguration(config, resources.getDisplayMetrics());
-
+        try {
+            if (lang.equalsIgnoreCase(""))
+                return;
+            Locale myLocale = new Locale(lang);
+            saveLocale(lang);
+            Locale.setDefault(myLocale);
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            config.locale = myLocale;
+            Resources resources = context.getResources();
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-    public static void saveLocale(String lang){
-       // Settings.setString(App.LANGUAGE, lang);
+    public static void saveLocale(String lang) {
+        // Settings.setString(App.LANGUAGE, lang);
     }
-
-
     public static synchronized AppController getInstance() {
         return mInstance;
     }
-
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
-
         return mRequestQueue;
     }
-
     public <T> void addToRequestQueue(Request<T> req, String tag) {
         req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
         getRequestQueue().add(req);
     }
-
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
-
     }
-
-
     public void cancelPendingRequests(Object tag) {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
-
     }
 }

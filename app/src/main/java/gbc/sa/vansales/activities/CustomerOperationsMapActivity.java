@@ -62,26 +62,30 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
-        iv_refresh.setVisibility(View.VISIBLE);
-        iv_refresh.setImageResource(R.drawable.ic_directions_black_24dp);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        markers = new ArrayList<>();
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Select Customer");
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        try {
+            MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            iv_refresh = (ImageView) findViewById(R.id.iv_refresh);
+            iv_refresh.setVisibility(View.VISIBLE);
+            iv_refresh.setImageResource(R.drawable.ic_directions_black_24dp);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            markers = new ArrayList<>();
+            iv_back.setVisibility(View.VISIBLE);
+            tv_top_header.setVisibility(View.VISIBLE);
+            tv_top_header.setText(getString(R.string.select_customer));
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            // ATTENTION: This was auto-generated to implement the App Indexing API.
+            // See https://g.co/AppIndexing/AndroidStudio for more information.
+            client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -89,7 +93,7 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        new loadCustomers(this,this.map);
+        new loadCustomers(this, this.map);
         this.map.setMyLocationEnabled(true);
         this.map.getUiSettings().setZoomControlsEnabled(true);
         this.map.getUiSettings().setCompassEnabled(true);
@@ -102,45 +106,27 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         lon.add(70.8022);
         lon.add(77.1025);
         lon.add(72.8777);
-        /*for (int i = 0; i < lat.size(); i++) {
-            createMarker(lat.get(i), lon.get(i), "" + i, "marker" + i);
-        }
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
-        }
-        LatLngBounds bounds = builder.build();
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (width * 0.30);
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-        this.map.moveCamera(CameraUpdateFactory.zoomTo(16));
-        this.map.animateCamera(cu);
-        map.setOnMarkerClickListener(this);*/
     }
-
-    private class loadCustomers extends AsyncTask<Void,Void,Void>{
-
+    private class loadCustomers extends AsyncTask<Void, Void, Void> {
         Context context;
         GoogleMap map;
-        private loadCustomers(Context context,GoogleMap map){
+        private loadCustomers(Context context, GoogleMap map) {
             this.context = context;
             this.map = map;
             execute();
         }
-
         @Override
         protected Void doInBackground(Void... params) {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_TRIP_ID, "");
-            map.put(db.KEY_CUSTOMER_NO,"");
-            map.put(db.KEY_NAME1,"");
-            map.put(db.KEY_NAME3,"");
-            map.put(db.KEY_LATITUDE,"");
+            map.put(db.KEY_CUSTOMER_NO, "");
+            map.put(db.KEY_NAME1, "");
+            map.put(db.KEY_NAME3, "");
+            map.put(db.KEY_LATITUDE, "");
             map.put(db.KEY_LONGITUDE, "");
-            HashMap<String,String>filter = new HashMap<>();
-            Cursor c = db.getData(db.CUSTOMER_HEADER,map,filter);
-            if(c.getCount()>0){
+            HashMap<String, String> filter = new HashMap<>();
+            Cursor c = db.getData(db.CUSTOMER_HEADER, map, filter);
+            if (c.getCount() > 0) {
                 c.moveToFirst();
                 setCustomers(c);
             }
@@ -148,41 +134,48 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-
-            for (Customer customer:arrayList){
-                createMarker(Double.parseDouble(UrlBuilder.decodeString(customer.getLatitude()))
-                        ,Double.parseDouble(UrlBuilder.decodeString(customer.getLongitude()))
-                        ,StringUtils.stripStart(customer.getCustomerID(),"0")
-                        ,UrlBuilder.decodeString(customer.getCustomerName()));
+            try{
+                for (Customer customer : arrayList) {
+                    createMarker(Double.parseDouble(UrlBuilder.decodeString(customer.getLatitude()))
+                            , Double.parseDouble(UrlBuilder.decodeString(customer.getLongitude()))
+                            , StringUtils.stripStart(customer.getCustomerID(), "0")
+                            , UrlBuilder.decodeString(customer.getCustomerName()));
+                }
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (Marker marker : markers) {
+                    builder.include(marker.getPosition());
+                }
+                LatLngBounds bounds = builder.build();
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int height = getResources().getDisplayMetrics().heightPixels;
+                int padding = (int) (width * 0.30);
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
+                this.map.moveCamera(CameraUpdateFactory.zoomTo(16));
+                this.map.animateCamera(cu);
+                map.setOnMarkerClickListener(CustomerOperationsMapActivity.this);
             }
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (Marker marker : markers) {
-                builder.include(marker.getPosition());
+            catch (Exception e){
+                e.printStackTrace();
             }
-            LatLngBounds bounds = builder.build();
-            int width = getResources().getDisplayMetrics().widthPixels;
-            int height = getResources().getDisplayMetrics().heightPixels;
-            int padding = (int) (width * 0.30);
-            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
-            this.map.moveCamera(CameraUpdateFactory.zoomTo(16));
-            this.map.animateCamera(cu);
-            map.setOnMarkerClickListener(CustomerOperationsMapActivity.this);
         }
     }
-
-    private void setCustomers(Cursor c){
-        c.moveToFirst();
-        do{
-            Customer customer = new Customer();
-            customer.setCustomerID(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-            customer.setLatitude(c.getString(c.getColumnIndex(db.KEY_LATITUDE)).equals("") ? "0.000000" : c.getString(c.getColumnIndex(db.KEY_LATITUDE)));
-            customer.setLongitude(c.getString(c.getColumnIndex(db.KEY_LONGITUDE)).equals("") ? "0.000000" : c.getString(c.getColumnIndex(db.KEY_LONGITUDE)));
-            customer.setCustomerName(Settings.getString(App.LANGUAGE).equals("en")?c.getString(c.getColumnIndex(db.KEY_NAME1)):c.getString(c.getColumnIndex(db.KEY_NAME3)));
-            arrayList.add(customer);
+    private void setCustomers(Cursor c) {
+        try{
+            c.moveToFirst();
+            do {
+                Customer customer = new Customer();
+                customer.setCustomerID(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                customer.setLatitude(c.getString(c.getColumnIndex(db.KEY_LATITUDE)).equals("") ? "0.000000" : c.getString(c.getColumnIndex(db.KEY_LATITUDE)));
+                customer.setLongitude(c.getString(c.getColumnIndex(db.KEY_LONGITUDE)).equals("") ? "0.000000" : c.getString(c.getColumnIndex(db.KEY_LONGITUDE)));
+                customer.setCustomerName(Settings.getString(App.LANGUAGE).equals("en") ? c.getString(c.getColumnIndex(db.KEY_NAME1)) : c.getString(c.getColumnIndex(db.KEY_NAME3)));
+                arrayList.add(customer);
+            }
+            while (c.moveToNext());
         }
-        while (c.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
-
     private void drawMarkers() {
         if (map == null) return;
         runOnUiThread(new Runnable() {

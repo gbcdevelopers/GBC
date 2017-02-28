@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 public class LoginActivity extends Activity {
     private LoadingSpinner loadingSpinner;
 
@@ -56,14 +57,16 @@ public class LoginActivity extends Activity {
     public String password = "";
 
     DatabaseHandler db = new DatabaseHandler(this);
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        db.getWritableDatabase();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         db = new DatabaseHandler(this);
-        db.getWritableDatabase();
 
         if( Boolean.parseBoolean(Settings.getString(App.IS_LOGGED_ID))){
             Settings.setString(App.IS_LOGGED_ID, "false");
@@ -74,14 +77,18 @@ public class LoginActivity extends Activity {
         }
         Settings.setString(App.IS_LOGGED_ID, "false");
         Settings.setString(App.LOGIN_DATE, "");
+        if(Settings.getString(App.LANGUAGE)==null){
+           Settings.setString(App.LANGUAGE,"en");
+        }
+        Helpers.logData(LoginActivity.this, "On Login Screen");
         loadingSpinner = new LoadingSpinner(this);
 }
     public void login(View view){
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-        id = "E102964";
-        password = "E102964";
+       // id = "E102964";
+       // password = "E102964";
         Helpers.logData(LoginActivity.this,"Login Credentials for user:" + id + "/" + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
@@ -200,7 +207,7 @@ public class LoginActivity extends Activity {
                                         loadingSpinner.show();
                                  //For development purpose only
                                 // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
-                                if(!checkTripID("Y000030000000014")){
+                                /*if(!checkTripID("Y000030000000014")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
                                     Settings.setString(TRIP_ID, "Y000030000000014");
                                     //Settings.setString(App.IS_LOGGED_ID,"true");
@@ -214,7 +221,8 @@ public class LoginActivity extends Activity {
                                     startActivityForResult(intent, 0);
                                     finish();
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                }
+                                }*/
+                                        dialog.dismiss();
                                     }
                                 })
                                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -300,6 +308,8 @@ public class LoginActivity extends Activity {
     }
     public void downloadData(final String tripId){
         Helpers.logData(LoginActivity.this,"Downloading user data");
+        db = new DatabaseHandler(LoginActivity.this);
+        db.getWritableDatabase();
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, App.FALSE);
         map.put(db.KEY_IS_LOAD_VERIFIED, App.FALSE);

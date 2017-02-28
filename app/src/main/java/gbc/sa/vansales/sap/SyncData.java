@@ -2285,7 +2285,7 @@ public class SyncData extends IntentService {
 
                                 HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map, filter);

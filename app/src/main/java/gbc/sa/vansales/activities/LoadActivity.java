@@ -38,25 +38,31 @@ public class LoadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
         setTitle(getString(R.string.load));
-        Helpers.logData(LoadActivity.this, "Driver reached the load screen");
-        OrderReasons.loadData(getApplicationContext());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        loadDeliveryHeaders = new ArrayList<>();
-        // searchResults= GetSearchResults();
-        adapter = new LoadDeliveryHeaderAdapter(this, loadDeliveryHeaders);
-        lv = (ListView) findViewById(R.id.srListView);
-        lv.setAdapter(adapter);
-        new fetchLoads(Settings.getString(TRIP_ID));
-        lv.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                LoadDeliveryHeader load = loadDeliveryHeaders.get(position);
-                Helpers.logData(LoadActivity.this, "Going to Load Summary Screen for load No" + load.getDeliveryNo());
-                Intent i = new Intent(LoadActivity.this, LoadSummaryActivity.class);
-                i.putExtra("headerObj", load);
-                startActivityForResult(i, 10);
-            }
-        });
+        try{
+            Helpers.logData(LoadActivity.this, "Driver reached the load screen");
+            OrderReasons.loadData(getApplicationContext());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            loadDeliveryHeaders = new ArrayList<>();
+            // searchResults= GetSearchResults();
+            adapter = new LoadDeliveryHeaderAdapter(this, loadDeliveryHeaders);
+            lv = (ListView) findViewById(R.id.srListView);
+            lv.setAdapter(adapter);
+            new fetchLoads(Settings.getString(TRIP_ID));
+            lv.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                    LoadDeliveryHeader load = loadDeliveryHeaders.get(position);
+                    Helpers.logData(LoadActivity.this, "Going to Load Summary Screen for load No" + load.getDeliveryNo());
+                    Intent i = new Intent(LoadActivity.this, LoadSummaryActivity.class);
+                    i.putExtra("headerObj", load);
+                    startActivityForResult(i, 10);
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
