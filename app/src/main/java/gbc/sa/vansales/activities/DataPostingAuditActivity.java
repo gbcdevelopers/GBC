@@ -122,6 +122,7 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             Cursor odoMeter = db.getData(db.ODOMETER,odoMeterMap,odometerFilter);
             Cursor odoMeterEnd = db.getData(db.ODOMETER,odoMeterMap,odometerEndFilter);
             Cursor loadConfirmation = db.getData(db.LOAD_CONFIRMATION_HEADER,lconMap,filter);
+            Cursor unloadRequest = db.getData(db.UNLOAD_TRANSACTION,beginDayMap,filter);
             if(beginDay.getCount()>0){
                 beginDay.moveToFirst();
             }
@@ -137,7 +138,10 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             if(odoMeterEnd.getCount()>0){
                 odoMeterEnd.moveToFirst();
             }
-            setDriverAuditItems(beginDay, odoMeter, loadConfirmation,endDay,odoMeterEnd);
+            if(unloadRequest.getCount()>0){
+                unloadRequest.moveToFirst();
+            }
+            setDriverAuditItems(beginDay, odoMeter, loadConfirmation,endDay,odoMeterEnd,unloadRequest);
             //setAuditItems(orderRequest, salesRequest, deliveryRequest,loadRequest);
             return null;
         }
@@ -155,11 +159,34 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             map.put(db.KEY_IS_POSTED,"");
             map.put(db.KEY_CUSTOMER_NO,"");
 
+            HashMap<String,String> gRfilter = new HashMap<>();
+            gRfilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+
+            HashMap<String,String> bRfilter = new HashMap<>();
+            bRfilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+
+            HashMap<String,String> collection = new HashMap<>();
+            collection.put(db.KEY_TIME_STAMP,"");
+            collection.put(db.KEY_INVOICE_NO,"");
+            collection.put(db.KEY_IS_POSTED,"");
+            collection.put(db.KEY_CUSTOMER_NO,"");
+            HashMap<String,String> collectionFilter = new HashMap<>();
+            HashMap<String,String> collectionFilter1 = new HashMap<>();
+            collectionFilter.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+            collectionFilter1.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+
+            Cursor invoicePosted = db.getData(db.COLLECTION,collection,collectionFilter);
+
+            Cursor invoiceMarkPosted = db.getData(db.COLLECTION,collection,collectionFilter1);
+
             HashMap<String,String>filter = new HashMap<>();
             Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
             Cursor salesRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
             Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
+            Cursor goodReturn = db.getData(db.RETURNS,map,gRfilter);
+            Cursor badReturn = db.getData(db.RETURNS,map,bRfilter);
             Cursor loadRequest = db.getData(db.LOAD_REQUEST,map,filter);
+
             if(orderRequest.getCount()>0){
                 orderRequest.moveToFirst();
             }
@@ -169,17 +196,33 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             if(deliveryRequest.getCount()>0){
                 deliveryRequest.moveToFirst();
             }
-            setAuditItems(orderRequest, salesRequest, deliveryRequest,loadRequest);
+            if(goodReturn.getCount()>0){
+                goodReturn.moveToFirst();
+            }
+            if(badReturn.getCount()>0){
+                badReturn.moveToFirst();
+            }
+            if(invoicePosted.getCount()>0){
+                invoicePosted.moveToFirst();
+            }
+            if(invoiceMarkPosted.getCount()>0){
+                invoiceMarkPosted.moveToFirst();
+            }
+            setAuditItems(orderRequest, salesRequest, deliveryRequest,goodReturn,badReturn,invoicePosted,invoiceMarkPosted,loadRequest);
 
             return null;
         }
     }
 
-    private void setAuditItems(Cursor cursor1,Cursor cursor2,Cursor cursor3,Cursor cursor4){
+    private void setAuditItems(Cursor cursor1,Cursor cursor2,Cursor cursor3,Cursor cursor4,Cursor cursor5,Cursor cursor6, Cursor cursor7,Cursor cursor8){
         Cursor orderRequest = cursor1;
         Cursor salesRequest = cursor2;
         Cursor deliveryRequest = cursor3;
-        Cursor loadRequest = cursor4;
+        Cursor goodReturnsRequest = cursor4;
+        Cursor badReturnsRequest = cursor5;
+        Cursor invoicePosted = cursor6;
+        Cursor invoiceMarkPosted = cursor7;
+        Cursor loadRequest = cursor8;
         ArrayList<String> temp=new ArrayList<String>();
         temp.clear();
        // arrayList.clear();
@@ -242,12 +285,101 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             while (deliveryRequest.moveToNext());
         }
 
+        if(goodReturnsRequest.getCount()>0){
+            goodReturnsRequest.moveToFirst();
+            do{
+                Print print = new Print();
+                //print.setCustomer_id(object.getCustomerID());
+                print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
+                print.setCustomer_id(goodReturnsRequest.getString(goodReturnsRequest.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                print.setReferenceNumber(goodReturnsRequest.getString(goodReturnsRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.GoodReturns_TR);
+                print.setIsPosted(goodReturnsRequest.getString(goodReturnsRequest.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+
+            }
+            while (goodReturnsRequest.moveToNext());
+        }
+
+        if(badReturnsRequest.getCount()>0){
+            badReturnsRequest.moveToFirst();
+            do{
+                Print print = new Print();
+                //print.setCustomer_id(object.getCustomerID());
+                print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
+                print.setCustomer_id(badReturnsRequest.getString(badReturnsRequest.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                print.setReferenceNumber(badReturnsRequest.getString(badReturnsRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.BadReturns_TR);
+                print.setIsPosted(badReturnsRequest.getString(badReturnsRequest.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+
+            }
+            while (badReturnsRequest.moveToNext());
+        }
+
+        if(invoicePosted.getCount()>0){
+            invoicePosted.moveToFirst();
+            do{
+                Print print = new Print();
+                //print.setCustomer_id(object.getCustomerID());
+
+                print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
+                print.setCustomer_id(invoicePosted.getString(invoicePosted.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                print.setReferenceNumber(invoicePosted.getString(invoicePosted.getColumnIndex(db.KEY_INVOICE_NO)));
+                print.setTransactionType(ConfigStore.CollectionRequest_TR);
+                print.setIsPosted(invoicePosted.getString(invoicePosted.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+                arrayList.add(print);
+                i++;
+                /*if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }*/
+
+            }
+            while (invoicePosted.moveToNext());
+        }
+
+        if(invoiceMarkPosted.getCount()>0){
+            invoiceMarkPosted.moveToFirst();
+            do{
+                Print print = new Print();
+                //print.setCustomer_id(object.getCustomerID());
+
+                print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
+                print.setCustomer_id(invoiceMarkPosted.getString(invoiceMarkPosted.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                print.setReferenceNumber(invoiceMarkPosted.getString(invoiceMarkPosted.getColumnIndex(db.KEY_INVOICE_NO)));
+                print.setTransactionType(ConfigStore.CollectionRequest_TR);
+                print.setIsPosted(invoiceMarkPosted.getString(invoiceMarkPosted.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
+                arrayList.add(print);
+                i++;
+                /*if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }*/
+
+            }
+            while (invoiceMarkPosted.moveToNext());
+        }
+
         if(loadRequest.getCount()>0){
             loadRequest.moveToFirst();
             do{
                 Print print = new Print();
               //  print.setCustomer_id(loadRequest.getString(loadRequest.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                print.setCustomer_id("-");
+                //print.setCustomer_id("-");
+                print.setCustomer_id(Settings.getString(App.DRIVER));
                 print.setReferenceNumber(loadRequest.getString(loadRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.LoadRequest_TR);
                 print.setIsPosted(loadRequest.getString(loadRequest.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED) ? true : false);
@@ -262,12 +394,13 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             while (loadRequest.moveToNext());
         }
     }
-    private void setDriverAuditItems(Cursor cursor1, Cursor cursor2, Cursor cursor3,Cursor cursor4,Cursor cursor5){
+    private void setDriverAuditItems(Cursor cursor1, Cursor cursor2, Cursor cursor3,Cursor cursor4,Cursor cursor5,Cursor cursor6){
         Cursor beginDay = cursor1;
         Cursor odometer = cursor2;
         Cursor loadConfirmation = cursor3;
         Cursor endDay = cursor4;
         Cursor odometerEnd = cursor5;
+        Cursor unload = cursor6;
 
         ArrayList<String> temp=new ArrayList<String>();
         temp.clear();
@@ -329,6 +462,26 @@ public class DataPostingAuditActivity extends AppCompatActivity {
 
             }
             while (loadConfirmation.moveToNext());
+        }
+
+        if(unload.getCount()>0){
+            unload.moveToFirst();
+            do{
+                Print print = new Print();
+                print.setCustomer_id(Settings.getString(App.DRIVER));
+                print.setReferenceNumber(unload.getString(unload.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setTransactionType(ConfigStore.UnloadRequest_TR);
+                print.setIsPosted(unload.getString(unload.getColumnIndex(db.KEY_IS_POSTED)).equals(App.DATA_IS_POSTED)?true:false);
+
+                if(!temp.contains(print.getReferenceNumber())){
+                    temp.add(print.getReferenceNumber());
+                    arrayList.add(print);
+                    i++;
+                }
+                //  arrayList.add(print);
+
+            }
+            while (beginDay.moveToNext());
         }
 
         if(endDay.getCount()>0){

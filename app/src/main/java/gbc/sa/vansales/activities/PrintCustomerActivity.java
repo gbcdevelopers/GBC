@@ -189,6 +189,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
             bRfilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
             bRfilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
 
+
             Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
             Cursor salesRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
             Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
@@ -322,7 +323,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
                 //print.setCustomer_id(object.getCustomerID());
                 print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
                 print.setCustomer_name(object.getCustomerName());
-                print.setReferenceNumber(goodReturnsRequest.getString(salesRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setReferenceNumber(goodReturnsRequest.getString(goodReturnsRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.GoodReturns_TR);
                 print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){
@@ -342,7 +343,7 @@ public class PrintCustomerActivity extends AppCompatActivity {
                 //print.setCustomer_id(object.getCustomerID());
                 print.setCustomer_id(i == 1 ? String.valueOf(i) : String.valueOf(i));
                 print.setCustomer_name(object.getCustomerName());
-                print.setReferenceNumber(badReturnsRequest.getString(salesRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
+                print.setReferenceNumber(badReturnsRequest.getString(badReturnsRequest.getColumnIndex(db.KEY_PURCHASE_NUMBER)));
                 print.setTransactionType(ConfigStore.BadReturns_TR);
                 print.setIsChecked(false);
                 if(!temp.contains(print.getReferenceNumber())){

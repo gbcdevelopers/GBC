@@ -118,6 +118,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_button_main"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -161,5 +162,16 @@
             android:onClick="reloadData"
             android:text="@string/reload_data"/>
 
+        <TextView
+            android:id="@+id/tv_appinfo"
+            android:text="Test"
+            android:gravity="center"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/label_x_min"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
+
 </RelativeLayout>

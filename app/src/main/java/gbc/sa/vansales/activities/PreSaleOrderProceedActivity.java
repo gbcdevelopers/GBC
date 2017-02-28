@@ -137,6 +137,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
         }
+        Helpers.logData(PreSaleOrderProceedActivity.this,"Came to order request screen from" + from);
         list = (ListView) findViewById(R.id.listview);
         list.setItemsCanFocus(true);
         if (from.equals("list")) {
@@ -149,6 +150,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         //  list.setItemsCanFocus(true);
         if (from.equalsIgnoreCase("button")) {
             if(!flag.getDefaultDeliveryDays().equals("")&&!flag.getDefaultDeliveryDays().equals("0")){
+                Helpers.logData(PreSaleOrderProceedActivity.this,"Default delivery days from flag is" + flag.getDefaultDeliveryDays());
                 iv_calendar.setEnabled(false);
                 String days = flag.getDefaultDeliveryDays();
                 myCalendar.setTime(new Date());
@@ -162,6 +164,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
 
             //list.setEnabled(true);
         } else if (from.equalsIgnoreCase("list")) {
+            Helpers.logData(PreSaleOrderProceedActivity.this,"Loading items for order" + orderList.getOrderId());
             new loadItemsOrder(orderList.getOrderId());
             iv_calendar.setEnabled(false);
             //list.setEnabled(false);
@@ -171,6 +174,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 try{
                     final OrderRequest item = arraylist.get(position);
+                    Helpers.logData(PreSaleOrderProceedActivity.this,"Adding order for item" + item.getMaterialNo());
                     final Dialog dialog = new Dialog(PreSaleOrderProceedActivity.this);
                     dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -239,8 +243,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             //item.setUnits(strpcs);
 
                             item.setCases(strCase.trim().equals("")?"0":strCase);
-                            item.setUnits(strpcs.trim().equals("")?"0":strpcs);
-
+                            item.setUnits(strpcs.trim().equals("") ? "0" : strpcs);
+                            Helpers.logData(PreSaleOrderProceedActivity.this, "Order Details for item" + item.getMaterialNo() + "-" + item.getCases() + "/" + item.getUnits());
 
                             arraylist.remove(position);
                             arraylist.add(position, item);
@@ -251,6 +255,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Helpers.logData(PreSaleOrderProceedActivity.this, "Exception caught");
                 }
 
             }
@@ -287,6 +292,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(PreSaleOrderProceedActivity.this,"Order request confirm clicked");
                 try{
                     String purchaseNum = Helpers.generateNumber(db, ConfigStore.OrderRequest_PR_Type);
                     for (OrderRequest loadRequest : arraylist) {
@@ -314,11 +320,14 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                             map.put(db.KEY_ORDER_ID, purchaseNum);
                             map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
+                            Helpers.logData(PreSaleOrderProceedActivity.this,"Order Request Data" + loadRequest.getMaterialNo() + "-" + loadRequest.getItemName() + "-"
+                                    + loadRequest.getCases() + "-" + loadRequest.getUnits() + "-" + loadRequest.getUom() + "-" + loadRequest.getPrice());
                             orderTotalValue = orderTotalValue + Float.parseFloat(loadRequest.getPrice());
                             if (Float.parseFloat(loadRequest.getCases()) > 0 || Float.parseFloat(loadRequest.getUnits()) > 0) {
                                 //Log.e("Insert","BROOOOOOO");
                                 db.addData(db.ORDER_REQUEST, map);
                             }
+                            Helpers.logData(PreSaleOrderProceedActivity.this,"Order Total" + orderTotalValue);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -336,11 +345,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                         public void onClick(View v) {
                             //new postData().execute();
                             if (!checkforNullBeforePost()) {
+                                Helpers.logData(PreSaleOrderProceedActivity.this,"Print clicked without any data input");
                                 dialog.dismiss();
                                 Toast.makeText(PreSaleOrderProceedActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
                             } else {
                                 isPrint = true;
                                 dialog.dismiss();
+                                Helpers.logData(PreSaleOrderProceedActivity.this, "Printing and posting");
                                 new loadData().execute();
                             }
                         }
@@ -350,9 +361,11 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                         public void onClick(View v) {
                             //new postData().execute();
                             if (!checkforNullBeforePost()) {
+                                Helpers.logData(PreSaleOrderProceedActivity.this,"Do not print clicked without any data input");
                                 dialog.dismiss();
                                 Toast.makeText(PreSaleOrderProceedActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
                             } else {
+                                Helpers.logData(PreSaleOrderProceedActivity.this,"Do not Print and posting");
                                 dialog.dismiss();
                                 new loadData().execute();
                             }
@@ -368,6 +381,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         fb_print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(PreSaleOrderProceedActivity.this,"Printing button clicked");
                 final Dialog dialog = new Dialog(PreSaleOrderProceedActivity.this);
                 dialog.setContentView(R.layout.dialog_doprint);
                 dialog.setCancelable(false);
@@ -414,6 +428,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         tv_date.setText(sdf.format(myCalendar.getTime()));
         PreSaleProceed proceed = new PreSaleProceed();
         proceed.setDATE(tv_date.getText().toString());
+        Helpers.logData(PreSaleOrderProceedActivity.this, "Order date set to" + tv_date.getText().toString());
         //Log.e("Date", "" + tv_date.getText().toString());
         // Const.proceedArrayList.add(Const.id, proceed);
     }
@@ -599,8 +614,10 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         @Override
         protected Void doInBackground(Void... params) {
             //this.returnList = IntegrationService.RequestToken(LoadRequestActivity.this);
+            Helpers.logData(PreSaleOrderProceedActivity.this,"Posting Data");
             this.orderId = postData();
             this.tokens = orderId.split(",");
+            Helpers.logData(PreSaleOrderProceedActivity.this,"Created Order with Reference" + this.tokens[0].toString());
             return null;
         }
         @Override
@@ -637,6 +654,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                                         Helpers.createBackgroundJob(getApplicationContext());
                                     }
                                     if(isPrint){
+                                        Helpers.logData(PreSaleOrderProceedActivity.this,"Creating data for printout");
                                         dialog.dismiss();
                                         createPrintout(false,tv_date.getText().toString(),tokens[0].toString(),false);
                                        /* Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
@@ -646,7 +664,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                                         finish();*/
                                     }
                                     else{
-
+                                        Helpers.logData(PreSaleOrderProceedActivity.this,"No print so going back to Order Listscreen");
                                         dialog.dismiss();
                                         createPrintout(false,tv_date.getText().toString(),tokens[0].toString(),true);
                                         Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
@@ -885,6 +903,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             }
             while (promotionCursor.moveToNext());
             Log.e("Discount","" + discount);
+            Helpers.logData(PreSaleOrderProceedActivity.this, "Discount is" + discount);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -928,6 +947,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             }
             totalamnt = amount;
             Log.e("Total Amount","" + totalamnt);
+            Helpers.logData(PreSaleOrderProceedActivity.this, "Total Amount" + totalamnt);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -943,6 +963,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
     }
     private void createPrintout(boolean fromList,String orderDate,String orderNo,boolean isDelayPrint){
         Log.e("Came for Print", "Came for");
+        Helpers.logData(PreSaleOrderProceedActivity.this, "Creating printount for" + fromList + orderDate + orderNo);
         if(!isDelayPrint){
             if(fromList){
                 JSONArray jsonArray = createPrintData(orderDate,orderNo);
@@ -950,14 +971,30 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 object.execute("", jsonArray);
             }
             else{
-                JSONArray jsonArray = createPrintData(orderDate,orderNo);
-                PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
-                object.execute("", jsonArray);
+                try{
+                    JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+                    Helpers.logData(PreSaleOrderProceedActivity.this, "JSON Data string for print" + data.toString());
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                    map.put(db.KEY_ORDER_ID,orderNo);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+
+                    PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
+                    object.execute("", jsonArray);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
         }
         else{
             if(fromList){
-                try{
+                /*try{
                     JSONArray jsonArray = createPrintData(orderDate,orderNo);
                     JSONObject data = new JSONObject();
                     data.put("data",(JSONArray)jsonArray);
@@ -971,7 +1008,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 }
                 catch (Exception e){
                     e.printStackTrace();
-                }
+                }*/
 
             }
             else{
@@ -979,14 +1016,14 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                     JSONArray jsonArray = createPrintData(orderDate,orderNo);
                     JSONObject data = new JSONObject();
                     data.put("data",(JSONArray)jsonArray);
-
+                    Helpers.logData(PreSaleOrderProceedActivity.this, "JSON Data string for print" + data.toString());
                     HashMap<String,String>map = new HashMap<>();
                     map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                     map.put(db.KEY_ORDER_ID,orderNo);
                     map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
                     map.put(db.KEY_DATA,data.toString());
                     //map.put(db.KEY_DATA,jsonArray.toString());
-                    db.addDataPrint(db.DELAY_PRINT,map);
+                    db.addDataPrint(db.DELAY_PRINT, map);
                 }
                 catch (Exception e){
                     e.printStackTrace();
@@ -1081,6 +1118,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         return jArr;
     }
     public void callback(){
+        Helpers.logData(PreSaleOrderProceedActivity.this, "Call back function for order request from print");
         Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("headerObj", object);

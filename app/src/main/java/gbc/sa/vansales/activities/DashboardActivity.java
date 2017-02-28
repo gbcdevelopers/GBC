@@ -90,6 +90,7 @@ public class DashboardActivity extends AppCompatActivity
         setContentView(R.layout.activity_dashboard);
         CustomerHeaders.loadData(getApplicationContext());
         customers = CustomerHeaders.get();
+        Helpers.logData(DashboardActivity.this,"On Dashboard Screen");
         /*ArticleHeaders.loadData(getApplicationContext());
         CustomerHeaders.loadData(getApplicationContext());*/
         //loadingSpinner = new LoadingSpinner(this, getString(R.string.changinglanguage));
@@ -118,6 +119,7 @@ public class DashboardActivity extends AppCompatActivity
         btn_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DashboardActivity.this,"Clicked on message button on side menu");
                 Intent intent = new Intent(DashboardActivity.this, CustomerMessageListActivity.class);
                 intent.putExtra("from", "dash");
                 startActivity(intent);
@@ -127,6 +129,7 @@ public class DashboardActivity extends AppCompatActivity
         btn_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DashboardActivity.this,"Clicked on settings button on side menu");
                 mDrawerLayout.closeDrawers();
                 drawer.closeDrawers();
                 Intent intent = new Intent(DashboardActivity.this, SettingsActivity.class);
@@ -137,6 +140,7 @@ public class DashboardActivity extends AppCompatActivity
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DashboardActivity.this,"Clicked on log out button on side menu");
                 mDrawerLayout.closeDrawers();
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DashboardActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.log_out))
@@ -212,6 +216,7 @@ public class DashboardActivity extends AppCompatActivity
         btnBDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DashboardActivity.this,"Clicked on Begin Day");
                 Helpers.loadData(getApplicationContext());
                 Intent i = new Intent(DashboardActivity.this, BeginTripActivity.class);
                 startActivity(i);
@@ -375,14 +380,15 @@ public class DashboardActivity extends AppCompatActivity
         ExpandedMenuModel endTrip = new ExpandedMenuModel();
         endTrip.setIconName(getString(R.string.endtrip));
         endTrip.setIconImg(R.drawable.ic_info);
-        endTrip.setIsEnabled(isUnloadEnabled && !isEndDayEnabled ? true : false);
-        // endTrip.setIsEnabled(true);
+        //endTrip.setIsEnabled(isUnloadEnabled && !isEndDayEnabled ? true : false);
+        endTrip.setIsEnabled(true);
         listDataHeader.add(endTrip);
 
         ExpandedMenuModel driverbalance = new ExpandedMenuModel();
         driverbalance.setIconName(getString(R.string.driver_collection));
         driverbalance.setIconImg(R.drawable.ic_driver_collection);
-        driverbalance.setIsEnabled(true);
+        //driverbalance.setIsEnabled(true);
+        driverbalance.setIsEnabled(isEndDayEnabled?false:true);
         listDataHeader.add(driverbalance);
 
 
@@ -845,7 +851,6 @@ public class DashboardActivity extends AppCompatActivity
             }
         });
     }
-
     private float calculateData(String var,Cursor c1,Cursor c2){
         try{
             float count = 0;

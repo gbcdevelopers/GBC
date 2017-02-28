@@ -96,6 +96,7 @@
 				<string name="code_mismatch">الرمز غير صحيح. حاول ثانية</string>
 				<string name="continue_lbl">استمر</string>
 				<string name="coordinate_mismatch_msg">مكانك غير متطابق مع احداثيات العميل للاستمرار يجب ادخال كود سماح</string>
+				<string name="credentials_mismatch">وثائق التفويض لا تتطابق</string>
 				<string name="cradit_sales">مبيعات آجلة</string>
 				<string name="credit">آجل</string>
 				<string name="credit_1">10007665</string>
@@ -217,6 +218,7 @@
 				<string name="item_description">وصف</string>
 				<string name="item_discounts">خصومات الاصناف</string>
 				<string name="item_list">قائمة الصنف</string>
+				<string name="item_list_lbl">قائمة الصنف</string>
 				<string name="item_no">كود الصنف</string>
 				<string name="item_number">كود الصنف</string>
 				<string name="item_sales_details">تفاصيل الصنف </string>
@@ -393,6 +395,7 @@
 				<string name="total">مجموع</string>
 				<string name="total_500aed">Total : 500AED</string>
 				<string name="total_amount">القيمة الاجمالية</string>
+				<string name="driver_total_amount">سائق المبلغ الكلي لل</string>
 				<string name="total_promo_amount">إجمالى قيمه العرض</string>
 				<string name="total_receipt">إجمالي المقبوضات</string>
 				<string name="total_sales">إجمالي المبيعات</string>

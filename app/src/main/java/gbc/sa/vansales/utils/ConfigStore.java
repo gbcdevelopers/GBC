@@ -61,6 +61,8 @@ public class ConfigStore {
     public static final String LoadVarianceFunction = "UNLOAD";
     public static final String VisitListFunction = "VISITACTIVITY";
     public static final String CollectionFunction = "COLLECTION";
+    public static final String PartialCollectionFunction = "PARTIAL";
+    public static final String DriverCollectionFunction = "COLLECTION";
     public static final String AddCustomerFunction = "ADDCUSTOMER";
     public static final String ClearingFunction = "CASHPOST";
     public static final String UnloadFunction = "UNLOAD";
@@ -126,7 +128,8 @@ public class ConfigStore {
     public static final String LoadVarianceCredit_PR = "14";
     public static final String Collection_PR_Type = "COLLECTION";
     public static final String Collection_PR = "15";
-
+    public static final String Unload_PR_Type = "UNLOAD";
+    public static final String Unload_PR = "16";
     //Connectivity Messages
     public static final String WIFI_CONNECTED = "Wifi Enabled";
     public static final String MOBILE_DATA_CONNECTED = "Mobile Data Enabled";

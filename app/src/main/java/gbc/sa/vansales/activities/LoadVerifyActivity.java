@@ -33,6 +33,7 @@ import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.adapters.LoadSummaryBadgeAdapter;
 import gbc.sa.vansales.adapters.LoadVerifyBadgeAdapter;
+import gbc.sa.vansales.data.Const;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderRequest;
@@ -79,6 +80,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         // Log.e("****",""+dataOld.size());
         loadSummaryList = new ArrayList<>();
         varianceLoadSummaryList = new ArrayList<>();
+        Helpers.logData(LoadVerifyActivity.this, "Driver is now on load Verification SCreen");
         //  loadSummaryList = dataNew;
         adapter = new LoadVerifyBadgeAdapter(this, loadSummaryList);
         loadSummaryList = generateData(dataNew, dataOld);
@@ -108,6 +110,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
     }
     public void confirmLoad(View v) {
+        Helpers.logData(LoadVerifyActivity.this, "Confirm clicked on load verify screen");
         try{
             HashMap<String, String> parameters = new HashMap<>();
             parameters.put(db.KEY_IS_VERIFIED, "true");
@@ -116,8 +119,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
             db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
             addItemstoVan(dataNew);
             if (!checkIfLoadExists()) {
-                if (createDataForPost(dataNew, dataOld)) {
-                    HashMap<String, String> altMap = new HashMap<>();
+                Helpers.logData(LoadVerifyActivity.this, "Reached to the last load and preparing data for post");
+                if (createDataForPost(dataNew, dataOld)){
+                    HashMap<String,String> altMap = new HashMap<>();
                     altMap.put(db.KEY_IS_LOAD_VERIFIED, "true");
                     HashMap<String, String> filter = new HashMap<>();
                     filter.put(db.KEY_IS_LOAD_VERIFIED, "false");
@@ -137,7 +141,6 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         cursor.moveToFirst();
                         tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
                     }
-
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                     map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
@@ -151,6 +154,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             print = true;
+                            Helpers.logData(LoadVerifyActivity.this, "Posting Data with Print");
                             new postData(tempOrderID);
                             dialog.dismiss();
                             //finish();
@@ -160,6 +164,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             print = false;
+                            Helpers.logData(LoadVerifyActivity.this, "Posting Data with Print");
                             new postData(tempOrderID);
                             dialog.dismiss();
                         }
@@ -170,7 +175,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 startActivity(intent);*/
                 }
             } else {
-
+                Helpers.logData(LoadVerifyActivity.this, "Adding Data to mark as post and going back for another load");
                 HashMap<String, String> searchMap = new HashMap<>();
                 searchMap.put(db.KEY_ORDER_ID, "");
                 HashMap<String, String> filterMap = new HashMap<>();
@@ -209,6 +214,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        Helpers.logData(LoadVerifyActivity.this, "Yes clicked on load verify screen on cancellation dialog prompt");
                         Intent intent = new Intent(LoadVerifyActivity.this, LoadSummaryActivity.class);
                         intent.putExtra("headerObj", object);
                         startActivity(intent);
@@ -217,6 +223,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Helpers.logData(LoadVerifyActivity.this, "No clicked on load verify screen on cancellation dialog prompt");
                         dialog.cancel();
                     }
                 });
@@ -282,6 +289,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
     }
     private void addItemstoVan(ArrayList<LoadSummary> dataNew) {
+        Helpers.logData(LoadVerifyActivity.this,"Adding items to van");
         try{
             for (int i = 0; i < dataNew.size(); i++) {
                 HashMap<String, String> map = new HashMap<>();
@@ -295,6 +303,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     //Check if old data exists for case
                     if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), dataNew.get(i).getUom()/*App.CASE_UOM*/)) {
                         //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        Helpers.logData(LoadVerifyActivity.this,"Material" + dataNew.get(i).getMaterialNo().toString() + "found on van");
                         int reserved = 0;
                         //Getting old data
                         HashMap<String, String> oldData = new HashMap<>();
@@ -317,8 +326,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
                                 actualQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
                                 reservedQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
                                 remainingQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity already on van" + actualQtyCase + "-" + reservedQtyCase + remainingQtyCase);
                                 actualQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
                                 remainingQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity new on van" + actualQtyCase + "-" + reservedQtyCase + remainingQtyCase);
                             }
                             while (cursor.moveToNext());
                             map.put(db.KEY_ACTUAL_QTY_CASE, String.valueOf(actualQtyCase));
@@ -330,12 +341,15 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         }
                     } else {
                         //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        Helpers.logData(LoadVerifyActivity.this,"Material" + dataNew.get(i).getMaterialNo().toString() + "not found on van");
                         int reservedQty = 0;
                         map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
                         map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
                         map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
                         //map.put(db.KEY_UOM_CASE, App.CASE_UOM);
                         map.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());
+                        Helpers.logData(LoadVerifyActivity.this, "Material" + dataNew.get(i).getMaterialNo().toString() + "with quantity adding to van"
+                                + dataNew.get(i).getQuantityCases().toString() + "-" + String.valueOf(reservedQty) + String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
                         // db.addData(db.VAN_STOCK_ITEMS, map);
                     }
                 /*map.put(db.KEY_ACTUAL_QTY_UNIT,dataNew.get(i).getQuantityUnits().toString());
@@ -459,18 +473,25 @@ public class LoadVerifyActivity extends AppCompatActivity {
     }
     public ArrayList<LoadSummary> generateData(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
         try{
+            Helpers.logData(LoadVerifyActivity.this, "Generating data to show on screen");
             for (int i = 0; i < dataNew.size(); i++) {
                 LoadSummary loadSummary = new LoadSummary();
                 loadSummary.setItemCode(dataNew.get(i).getItemCode());
+                Helpers.logData(LoadVerifyActivity.this, "Item Code" + loadSummary.getItemCode());
                 loadSummary.setMaterialNo(dataNew.get(i).getMaterialNo());
+                Helpers.logData(LoadVerifyActivity.this, "Material No" + loadSummary.getMaterialNo());
                 loadSummary.setItemDescription(dataNew.get(i).getItemDescription());
+                Helpers.logData(LoadVerifyActivity.this, "Item Description" + loadSummary.getItemDescription());
                 if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
                     loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
+                    Helpers.logData(LoadVerifyActivity.this, "Item Cases Old" + dataOld.get(i).getQuantityCases() + "-" + "Item Cases New" + dataNew.get(i).getQuantityCases());
                 }
                 if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
                     loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
+                    Helpers.logData(LoadVerifyActivity.this, "Item Units Old" + dataOld.get(i).getQuantityUnits() + "-" + "Item Units New" + dataNew.get(i).getQuantityUnits());
                 }
                 loadSummary.setPrice(dataNew.get(i).getPrice());
+                Helpers.logData(LoadVerifyActivity.this, "Item Price"  + dataNew.get(i).getPrice());
                 loadSummaryList.add(loadSummary);
             }
         }
@@ -491,11 +512,13 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 if (dataNew.get(i).getItemCode().equals(dataOld.get(i).getItemCode())) {
                     if (dataNew.get(i).getQuantityCases().equals(dataOld.get(i).getQuantityCases())) {
                         loadSummary.setQuantityCases("0");
+                        Helpers.logData(LoadVerifyActivity.this, "Variance for Load not found" + loadSummary.getMaterialNo());
                     } else {
                         String code = Double.parseDouble(dataNew.get(i).getQuantityCases()) > Double.parseDouble(dataOld.get(i).getQuantityCases()) ? "C" : "D";
                         String quantity = code.equals("C")
                                 ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityCases()) - Double.parseDouble(dataOld.get(i).getQuantityCases()))
                                 : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityCases()) - Double.parseDouble(dataNew.get(i).getQuantityCases()));
+                        Helpers.logData(LoadVerifyActivity.this, "Variance for Load found" + loadSummary.getMaterialNo() + "For Code" + code + "with variance Quantity (Cases)" + quantity);
                         loadSummary.setQuantityCases(quantity + code);
                     }
                     //loadSummary.setQuantityCases(dataOld.get(i).getQuantityCases() + "|" + dataNew.get(i).getQuantityCases());
@@ -508,6 +531,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         String quantity = code.equals("C")
                                 ? String.valueOf(Double.parseDouble(dataNew.get(i).getQuantityUnits()) - Double.parseDouble(dataOld.get(i).getQuantityUnits()))
                                 : String.valueOf(Double.parseDouble(dataOld.get(i).getQuantityUnits()) - Double.parseDouble(dataNew.get(i).getQuantityUnits()));
+                        Helpers.logData(LoadVerifyActivity.this, "Variance for Load found" + loadSummary.getMaterialNo() + "For Code" + code + "with variance Quantity (Units)" + quantity);
                         loadSummary.setQuantityUnits(quantity + code);
                     }
                     //loadSummary.setQuantityUnits(dataOld.get(i).getQuantityUnits() + "|" + dataNew.get(i).getQuantityUnits());
@@ -522,6 +546,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 //loadSummaryList.add(loadSummary);
             }
             if (varianceLoadSummaryList.size() > 0) {
+                Helpers.logData(LoadVerifyActivity.this, "Variance for Load Found. Preparing for POST");
                 String debitPRNo = "";
                 String creditPRNo = "";
                 for (int i = 0; i < varianceLoadSummaryList.size(); i++) {
@@ -547,11 +572,13 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     if (loadSummary.getQuantityCases().contains("D") || loadSummary.getQuantityUnits().contains("D")) {
                         if (debitPRNo.equals("")) {
                             debitPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceDebit_PR_Type);
+                            Helpers.logData(LoadVerifyActivity.this, "Debit Variance Found. Reference no for debit post" + debitPRNo);
                         }
                     }
                     if (loadSummary.getQuantityCases().contains("C") || loadSummary.getQuantityUnits().contains("C")) {
                         if (creditPRNo.equals("")) {
                             creditPRNo = Helpers.generateNumber(db, ConfigStore.LoadVarianceCredit_PR_Type);
+                            Helpers.logData(LoadVerifyActivity.this, "Credit Variance Found. Reference no for credit post" + creditPRNo);
                         }
                     }
                     map.put(db.KEY_UOM, loadSummary.getUom());
@@ -711,6 +738,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             this.orderID = postData(tempOrderID);
+            Helpers.logData(LoadVerifyActivity.this,"Posting Load Confirmation" + tempOrderID);
+            Helpers.logData(LoadVerifyActivity.this,"Response for Load Confirmation" + this.orderID);
             this.tokens = orderID.split(",");
             return null;
         }
@@ -736,6 +765,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
                     if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit) || db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
                         if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMap)) {
+                            Helpers.logData(LoadVerifyActivity.this,"Found Variance" + this.orderID);
                             new postDataVariance(ConfigStore.LoadVarianceDebit);
                         } else if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
                             new postDataVariance(ConfigStore.LoadVarianceCredit);
@@ -789,6 +819,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         private String[] tokens = new String[2];
 
         private postDataVariance(String varianceType) {
+            Helpers.logData(LoadVerifyActivity.this,"Posting Variance of type" + varianceType);
             this.varianceType = varianceType;
             execute();
         }
@@ -800,6 +831,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             this.orderID = postDataVariance(this.varianceType);
             this.tokens = orderID.split(",");
+            Helpers.logData(LoadVerifyActivity.this,"Variance posted with reference" + this.tokens[0].toString());
             return null;
         }
         @Override
@@ -809,6 +841,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             }
             if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
                 if(varianceType.equals(ConfigStore.LoadVarianceDebit)){
+                    Helpers.logData(LoadVerifyActivity.this,"Variance for Debit completed with reference" + this.tokens[0].toString());
                     HashMap<String, String> map = new HashMap<String, String>();
                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                     map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
@@ -824,6 +857,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     HashMap<String, String> checkMapCredit = new HashMap<>();
                     checkMapCredit.put(db.KEY_DOCUMENT_TYPE, ConfigStore.LoadVarianceCredit);
                     if (db.checkData(db.LOAD_VARIANCE_ITEMS_POST, checkMapCredit)) {
+                        Helpers.logData(LoadVerifyActivity.this,"Variance for Credit found");
                         new postDataVariance(ConfigStore.LoadVarianceCredit);
                     } else {
                         new updateStockforCustomer().execute();
@@ -840,7 +874,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
 
                     db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
-
+                    Helpers.logData(LoadVerifyActivity.this, "Variance for Credit completed");
                     new updateStockforCustomer().execute();
                 }
             }
@@ -877,35 +911,32 @@ public class LoadVerifyActivity extends AppCompatActivity {
             if (updateSpinner.isShowing()) {
                 updateSpinner.hide();
             }
+            Helpers.logData(LoadVerifyActivity.this,"Updating stock for customer complete");
 
             if(print){
-                /*runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        PrinterDataHelper dataHelper = new PrinterDataHelper();
-                        HashMap<String,String> header = new HashMap<>();
-                        header.put("ROUTE",Settings.getString(App.ROUTE));
-                        header.put("DOC DATE",Helpers.formatDate(new Date(), "dd-MM-yyyy"));
-                        header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
-                        header.put("SALESMAN", Settings.getString(App.DRIVER));
-                        header.put("CONTACTNO","1234");
-                        header.put("DOCUMENT NO", object.getDeliveryNo());  //Load Summary No
-                        header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
-                        header.put("supervisorname","-");
-                        header.put("TripID",Settings.getString(App.TRIP_ID));
-                        header.put("Load Number", "1");
-                        JSONArray data = dataHelper.createJSONDataLoadSummary(App.LOAD_SUMMARY_REQUEST, header, dataNew, dataOld,null);
-                        PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
-                        object.execute(App.LOAD_SUMMARY_REQUEST,data);
-                    }
-                });*/
-                JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
-                PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
-                object.execute("", jsonArray);
-                /*Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
-                startActivity(intent);*/
+                Helpers.logData(LoadVerifyActivity.this,"User had selected to print load verification");
+                try{
+                    JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    map.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    //map.put(db.KEY_DATA,jsonArray.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+
+
+                    PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+                    object.execute("", jsonArray);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             else{
+                Helpers.logData(LoadVerifyActivity.this,"User had selected for delay print load verification");
                 try{
                     JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
                     JSONObject data = new JSONObject();
@@ -914,7 +945,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     HashMap<String,String>map = new HashMap<>();
                     map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
                     map.put(db.KEY_ORDER_ID,object.getDeliveryNo());
-                    map.put(db.KEY_DOC_TYPE,ConfigStore.OrderRequest_TR);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
                     map.put(db.KEY_DATA,data.toString());
                     //map.put(db.KEY_DATA,jsonArray.toString());
                     db.addDataPrint(db.DELAY_PRINT,map);
@@ -931,6 +962,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
     }
     void calculateStock() {
+        Helpers.logData(LoadVerifyActivity.this,"Updating stock for customer start");
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_DELIVERY_NO, "");
@@ -953,7 +985,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
             map.put(db.KEY_IS_DELIVERED, "");
             HashMap<String, String> filter = new HashMap<>();
             Cursor deliveryCursor = db.getData(db.CUSTOMER_DELIVERY_ITEMS, map, filter);
+            Helpers.logData(LoadVerifyActivity.this,"Fetching delivery items");
             if (deliveryCursor.getCount() > 0) {
+                Helpers.logData(LoadVerifyActivity.this,"found Delivery for Driver :" + deliveryCursor.getCount());
                 deliveryCursor.moveToFirst();
                 do {
                     HashMap<String, String> mapVanStock = new HashMap<>();
@@ -992,6 +1026,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
                                     String actualCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE));
                                     String reservedCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE));
                                     String remainingCase = vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE));
+                                    Helpers.logData(LoadVerifyActivity.this,"Actual stock for material" + vanStockCursor.getString(vanStockCursor.getColumnIndex(db.KEY_MATERIAL_NO))
+                                            + "on Van" + actualCase + "-" + reservedCase + "-" + remainingCase);
                                     HashMap<String, String> updateMap = new HashMap<>();
                                     updateMap.put(db.KEY_ACTUAL_QTY_CASE, actualCase);
                                     updateMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(Float.parseFloat(reservedCase == null ? "0" : reservedCase) + Float.parseFloat(deliveryCase == null ? "0" : deliveryCase)));
@@ -1041,17 +1077,15 @@ public class LoadVerifyActivity extends AppCompatActivity {
             mainArr.put("DOC DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
             mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
             mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
-            mainArr.put("CONTACTNO","1234");
+            mainArr.put("CONTACTNO","-");
             mainArr.put("DOCUMENT NO",orderNo);  //Load Summary No
             mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
             mainArr.put("supervisorname","-");
             mainArr.put("TripID",Settings.getString(App.TRIP_ID));
-            mainArr.put("Load Number","1");
-
+            mainArr.put("Load Number", String.valueOf(++Const.loadNumber));
 
             JSONArray HEADERS = new JSONArray();
             JSONArray TOTAL = new JSONArray();
-
             HEADERS.put("ITEM#");
             HEADERS.put("ENGLISH DESCRIPTION");
             HEADERS.put("ARABIC DESCRIPTION");
@@ -1075,6 +1109,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 JSONArray data = new JSONArray();
                 data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
                 data.put(UrlBuilder.decodeString(obj.getItemDescription()));
+                //data.put(obj.getItem_description_ar().equals("")?App.ARABIC_TEXT_MISSING:obj.getItem_description_ar());
                 data.put("شد 48*200مل بيرين PH8");
                 data.put("1");
                 data.put("+0");
@@ -1109,6 +1144,4 @@ public class LoadVerifyActivity extends AppCompatActivity {
         Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
         startActivity(intent);
     }
-
-
 }

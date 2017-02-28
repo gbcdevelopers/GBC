@@ -64,12 +64,18 @@ public class EndTripActivity extends AppCompatActivity {
     LoadingSpinner loadingSpinner;
     ArrayList<Expense> arrayList = new ArrayList<>();
     ArrayList<ChequeCollection> chequeList = new ArrayList<>();
+    ArrayList<ChequeCollection> driverchequeList = new ArrayList<>();
     ArrayAdapter<Expense>adapter;
     float chequeTotal = 0;
     float cashTotal = 0;
+    float driverchequeTotal = 0;
+    float drivercashTotal = 0;
     TextView tv_cheque_amnt;
     TextView tv_cash_amnt;
     TextView tv_total_amount;
+    TextView tv_driver_cheque_amnt;
+    TextView tv_driver_cash_amnt;
+    TextView tv_driver_total_amount;
     String chequeAmount;
     String chequeNumber;
     String customerNo;
@@ -93,6 +99,9 @@ public class EndTripActivity extends AppCompatActivity {
         tv_cheque_amnt = (TextView)findViewById(R.id.tv_cheque_amnt);
         tv_cash_amnt = (TextView)findViewById(R.id.tv_cash_amnt);
         tv_total_amount = (TextView)findViewById(R.id.tv_total_amount);
+        tv_driver_cheque_amnt = (TextView)findViewById(R.id.tv_driver_cheque_amnt);
+        tv_driver_cash_amnt = (TextView)findViewById(R.id.tv_driver_cash_amnt);
+        tv_driver_total_amount = (TextView)findViewById(R.id.tv_driver_total_amount);
         tv_due_amount = (TextView)findViewById(R.id.tv_due_amount);
         adapter = new ExpenseAdapter(this,arrayList);
         expenseListView.setAdapter(adapter);
@@ -134,6 +143,48 @@ public class EndTripActivity extends AppCompatActivity {
         calculateDueAmount();
     }
 
+
+    public class loadDriverCollectionData extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_INVOICE_NO,"");
+            map.put(db.KEY_INVOICE_AMOUNT,"");
+            map.put(db.KEY_DUE_DATE,"");
+            map.put(db.KEY_INVOICE_DATE,"");
+            map.put(db.KEY_AMOUNT_CLEARED,"");
+            map.put(db.KEY_CASH_AMOUNT,"");
+            map.put(db.KEY_CHEQUE_AMOUNT,"");
+            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+            map.put(db.KEY_CHEQUE_NUMBER,"");
+            map.put(db.KEY_CHEQUE_BANK_CODE,"");
+            map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+            HashMap<String,String>filter = new HashMap<>();
+            Cursor c = db.getData(db.DRIVER_COLLECTION,map,filter);
+            if(c.getCount()>0){
+                c.moveToFirst();
+                setDriverCollection(c);
+            }
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(loadingSpinner.isShowing()){
+                loadingSpinner.hide();
+            }
+            startCountAnimation(tv_driver_cheque_amnt, (int) driverchequeTotal);
+            startCountAnimation(tv_driver_cash_amnt, (int) drivercashTotal);
+            startCountAnimation(tv_driver_total_amount, (int) (driverchequeTotal+drivercashTotal));
+
+        }
+    }
+
     public class loadCollectionData extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -150,6 +201,7 @@ public class EndTripActivity extends AppCompatActivity {
             map.put(db.KEY_AMOUNT_CLEARED,"");
             map.put(db.KEY_CASH_AMOUNT,"");
             map.put(db.KEY_CHEQUE_AMOUNT,"");
+            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
             map.put(db.KEY_CHEQUE_NUMBER,"");
             map.put(db.KEY_CHEQUE_BANK_CODE,"");
             map.put(db.KEY_IS_INVOICE_COMPLETE,"");
@@ -170,6 +222,8 @@ public class EndTripActivity extends AppCompatActivity {
             startCountAnimation(tv_cheque_amnt, (int) chequeTotal);
             startCountAnimation(tv_cash_amnt, (int) cashTotal);
             startCountAnimation(tv_total_amount, (int) (chequeTotal+cashTotal));
+            new loadDriverCollectionData().execute();
+
         }
     }
     private void setCollection(Cursor cursor){
@@ -180,6 +234,7 @@ public class EndTripActivity extends AppCompatActivity {
             ChequeCollection chequeCollection = new ChequeCollection();
             String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
             String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
+            String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).split(",");
 
             if(cheques.length>1){
                 chequeCollection.setChequeNo(cheques[1]);
@@ -190,6 +245,27 @@ public class EndTripActivity extends AppCompatActivity {
             }
         }
         while(c.moveToNext());
+        Helpers.logData(EndTripActivity.this, "Cheque Total" + chequeTotal + "Cash Total" + cashTotal);
+    }
+    private void setDriverCollection(Cursor cursor){
+        Cursor c = cursor;
+        do {
+            driverchequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+            drivercashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+            ChequeCollection chequeCollection = new ChequeCollection();
+            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
+
+            if(cheques.length>1){
+                chequeCollection.setChequeNo(cheques[1]);
+                chequeCollection.setBankCode(bankCode[1]);
+                chequeCollection.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                driverchequeList.add(chequeCollection);
+            }
+        }
+        while(c.moveToNext());
+        Helpers.logData(EndTripActivity.this, "Driver Cheque Total" + driverchequeTotal + "Driver Cash Total" + drivercashTotal);
     }
     private void startCountAnimation(final TextView element,Integer value) {
 

@@ -131,7 +131,7 @@
                 android:singleLine="true"
                 android:layout_marginTop="@dimen/size_two"
                 android:enabled="true"
-                android:inputType="numberDecimal"
+                android:inputType="numberSigned"
                 android:text=""
                 />
 
@@ -195,7 +195,7 @@
                         android:layout_marginTop="@dimen/size_two"
                         android:enabled="true"
                         android:singleLine="true"
-                        android:inputType="numberDecimal"
+                        android:inputType="numberSigned"
                         android:text=""
                         />
                 </LinearLayout>

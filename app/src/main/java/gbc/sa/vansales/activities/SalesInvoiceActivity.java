@@ -94,6 +94,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.e("Back Clicked","Back Clicked");
+                Helpers.logData(SalesInvoiceActivity.this, "Sales Invoice back clicked");
                 ArrayList<Sales> salesarrayList = new ArrayList<>();;
                 ArrayList<Sales>goodsReturnList = new ArrayList<>();
                 ArrayList<Sales>badReturnList = new ArrayList<>();
@@ -101,12 +102,15 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                 try{
                     if(Const.siBundle!=null){
                         salesarrayList = Const.siBundle.getParcelableArrayList("si");
+                        Helpers.logData(SalesInvoiceActivity.this, "Sales done are" + salesarrayList.size());
                     }
                     if(Const.grBundle!=null){
                         goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
+                        Helpers.logData(SalesInvoiceActivity.this, "GR done are" + goodsReturnList.size());
                     }
                     if(Const.brBundle!=null){
                         badReturnList = Const.brBundle.getParcelableArrayList("br");
+                        Helpers.logData(SalesInvoiceActivity.this, "GR done are" + badReturnList.size());
                     }
                     if(Const.focBundle!=null){
                         focList = Const.focBundle.getParcelableArrayList("foc");
@@ -402,9 +406,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                         db.addData(db.CAPTURE_SALES_INVOICE,map);
                     }
-
                 }
-
+                Helpers.logData(SalesInvoiceActivity.this,"Sales done for ref no" + orderID + ":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                        + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
             }
 
             if(grList.size()>0){
@@ -450,6 +454,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                             }
 
                         }
+                        Helpers.logData(SalesInvoiceActivity.this,"GR done for referenceno" + orderID + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                                + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
 
                     }
                 }
@@ -481,6 +487,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                             db.addData(db.RETURNS, map);
                         }
+
+                        Helpers.logData(SalesInvoiceActivity.this,"GR done for Reference" + orderID +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                                + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
                     }
                 }
             }
@@ -525,6 +534,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                                 db.addData(db.RETURNS,map);
                             }
                         }
+                        Helpers.logData(SalesInvoiceActivity.this,"BR done for Reference" + orderID +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                                + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
                     }
                 }
                 //No bad return yet
@@ -555,6 +566,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                             db.addData(db.RETURNS, map);
                         }
+                        Helpers.logData(SalesInvoiceActivity.this,"BR done for Reference" + orderID +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                                + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
                     }
                 }
             }
@@ -598,6 +611,8 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                         if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                             db.addData(db.CAPTURE_SALES_INVOICE, map);
                         }
+                        Helpers.logData(SalesInvoiceActivity.this,"Sale done for Reference" + purchaseNumber +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                                + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
                     }
 
                     //Check if any GR was done before invoice
@@ -685,6 +700,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                         db.addData(db.RETURNS, map);
                     }
+                    Helpers.logData(SalesInvoiceActivity.this,"GR done for Reference" + grPRNo +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                            + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
+
                 }
             }
             if(brList.size()>0){
@@ -717,6 +735,9 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
                         db.addData(db.RETURNS, map);
                     }
+                    Helpers.logData(SalesInvoiceActivity.this,"BR done for Reference" + brPRNo +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
+                            + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
+
                 }
             }
         }

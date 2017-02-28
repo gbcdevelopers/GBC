@@ -116,6 +116,7 @@ public class BeginDayFragment extends Fragment {
         try {
             JSONObject data = new JSONObject(getArguments().getString("data"));
             Log.e("Data in Fragment", "" + data);
+            Helpers.logData(getActivity(), "Begin Day Fragment Data" + data);
             route.setText(data.getString("route"));
             salesManNo.setText(data.getString("driver1"));
             //salesManName.setText(data.getString("driver1"));
@@ -171,6 +172,7 @@ public class BeginDayFragment extends Fragment {
                             if(passwordkey.equals("5")){
                                 password = flag.getPassword5();
                             }
+                            Helpers.logData(getActivity(), "Password prompt for begin day" + passwordkey + "/" + password);
                             final Dialog dialog = new Dialog(getActivity());
                             View view = getActivity().getLayoutInflater().inflate(R.layout.password_prompt, null);
                             final EditText userInput = (EditText) view
@@ -185,11 +187,14 @@ public class BeginDayFragment extends Fragment {
                                     String input = userInput.getText().toString();
                                     if (input.equals("")) {
                                         dialog.cancel();
+                                        Helpers.logData(getActivity(), "User clicked continue without entering data");
                                         Toast.makeText(getActivity(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
                                     } else {
+                                        Helpers.logData(getActivity(), "User input for begin day password" + input);
                                         if (input.equals(finalPassword)){
                                             try{
                                                 dialog.dismiss();
+                                                Helpers.logData(getActivity(), "Password check success");
                                                 String purchaseNumber = Helpers.generateNumber(db, ConfigStore.BeginDay_PR_Type);
                                                 HashMap<String, String> map = new HashMap<>();
                                                 String timeStamp = Helpers.getCurrentTimeStamp();
@@ -337,14 +342,17 @@ public class BeginDayFragment extends Fragment {
         if (db.checkData(db.ODOMETER, filter)) {
             Cursor cursor = db.getData(db.ODOMETER, map, filter);
             if (cursor.getCount() > 0) {
+                Helpers.logData(getActivity(), "Last odometer value read");
                 cursor.moveToFirst();
                 lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
+                Helpers.logData(getActivity(), "Last odometer value is" + lastValue);
             }
         } else {
         }
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
         // set dialog message
+        Helpers.logData(getActivity(), "Capturing users odomter value");
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.ok),
@@ -352,9 +360,11 @@ public class BeginDayFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int id) {
                                 String input = userInput.getText().toString();
                                 if (input.equals("")) {
+                                    Helpers.logData(getActivity(), "User entered blank odometer value");
                                     dialog.cancel();
                                     Toast.makeText(getContext(), getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
                                 } else {
+                                    Helpers.logData(getActivity(), "User odometer value" + input + "for posting");
                                     postOdometer(input);
                                     /*if (Float.parseFloat(input) > lastValue) {
                                         postOdometer(input);
@@ -367,6 +377,7 @@ public class BeginDayFragment extends Fragment {
                 .setNegativeButton(getString(R.string.cancel),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                Helpers.logData(getActivity(), "User cancelled odometer prompt");
                                 hideKeyboard();
                                 dialog.cancel();
 //                                Intent i=new Intent(getActivity(),DashboardActivity.class);
@@ -413,6 +424,7 @@ public class BeginDayFragment extends Fragment {
             loadingSpinner.show();
         }
         private postData(String value, String purchaseNumber) {
+            Helpers.logData(getActivity(), "Posting Odometer with " + value + "with reference no" + purchaseNumber);
             this.value = value;
             this.purchaseNumber = purchaseNumber;
             execute();
@@ -424,6 +436,7 @@ public class BeginDayFragment extends Fragment {
             map.put("Value", this.value);
             JSONArray deepEntity = new JSONArray();
             this.flag = IntegrationService.postOdometer(getActivity(), App.POST_ODOMETER_SET, map, deepEntity, purchaseNumber);
+            Helpers.logData(getActivity(), "Response for Odometer" + this.flag);
             return null;
         }
         @Override
@@ -433,6 +446,7 @@ public class BeginDayFragment extends Fragment {
             }
             hideKeyboard();
             if (this.flag.equals(purchaseNumber)) {
+                Helpers.logData(getActivity(), "Flag value for Odometer : Offline" + this.flag);
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
@@ -448,6 +462,7 @@ public class BeginDayFragment extends Fragment {
                 Intent i = new Intent(getActivity(), LoadActivity.class);
                 startActivity(i);
             } else if (this.flag.equals("Y")) {
+                Helpers.logData(getActivity(), "Flag value for odometer : Online" + this.flag);
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
@@ -462,8 +477,10 @@ public class BeginDayFragment extends Fragment {
                 Intent i = new Intent(getActivity(), LoadActivity.class);
                 startActivity(i);
             } else if (this.flag.contains("Error")) {
+                Helpers.logData(getActivity(), "Error occured during odometer posting" + this.flag);
                 Toast.makeText(getActivity(), this.flag.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             } else {
+                Helpers.logData(getActivity(), "Some unknown error occured for odometer posting" + this.flag);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle(R.string.error_title)
                         .setMessage(R.string.error_message)
@@ -474,6 +491,7 @@ public class BeginDayFragment extends Fragment {
                                 if (loadingSpinner.isShowing()) {
                                     loadingSpinner.hide();
                                 }
+                                Helpers.logData(getActivity(), "Dismissing the error prompt for odometer");
                                 dialog.dismiss();
                             }
                         });
@@ -496,6 +514,7 @@ public class BeginDayFragment extends Fragment {
             loadingSpinner.show();
         }
         private postTrip(String purchaseNumber, String timeStamp) {
+            Helpers.logData(getActivity(), "Posting Begin Day with" + purchaseNumber + timeStamp);
             this.purchaseNumber = purchaseNumber;
             this.timeStamp = timeStamp;
             this.tokens = Helpers.parseTimeStamp(this.timeStamp);
@@ -513,6 +532,7 @@ public class BeginDayFragment extends Fragment {
             JSONObject jsonObject = new JSONObject();
             deepEntity.put(jsonObject);
             this.orderID = IntegrationService.postTrip(getActivity(), App.POST_COLLECTION, map, deepEntity, purchaseNumber);
+            Helpers.logData(getActivity(), "Response for begin Day" + this.orderID);
             return null;
         }
         @Override
@@ -540,16 +560,20 @@ public class BeginDayFragment extends Fragment {
                 }
                 //showDialog();
                 if(!flag.isPromptOdometer()){
+                    Helpers.logData(getActivity(), "No Flag for Odometer Prompt. Directly going to Driver Load");
                     Intent i = new Intent(getActivity(), LoadActivity.class);
                     startActivity(i);
                 }
                 else{
+                    Helpers.logData(getActivity(), "Showing Odometer prompt");
                     showDialog();
                 }
 
             } else if (this.orderID.contains("Error")) {
+                Helpers.logData(getActivity(), "Error in Begin Day posting" + this.orderID);
                 Toast.makeText(getActivity(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
             } else {
+                Helpers.logData(getActivity(), "Some random error on Begin Day posting. Showing Dialog to user");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 alertDialogBuilder.setTitle(R.string.error_title)
                         .setMessage(R.string.error_message)

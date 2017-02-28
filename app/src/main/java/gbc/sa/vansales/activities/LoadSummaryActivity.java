@@ -52,6 +52,7 @@ import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.ShopStatus;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -77,10 +78,12 @@ public class LoadSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_load_summary);
         Intent i = this.getIntent();
         object = (LoadDeliveryHeader) i.getParcelableExtra("headerObj");
+        Helpers.logData(LoadSummaryActivity.this, "On Load Summary Screen");
         //Log.e("Object", "" + object.getDeliveryNo());
         reasonsList = OrderReasons.get();
         refine(reasonsList);
         Log.e("Reasons List", "" + reasonsList.size());
+        Helpers.logData(LoadSummaryActivity.this, "Reasons List fetch complete with size" + reasonsList.size() + "with reasons");
         myAdapter = new ReasonAdapter(LoadSummaryActivity.this, android.R.layout.simple_spinner_item, reasonsList);
         // final int position=i.getIntExtra("headerObj",0);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,6 +105,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
                 try{
                     final LoadSummary item = loadSummaryList.get(position);
+                    Helpers.logData(LoadSummaryActivity.this, "clicked on listview item" + item.getMaterialNo());
                     final Dialog dialog = new Dialog(LoadSummaryActivity.this);
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -151,6 +155,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                     iv_cancle.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Helpers.logData(LoadSummaryActivity.this, "Closed the dialog");
                             dialog.cancel();
                         }
                     });
@@ -161,6 +166,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                             Log.e("Spin Select","" + spin.getSelectedItem().toString() + myAdapter.getItem(position).getReasonID());
                             if (item.getReasonCode().equals("99")/*spin.getSelectedItem().toString().equals("Select Reason")*/) {
                                 ((TextView) spin.getSelectedView()).setError("select reason");
+                                Helpers.logData(LoadSummaryActivity.this, "Clicked on save without selecting reason");
                             } else {
                                 String strCase = ed_cases.getText().toString();
                                 String strpcs = ed_pcs.getText().toString();
@@ -182,6 +188,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                                 if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
                                     strpcsinv = String.valueOf(0);
                                 }
+                                Helpers.logData(LoadSummaryActivity.this, "Changed item case and unit to" + strCase + "/" + strpcs);
                                 item.setQuantityCases(strCase);
                                 item.setQuantityUnits(strpcs);
                                 loadSummaryList.remove(position);
@@ -237,6 +244,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // listView.setAdapter(null);
                 // LoadActivity.fullObject.setStatus("Checked");
+                Helpers.logData(LoadSummaryActivity.this, "Driver verified the load by clicking verify all");
                 loadSummaryUnmodList = loadDataOld();
                 Intent intent = new Intent(LoadSummaryActivity.this, LoadVerifyActivity.class);
                 intent.putParcelableArrayListExtra("loadSummary", loadSummaryList);
@@ -287,6 +295,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             }
             total += itemPrice;
         }
+        Helpers.logData(LoadSummaryActivity.this, "Total Cost of Load" + String.valueOf(total));
         TextView tv = (TextView) findViewById(R.id.tv_amt);
         tv.setText(String.valueOf(total));
         adapter.notifyDataSetChanged();//update adapter
@@ -457,6 +466,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
     private class loadSummary extends AsyncTask<String, Void, Void> {
         private String deliveryNo;
         private loadSummary(String deliveryNo) {
+            Helpers.logData(LoadSummaryActivity.this, "Fetching load items for load" + deliveryNo);
             this.deliveryNo = deliveryNo;
             execute();
         }
@@ -480,6 +490,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             filter.put(db.KEY_IS_VERIFIED, "false");
             Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, map, filter);
             if (cursor.getCount() > 0) {
+                Helpers.logData(LoadSummaryActivity.this, "Loaded delivery items for load " + deliveryNo + "with" + cursor.getCount() + "items");
                 setLoadItems(cursor);
             }
             return null;
@@ -548,6 +559,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 loadItem.setQuantityUnits("0");
                 loadItem.setMaterialNo(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadItem.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                Helpers.logData(LoadSummaryActivity.this, "Load items fetched are" + loadItem.getItemCode() + "-" + loadItem.getItemDescription() + "-" + loadItem.getItem_description_ar() + "-" + loadItem.getMaterialNo()
+                +"-" + loadItem.getQuantityCases() + "-" + loadItem.getQuantityUnits() + "-" + loadItem.getUom() + "-" + loadItem.getPrice());
                 loadSummaryList.add(loadItem);
             } catch (Exception e) {
                 e.printStackTrace();

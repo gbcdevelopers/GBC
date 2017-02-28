@@ -57,6 +57,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_list);
+        Helpers.logData(PreSaleOrderActivity.this, "On Order Request Screen");
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
         loadingSpinner = new LoadingSpinner(this);
@@ -104,6 +105,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         flt_presale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(PreSaleOrderActivity.this, "Creating an order Request button clicked");
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "button");
                 intent.putExtra("headerObj", object);
@@ -114,6 +116,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 OrderList orderList = arrayList.get(position);
+                Helpers.logData(PreSaleOrderActivity.this, "Viewing details of order from list" + orderList.getOrderId());
                 Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
                 intent.putExtra("from", "list");
                 intent.putExtra("pos", position);
@@ -158,6 +161,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
+            Helpers.logData(PreSaleOrderActivity.this, "Loading already posted orders");
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
             map.put(db.KEY_ORDER_ID, "");
@@ -188,6 +192,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
+            Helpers.logData(PreSaleOrderActivity.this, "Loading marked for post orders");
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
             map.put(db.KEY_ORDER_ID, "");
@@ -213,6 +218,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         }
     }
     private void setOrders(Cursor cursor) {
+        Helpers.logData(PreSaleOrderActivity.this, cursor.getCount() + "Orders are posted");
         try{
             ArrayList<String> temp = new ArrayList<String>();
             temp.clear();
@@ -226,6 +232,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 //Log.e("ORDER1", "" + orderList.getOrderId());
                 if (!temp.contains(orderList.getOrderId())) {
                     temp.add(orderList.getOrderId());
+                    Helpers.logData(PreSaleOrderActivity.this, "Already Posted orders are" + orderList.getOrderId());
                     arrayList.add(orderList);
                 }
             }
@@ -237,6 +244,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
 
     }
     private void setOrdersLocal(Cursor cursor) {
+        Helpers.logData(PreSaleOrderActivity.this, cursor.getCount() + "Orders are marked for post");
         try{
             ArrayList<String> temp = new ArrayList<String>();
             temp.clear();
@@ -252,6 +260,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 if (!temp.contains(orderList.getOrderId())) {
                     //Log.e("ORDER", "" + orderList.getOrderId());
                     temp.add(orderList.getOrderId());
+                    Helpers.logData(PreSaleOrderActivity.this, "Marked for Post orders are" + orderList.getOrderId());
                     arrayList.add(orderList);
                 }
             }

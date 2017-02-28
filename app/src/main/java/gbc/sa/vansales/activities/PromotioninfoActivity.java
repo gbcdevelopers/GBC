@@ -69,6 +69,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     float badreturndiscount = 0;
     TextView tv_current_invoice;
     ArrayList<Sales> arraylist = new ArrayList<>();
+    ArrayList<Sales> arraylistGR = new ArrayList<>();
+    ArrayList<Sales> arraylistBR = new ArrayList<>();
     ArrayList<Sales> grList = new ArrayList<>();
     ArrayList<Sales> brList = new ArrayList<>();
     ArrayList<DeliveryItem> deliveryArrayList = new ArrayList<>();
@@ -80,7 +82,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     EditText tv_net_invoice;
     OrderList delivery;
     ArrayList<ArticleHeader> articles;
-    String orderID;
+    String orderID_Global;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +97,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         ll_bottom = (LinearLayout) findViewById(R.id.ll_bottom);
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
+        Helpers.logData(PromotioninfoActivity.this, "On Promotion Info Activity");
         tv_top_header.setText(getString(R.string.promo_details));
         tv_promotion = (TextView) findViewById(R.id.tv_promotion);
         tv_current_invoice = (TextView) findViewById(R.id.tv_invoice_amount);
@@ -660,6 +663,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.e("Order ID Post Returns", "" + this.orderID);
+            orderID_Global = tokens[0].toString();
             returnCount++;
             arraylist.clear();
             HashMap<String, String> map = new HashMap<>();
@@ -694,25 +698,50 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                     sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                     sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-                    arraylist.add(sale);
+                    if(returnType.equals(App.GOOD_RETURN)){
+                        arraylistGR.add(sale);
+                    }
+                    else{
+                        arraylistBR.add(sale);
+                    }
+                    //arraylist.add(sale);
                 }
                 while (cursor.moveToNext());
             }
             if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
-                for (Sales sale : arraylist) {
-                    HashMap<String, String> postmap = new HashMap<String, String>();
-                    postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                    postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                    HashMap<String, String> filtermap = new HashMap<>();
-                    filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                    filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                    filtermap.put(db.KEY_REASON_TYPE, this.returnType);
-                    db.updateData(db.RETURNS, postmap, filtermap);
+                if(returnType.equals(App.GOOD_RETURN)){
+                    for (Sales sale : arraylistGR) {
+                        HashMap<String, String> postmap = new HashMap<String, String>();
+                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        HashMap<String, String> filtermap = new HashMap<>();
+                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                        filtermap.put(db.KEY_REASON_TYPE, this.returnType);
+                        db.updateData(db.RETURNS, postmap, filtermap);
+                    }
                 }
+                else{
+                    for (Sales sale : arraylistBR) {
+                        HashMap<String, String> postmap = new HashMap<String, String>();
+                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        HashMap<String, String> filtermap = new HashMap<>();
+                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                        filtermap.put(db.KEY_REASON_TYPE, this.returnType);
+                        db.updateData(db.RETURNS, postmap, filtermap);
+                    }
+                }
+
                 if (returnCount == referenceCount) {
                     if (invoiceExist()) {
                         if (loadingSpinner.isShowing()) {
@@ -763,30 +792,147 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                             db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
                                         }
                                         dialog.dismiss();
-                                        if (object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)) {
-                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                        if (object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)|| object.getPaymentMethod().equals(App.TC_CUSTOMER)) {
+
+                                            HashMap<String, String> invoiceMap = new HashMap<>();
+                                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE);
+                                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                            invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
+                                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
+                                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                                            invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
+                                            invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
+                                            invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
+                                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
+                                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                                            db.addData(db.COLLECTION, invoiceMap);
+
+                                            HashMap<String, String> logMap = new HashMap<>();
+                                            logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                            logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                                            logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                            logMap.put(db.KEY_ORDER_ID, orderID_Global);
+                                            logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
+                                            db.addData(db.DAYACTIVITY, logMap);
+
+                                            /*Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
                                             intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             intent1.putExtra("headerObj", object);
                                             intent1.putExtra("msg", "all");
                                             startActivity(intent1);
-                                            finish();
+                                            finish();*/
+
                                         } else if (object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)) {
                                             //Go to payment details screen
-                                            Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+
+                                            HashMap<String, String> invoiceMap = new HashMap<>();
+                                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE_CASH);
+                                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                            invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
+                                            invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
+                                            invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
+                                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
+                                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
+                                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
+                                            invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
+                                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
+                                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                                            db.addData(db.COLLECTION, invoiceMap);
+                                            Log.e("Going on", "Foo" + tokens[0].toString());
+                                            HashMap<String, String> logMap = new HashMap<>();
+                                            logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                            logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                                            logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                            logMap.put(db.KEY_ORDER_ID, orderID_Global);
+                                            logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
+                                            db.addData(db.DAYACTIVITY, logMap);
+
+                                            /*Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
                                             intent.putExtra("msg", str_promotion_message);
                                             intent.putExtra("from", from);
                                             intent.putExtra("headerObj", object);
+                                            intent.putExtra("invoiceno", tokens[0].toString());
                                             intent.putExtra("amountdue", tv_net_invoice.getText().toString());
                                             startActivity(intent);
-                                            finish();
-                                        } else if (object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)) {
-                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
-                                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            intent1.putExtra("headerObj", object);
-                                            intent1.putExtra("msg", "all");
-                                            startActivity(intent1);
-                                            finish();
+                                            finish();*/
                                         }
+                                        if(isPrint){
+                                            try{
+                                                JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
+
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,orderID_Global);
+                                                map.put(db.KEY_DOC_TYPE,returnType.equals(App.GOOD_RETURN)?ConfigStore.GoodReturns_TR:ConfigStore.BadReturns_TR);
+                                                map.put(db.KEY_DATA,data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+
+                                                PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
+                                                object.execute("", jsonArray);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        else{
+                                            try{
+                                                JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
+
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,orderID_Global);
+                                                map.put(db.KEY_DOC_TYPE,returnType.equals(App.GOOD_RETURN)?ConfigStore.GoodReturns_TR:ConfigStore.BadReturns_TR);
+                                                map.put(db.KEY_DATA, data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+
+                                                if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                                                    Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                                    intent.putExtra("msg", str_promotion_message);
+                                                    intent.putExtra("from", from);
+                                                    intent.putExtra("headerObj", object);
+                                                    intent.putExtra("invoiceno", orderID_Global);
+                                                    intent.putExtra("amountdue", tv_net_invoice.getText().toString());
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                                else{
+                                                    Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                    intent1.putExtra("headerObj", object);
+                                                    intent1.putExtra("msg", "all");
+                                                    startActivity(intent1);
+                                                    finish();
+                                                }
+
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+
                                     }
                                 });
                         // create alert dialog
@@ -957,6 +1103,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.e("Order ID Post Data", "" + this.orderID);
+            orderID_Global = tokens[0].toString();
             arraylist.clear();
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, "");
@@ -1036,6 +1183,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
                     invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
                     invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
                     invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
@@ -1066,6 +1214,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
                     invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
                     invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
                     invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
@@ -1812,6 +1961,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
                     invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
                     invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
                     invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
                     invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
@@ -1822,14 +1972,28 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                     invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
                     db.addData(db.COLLECTION, invoiceMap);
-                   /* Log.e("Going on","Foo");
-                    HashMap<String,String>logMap = new HashMap<>();
-                    logMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                    logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
-                    logMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                    logMap.put(db.KEY_ORDER_ID,tokens[0].toString());
-                    logMap.put(db.KEY_PRICE,tv_net_invoice.getText().toString());
-                    db.addData(db.DAYACTIVITY,logMap);*/
+                }
+                else if (object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
+                    HashMap<String, String> invoiceMap = new HashMap<>();
+                    invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_DELIVERY);
+                    invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                    invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
+                    invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
+                    invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                    invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
+                    invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                    invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
+                    invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
+                    invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
+                    invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
+                    invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
+                    invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                    db.addData(db.COLLECTION, invoiceMap);
                 }
                 if (loadingSpinner.isShowing()) {
                     loadingSpinner.hide();
@@ -1861,7 +2025,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
 
                                         HashMap<String,String>delayMap = new HashMap<>();
                                         delayMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        delayMap.put(db.KEY_ORDER_ID,delivery.getOrderId());
+                                        delayMap.put(db.KEY_ORDER_ID,tokens[0].toString());
                                         delayMap.put(db.KEY_DOC_TYPE,ConfigStore.DeliveryRequest_TR);
                                         delayMap.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
@@ -1884,7 +2048,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
 
                                         HashMap<String,String>delayMap = new HashMap<>();
                                         delayMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        delayMap.put(db.KEY_ORDER_ID,delivery.getOrderId());
+                                        delayMap.put(db.KEY_ORDER_ID,tokens[0].toString());
                                         delayMap.put(db.KEY_DOC_TYPE,ConfigStore.DeliveryRequest_TR);
                                         delayMap.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
@@ -1911,31 +2075,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     catch (Exception e){
                                         e.printStackTrace();
                                     }
-
-
-
                                 }
-
-
-                                /*if(object.getPaymentMethod().equals(App.CASH_CUSTOMER)){
-                                    Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
-                                    intent.putExtra("msg", str_promotion_message);
-                                    intent.putExtra("from",from);
-                                    intent.putExtra("headerObj", object);
-                                    intent.putExtra("delivery", delivery);
-                                    intent.putExtra("invoiceno",tokens[0].toString());
-                                    intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else{
-                                    Intent intent = new Intent(PromotioninfoActivity.this, DeliveryActivity.class);
-                                    intent.putExtra("headerObj", object);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }*/
-                                //  finish();
                             }
                         });
                 // create alert dialog
@@ -2178,7 +2318,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             JSONObject totalObj = new JSONObject();
             totalObj.put("TOTAL UNITS", "+" + String.valueOf(totalPcs));
             totalObj.put("UNIT PRICE", "");
-            totalObj.put("AMOUNT", "+" + String.valueOf(totalAmount));
+            totalObj.put("AMOUNT", totalAmount>0?"+" + String.valueOf(totalAmount): String.valueOf(totalAmount));
             TOTAL.put(totalObj);
             mainArr.put("TOTAL", TOTAL);
             mainArr.put("data", jData);
@@ -2293,7 +2433,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
                 intent.putExtra("msg", str_promotion_message);
                 intent.putExtra("from", from);
-                intent.putExtra("invoiceno", orderID);
+                intent.putExtra("invoiceno", orderID_Global);
                 intent.putExtra("headerObj", object);
                 intent.putExtra("amountdue", tv_net_invoice.getText().toString());
                 startActivity(intent);
@@ -2313,7 +2453,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 intent.putExtra("from", from);
                 intent.putExtra("headerObj", object);
                 intent.putExtra("delivery", delivery);
-                intent.putExtra("invoiceno", orderID);
+                intent.putExtra("invoiceno", orderID_Global);
                 intent.putExtra("invoiceamount", tv_current_invoice.getText().toString());
                 startActivity(intent);
                 finish();

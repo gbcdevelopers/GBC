@@ -45,6 +45,7 @@ import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.VisitList;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.SwipeDetector;
@@ -76,6 +77,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
         flag = DriverRouteFlags.get();
+        Helpers.logData(SelectCustomerActivity.this, "At Customer Activity Screen");
         loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
         OrderReasons.loadData(getApplicationContext());

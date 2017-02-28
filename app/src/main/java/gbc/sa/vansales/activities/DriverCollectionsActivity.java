@@ -68,7 +68,7 @@ public class DriverCollectionsActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
+               /* if (Helpers.isNetworkAvailable(getApplicationContext())) {
                     Helpers.createBackgroundJob(getApplicationContext());
                 }*/
                 Intent intent = new Intent(DriverCollectionsActivity.this, DashboardActivity.class);

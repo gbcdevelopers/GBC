@@ -70,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TODAYS_SUMMARY = "TODAYS_SUMMARY";
     public static final String TODAYS_SUMMARY_SALES = "TODAYS_SUMMARY_SALES";
     public static final String DELAY_PRINT = "DELAY_PRINT";
+    public static final String UNLOAD_TRANSACTION = "UNLOAD_TRANSACTION";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -346,6 +347,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_AMOUNT_CLEARED = "amountCleared";
     public static final String KEY_CASH_AMOUNT = "cashAmount";
     public static final String KEY_CHEQUE_AMOUNT = "chequeAmount";
+    public static final String KEY_CHEQUE_AMOUNT_INDIVIDUAL = "chequeAmountIndividual";
     public static final String KEY_CHEQUE_NUMBER = "chequeNumber";
     public static final String KEY_CHEQUE_DATE = "chequeDate";
     public static final String KEY_CHEQUE_BANK_NAME = "bankName";
@@ -967,6 +969,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_AMOUNT_CLEARED + " TEXT,"
                 + KEY_CASH_AMOUNT + " TEXT,"
                 + KEY_CHEQUE_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT_INDIVIDUAL + " TEXT,"
                 + KEY_CHEQUE_NUMBER + " TEXT,"
                 + KEY_CHEQUE_DATE + " TEXT,"
                 + KEY_CHEQUE_BANK_CODE + " TEXT,"
@@ -992,6 +995,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_AMOUNT_CLEARED + " TEXT,"
                 + KEY_CASH_AMOUNT + " TEXT,"
                 + KEY_CHEQUE_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT_INDIVIDUAL + " TEXT,"
                 + KEY_CHEQUE_NUMBER + " TEXT,"
                 + KEY_CHEQUE_DATE + " TEXT,"
                 + KEY_CHEQUE_BANK_CODE + " TEXT,"
@@ -1149,6 +1153,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DOC_TYPE + " TEXT,"
                 + KEY_DATA + " TEXT " + ")";
 
+        String TABLE_UNLOAD_TRANSACTION = "CREATE TABLE " + UNLOAD_TRANSACTION + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_ORDER_ID + " TEXT,"
+                + KEY_PURCHASE_NUMBER + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -1198,6 +1211,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_TODAY_SUMMARY_SALES);
         db.execSQL(TABLE_DRIVER_COLLECTION);
         db.execSQL(TABLE_DELAY_PRINT);
+        db.execSQL(TABLE_UNLOAD_TRANSACTION);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1248,6 +1262,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TODAYS_SUMMARY_SALES);
         db.execSQL("DROP TABLE IF EXISTS " + DRIVER_COLLECTION);
         db.execSQL("DROP TABLE IF EXISTS " + DELAY_PRINT);
+        db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_TRANSACTION);
         onCreate(db);
     }
     //Storing Secured Credentials

@@ -106,7 +106,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         articles = ArticleHeaders.get();
         loadingSpinner = new LoadingSpinner(this);
         deliveryItemsList = (ListView) findViewById(R.id.list_delivery_items);
-
+        Helpers.logData(DeliveryOrderActivity.this,"Delivery Details Opened");
         arrayList = new ArrayList<>();
         adapter = new DeliveryItemBadgeAdapter(this, arrayList);
         custLayout = (LinearLayout) findViewById(R.id.ll_common);
@@ -166,10 +166,11 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         });
         new loadDeliveryItems().execute();
         //setData();
-        registerForContextMenu(deliveryItemsList);
+        //registerForContextMenu(deliveryItemsList);
         btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DeliveryOrderActivity.this,"Confirm Button for Delivery Clicked");
                 saveData();
                 // Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
                 Intent intent = new Intent(DeliveryOrderActivity.this, PromotionListActivity.class);
@@ -208,7 +209,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 try{
+                    Helpers.logData(DeliveryOrderActivity.this,"Delivery Item Clicked");
                     final DeliveryItem item = arrayList.get(position);
+                    Helpers.logData(DeliveryOrderActivity.this,"Delivery Item Selected" + item.getMaterialNo());
                     final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
                     final String[] reasonCode = {""};
                     dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -276,6 +279,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         }
                     });
                     if (canEdit) {
+                        Helpers.logData(DeliveryOrderActivity.this,"Edit Is flagged on. Showing dialog");
                         dialog.show();
                     } else {
                     }
@@ -314,6 +318,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                                 item.setReasonCode(reasonCode[0]);
                                 arrayList.remove(position);
                                 arrayList.add(position, item);
+                                Helpers.logData(DeliveryOrderActivity.this, "Item details changed and saved" + item.getMaterialNo() +"-" + item.getItemCase()
+                                        + "-" + item.getItemUnits() + "-" + item.getReasonCode() + "-" + item.getAmount());
                                 calculatePrice();
                                 adapter.notifyDataSetChanged();
                                 dialog.dismiss();
@@ -336,6 +342,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DeliveryOrderActivity.this, "Edit button clicked");
                 if (canEdit) {
                     canEdit = false;
                 } else {
@@ -505,46 +512,6 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-
-
-        /*AlertDialog.Builder builderSingle = new AlertDialog.Builder(DeliveryOrderActivity.this);
-        builderSingle.setTitle(getString(R.string.select_reason));
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(DeliveryOrderActivity.this, android.R.layout.select_dialog_singlechoice);
-        arrayAdapter.add("Cancel Delivery");
-        arrayAdapter.add("Already Delivered");
-        arrayAdapter.add("Other Reasons");
-
-        builderSingle.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                arrayList.remove(pos);
-                adapter.notifyDataSetChanged();
-                calculatePrice();
-                if(arrayList.size()==0){
-                    finish();
-                }
-               *//* String strName = arrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(DeliveryOrderActivity.this);
-                builderInner.setMessage(strName);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builderInner.show();*//*
-            }
-        });
-        builderSingle.show();*/
     }
     public void setData(Cursor cursor) {
         try {
@@ -626,57 +593,6 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         //tv_date.setText(sdf.format(myCalendar.getTime()));
     }
-    //    private void setLayout() {
-//        double totalamt = 0;
-//        LinearLayout options_layout = (LinearLayout) findViewById(R.id.ll_presale_proceed_main);
-//        LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-//        if (options_layout != null) {
-//            options_layout.removeAllViews();
-//        }
-//        Log.d("size", "-->" + preSaleProceeds.size());
-//        for (int i = 0; i < preSaleProceeds.size(); i++) {
-//            Log.d("i", "-->" + i);
-//            View to_add = inflater.inflate(R.layout.presale_proceed_list_item,
-//                    options_layout, false);
-//            PreSaleProceed saleProceed = preSaleProceeds.get(i);
-//            EditText text = (EditText) to_add.findViewById(R.id.tv_sku_pre_proceed);
-//            final EditText text1 = (EditText) to_add.findViewById(R.id.tv_ctn_pre_proceed);
-//            EditText text2 = (EditText) to_add.findViewById(R.id.tv_btl_pre_proceed);
-//            TextView text3 = (TextView) to_add.findViewById(R.id.tv_price);
-//            text3.setVisibility(View.GONE);
-//            text.setText(saleProceed.getPRODUCT_NAME());
-//            text1.setText(saleProceed.getCTN());
-//            text2.setText(saleProceed.getBTL());
-//            text3.setText(saleProceed.getPRICE());
-//            totalamt = totalamt + (Double.parseDouble(saleProceed.getCTN()) * 54 + Double.parseDouble(saleProceed.getBTL()) * 2.25);
-//            EditText ed[] = {text1, text2};
-//            editTextArrayList.add(ed);
-////            text.setTypeface(FontSelector.getBold(getActivity()));
-//            options_layout.addView(to_add);
-//            text1.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                }
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                }
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                    if (!text1.getText().toString().equals("")) {
-//                        double totalamt = 0;
-//                        for (int i = 0; i < editTextArrayList.size(); i++) {
-//                            EditText ed[] = editTextArrayList.get(i);
-//                            EditText text1 = ed[0];
-//                            EditText text2 = ed[1];
-//                            totalamt = totalamt + (Double.parseDouble(text1.getText().toString()) * 54 + Double.parseDouble(text2.getText().toString()) * 2.25);
-//                        }
-//                        tv_amt.setText(String.valueOf(totalamt));
-//                    }
-//                }
-//            });
-//        }
-//        tv_amt.setText(String.valueOf(totalamt));
-//    }
     public void calculatePrice() {
         try {
             double totalamt = 0;
@@ -688,6 +604,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 totalamt += itemPrice;
             }
             tv_amt.setText(String.valueOf(totalamt));
+            Helpers.logData(DeliveryOrderActivity.this, "Total Delivery cost" + totalamt);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -727,6 +644,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     map.put(db.KEY_IS_PRINTED, "");
                     //Log.e("Map","" + map);
                     if (Float.parseFloat(item.getItemCase()) > 0 || Float.parseFloat(item.getItemUnits()) > 0) {
+                        Helpers.logData(DeliveryOrderActivity.this,"Marking items for post for delivery" + map);
                         db.addData(db.CUSTOMER_DELIVERY_ITEMS_POST, map);
                     } else {
                         //   Log.e("LOOO","FOOOO");
@@ -741,6 +659,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
+        Helpers.logData(DeliveryOrderActivity.this,"Hardware back clicked on delivery order details screen");
         super.onBackPressed();
         finish();
     }

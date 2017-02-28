@@ -41,22 +41,19 @@ import gbc.sa.vansales.utils.UrlBuilder;
  */
 
 public class BeginTripActivity extends AppCompatActivity  {
-    private LoadingSpinner loadingSpinner;
     private static final String COLLECTION_NAME = "VisitListSet";
     private static final String TRIP_ID = "ITripId";
     public boolean hello = false;
     ViewPager viewPager;
     TabLayout tabLayout;
-
     ImageView iv_back;
     TextView tv_top_header;
     ImageView iv_refresh;
-
     FloatingActionButton floatingActionButton;
     FloatingActionButton addCustomer;
     int tabPosition;
     DatabaseHandler db = new DatabaseHandler(this);
-
+    private LoadingSpinner loadingSpinner;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

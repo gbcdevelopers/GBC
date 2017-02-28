@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
 				package="gbc.sa.vansales"
+				android:versionCode="0"
+				android:versionName="1.0"
 				xmlns:android="http://schemas.android.com/apk/res/android">
 
 				<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
@@ -27,6 +29,11 @@
 								<meta-data
 												android:name="com.google.android.geo.API_KEY"
 												android:value="AIzaSyB1kGfUFdnC-bFd7KDrfuX8qTCsAuPlbPE"/>
+
+								<meta-data
+												android:name="io.fabric.ApiKey"
+												android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28"
+												/>
 
 								<receiver android:name=".sap.ConnectionChangeReceiver" android:label="NetworkChangeReceiver">
 												<intent-filter>
@@ -195,6 +202,12 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.PromotionListActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerPromotionListActivity"
 												android:label="@string/dashboard"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
@@ -453,6 +466,11 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.ItemListActivity"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.CustomerPromotionDetailsActivity"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"
 												android:windowSoftInputMode="stateHidden"/>

@@ -28,6 +28,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/5/2016.
@@ -56,6 +57,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_detail);
         flag = DriverRouteFlags.get();
+        Helpers.logData(SalesInvoiceOptionActivity.this, "Came to Sales Invoice Option Screen");
         strText = new String[]{getString(R.string.sales_invoice), getString(R.string.invoice_label), getString(R.string.end_invoice)};
         TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
         TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
@@ -127,7 +129,6 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 finish();
             }
         });
@@ -136,28 +137,33 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
+                        Helpers.logData(SalesInvoiceOptionActivity.this, "Came to Sales Invoice Option Screen");
                         Intent intent1 = new Intent(SalesInvoiceOptionActivity.this, SalesInvoiceActivity.class);
                         intent1.putExtra("headerObj", object);
                         startActivity(intent1);
                         break;
                     case 1:
                         if(!flag.isDisplayInvoiceSummary()){
+                            Helpers.logData(SalesInvoiceOptionActivity.this, "Invoice Summary is blocked");
                             break;
                         }
                         else{
                             if(invoiceExist()){
+                                Helpers.logData(SalesInvoiceOptionActivity.this, "Going for invoice summary");
                                 Intent intent2 = new Intent(SalesInvoiceOptionActivity.this, InvoiceSummeryActivity.class);
                                 intent2.putExtra("headerObj", object);
                                 startActivity(intent2);
                                 break;
                             }
                             else{
+                                Helpers.logData(SalesInvoiceOptionActivity.this, "No invoice or returns exist");
                                 Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
                                 break;
                             }
                         }
                     case 2:
                         if(invoiceExist()){
+                            Helpers.logData(SalesInvoiceOptionActivity.this, "End Invoice clicked");
                             Intent intent3 = new Intent(SalesInvoiceOptionActivity.this, PromotionListActivity.class);
                             intent3.putExtra("headerObj", object);
                             intent3.putExtra("from","Final Invoice");
@@ -165,6 +171,7 @@ public class SalesInvoiceOptionActivity extends AppCompatActivity {
                             break;
                         }
                         else{
+                            Helpers.logData(SalesInvoiceOptionActivity.this, "No invoice or returns exist");
                             Toast.makeText(SalesInvoiceOptionActivity.this,getString(R.string.invoice_not_exist),Toast.LENGTH_SHORT).show();
                             break;
                         }

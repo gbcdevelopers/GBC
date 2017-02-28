@@ -103,6 +103,7 @@
     <string name="code_mismatch">Code does not match. Try again</string>
     <string name="continue_lbl">Continue</string>
     <string name="coordinate_mismatch_msg">Your coordinates is not within customer threshold limit.To still proceed provide an access code provided by helpdesk</string>
+    <string name="credentials_mismatch">Credentials do not match</string>
     <string name="cradit_sales">CREDIT SALES</string>
     <string name="credit">Credit</string>
     <string name="credit_1">10007665</string>
@@ -224,6 +225,7 @@
     <string name="item_description">Desc</string>
     <string name="item_discounts">ITEM DISCOUNTS</string>
     <string name="item_list">ITEM LIST</string>
+    <string name="item_list_lbl">Item List</string>
     <string name="item_no">Item No</string>
     <string name="item_number">Item no</string>
     <string name="item_sales_details">ITEM SALES DETAILS</string>
@@ -402,6 +404,7 @@
     <string name="total">Total</string>
     <string name="total_500aed">Total : 500AED</string>
     <string name="total_amount">Total Amount</string>
+    <string name="driver_total_amount">Driver Total Amount</string>
     <string name="total_promo_amount">Total Promo Amount</string>
     <string name="total_receipt">Total Receipt</string>
     <string name="total_sales">Total Sales</string>

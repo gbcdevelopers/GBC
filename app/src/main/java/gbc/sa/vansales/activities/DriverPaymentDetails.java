@@ -263,6 +263,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put(db.KEY_AMOUNT_CLEARED, "");
                         map.put(db.KEY_CASH_AMOUNT, "");
+                        map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
                         map.put(db.KEY_CHEQUE_AMOUNT, "");
                         map.put(db.KEY_CHEQUE_NUMBER, "");
                         map.put(db.KEY_CHEQUE_DATE, "");
@@ -279,6 +280,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                         String chequeDate = "";
                         String bankName = "";
                         String bankCode = "";
+                        String chequeAmount = "";
                         if (c.getCount() > 0) {
                             c.moveToFirst();
                             prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
@@ -288,12 +290,14 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
                             bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
                             bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
+                            chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
                         }
                         prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
                         prevCashAmount += getcashamt();
                         prevCheqAmount += getcheckamt();
                         if (getcheckamt() > 0) {
                             chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                            chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
                             chequeDate = chequeDate + "," + tv_date.getText().toString();
                             bankCode = bankCode + "," + bankcode;
                             bankName = bankName + "," + bankname;
@@ -304,6 +308,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                         updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                         updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                         updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                        updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
                         updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
                         updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
                         if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
@@ -311,7 +316,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                         } else {
                             updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
-                            updateMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                         }
 
                         db.updateData(db.DRIVER_COLLECTION, updateMap, filter);
@@ -406,6 +411,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             map.put(db.KEY_AMOUNT_CLEARED, "");
                             map.put(db.KEY_CASH_AMOUNT, "");
                             map.put(db.KEY_CHEQUE_AMOUNT, "");
+                            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
                             map.put(db.KEY_CHEQUE_NUMBER, "");
                             map.put(db.KEY_CHEQUE_DATE, "");
                             map.put(db.KEY_CHEQUE_BANK_CODE, "");
@@ -421,6 +427,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             String chequeDate = "";
                             String bankName = "";
                             String bankCode = "";
+                            String chequeAmount = "";
                             if (c.getCount() > 0) {
                                 c.moveToFirst();
                                 prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
@@ -430,6 +437,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                                 chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
                                 bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
                                 bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
+                                chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
                             }
                             prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
                             prevCashAmount += getcashamt();
@@ -437,6 +445,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             if (getcheckamt() > 0) {
                                 chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
                                 chequeDate = chequeDate + "," + tv_date.getText().toString();
+                                chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
                                 bankCode = bankCode + "," + bankcode;
                                 bankName = bankName + "," + bankname;
                             }
@@ -445,6 +454,8 @@ public class DriverPaymentDetails extends AppCompatActivity {
                             updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
                             updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                             updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                            updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
+                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                             updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
                             updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
                             if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {

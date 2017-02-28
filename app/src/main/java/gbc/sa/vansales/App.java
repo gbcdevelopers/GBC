@@ -169,6 +169,9 @@ public class App extends Application {
     public static final String ODOMETER_BEGIN_DAY = "odometerBeginDay";
     public static final String ODOMETER_END_DAY = "odomterEndDay";
 
+    //Arabic Text missing for printout
+    public static final String ARABIC_TEXT_MISSING = "المفقودين النص العربي";
+
 
     @Override
     public void onCreate() {

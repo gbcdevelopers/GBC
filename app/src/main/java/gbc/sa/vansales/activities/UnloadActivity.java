@@ -355,7 +355,7 @@ public class UnloadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             //clearVanStock();
-            Log.e("I am here","Here");
+            Log.e("I am here", "Here");
             if(Helpers.isNetworkAvailable(getApplicationContext())){
                 Helpers.createBackgroundJob(getApplicationContext());
             }
@@ -365,36 +365,60 @@ public class UnloadActivity extends AppCompatActivity {
             filterMap.put(db.KEY_IS_UNLOAD, "false");
             db.updateData(db.LOCK_FLAGS, altMap, filterMap);
 
+            String purchaseNumber = Helpers.generateNumber(db,ConfigStore.Unload_PR_Type);
+            HashMap<String,String> logMap = new HashMap<>();
+            logMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+            logMap.put(db.KEY_ORDER_ID,purchaseNumber);
+            logMap.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+            logMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+            logMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+            db.addData(db.UNLOAD_TRANSACTION,logMap);
+
             if(isPrint){
-                /*runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        PrinterDataHelper dataHelper = new PrinterDataHelper();
-                        HashMap<String,String> header = new HashMap<>();
-                        header.put("ROUTE",Settings.getString(App.ROUTE));
-                        header.put("DOC DATE",Helpers.formatDate(new Date(), "dd-MM-yyyy"));
-                        header.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
-                        header.put("SALESMAN", Settings.getString(App.DRIVER));
-                        header.put("CONTACTNO","1234");
-                        header.put("DOCUMENT NO", object.getDeliveryNo());  //Load Summary No
-                        header.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
-                        header.put("supervisorname","-");
-                        header.put("TripID",Settings.getString(App.TRIP_ID));
-                        header.put("Load Number", "1");
-                        JSONArray data = dataHelper.createJSONDataLoadSummary(App.LOAD_SUMMARY_REQUEST, header, dataNew, dataOld,null);
-                        PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
-                        object.execute(App.LOAD_SUMMARY_REQUEST,data);
-                    }
-                });*/
-                JSONArray jsonArray = createPrintData();
-                PrinterHelper object = new PrinterHelper(UnloadActivity.this,UnloadActivity.this);
-                object.execute("", jsonArray);
+                try{
+                    JSONArray jsonArray = createPrintData();
+
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    map.put(db.KEY_ORDER_ID,purchaseNumber);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    db.addDataPrint(db.DELAY_PRINT,map);
+
+                    PrinterHelper object = new PrinterHelper(UnloadActivity.this,UnloadActivity.this);
+                    object.execute("", jsonArray);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 /*Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
                 startActivity(intent);*/
             }
             else{
-                Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
-                startActivity(intent);
+                try{
+                    JSONArray jsonArray = createPrintData();
+
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    map.put(db.KEY_ORDER_ID,purchaseNumber);
+                    map.put(db.KEY_DOC_TYPE,ConfigStore.UnloadRequest_TR);
+                    map.put(db.KEY_DATA,data.toString());
+                    db.addDataPrint(db.DELAY_PRINT, map);
+
+                    Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
+                    startActivity(intent);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
             }
 
 

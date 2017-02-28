@@ -31,7 +31,7 @@
 												android:background="@color/colorPrimary"
 												>
 												<TextView
-																android:layout_weight="1"
+																android:layout_weight="1.2"
 																android:layout_width="0dp"
 																android:layout_height="wrap_content"
 																android:padding="@dimen/h3"
@@ -42,7 +42,7 @@
 																android:layout_gravity="center"/>
 
 												<TextView
-																android:layout_weight="1"
+																android:layout_weight="0.8"
 																android:layout_width="0dp"
 																android:layout_gravity="center"
 																android:layout_height="wrap_content"
@@ -129,6 +129,117 @@
 												</LinearLayout>
 
 								</LinearLayout>
+
+								<LinearLayout
+												android:orientation="horizontal"
+												android:weightSum="2"
+												android:layout_marginTop="@dimen/all_padding"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="wrap_content"
+												android:background="@color/colorPrimary">
+
+												<TextView
+																android:layout_weight="1.2"
+																android:layout_width="0dp"
+																android:layout_height="wrap_content"
+																android:padding="@dimen/h3"
+																android:text="@string/driver_total_amount"
+																android:textColor="@color/white"
+																android:textSize="@dimen/label_big"
+																android:gravity="center_vertical|center_horizontal"
+																android:layout_gravity="center"/>
+
+												<TextView
+																android:layout_weight="0.8"
+																android:layout_width="0dp"
+																android:layout_gravity="center"
+																android:layout_height="wrap_content"
+																android:layout_alignParentRight="true"
+																android:padding="@dimen/h1"
+																android:text="255"
+																android:textColor="@color/white"
+																android:textSize="@dimen/label_big"
+																android:gravity="center_vertical|center_horizontal"
+																android:id="@+id/tv_driver_total_amount"/>
+								</LinearLayout>
+
+								<LinearLayout
+												android:orientation="horizontal"
+												android:weightSum="2"
+												android:layout_marginTop="@dimen/all_padding"
+												android:layout_marginLeft="@dimen/all_padding"
+												android:layout_marginRight="@dimen/all_padding"
+												android:layout_width="match_parent"
+												android:layout_height="100dp">
+
+												<LinearLayout
+																android:layout_weight="1"
+																android:orientation="vertical"
+																android:weightSum="3"
+																android:background="@color/buttoncolor"
+																android:layout_width="0dp"
+																android:layout_height="match_parent">
+
+																<TextView
+																				android:layout_weight="1"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:textAllCaps="true"
+																				android:textStyle="bold"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/label_x_min"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+
+																<TextView
+																				android:id="@+id/tv_driver_cheque_amnt"
+																				android:layout_weight="2"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/big"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+												</LinearLayout>
+
+												<LinearLayout
+																android:layout_weight="1"
+																android:orientation="vertical"
+																android:weightSum="3"
+																android:layout_marginLeft="@dimen/space"
+																android:background="@color/buttoncolor"
+																android:layout_width="0dp"
+																android:layout_height="match_parent">
+
+																<TextView
+																				android:layout_weight="1"
+																				android:text="@string/cash"
+																				android:textColor="@color/white"
+																				android:textAllCaps="true"
+																				android:textStyle="bold"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/label_x_min"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+
+																<TextView
+																				android:id="@+id/tv_driver_cash_amnt"
+																				android:layout_weight="2"
+																				android:text="@string/cheque"
+																				android:textColor="@color/white"
+																				android:layout_gravity="center_horizontal|center_vertical"
+																				android:gravity="center_horizontal|center_vertical"
+																				android:textSize="@dimen/big"
+																				android:layout_width="match_parent"
+																				android:layout_height="0dp"/>
+												</LinearLayout>
+								</LinearLayout>
+
 								<LinearLayout
 												android:id="@+id/add_expense"
 												android:layout_marginTop="@dimen/size_four"
@@ -137,7 +248,8 @@
 												android:layout_width="match_parent"
 												android:layout_height="45dp"
 												android:background="@color/colorPrimary"
-												android:orientation="horizontal">
+												android:orientation="horizontal"
+												android:visibility="gone">
 
 												<ImageView
 																android:src="@drawable/ic_white_add"
@@ -161,7 +273,8 @@
 												android:layout_marginLeft="@dimen/all_padding"
 												android:layout_marginRight="@dimen/all_padding"
 												android:layout_width="match_parent"
-												android:layout_height="150dp">
+												android:layout_height="150dp"
+												android:visibility="gone">
 
 								</ListView>
 				</LinearLayout>

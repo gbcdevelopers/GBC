@@ -79,6 +79,7 @@ public class DeliveryActivity extends AppCompatActivity {
         loadingSpinner = new LoadingSpinner(this);
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
+        Helpers.logData(DeliveryActivity.this,"On Delivery Screen for Customer" + object.getCustomerID());
         customers = CustomerHeaders.get();
         arrayList = new ArrayList<>();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -111,6 +112,7 @@ public class DeliveryActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(DeliveryActivity.this,"Back Clicked on Delivery for Customer" + object.getCustomerID());
                 Intent intent = new Intent(DeliveryActivity.this, CustomerDetailActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("headerObj", object);
@@ -123,6 +125,7 @@ public class DeliveryActivity extends AppCompatActivity {
         flt_button.setVisibility(View.GONE);
         list_delivery = (ListView) findViewById(R.id.list_delivery);
         iv_refresh = (ImageView) findViewById(R.id.img_refresh);
+        iv_refresh.setVisibility(View.GONE);
         registerForContextMenu(list_delivery);
         //  adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
        // list_delivery.setAdapter(adapter);
@@ -131,15 +134,18 @@ public class DeliveryActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 OrderList delivery = arrayList.get(position);
                 if(delivery.getOrderStatus().equals("false")){
+                    Helpers.logData(DeliveryActivity.this,"Delivery Clicked" + delivery.getOrderId());
                     Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
                     intent.putExtra("headerObj", object);
                     intent.putExtra("delivery", delivery);
                     startActivity(intent);
                 }
                 else if(delivery.getOrderStatus().equals("true")){
+                    Helpers.logData(DeliveryActivity.this,"Delivery Click on already completed delivery" + delivery.getOrderId());
                     Toast.makeText(getApplicationContext(),getString(R.string.delivery_complete),Toast.LENGTH_SHORT).show();
                 }
                 else if(delivery.getOrderStatus().contains("delete")){
+                    Helpers.logData(DeliveryActivity.this,"Delivery Click on already deleted delivery" + delivery.getOrderId());
                     Toast.makeText(getApplicationContext(),getString(R.string.delivery_delete),Toast.LENGTH_SHORT).show();
                 }
 
@@ -181,6 +187,7 @@ public class DeliveryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
+                Helpers.logData(DeliveryActivity.this,"Driver deleting delivery");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DeliveryActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.message))
                         .setMessage(getString(R.string.delete_msg))
@@ -189,6 +196,7 @@ public class DeliveryActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Helpers.logData(DeliveryActivity.this, "Driver confirmed deletion of delivery" + arrayList.get(info.position).getOrderId());
                                 showReasonDialog(arrayList, info.position);
                             }
                         })
@@ -206,6 +214,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 return true;
             case R.id.cancel:
                 // edit stuff here
+                Helpers.logData(DeliveryActivity.this,"Clicked Cancel from context menu");
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -298,6 +307,8 @@ public class DeliveryActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Helpers.logData(DeliveryActivity.this,"Reason Selected for deletion of delivery" + arrayList.get(pos).getOrderId() + "-"
+                + statusList.get(position).getReasonCode() + "-" + statusList.get(position).getReasonDescription());
                 deleteDeliveryItems(arrayList.get(pos).getOrderId(), statusList.get(position).getReasonCode(), statusList.get(position).getReasonDescription());
                 deleteDelivery(pos);
                 if(Helpers.isNetworkAvailable(DeliveryActivity.this)){
@@ -365,6 +376,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 deleteMap.put(db.KEY_AMOUNT, "");
                 deleteMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 deleteMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                Helpers.logData(DeliveryActivity.this, "Deleting Items for delivery" + deliveryNo + ":" + deleteMap);
                 //Adding item for delete in post
                 db.addData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, deleteMap);
             }
@@ -451,6 +463,7 @@ public class DeliveryActivity extends AppCompatActivity {
         }
     }
     private void returnData(Cursor cursor) {
+        Helpers.logData(DeliveryActivity.this,"Returning Data to Van Stock");
         do {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO, "");
@@ -477,6 +490,8 @@ public class DeliveryActivity extends AppCompatActivity {
                         remainingCase = remainingCase + Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
                         reservedCase = reservedCase - Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY)));
                     }
+                    Helpers.logData(DeliveryActivity.this,"Remaining Case" + String.valueOf(remainingCase));
+                    Helpers.logData(DeliveryActivity.this,"Reserved Case" + String.valueOf(reservedCase));
                     updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
                     HashMap<String, String> filterInter = new HashMap<>();
                     filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));

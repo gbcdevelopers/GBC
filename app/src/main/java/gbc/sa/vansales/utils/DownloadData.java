@@ -45,7 +45,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         Log.e("Exp Response", ""+ jsonArray);
 
         try {
-            Log.e("Metadata","" + jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
+            Log.e("Metadata", "" + jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
+            Helpers.logData(this.context, jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
             String metadata = jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type");
             parseJSON(metadata,jsonArray);
 
@@ -415,6 +416,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                         params.put(db.KEY_INDICATOR,customerOpenItemsObj.get("DebitCreditInd").toString());
                         params.put(db.KEY_AMOUNT_CLEARED,"0");
                         params.put(db.KEY_CHEQUE_AMOUNT,"0");
+                        params.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"0");
                         params.put(db.KEY_CHEQUE_NUMBER,"0000");
                         params.put(db.KEY_CHEQUE_DATE,"0000");
                         params.put(db.KEY_CHEQUE_BANK_CODE,"0000");
@@ -711,7 +713,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     params.put(db.KEY_COLLECTION_TYPE,customerOpenItemsObj.get("DocType").toString());
                     params.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
                     params.put(db.KEY_SAP_INVOICE_NO,customerOpenItemsObj.get("DocNum").toString());
-                    params.put(db.KEY_INVOICE_NO, customerOpenItemsObj.get("DocNo").toString());
+                    params.put(db.KEY_INVOICE_NO, customerOpenItemsObj.get("DocNum").toString());
                     params.put(db.KEY_INVOICE_AMOUNT,customerOpenItemsObj.get("Amount").toString());
                     params.put(db.KEY_INVOICE_DATE,customerOpenItemsObj.get("DocDate").toString());
                     params.put(db.KEY_INVOICE_DAYS,customerOpenItemsObj.get("Days").toString());
@@ -719,6 +721,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     params.put(db.KEY_INDICATOR,customerOpenItemsObj.get("DebitCreditInd").toString());
                     params.put(db.KEY_AMOUNT_CLEARED,"0");
                     params.put(db.KEY_CHEQUE_AMOUNT,"0");
+                    params.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"0");
                     params.put(db.KEY_CHEQUE_NUMBER,"0000");
                     params.put(db.KEY_CHEQUE_DATE,"0000");
                     params.put(db.KEY_CHEQUE_BANK_CODE,"0000");

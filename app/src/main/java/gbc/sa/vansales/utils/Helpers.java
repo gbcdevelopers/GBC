@@ -43,6 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gbc.sa.vansales.App;
+import gbc.sa.vansales.activities.LoginActivity;
 import gbc.sa.vansales.data.ArticleHeaders;
 import gbc.sa.vansales.data.Banks;
 import gbc.sa.vansales.data.CustomerHeaders;
@@ -342,6 +343,10 @@ public class Helpers {
                 docTypeNo = ConfigStore.Collection_PR;
                 break;
             }
+            case ConfigStore.Unload_PR_Type:{
+                docTypeNo = ConfigStore.Unload_PR;
+                break;
+            }
         }
         return docTypeNo;
     }
@@ -585,6 +590,12 @@ public class Helpers {
     }
     public static void logData(Context context,String data){
         Logger logger = new Logger();
-        logger.appendLog(context,data);
+        if(context instanceof Activity){
+            logger.appendLog((Activity)context,data);
+        }
+        else{
+            logger.appendLog(context,data);
+        }
+
     }
 }

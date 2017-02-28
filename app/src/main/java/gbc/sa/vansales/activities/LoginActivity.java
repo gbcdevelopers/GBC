@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +37,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Logger;
+import gbc.sa.vansales.utils.SecureStore;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 
@@ -51,6 +53,7 @@ public class LoginActivity extends Activity {
     private static final String PASSWORD = "Password";
     private static final String TRIP_ID = "ITripId";
     public String username = "";
+    public String password = "";
 
     DatabaseHandler db = new DatabaseHandler(this);
 
@@ -79,40 +82,72 @@ public class LoginActivity extends Activity {
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
         id = "E102964";
         password = "E102964";
-        Helpers.logData(getApplicationContext(),"Login Credentials" + id + password);
+        Helpers.logData(LoginActivity.this,"Login Credentials for user:" + id + "/" + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
         } else if (password.isEmpty()) {
             Toast.makeText(this, R.string.enter_password, Toast.LENGTH_SHORT).show();
         } else {
             loadingSpinner.show();
-            //Logic to Login the user
-            //For development purpose hardcoding credentials
-            //new LoginUser("E2000", "PASSWORD");
             if(Helpers.isNetworkAvailable(LoginActivity.this)){
+                Helpers.logData(LoginActivity.this,"Network Available. Logging in user");
                 this.username = id;
+                this.password = password;
                 new LoginUser(id, password);
             }
             else{
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
-                alertDialogBuilder.setTitle(R.string.internet_available_title)
-                        .setMessage(R.string.internet_available_msg)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            if(loadingSpinner.isShowing()){
-                                loadingSpinner.hide();
-                            }
-                            dialog.dismiss();
-                            }
-                        });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
+                //Fetch Credentials from db for offline authentication
+                Helpers.logData(LoginActivity.this,"Network is not available. And user is already logged in. Doing relogin");
+                this.username = id;
+                this.password = password;
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_USERNAME,"");
+                map.put(db.KEY_PASSWORD,"");
+                map.put(db.KEY_SYM, "");
+                map.put(db.KEY_IV,"");
+                HashMap<String,String>filter = new HashMap<>();
+                filter.put(db.KEY_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
+                Cursor c = db.getData(db.LOGIN_CREDENTIALS,map,filter);
+                if(c.getCount()>0){
+                    byte[]sym = c.getString(c.getColumnIndex(db.KEY_SYM)).getBytes();
+                    byte[]iv = c.getString(c.getColumnIndex(db.KEY_IV)).getBytes();
+                    String passwd = SecureStore.decryptData(sym,iv,c.getString(c.getColumnIndex(db.KEY_PASSWORD)));
+                    if(this.username.equals(c.getString(c.getColumnIndex(db.KEY_USERNAME)))&&this.password.equals(passwd)){
+                        Helpers.logData(LoginActivity.this,"User Authentication offline success");
+                        Settings.setString(App.IS_DATA_SYNCING,"false");
+                        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                        startActivityForResult(intent, 0);
+                        finish();
+                        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+                    }
+                    else{
+                        Helpers.logData(LoginActivity.this,"Wrong Credentials");
+                        if(loadingSpinner.isShowing()){
+                            loadingSpinner.hide();
+                        }
+                        Toast.makeText(getApplicationContext(),getString(R.string.credentials_mismatch),Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                    alertDialogBuilder.setTitle(R.string.internet_available_title)
+                            .setMessage(R.string.internet_available_msg)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if(loadingSpinner.isShowing()){
+                                        loadingSpinner.hide();
+                                    }
+                                    dialog.dismiss();
+                                }
+                            });
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
             }
-
         }
     }
 
@@ -164,14 +199,13 @@ public class LoginActivity extends Activity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         loadingSpinner.show();
                                  //For development purpose only
-
-                                      //  downloadData("GBC012000000003");
+                                // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
                                 if(!checkTripID("Y000030000000014")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
                                     Settings.setString(TRIP_ID, "Y000030000000014");
-                                    Settings.setString(App.IS_LOGGED_ID,"true");
+                                    //Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
-                                    db.addLoginCredentials("E2000", "PASSWORD", Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
+                                    db.addLoginCredentials(username, password, Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
                                     downloadData("Y000030000000014");
                                 }
                                 else{
@@ -181,11 +215,6 @@ public class LoginActivity extends Activity {
                                     finish();
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 }
-                                   //     downloadData("GBC012000000003");
-                               /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                                startActivityForResult(intent, 0);
-                                finish();
-                                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
                                     }
                                 })
                                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -222,18 +251,15 @@ public class LoginActivity extends Activity {
                         alertDialog.show();
                     }
                     else{
-
-                        // Settings.getEditor().putString(TRIP_ID, this.returnList.get(2)).commit();
-
                         boolean checkTripID = checkTripID(this.returnList.get(2));
-
                         if(!checkTripID){
+                            clearDatabase();
                             Settings.setString(App.IS_DATA_SYNCING,"false");
                             Settings.setString(TRIP_ID, this.returnList.get(2));
-                            Settings.setString(App.IS_LOGGED_ID,"true");
+                            //Settings.setString(App.IS_LOGGED_ID,"true");
                             Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(), App.DATE_FORMAT));
                             downloadData(this.returnList.get(2));
-                            db.addLoginCredentials("E2000", "PASSWORD",Helpers.formatDate(new Date(),App.DATE_FORMAT));
+                            db.addLoginCredentials(username, password,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                         }
                         else{
                             Settings.setString(App.IS_DATA_SYNCING,"false");
@@ -242,25 +268,11 @@ public class LoginActivity extends Activity {
                             finish();
                             overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                         }
-
-
-
-                      /* Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                       startActivityForResult(intent, 0);
-                       finish();
-                       overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
-                        //  db.addLoginCredentials("E2000","PASSWORD");
-
                     }
 
                 }
                 else{
                     Toast.makeText(LoginActivity.this,R.string.request_timeout,Toast.LENGTH_SHORT).show();
-                    //For testing Purpose only
-                    /*Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                    startActivityForResult(intent, 0);
-                    finish();
-                    overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);*/
                 }
 
             }
@@ -280,12 +292,14 @@ public class LoginActivity extends Activity {
         else if(tripID.equals(trip_Id)){
             returnVal =  true;
         }
+        else if(!tripID.equals(trip_Id)){
+            returnVal = false;
+        }
 
         return returnVal;
     }
     public void downloadData(final String tripId){
-        //Log.e("Inside chain", "" + tripId);
-
+        Helpers.logData(LoginActivity.this,"Downloading user data");
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_IS_BEGIN_DAY, App.FALSE);
         map.put(db.KEY_IS_LOAD_VERIFIED, App.FALSE);
@@ -333,27 +347,17 @@ public class LoginActivity extends Activity {
                         DriverOpenItems.load(LoginActivity.this,username,db);
                     }
                 });
-
-                /*ArticleHeaders.loadData(getApplicationContext());
-                CustomerHeaders.loadData(getApplicationContext());*/
             }
         });
 
         chain.add(new Chain.Link(){
             @Override
             public void run() {
-                /*TripHeader.load(LoginActivity.this,tripId, db);
-                LoadDelivery.load(LoginActivity.this,tripId, db);
-                ArticleHeaders.load(LoginActivity.this, tripId, db);
-                CustomerHeaders.load(LoginActivity.this, tripId, db);
-                VisitList.load(LoginActivity.this,tripId, db);
-                Messages.load(LoginActivity.this,username,db);*/
                 ArticleHeaders.loadData(getApplicationContext());
                 CustomerHeaders.loadData(getApplicationContext());
                 OrderReasons.loadData(getApplicationContext());
             }
         });
-
         chain.start();
 
     }
@@ -366,10 +370,13 @@ public class LoginActivity extends Activity {
     }
 
     private void fail() {
-
         if(loadingSpinner.isShowing()){
             loadingSpinner.hide();
             finish();
         }
+    }
+    private void clearDatabase(){
+        Settings.clearPreferenceStore();
+        LoginActivity.this.deleteDatabase("gbc.db");
     }
 }

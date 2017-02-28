@@ -32,12 +32,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import gbc.sa.vansales.App;
+import gbc.sa.vansales.activities.LoginActivity;
 import gbc.sa.vansales.models.OfflinePost;
 import gbc.sa.vansales.models.OfflineResponse;
 import gbc.sa.vansales.utils.ConfigStore;
@@ -61,6 +63,7 @@ public class IntegrationService extends IntentService {
     private DefaultHttpClient client;
     private static String username = "";
     private static String password = "";
+    public static Context ctx;
     public IntegrationService() {
         super(TAG);
     }
@@ -718,6 +721,7 @@ public class IntegrationService extends IntentService {
     }
     public static ArrayList<OfflineResponse> batchRequest(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
         ArrayList<OfflineResponse> data = new ArrayList<>();
+        ctx = context;
         try {
             DefaultHttpClient client = new DefaultHttpClient();
             client.getCredentialsProvider().setCredentials(getAuthScope("hello"), getCredentials("ecs", "sap123"));
@@ -740,9 +744,11 @@ public class IntegrationService extends IntentService {
                // JSONObject jsonObj = new JSONObject(jsonString);
             } else {
                 Log.e("fail", "Fail" + response.getStatusLine().getStatusCode());
+                Helpers.logData(context, "ODATA Batch Fail Code" + response.getStatusLine().getStatusCode());
                 Log.e("Message", "Message" + response);
                 HttpEntity r_entity = response.getEntity();
                 String jsonString = getJSONString(r_entity);
+                Helpers.logData(context, "ODATA Batch Fail message" + jsonString);
                 Log.e("Error JSON",jsonString);
                 JSONObject jsonObj = new JSONObject(jsonString);
             }
@@ -859,6 +865,7 @@ public class IntegrationService extends IntentService {
     public static ArrayList<OfflineResponse> unpack(String response,HttpResponse httpResponse){
 
         String lines[] = response.split("\\r?\\n");
+        Helpers.logData(ctx,"Batch Response" + Arrays.toString(lines));
         String boundary = lines[0];
 
         JSONArray data = new JSONArray();
@@ -867,6 +874,7 @@ public class IntegrationService extends IntentService {
         OfflineResponse offlineResponse = new OfflineResponse();
         try{
             for(int i=0;i<lines.length;i++){
+                Helpers.logData(ctx,"" + String.valueOf(i) + "-" + lines[i]);
                 if(lines[i].contains(boundary)){
                     String dataStr = lines[i];
                     try {
@@ -1055,12 +1063,24 @@ public class IntegrationService extends IntentService {
                                     arrayList.add(offlineResponse);
                                 }
                                 if(jsonObject.getString("Function").equals(ConfigStore.CollectionFunction)){
-                                    offlineResponse.setFunction(jsonObject.getString("Function"));
-                                    offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
-                                    offlineResponse.setOrderID(jsonObject.getString("OrderId"));
-                                    Log.e("Response Order","" + jsonObject.getString("OrderId"));
-                                    offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
-                                    arrayList.add(offlineResponse);
+                                    if(offlineResponse.getResponse_code().equals("201")){
+                                        if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
+                                            offlineResponse.setFunction(jsonObject.getString("Function")+"D");
+                                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                            arrayList.add(offlineResponse);
+                                        }
+                                        else{
+                                            offlineResponse.setFunction(jsonObject.getString("Function"));
+                                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                            arrayList.add(offlineResponse);
+                                        }
+                                    }
                                 }
 
                             /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));

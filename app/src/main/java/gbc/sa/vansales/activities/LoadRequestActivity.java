@@ -42,6 +42,7 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -66,6 +67,7 @@ import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+import gbc.sa.vansales.utils.PrinterHelper;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 /**
@@ -88,6 +90,7 @@ public class LoadRequestActivity extends AppCompatActivity {
     CheckBox putOnHold;
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
+    boolean isPrint = false;
     private static int kJobId = 0;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -471,6 +474,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                     Toast.makeText(LoadRequestActivity.this,getString(R.string.no_data),Toast.LENGTH_SHORT).show();
                                 }
                                 else{
+                                    isPrint = true;
                                     dialog.dismiss();
                                     new postData().execute();
                                 }
@@ -793,6 +797,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 LoadRequest loadRequest = new LoadRequest();
                 loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                loadRequest.setItemNameAr(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC2)));
                 // loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.CASE_UOM) ? "0" : "0");
                 // loadRequest.setUnits(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)).equals(App.BOTTLES_UOM) ? "0" : "0");
                 loadRequest.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_BASE_UOM)));
@@ -931,8 +936,23 @@ public class LoadRequestActivity extends AppCompatActivity {
                                     if(Helpers.isNetworkAvailable(LoadRequestActivity.this)){
                                         Helpers.createBackgroundJob(LoadRequestActivity.this);
                                     }
-                                    dialog.dismiss();
-                                    finish();
+
+                                    if(isPrint){
+                                        dialog.dismiss();
+                                        createPrintout(selecteddate.getText().toString(), tokens[0].toString(), false);
+                                       /* Intent intent = new Intent(PreSaleOrderProceedActivity.this, PreSaleOrderActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("headerObj", object);
+                                        startActivity(intent);
+                                        finish();*/
+                                    }
+                                    else{
+                                        dialog.dismiss();
+                                        createPrintout(selecteddate.getText().toString(), tokens[0].toString(), true);
+                                    }
+
+
+
                                 }
                             });
                     // create alert dialog
@@ -1014,5 +1034,139 @@ public class LoadRequestActivity extends AppCompatActivity {
             jobScheduler.schedule(builder.build());
         }*/
 
+    }
+    private void createPrintout(String orderDate,String orderNo,boolean isDelayPrint){
+        if(!isDelayPrint){
+            try{
+                JSONArray jsonArray = createPrintData(orderDate,orderNo);
+
+                JSONObject data = new JSONObject();
+                data.put("data",(JSONArray)jsonArray);
+
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                map.put(db.KEY_ORDER_ID,orderNo);
+                map.put(db.KEY_DOC_TYPE,ConfigStore.LoadRequest_TR);
+                map.put(db.KEY_DATA,data.toString());
+                db.addDataPrint(db.DELAY_PRINT, map);
+
+                PrinterHelper object = new PrinterHelper(LoadRequestActivity.this,LoadRequestActivity.this);
+                object.execute("", jsonArray);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        else{
+            try{
+                JSONArray jsonArray = createPrintData(orderDate,orderNo);
+                JSONObject data = new JSONObject();
+                data.put("data",(JSONArray)jsonArray);
+
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                map.put(db.KEY_ORDER_ID,orderNo);
+                map.put(db.KEY_DOC_TYPE,ConfigStore.LoadRequest_TR);
+                map.put(db.KEY_DATA,data.toString());
+                db.addDataPrint(db.DELAY_PRINT, map);
+                Intent intent = new Intent(LoadRequestActivity.this, ManageInventory.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+    public JSONArray createPrintData(String orderDate,String orderNo){
+        JSONArray jArr = new JSONArray();
+        try{
+            double totalPcs = 0;
+            double totalAmount = 0;
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.LOAD_REQUEST);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(),App.PRINT_DATE_FORMAT));
+            mainArr.put("LOAD DATE",orderDate);
+            mainArr.put("TIME",Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","-");
+            mainArr.put("DOCUMENT NO",orderNo);  //Load Summary No
+            // mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("LANG",Settings.getString(App.LANGUAGE));
+            mainArr.put("INVOICETYPE","ORDER REQUEST");
+            mainArr.put("ORDERNO",orderNo);
+            mainArr.put("invoicepaymentterms","3");
+            String testAr = "هذا هو اختبار النص العربي";
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("TourID",Settings.getString(App.TRIP_ID));
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("ITEM NO");
+            HEADERS.put("ENGLISH DESCRIPTION");
+            HEADERS.put("ARABIC DESCRIPTION");
+            HEADERS.put("UPC ");
+            HEADERS.put("TOTAL UNITS");
+            HEADERS.put("UNIT PRICE");
+            HEADERS.put("AMOUNT");
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+
+
+            JSONArray jData = new JSONArray();
+            for(LoadRequest obj:arraylist){
+                if(Double.parseDouble(obj.getCases())> 0 || Double.parseDouble(obj.getUnits())>0){
+                    JSONArray data = new JSONArray();
+                    data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
+                    data.put(obj.getItemName());
+                    //data.put(obj.getItemNameAr());
+                    data.put("شد 48*200مل بيرين PH8");
+                    data.put("1");
+                    data.put(obj.getCases());
+                    totalPcs += Double.parseDouble(obj.getCases());
+                    data.put(obj.getPrice());
+                    data.put(String.valueOf(Double.parseDouble(obj.getCases()) * Double.parseDouble(obj.getPrice())));
+                    totalAmount += Double.parseDouble(obj.getCases())*Double.parseDouble(obj.getPrice());
+                    jData.put(data);
+                }
+
+            }
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("TOTAL UNITS","+" + String.valueOf(totalPcs));
+            totalObj.put("UNIT PRICE","");
+            totalObj.put("AMOUNT","+" + String.valueOf(totalAmount));
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",TOTAL);
+            mainArr.put("data",jData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            // jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+    public void callback(){
+        Intent intent = new Intent(LoadRequestActivity.this, ManageInventory.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

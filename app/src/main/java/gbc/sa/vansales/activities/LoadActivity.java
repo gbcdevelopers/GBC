@@ -22,6 +22,7 @@ import gbc.sa.vansales.adapters.LoadDeliveryHeaderAdapter;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
 public class LoadActivity extends AppCompatActivity {
     private static final String TRIP_ID = "ITripId";
@@ -37,6 +38,7 @@ public class LoadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
         setTitle(getString(R.string.load));
+        Helpers.logData(LoadActivity.this, "Driver reached the load screen");
         OrderReasons.loadData(getApplicationContext());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         loadDeliveryHeaders = new ArrayList<>();
@@ -49,6 +51,7 @@ public class LoadActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 LoadDeliveryHeader load = loadDeliveryHeaders.get(position);
+                Helpers.logData(LoadActivity.this, "Going to Load Summary Screen for load No" + load.getDeliveryNo());
                 Intent i = new Intent(LoadActivity.this, LoadSummaryActivity.class);
                 i.putExtra("headerObj", load);
                 startActivityForResult(i, 10);
@@ -70,6 +73,7 @@ public class LoadActivity extends AppCompatActivity {
         }
     }
     private void backButtonAction() {
+        Helpers.logData(LoadActivity.this, "Clicked Back on Load Screen.");
         Intent i = new Intent(LoadActivity.this, DashboardActivity.class);
         startActivity(i);
     }
@@ -127,8 +131,10 @@ public class LoadActivity extends AppCompatActivity {
             do {
                 LoadDeliveryHeader loadDeliveryHeader = new LoadDeliveryHeader();
                 loadDeliveryHeader.setDeliveryNo(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
+                Helpers.logData(LoadActivity.this, "Loads Delivery No for Driver :" + loadDeliveryHeader.getDeliveryNo());
                 loadDeliveryHeader.setLoadingDate(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE)));
                 loadDeliveryHeader.setLoadVerified(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_VERIFIED))));
+                Helpers.logData(LoadActivity.this, "Loads Verification for Driver :" + loadDeliveryHeader.getDeliveryNo() + loadDeliveryHeader.isLoadVerified());
                 //loadDeliveryHeader.setAvailableLoad("1");
                 loadDeliveryHeaders.add(loadDeliveryHeader);
             }
@@ -162,6 +168,8 @@ public class LoadActivity extends AppCompatActivity {
                 // filters.put(db.KEY_IS_VERIFIED,"false");
                 Cursor cursor = db.getData(db.LOAD_DELIVERY_HEADER, map, filters);
                 if (cursor.getCount() > 0) {
+                    Helpers.logData(LoadActivity.this, "Setting loads for driver against trip id:" + this.tripId);
+                    Helpers.logData(LoadActivity.this, "Number of loads for driver against trip id:" + this.tripId + cursor.getCount());
                     setLoadDelivery(cursor);
                 }
             }
@@ -177,10 +185,12 @@ public class LoadActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            Helpers.logData(LoadActivity.this, "Fetching loads for driver against trip id:" + this.tripId);
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            Helpers.logData(LoadActivity.this, "Completed Fetching loads for driver against trip id:" + this.tripId);
         }
     }
 }

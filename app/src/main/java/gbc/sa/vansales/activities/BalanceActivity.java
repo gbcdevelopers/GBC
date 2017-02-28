@@ -23,6 +23,7 @@ import gbc.sa.vansales.models.Collection;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.ItemList;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 public class BalanceActivity extends AppCompatActivity {
 
@@ -43,6 +44,7 @@ public class BalanceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_balance);
         loadingSpinner = new LoadingSpinner(this);
         Intent i = this.getIntent();
+        Helpers.logData(BalanceActivity.this,"On Balance Activity");
         object = (Customer) i.getParcelableExtra("headerObj");
         iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
         tv_top_header = (TextView) findViewById(R.id.tv_top_header);
@@ -52,6 +54,7 @@ public class BalanceActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(BalanceActivity.this,"Back click on Balance Activity Screen");
                 finish();
             }
         });

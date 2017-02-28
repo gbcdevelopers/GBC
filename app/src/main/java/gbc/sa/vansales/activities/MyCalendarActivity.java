@@ -87,6 +87,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         iv_back.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(MyCalendarActivity.this,"Back clicked on my calendar screen");
                 Intent intent = new Intent(MyCalendarActivity.this,DashboardActivity.class);
                 startActivity(intent);
                 finish();

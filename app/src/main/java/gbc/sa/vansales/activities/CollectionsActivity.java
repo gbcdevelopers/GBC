@@ -88,6 +88,7 @@ public class CollectionsActivity extends AppCompatActivity {
                 if (Helpers.isNetworkAvailable(getApplicationContext())) {
                     Helpers.createBackgroundJob(getApplicationContext());
                 }
+                Helpers.logData(CollectionsActivity.this,"Back clicked on Collection Screen. Triggering sync");
                 Intent intent = new Intent(CollectionsActivity.this, CustomerDetailActivity.class);
                 intent.putExtra("headerObj", object);
                 intent.putExtra("msg", "all");
@@ -123,21 +124,25 @@ public class CollectionsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
                 if(amountdue==0){
+                    Helpers.logData(CollectionsActivity.this,"User clicked on already cleared invoice" + colletionDatas.get(position).getInvoiceNo());
                     Toast.makeText(CollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
+                        Helpers.logData(CollectionsActivity.this, "List item clicked. Going for collection of invoice no" + colletionDatas.get(position).getInvoiceNo());
                         Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
                         intent.putExtra("msg", "collection");
                         intent.putExtra("from","collection");
                         intent.putExtra("pos", position);
                         intent.putExtra("headerObj", object);
                         float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                        intent.putExtra("collection",colletionDatas.get(position));
+                        Helpers.logData(CollectionsActivity.this,"Invoice no" + colletionDatas.get(position).getInvoiceNo() + "has due amount" + dueamount);
+                        intent.putExtra("collection", colletionDatas.get(position));
                         intent.putExtra("amountdue",String.valueOf(dueamount));
                         startActivity(intent);
                     }
                     else{
+                        Helpers.logData(CollectionsActivity.this,"User Clicked on debit invoice " + colletionDatas.get(position).getInvoiceNo());
                         Toast.makeText(CollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -146,30 +151,6 @@ public class CollectionsActivity extends AppCompatActivity {
 //                startActivityForResult(intent, 1);
             }
         });
-    }
-    public void setData() {
-        for (int i = 0; i < 10; i++) {
-            Collection colletionData = new Collection();
-            colletionData.setInvoiceNo("132456458792" + i);
-            colletionData.setInvoiceDate("26.12.2016");
-            colletionData.setInvoiceDueDate("28.01.2017");
-            colletionData.setInvoiceAmount(String.valueOf(100 * (i+1)));
-            colletionData.setAmountCleared(String.valueOf(50*(i+1)));
-            /*colletionData.setId("16-12-2016/132456458792" + i);
-            colletionData.setSelsemanId("10000241" + i);
-            colletionData.setAmoutDue(String.valueOf(100 + i));
-//            if(pos==i)
-//            {
-//                colletionData.setAmoutAde(String.valueOf(amount));
-//            }
-//            else {
-//                colletionData.setAmoutAde("0.00");
-//            }
-            colletionData.setAmoutAde("0.00");*/
-            colletionDatas.add(colletionData);
-            /*Const.colletionDatas = colletionDatas;*/
-        }
-
     }
     @Override
     public void onBackPressed() {
@@ -235,6 +216,7 @@ public class CollectionsActivity extends AppCompatActivity {
     }
 
     private void setCollectionData(Cursor cursor){
+        Helpers.logData(CollectionsActivity.this,"Loading Collections for Customer" + object.getCustomerID() + " has" + cursor.getCount() + "invoices");
         try{
             Cursor c = cursor;
             do{

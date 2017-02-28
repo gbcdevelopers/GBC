@@ -40,6 +40,7 @@ import java.util.UUID;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.LoadRequestActivity;
 import gbc.sa.vansales.activities.LoadVerifyActivity;
 import gbc.sa.vansales.activities.PaymentDetails;
 import gbc.sa.vansales.activities.PreSaleOrderProceedActivity;
@@ -1029,6 +1030,10 @@ public class PrinterHelper {
             this.outStream.write(this.BoldOff);
             printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 5);
             printlines1(getAccurateText("STORE KEEPER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 5);
+
+            if(context instanceof LoadRequestActivity){
+                ((LoadRequestActivity)context).callback();
+            }
             jSONObject = object;
             //printlines1(getAccurateText(object.getString("printstatus"), 80, 1), 2, jSONObject, 2, args, 5);
         }
@@ -1352,6 +1357,11 @@ public class PrinterHelper {
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
 
+                this.outStream.write(this.CompressOn);
+                printlines1(strheader, 1, object, 1, args, 1);
+                // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+                printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
 
                 for (i = 0; i < grData.length(); i++) {
                     JSONArray jArr = grData.getJSONArray(i);
@@ -1402,6 +1412,11 @@ public class PrinterHelper {
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
 
+                this.outStream.write(this.CompressOn);
+                printlines1(strheader, 1, object, 1, args, 1);
+                // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+                printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
 
                 for (i = 0; i < brData.length(); i++) {
                     JSONArray jArr = brData.getJSONArray(i);
@@ -1489,6 +1504,7 @@ public class PrinterHelper {
 
             //jSONObject = object;
             if(context instanceof PromotioninfoActivity){
+                closeConnection();
                 ((PromotioninfoActivity)context).callback(App.SALES_INVOICE);
             }
         }
@@ -3043,7 +3059,7 @@ public class PrinterHelper {
             } else if (invtype == 3) {
                 printheaders(getAccurateText("ENDING INVENTORY SUMMARY", 40, 1), false, 2);
             } else if (invtype == 5) {
-                printheaders(getAccurateText("LOAD REQUEST - " + Helpers.formatDate(new Date(),App.PRINT_DATE_FORMAT), 40, 1), false, 1);
+                printheaders(getAccurateText("LOAD REQUEST - " + object.getString("LOAD DATE"), 40, 1), false, 1);
             } else if (invtype == 6) {
                 printheaders(getAccurateText("COMPANY CREDIT SUMMARY", 40, 1), false, 1);
             }
@@ -3292,6 +3308,23 @@ public class PrinterHelper {
             }
         } catch (Exception e2) {
             e2.printStackTrace();
+        }
+    }
+    private void closeConnection(){
+        if (this.outStream != null) {
+            try {
+                this.outStream.flush();
+                this.outStream.close();
+            } catch (IOException e2222) {
+                e2222.printStackTrace();
+            }
+        }
+        if (this.btSocket != null && this.btSocket.isConnected()) {
+            try {
+                this.btSocket.close();
+            } catch (IOException e22222) {
+                e22222.printStackTrace();
+            }
         }
     }
 }

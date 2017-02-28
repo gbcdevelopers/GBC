@@ -70,7 +70,6 @@ public class CustomerDetailActivity extends AppCompatActivity {
     TextView tv_credit_days;
     TextView tv_credit_limit;
     TextView tv_available_limit;
-
     App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,8 +78,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         reasonsList = OrderReasons.get();
         statusAdapter = new CustomerStatusAdapter(this, arrayList);
         loadCustomerStatus();
-
-        Log.e("Flag Test","" + App.CustomerRouteControl.getThresholdLimit());
+        Helpers.logData(CustomerDetailActivity.this, "At Customer Detail Screen");
+        Log.e("Flag Test", "" + App.CustomerRouteControl.getThresholdLimit());
         strText = new String[]{getString(R.string.order_request), getString(R.string.collection), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("msg");
@@ -88,6 +87,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 Intent i = this.getIntent();
                 object = (Customer) i.getParcelableExtra("headerObj");
                 if (object == null) {
+                    Helpers.logData(CustomerDetailActivity.this, "Null object from list");
                     object = Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }
                 customers = CustomerHeaders.get();
@@ -100,10 +100,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 tv_credit_limit = (TextView) findViewById(R.id.tv_digits1);
                 tv_available_limit = (TextView) findViewById(R.id.tv_digits2);
                 if (!(customerHeader == null)) {
-                    if(Settings.getString(App.LANGUAGE).equals("en")){
+                    if (Settings.getString(App.LANGUAGE).equals("en")) {
                         tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + UrlBuilder.decodeString(customerHeader.getName1()));
-                    }
-                    else{
+                    } else {
                         tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName3());
                     }
                     tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
@@ -115,6 +114,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     tv_customer_pobox.setText("");
                     tv_customer_contact.setText("");
                 }
+                Helpers.logData(CustomerDetailActivity.this, "Customer is" + object.getCustomerID() + "Payment Method" + object.getPaymentMethod());
                 if (object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)) {
                     tv_credit_days.setText("0");
                     tv_credit_limit.setText("0");
@@ -158,7 +158,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(CustomerDetailActivity.this, "Back Clicked");
                 if (shouldShowDialog()) {
+                    Helpers.logData(CustomerDetailActivity.this, "No activity performed. Showing unserviced reason");
                     showStatusDialog();
                 } else {
                     HashMap<String, String> filter = new HashMap<String, String>();
@@ -170,20 +172,17 @@ public class CustomerDetailActivity extends AppCompatActivity {
                     map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
                     map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                     db.updateData(db.VISIT_LIST, map, filter);
-
                     //Preparing for POST
-                    HashMap<String,String> updateMap = new HashMap<String, String>();
-                    updateMap.put(db.KEY_END_TIMESTAMP,Helpers.getCurrentTimeStamp());
-                    updateMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                    HashMap<String,String> filterMap = new HashMap<String, String>();
-                    filterMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                    filterMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                    db.updateData(db.VISIT_LIST_POST,updateMap,filterMap);
-
-                    if(Helpers.isNetworkAvailable(getApplicationContext())){
+                    HashMap<String, String> updateMap = new HashMap<String, String>();
+                    updateMap.put(db.KEY_END_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    HashMap<String, String> filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filterMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    db.updateData(db.VISIT_LIST_POST, updateMap, filterMap);
+                    if (Helpers.isNetworkAvailable(getApplicationContext())) {
                         Helpers.createBackgroundJob(getApplicationContext());
                     }
-
                     Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                     startActivity(intent);
                     finish();
@@ -204,6 +203,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         ll_pricelist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(CustomerDetailActivity.this, "Clicked for Price List");
                 Intent intent = new Intent(CustomerDetailActivity.this, PriceListCustomerActivity.class);
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
@@ -213,6 +213,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         ll_balance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(CustomerDetailActivity.this, "Clicked for Customer Balances");
                 Intent intent = new Intent(CustomerDetailActivity.this, BalanceActivity.class);
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
@@ -233,6 +234,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         ll_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(CustomerDetailActivity.this, "Clicked for Customer Messages");
                 Intent intent = new Intent(CustomerDetailActivity.this, CustomerMessageListActivity.class);
                 intent.putExtra("from", object.getCustomerID());
                 intent.putExtra("headerObj", object);
@@ -242,7 +244,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         ll_promotion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CustomerDetailActivity.this, PromotionListActivity.class);
+                Helpers.logData(CustomerDetailActivity.this, "Clicked for Promotions");
+                Intent intent = new Intent(CustomerDetailActivity.this, CustomerPromotionListActivity.class);
                 intent.putExtra("from", "review");
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
@@ -258,68 +261,71 @@ public class CustomerDetailActivity extends AppCompatActivity {
 //                }
                 switch (position) {
                     case 0:
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked Order Request");
                         Intent intent = new Intent(CustomerDetailActivity.this, PreSaleOrderActivity.class);
                         intent.putExtra("headerObj", object);
                         startActivity(intent);
                         break;
                     case 1:
-                        if(App.CustomerRouteControl.isCollection()){
+                        if (App.CustomerRouteControl.isCollection()) {
+                            Helpers.logData(CustomerDetailActivity.this, "Clicked for Collection");
                             Intent intent1 = new Intent(CustomerDetailActivity.this, CollectionsActivity.class);
                             intent1.putExtra("headerObj", object);
                             startActivity(intent1);
                             break;
-                        }
-                        else{
-                            Toast.makeText(CustomerDetailActivity.this,getString(R.string.feature_blocked),Toast.LENGTH_SHORT).show();
+                        } else {
+                            Helpers.logData(CustomerDetailActivity.this, "Collection is disabled for customer");
+                            Toast.makeText(CustomerDetailActivity.this, getString(R.string.feature_blocked), Toast.LENGTH_SHORT).show();
                             break;
                         }
-
                     case 2:
-                        if(!(flag==null)){
-                            if(!flag.isNoSale()){
+                        if (!(flag == null)) {
+                            if (!flag.isNoSale()) {
+                                Helpers.logData(CustomerDetailActivity.this, "Sale not allowed for customer");
                                 break;
-                            }
-                            else{
-                                if(canPerformSale()&&isLimitAvailable){
+                            } else {
+                                if (canPerformSale() && isLimitAvailable) {
+                                    Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
                                     Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
                                     intent2.putExtra("from", "customerdetail");
                                     intent2.putExtra("headerObj", object);
                                     startActivity(intent2);
                                     break;
-                                }
-                                else{
-                                    Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
+                                    Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
                                     break;
                                 }
                             }
-                        }
-                        else{
-                            if(canPerformSale()&&isLimitAvailable){
+                        } else {
+                            if (canPerformSale() && isLimitAvailable) {
+                                Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
                                 Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
                                 intent2.putExtra("from", "customerdetail");
                                 intent2.putExtra("headerObj", object);
                                 startActivity(intent2);
                                 break;
-                            }
-                            else{
-                                Toast.makeText(CustomerDetailActivity.this,getString(R.string.pending_invoice),Toast.LENGTH_SHORT).show();
+                            } else {
+                                Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
+                                Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
                                 break;
                             }
                         }
-
-
                     case 3:
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked on merchandize");
                         Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);
                         intent3.putExtra("headerObj", object);
-                        Toast.makeText(CustomerDetailActivity.this,getString(R.string.feature_blocked),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CustomerDetailActivity.this, getString(R.string.feature_blocked), Toast.LENGTH_SHORT).show();
                         //startActivity(intent3);
                         break;
                     case 4:
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked on Delivery");
                         Intent intent4 = new Intent(CustomerDetailActivity.this, DeliveryActivity.class);
                         intent4.putExtra("headerObj", object);
                         startActivity(intent4);
                         break;
                     case 5:
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked on Print Customer Activity");
                         Intent intent5 = new Intent(CustomerDetailActivity.this, PrintCustomerActivity.class);
                         intent5.putExtra("headerObj", object);
                         intent5.putExtra("from", "customer");
@@ -336,13 +342,12 @@ public class CustomerDetailActivity extends AppCompatActivity {
             CustomerStatus status = new CustomerStatus();
             if (reason.getReasonType().equals(App.VisitReasons)) {
                 status.setReasonCode(reason.getReasonID());
-                if(Settings.getString(App.LANGUAGE).equals("en")){
+                if (Settings.getString(App.LANGUAGE).equals("en")) {
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
-                }
-                else{
+                } else {
                     status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
                 }
-                if(status.getReasonCode().contains("N")){
+                if (status.getReasonCode().contains("N")) {
                     arrayList.add(status);
                 }
                 //arrayList.add(status);
@@ -353,16 +358,14 @@ public class CustomerDetailActivity extends AppCompatActivity {
     private boolean shouldShowDialog() {
         HashMap<String, String> map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-
         HashMap<String, String> filter = new HashMap<>();
         filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
         filter.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-
         if (db.checkData(db.ORDER_REQUEST, map) ||
-            db.checkData(db.CAPTURE_SALES_INVOICE, map) ||
-            db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map) ||
-            db.checkData(db.COLLECTION, filter) ||
-            db.checkData(db.RETURNS,filter)) {
+                db.checkData(db.CAPTURE_SALES_INVOICE, map) ||
+                db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map) ||
+                db.checkData(db.COLLECTION, filter) ||
+                db.checkData(db.RETURNS, filter)) {
             return false;
         } else {
             return true;
@@ -396,18 +399,16 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_VISITED, App.IS_COMPLETE);
                 map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 db.updateData(db.VISIT_LIST, map, filter);
-
                 //Preparing for POST
-                HashMap<String,String> updateMap = new HashMap<String, String>();
-                updateMap.put(db.KEY_END_TIMESTAMP,Helpers.getCurrentTimeStamp());
-                updateMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                HashMap<String, String> updateMap = new HashMap<String, String>();
+                updateMap.put(db.KEY_END_TIMESTAMP, Helpers.getCurrentTimeStamp());
+                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 updateMap.put(db.KEY_VISIT_SERVICED_REASON, arrayList.get(position).getReasonCode());
-                HashMap<String,String> filterMap = new HashMap<String, String>();
-                filterMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                HashMap<String, String> filterMap = new HashMap<String, String>();
+                filterMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 filterMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                 db.updateData(db.VISIT_LIST_POST, updateMap, filterMap);
-
-                if(Helpers.isNetworkAvailable(CustomerDetailActivity.this)){
+                if (Helpers.isNetworkAvailable(CustomerDetailActivity.this)) {
                     Helpers.createBackgroundJob(CustomerDetailActivity.this);
                 }
                 Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
@@ -419,9 +420,8 @@ public class CustomerDetailActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
     }
-
     /*To check if customer has any pending invoices due by today*/
-    private boolean canPerformSale(){
+    private boolean canPerformSale() {
         /*HashMap<String,String> map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO,"");
         map.put(db.KEY_INVOICE_NO,"");
@@ -453,12 +453,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
         return true;
     }
     /*To calculate available limit*/
-    private void calculateAvailableLimit(){
-        try{
+    private void calculateAvailableLimit() {
+        try {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, "");
             map.put(db.KEY_CREDIT_LIMIT, "");
-            map.put(db.KEY_CREDIT_DAYS,"");
+            map.put(db.KEY_CREDIT_DAYS, "");
+            map.put(db.KEY_RECEIVABLES,"");
             HashMap<String, String> filters = new HashMap<>();
             filters.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
             Cursor cursor = db.getData(db.CUSTOMER_CREDIT, map, filters);
@@ -467,42 +468,44 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 tv_credit_days.setText("0");
                 tv_credit_limit.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
                 limit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_LIMIT)));
-                HashMap<String,String> map1 = new HashMap<>();
-                map1.put(db.KEY_CUSTOMER_NO,"");
-                map1.put(db.KEY_INVOICE_NO,"");
-                map1.put(db.KEY_INVOICE_AMOUNT,"");
-                map1.put(db.KEY_DUE_DATE,"");
-                map1.put(db.KEY_INVOICE_DATE,"");
-                map1.put(db.KEY_AMOUNT_CLEARED,"");
-                map1.put(db.KEY_IS_INVOICE_COMPLETE,"");
-                HashMap<String,String>filter = new HashMap<>();
+                HashMap<String, String> map1 = new HashMap<>();
+                map1.put(db.KEY_CUSTOMER_NO, "");
+                map1.put(db.KEY_INVOICE_NO, "");
+                map1.put(db.KEY_INVOICE_AMOUNT, "");
+                map1.put(db.KEY_DUE_DATE, "");
+                map1.put(db.KEY_INVOICE_DATE, "");
+                map1.put(db.KEY_AMOUNT_CLEARED, "");
+                map1.put(db.KEY_IS_INVOICE_COMPLETE, "");
+                HashMap<String, String> filter = new HashMap<>();
                 filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                Cursor c = db.getData(db.COLLECTION,map1,filter);
-                if(c.getCount()>0){
+                Cursor c = db.getData(db.COLLECTION, map1, filter);
+                if (c.getCount() > 0) {
                     c.moveToFirst();
-                    do{
-                        totalInvoiceAmount+=Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+                    do {
+                        totalInvoiceAmount += Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
                     }
                     while (c.moveToNext());
                 }
                 Log.e("Total Invoice", "" + totalInvoiceAmount);
-                if(limit-totalInvoiceAmount==0){
+                double availableLimit = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_RECEIVABLES)));
+                /*if (limit - totalInvoiceAmount == 0) {
+                    isLimitAvailable = false;
+                }*/
+                if (limit - availableLimit - totalInvoiceAmount == 0) {
                     isLimitAvailable = false;
                 }
-                tv_available_limit.setText(String.valueOf(limit-totalInvoiceAmount));
+               // tv_available_limit.setText(String.valueOf(limit - totalInvoiceAmount));
+                tv_available_limit.setText(String.valueOf(limit - availableLimit - totalInvoiceAmount));
                 tv_credit_days.setText(cursor.getString(cursor.getColumnIndex(db.KEY_CREDIT_DAYS)));
-            }
-            else{
+            } else {
                 tv_credit_days.setText("0");
                 tv_credit_limit.setText("0");
                 tv_available_limit.setText("0");
                 isLimitAvailable = true;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
     @Override
     protected void onPostResume() {

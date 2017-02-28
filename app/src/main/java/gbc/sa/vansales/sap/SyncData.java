@@ -1,4 +1,5 @@
 package gbc.sa.vansales.sap;
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,6 +38,7 @@ public class SyncData extends IntentService {
     public static String TAG = "SyncData";
     DatabaseHandler db = new DatabaseHandler(this);
     public ArrayList<ArticleHeader> articles;
+    Activity activity;
 
     public SyncData(){
         super(TAG);
@@ -44,6 +46,7 @@ public class SyncData extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.e("I am here", "IntentService" + Settings.getString(App.IS_DATA_SYNCING));
+
         if(!Boolean.parseBoolean(Settings.getString(App.IS_DATA_SYNCING))){
             Log.e("Inside", "Inside" + getSyncCount());
             if(getSyncCount()>0){
@@ -149,6 +152,18 @@ public class SyncData extends IntentService {
             }
             generateBatch(ConfigStore.CollectionFunction);
         }
+        if(getSyncCount(ConfigStore.PartialCollectionFunction)>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.PartialCollectionFunction);
+        }
+        /*if(getSyncCount(ConfigStore.CollectionFunction+"D")>0){
+            if(isEmpty){
+                isEmpty = false;
+            }
+            generateBatch(ConfigStore.CollectionFunction+"D");
+        }*/
         if(getSyncCount(ConfigStore.UnloadFunction+"U")>0){
             if(isEmpty){
                 isEmpty = false;
@@ -193,6 +208,8 @@ public class SyncData extends IntentService {
                             Settings.getString(App.DRIVER), beginDayCursor.getString(beginDayCursor.getColumnIndex(db.KEY_TIME_STAMP)),
                             beginDayCursor.getString(beginDayCursor.getColumnIndex(db.KEY_PURCHASE_NUMBER))));
                     object.setDeepEntity(deepEntity);
+                    Helpers.logData(getApplication(), "Begin Day Batch Header" + object.getMap().toString());
+                    Helpers.logData(getApplication(), "Begin Day Batch Body" + deepEntity.toString());
                     beginDayList.add(object);
                 }
                 break;
@@ -216,6 +233,8 @@ public class SyncData extends IntentService {
                     object.setMap(Helpers.buildOdometerHeader(odometerCursor.getString(odometerCursor.getColumnIndex(db.KEY_TRIP_ID))
                             , odometerCursor.getString(odometerCursor.getColumnIndex(db.KEY_ODOMETER_VALUE))));
                     object.setDeepEntity(deepEntity);
+                    Helpers.logData(getApplication(), "Odometer Batch Header" + object.getMap().toString());
+                    Helpers.logData(getApplication(), "Odometer Batch Body" + deepEntity.toString());
                     odometerList.add(object);
                 }
                 break;
@@ -255,10 +274,12 @@ public class SyncData extends IntentService {
                                 c.getString(c.getColumnIndex(db.KEY_OWNER_NAME_AR)), c.getString(c.getColumnIndex(db.KEY_TRADE_NAME)), c.getString(c.getColumnIndex(db.KEY_TRADE_NAME_AR)),
                                 c.getString(c.getColumnIndex(db.KEY_AREA)), c.getString(c.getColumnIndex(db.KEY_STREET)), c.getString(c.getColumnIndex(db.KEY_CR_NO)),
                                 c.getString(c.getColumnIndex(db.KEY_PO_BOX)), c.getString(c.getColumnIndex(db.KEY_EMAIL)),
-                                c.getString(c.getColumnIndex(db.KEY_TELEPHONE)),c.getString(c.getColumnIndex(db.KEY_FAX)),
-                                c.getString(c.getColumnIndex(db.KEY_SALES_AREA)),c.getString(c.getColumnIndex(db.KEY_DISTRIBUTION)),
+                                c.getString(c.getColumnIndex(db.KEY_TELEPHONE)), c.getString(c.getColumnIndex(db.KEY_FAX)),
+                                c.getString(c.getColumnIndex(db.KEY_SALES_AREA)), c.getString(c.getColumnIndex(db.KEY_DISTRIBUTION)),
                                 c.getString(c.getColumnIndex(db.KEY_DIVISION))));
                         object.setDeepEntity(deepEntity);
+                        Helpers.logData(getApplication(), "Add Customer Batch Header" + object.getMap().toString());
+                        Helpers.logData(getApplication(), "Add Customer Batch Body" + deepEntity.toString());
                         customerList.add(object);
                     }
                     while (c.moveToNext());
@@ -297,6 +318,8 @@ public class SyncData extends IntentService {
                                 visitListCursor.getString(visitListCursor.getColumnIndex(db.KEY_VISIT_SERVICED_REASON)),
                                 visitListCursor.getString(visitListCursor.getColumnIndex(db.KEY_CUSTOMER_NO))));
                         object.setDeepEntity(deepEntity);
+                        Helpers.logData(getApplication(), "Visit List Batch Header" + object.getMap().toString());
+                        Helpers.logData(getApplication(), "Visit List Batch Body" + deepEntity.toString());
                         arrayList.add(object);
                     }
                     while (visitListCursor.moveToNext());
@@ -328,6 +351,8 @@ public class SyncData extends IntentService {
                             object.setMap(Helpers.buildLoadConfirmationHeader(cursor.getString(cursor.getColumnIndex(db.KEY_FUNCTION)),
                                     cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)), Settings.getString(App.DRIVER)));
                             object.setDeepEntity(deepEntity);
+                            Helpers.logData(getApplication(), "Load Confirmation Batch Header" + object.getMap().toString());
+                            Helpers.logData(getApplication(), "Load Confirmation Batch Body" + deepEntity.toString());
                             arrayList.add(object);
                         }
                         while (cursor.moveToNext());
@@ -417,6 +442,8 @@ public class SyncData extends IntentService {
                                 object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadVarianceFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", purchaseNumber,documentDate));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
+                                Helpers.logData(getApplication(), "Load Variance Batch Header" + object.getMap().toString());
+                                Helpers.logData(getApplication(), "Load Variance Batch Body" + deepEntity.toString());
                                 deepEntity = new JSONArray();
                             }
 
@@ -509,6 +536,8 @@ public class SyncData extends IntentService {
                                 object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadVarianceFunction, "", ConfigStore.LoadVarianceCredit, Settings.getString(App.DRIVER), "", purchaseNumber,documentDate));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
+                                Helpers.logData(getApplication(), "Load Variance Batch Header" + object.getMap().toString());
+                                Helpers.logData(getApplication(), "Load Variance Batch Body" + deepEntity.toString());
                                 deepEntity = new JSONArray();
                             }
 
@@ -600,6 +629,8 @@ public class SyncData extends IntentService {
                                 object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.DocumentType, Settings.getString(App.DRIVER), "", purchaseNumber,documentDate));
                                 object.setDeepEntity(deepEntity);
                                 arrayList.add(object);
+                                Helpers.logData(getApplication(), "Load Request Batch Header" + object.getMap().toString());
+                                Helpers.logData(getApplication(), "Load Request Batch Body" + deepEntity.toString());
                                 deepEntity = new JSONArray();
                             }
 
@@ -655,6 +686,8 @@ public class SyncData extends IntentService {
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber,documentDate));
                                     object.setDeepEntity(deepEntity);
+                                    Helpers.logData(getApplication(), "Order Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Order Batch Body" + deepEntity.toString());
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
@@ -664,6 +697,8 @@ public class SyncData extends IntentService {
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
+                                    Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
@@ -710,6 +745,9 @@ public class SyncData extends IntentService {
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
+                                    Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
+
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
@@ -719,6 +757,8 @@ public class SyncData extends IntentService {
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
+                                    Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
@@ -784,6 +824,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Invoice Order Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Invoice Order Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
                                 }
@@ -793,6 +836,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber,""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Invoice Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Invoice Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
@@ -836,18 +882,22 @@ public class SyncData extends IntentService {
                                 if(customerNumber.equals(tempCustomerNumber)){
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber,""));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber, ""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Invoice Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Invoice Batch Body" + deepEntity.toString());
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
                                 }
                                 else{
                                     OfflinePost object = new OfflinePost();
                                     object.setCollectionName(App.POST_COLLECTION);
-                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber,""));
+                                    object.setMap(Helpers.buildHeaderMap(ConfigStore.InvoiceRequestFunction, "", ConfigStore.InvoiceDocumentType, customerNumber, "", purchaseNumber, ""));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Invoice Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Invoice Batch Body" + deepEntity.toString());
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
@@ -927,6 +977,8 @@ public class SyncData extends IntentService {
                                         object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                         object.setDeepEntity(deepEntity);
                                         arrayList.add(object);
+                                        Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                        Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
                                         purchaseNumber = tempPurchaseNumber;
                                         customerNumber = tempCustomerNumber;
                                         deepEntity = new JSONArray();
@@ -975,6 +1027,9 @@ public class SyncData extends IntentService {
                                     object.setCollectionName(App.POST_COLLECTION);
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
+                                    Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
+
                                     arrayList.add(object);
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
@@ -987,6 +1042,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.GoodReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
@@ -1065,6 +1123,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.BadReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
@@ -1074,7 +1135,7 @@ public class SyncData extends IntentService {
 
                             if(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 jo.put("Description",UrlBuilder.decodeString(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                                 jo.put("Plant","");
@@ -1089,7 +1150,7 @@ public class SyncData extends IntentService {
                             }
                             else{
                                 JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("Material",pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 jo.put("Description",UrlBuilder.decodeString(pendingInvoiceCursor.getString(pendingInvoiceCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
                                 jo.put("Plant","");
@@ -1111,6 +1172,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.BadReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deepEntity = new JSONArray();
                                 }
@@ -1120,6 +1184,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMapReason(ConfigStore.ReturnsFunction, "", ConfigStore.BadReturnType, customerNumber, "", purchaseNumber, "", reasonCode));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Returns Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Returns Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     customerNumber = tempCustomerNumber;
                                     deepEntity = new JSONArray();
@@ -1192,6 +1259,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     deepEntity = new JSONArray();
@@ -1202,6 +1272,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     customerNumber = tempCustomerNumber;
@@ -1251,6 +1324,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     deepEntity = new JSONArray();
@@ -1261,6 +1337,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Request Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     customerNumber = tempCustomerNumber;
@@ -1341,6 +1420,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryDeleteRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     customerNumber = tempCustomerNumber;
@@ -1372,7 +1454,7 @@ public class SyncData extends IntentService {
 
                             if(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM)||pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)){
                                 JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("OrderId", deliveryNo);
                                 jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 jo.put("Description",UrlBuilder.decodeString(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
@@ -1389,7 +1471,7 @@ public class SyncData extends IntentService {
                             }
                             else{
                                 JSONObject jo = new JSONObject();
-                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno),4));
+                                jo.put("Item", Helpers.getMaskedValue(String.valueOf(itemno), 4));
                                 jo.put("OrderId", deliveryNo);
                                 jo.put("Material",pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                                 jo.put("Description",UrlBuilder.decodeString(pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
@@ -1413,6 +1495,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryDeleteRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     deepEntity = new JSONArray();
@@ -1423,6 +1508,9 @@ public class SyncData extends IntentService {
                                     object.setMap(Helpers.buildHeaderMap(ConfigStore.CustomerDeliveryDeleteRequestFunction, deliveryNumber, ConfigStore.DeliveryDocumentType, customerNumber, "", purchaseNumber, documentDate));
                                     object.setDeepEntity(deepEntity);
                                     arrayList.add(object);
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Header" + object.getMap().toString());
+                                    Helpers.logData(getApplication(), "Delivery Delete Batch Body" + deepEntity.toString());
+
                                     purchaseNumber = tempPurchaseNumber;
                                     deliveryNumber = tempDeliveryNumber;
                                     customerNumber = tempCustomerNumber;
@@ -1458,6 +1546,7 @@ public class SyncData extends IntentService {
                     itemMap.put(db.KEY_INVOICE_NO,"");
                     HashMap<String, String> filter = new HashMap<>();
                     filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    filter.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_COMPLETE);
                     Cursor pCCursor = db.getData(db.COLLECTION,itemMap,filter);
                     if(pCCursor.getCount()>0){
                         pCCursor.moveToFirst();
@@ -1476,7 +1565,7 @@ public class SyncData extends IntentService {
                         HashMap<String, String> filt = new HashMap<>();
                         filt.put(db.KEY_CUSTOMER_NO,tempCustomers.get(i).toString());
                         filt.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                        Cursor cursor = db.getData(db.COLLECTION,itemMap,filter);
+                        Cursor cursor = db.getData(db.COLLECTION,itemMap,filt);
 
                         JSONArray deep = new JSONArray();
                         if(cursor.getCount()>0){
@@ -1494,12 +1583,118 @@ public class SyncData extends IntentService {
                         offlinePost.setCollectionName(App.POST_COLLECTION);
                         offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.CollectionFunction, tempCustomers.get(i).toString(), String.valueOf(amountcleared)));
                         offlinePost.setDeepEntity(deep);
+                        Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
+                        Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
+
                         arrayList.add(offlinePost);
                     }
                 }
                 catch (Exception e){
                     e.printStackTrace();
                 }
+                break;
+            }
+            case ConfigStore.PartialCollectionFunction:{
+                try{
+                    JSONArray deepEntity = new JSONArray();
+                    ArrayList<String>tempCustomers = new ArrayList<>();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_CUSTOMER_NO,"");
+                    // itemMap.put(db.KEY_DATE,"");
+                    itemMap.put(db.KEY_AMOUNT_CLEARED,"");
+                    itemMap.put(db.KEY_INVOICE_NO,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    filter.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_PARTIAL);
+                    Cursor pCCursor = db.getData(db.COLLECTION,itemMap,filter);
+                    if(pCCursor.getCount()>0){
+                        pCCursor.moveToFirst();
+                        do{
+                            if(!tempCustomers.contains(pCCursor.getString(pCCursor.getColumnIndex(db.KEY_CUSTOMER_NO)))){
+                                tempCustomers.add(pCCursor.getString(pCCursor.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            }
+                        }
+                        while (pCCursor.moveToNext());
+                    }
+                    for(int i=0;i<tempCustomers.size();i++){
+                        double amountcleared = 0;
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_AMOUNT_CLEARED,"");
+                        itemMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                        map.put(db.KEY_INVOICE_NO,"");
+                        HashMap<String, String> filt = new HashMap<>();
+                        filt.put(db.KEY_CUSTOMER_NO,tempCustomers.get(i).toString());
+                        filt.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        filt.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_PARTIAL);
+                        Cursor cursor = db.getData(db.COLLECTION,itemMap,filt);
+
+                        JSONArray deep = new JSONArray();
+                        if(cursor.getCount()>0){
+                            cursor.moveToFirst();
+                            do{
+                                JSONObject object = new JSONObject();
+                                amountcleared += Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                object.put("OrderId",cursor.getString(cursor.getColumnIndex(db.KEY_INVOICE_NO)));
+                                object.put("Value",cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                deep.put(object);
+                            }
+                            while (cursor.moveToNext());
+                        }
+                        OfflinePost offlinePost = new OfflinePost();
+                        offlinePost.setCollectionName(App.POST_COLLECTION);
+                        offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.PartialCollectionFunction, tempCustomers.get(i).toString(), String.valueOf(amountcleared)));
+                        offlinePost.setDeepEntity(deep);
+                        Helpers.logData(getApplication(), "Partial Collection Batch Header" + offlinePost.getMap().toString());
+                        Helpers.logData(getApplication(), "Partial Collection Batch Body" + deepEntity.toString());
+
+                        arrayList.add(offlinePost);
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            case ConfigStore.CollectionFunction+"D":{
+                /*try{
+                    JSONArray deepEntity = new JSONArray();
+                    ArrayList<String>tempCustomers = new ArrayList<>();
+                    HashMap<String, String> itemMap = new HashMap<>();
+                    itemMap.put(db.KEY_CUSTOMER_NO,"");
+                    // itemMap.put(db.KEY_DATE,"");
+                    itemMap.put(db.KEY_AMOUNT_CLEARED,"");
+                    itemMap.put(db.KEY_INVOICE_NO,"");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    Cursor pCCursor = db.getData(db.DRIVER_COLLECTION,itemMap,filter);
+                    if(pCCursor.getCount()>0){
+                        pCCursor.moveToFirst();
+                        double amountcleared = 0;
+                        do{
+                            JSONArray deep = new JSONArray();
+                            if(pCCursor.getCount()>0){
+                                pCCursor.moveToFirst();
+
+                                do{
+                                    JSONObject object = new JSONObject();
+                                    amountcleared += Double.parseDouble(pCCursor.getString(pCCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                    object.put("OrderId",pCCursor.getString(pCCursor.getColumnIndex(db.KEY_INVOICE_NO)));
+                                    deep.put(object);
+                                }
+                                while (pCCursor.moveToNext());
+                            }
+                            OfflinePost offlinePost = new OfflinePost();
+                            offlinePost.setCollectionName(App.POST_COLLECTION);
+                            offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.CollectionFunction, Settings.getString(App.DRIVER), String.valueOf(amountcleared)));
+                            offlinePost.setDeepEntity(deep);
+                            arrayList.add(offlinePost);
+                        }
+                        while (pCCursor.moveToNext());
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }*/
                 break;
             }
             case ConfigStore.UnloadFunction+"U":{
@@ -1599,6 +1794,8 @@ public class SyncData extends IntentService {
                         offlinePost.setCollectionName(App.POST_COLLECTION);
                         offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", "", ""));
                         offlinePost.setDeepEntity(deepEntity);
+                        Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
+                        Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
                         arrayList.add(offlinePost);
                     }
                     if(arrayListEndingInventory.size()>0){
@@ -1640,6 +1837,8 @@ public class SyncData extends IntentService {
                         offlinePost.setCollectionName(App.POST_COLLECTION);
                         offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.EndingInventory, Settings.getString(App.DRIVER), "", "", ""));
                         offlinePost.setDeepEntity(deepEntity);
+                        Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
+                        Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
                         arrayList.add(offlinePost);
                     }
                     if(arrayListCredit.size()>0){
@@ -1681,6 +1880,8 @@ public class SyncData extends IntentService {
                         offlinePost.setCollectionName(App.POST_COLLECTION);
                         offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceCredit, Settings.getString(App.DRIVER), "", "", ""));
                         offlinePost.setDeepEntity(deepEntity);
+                        Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
+                        Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
                         arrayList.add(offlinePost);
                     }
                 }
@@ -1707,16 +1908,16 @@ public class SyncData extends IntentService {
             Log.e("Going for Batch Request", "(Y)" + this.value);
             if(this.value.equals("BEGINDAY")){
                 Log.e("Going for beginday","");
-                this.data = IntegrationService.batchRequestBeginDay(getApplicationContext(), App.POST_COLLECTION, beginDayList);
+                this.data = IntegrationService.batchRequestBeginDay(getApplication(), App.POST_COLLECTION, beginDayList);
             }
             else if(this.value.equals("ODOMETER")){
-                this.data = IntegrationService.batchRequestOdometer(getApplicationContext(), App.POST_ODOMETER_SET, odometerList);
+                this.data = IntegrationService.batchRequestOdometer(getApplication(), App.POST_ODOMETER_SET, odometerList);
             }
             else if(this.value.equals("ADDCUSTOMER")){
-                this.data = IntegrationService.batchRequestCustomer(getApplicationContext(), App.POST_CUSTOMER_SET, customerList);
+                this.data = IntegrationService.batchRequestCustomer(getApplication(), App.POST_CUSTOMER_SET, customerList);
             }
             else{
-                this.data = IntegrationService.batchRequest(getApplicationContext(), App.POST_COLLECTION, arrayList);
+                this.data = IntegrationService.batchRequest(getApplication(), App.POST_COLLECTION, arrayList);
             }
             return null;
         }
@@ -1727,6 +1928,8 @@ public class SyncData extends IntentService {
             try{
                 for(OfflineResponse response:this.data){
                     Log.e("Resp Fun","" + response.getFunction() + " " + response.getPurchaseNumber() + " " + response.getOrderID());
+                    Helpers.logData(getApplication(),"ODATA Response" + response.getResponse_code() + "-" + response.getResponse_message()
+                    + "-" + response.getFunction() + "-" + response.getOrderID() + "-" + response.getCustomerID());
                     switch (response.getFunction()){
                         case ConfigStore.BeginDayFunction: {
                             if(response.getResponse_code().equals("201")){
@@ -1959,7 +2162,7 @@ public class SyncData extends IntentService {
                                 HashMap<String,String>returnFilter = new HashMap<>();
                                 returnFilter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 returnFilter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
-                                returnFilter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                returnFilter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
                                 if(db.checkData(db.RETURNS,returnFilter)){
                                     db.updateData(db.RETURNS,map,returnFilter);
                                 }
@@ -1990,7 +2193,7 @@ public class SyncData extends IntentService {
                                 HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_ORDER_ID, response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
                                 db.updateData(db.RETURNS, map, filter);
@@ -2165,6 +2368,69 @@ public class SyncData extends IntentService {
                             }
                             break;
                         }
+                        case ConfigStore.CollectionFunction+"D": {
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                if(!response.getPurchaseNumber().equals("")){
+                                    filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                }
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                                Cursor prevAmnt = db.getData(db.DRIVER_COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                db.updateData(db.DRIVER_COLLECTION,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                                Cursor prevAmnt = db.getData(db.DRIVER_COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                db.updateData(db.DRIVER_COLLECTION,map,filter);
+                            }
+                            break;
+                        }
                         case ConfigStore.AddCustomerFunction: {
                             if(response.getResponse_code().equals("201")){
                                 HashMap<String,String>map = new HashMap<>();
@@ -2202,6 +2468,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                // filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 db.updateData(db.UNLOAD_VARIANCE,map,filter);
+                                db.updateData(db.UNLOAD_TRANSACTION,map,filter);
                             }
                             else{
                                 HashMap<String,String>map = new HashMap<>();
@@ -2225,7 +2492,7 @@ public class SyncData extends IntentService {
 
         }
     }
-    public int getSyncCount(String function){
+    public int getSyncCount(String function) {
         int syncCount = 0;
         HashMap<String,String> map = new HashMap<String, String>();
         map.put(db.KEY_TIME_STAMP, "");
@@ -2309,10 +2576,22 @@ public class SyncData extends IntentService {
                 break;
             }
             case ConfigStore.CollectionFunction:{
+                filter.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_COMPLETE);
                 Cursor collectionRequest = db.getData(db.COLLECTION,map,filter);
                 syncCount = collectionRequest.getCount();
                 break;
             }
+            case ConfigStore.PartialCollectionFunction:{
+                filter.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_PARTIAL);
+                Cursor collectionRequest = db.getData(db.COLLECTION,map,filter);
+                syncCount = collectionRequest.getCount();
+                break;
+            }
+            /*case ConfigStore.CollectionFunction+"D":{
+                Cursor driverCollectionRequest = db.getData(db.DRIVER_COLLECTION,map,filter);
+                syncCount = driverCollectionRequest.getCount();
+                break;
+            }*/
             case ConfigStore.AddCustomerFunction:{
                 Cursor newCustomerRequest = db.getData(db.NEW_CUSTOMER_POST,map,filter);
                 syncCount = newCustomerRequest.getCount();
@@ -2370,6 +2649,7 @@ public class SyncData extends IntentService {
         Cursor newCustomerCursor = db.getData(db.NEW_CUSTOMER_POST,map,filter);
         Cursor loadVarianceCursor = db.getData(db.LOAD_VARIANCE_ITEMS_POST,map,filter);
         Cursor collectionCursor = db.getData(db.COLLECTION,map,filter);
+        Cursor driverCollectionCursor = db.getData(db.DRIVER_COLLECTION,map,filter);
         Cursor unloadCursor = db.getData(db.UNLOAD_VARIANCE,map,filter);
 
         if(beginDayRequest.getCount()>0){
@@ -2410,6 +2690,9 @@ public class SyncData extends IntentService {
         }
         if(collectionCursor.getCount()>0){
             syncCount += collectionCursor.getCount();
+        }
+        if(driverCollectionCursor.getCount()>0){
+            syncCount += driverCollectionCursor.getCount();
         }
         if(newCustomerCursor.getCount()>0){
             syncCount += newCustomerCursor.getCount();
