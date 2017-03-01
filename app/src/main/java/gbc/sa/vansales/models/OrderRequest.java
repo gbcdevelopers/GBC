@@ -14,7 +14,14 @@ public class OrderRequest implements Parcelable {
     private String price;
     private String uom;
     private boolean isAltUOM;
+    private String itemNameAr;
 
+    public String getItemNameAr() {
+        return itemNameAr;
+    }
+    public void setItemNameAr(String itemNameAr) {
+        this.itemNameAr = itemNameAr;
+    }
 
     public static final Creator<OrderRequest> CREATOR = new Creator<OrderRequest>() {
         @Override
@@ -29,6 +36,7 @@ public class OrderRequest implements Parcelable {
             loadRequest.uom = source.readString();
             loadRequest.itemName = source.readString();
             loadRequest.isAltUOM = source.readByte()!=0;
+            loadRequest.itemNameAr = source.readString();
             return loadRequest;
         }
         @Override
@@ -106,6 +114,6 @@ public class OrderRequest implements Parcelable {
         parcel.writeString(uom);
         parcel.writeString(itemName);
         parcel.writeByte((byte) (isAltUOM ? 1 : 0));
-
+        parcel.writeString(itemNameAr);
     }
 }

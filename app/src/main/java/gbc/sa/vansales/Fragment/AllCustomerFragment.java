@@ -58,49 +58,55 @@ public class AllCustomerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.visitall_fragment, container, false);
-        flag = DriverRouteFlags.get();
-        new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
-            @Override
-            public void callbackSuccess(android.location.Location location) {
-                myLocation = location;
-            }
-            @Override
-            public void callbackFailure() {
-            }
-        });
-        reasonsList = OrderReasons.get();
-        db = new DatabaseHandler(getActivity());
+        try{
+            view = inflater.inflate(R.layout.visitall_fragment, container, false);
+            flag = DriverRouteFlags.get();
+            new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
+                @Override
+                public void callbackSuccess(android.location.Location location) {
+                    myLocation = location;
+                }
+                @Override
+                public void callbackFailure() {
+                }
+            });
+            reasonsList = OrderReasons.get();
+            db = new DatabaseHandler(getActivity());
 //        dataArrayList =new ArrayList<>();
 //        loadData();
-        dataAdapter1 = new DataAdapter(getActivity(), Const.allCustomerdataArrayList);
-        adapter = new CustomerStatusAdapter(getActivity(),arrayList);
-        loadCustomerStatus();
-        listView = (ListView) view.findViewById(R.id.journeyPlanList);
-        listView.setAdapter(dataAdapter1);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("Call Sec","" + flag.isCallSequence());
-                if(!(flag==null)){
-                    if(!flag.isCallSequence()){
-                        Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
+            if(Const.allCustomerdataArrayList.size()>0){
+                dataAdapter1 = new DataAdapter(getActivity(), Const.allCustomerdataArrayList);
+                adapter = new CustomerStatusAdapter(getActivity(),arrayList);
+                loadCustomerStatus();
+                listView = (ListView) view.findViewById(R.id.journeyPlanList);
+                listView.setAdapter(dataAdapter1);
+            }
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.e("Call Sec","" + flag.isCallSequence());
+                    if(!(flag==null)){
+                        if(!flag.isCallSequence()){
+                            Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Const.customerPosition = position;
+                            Customer customer = Const.allCustomerdataArrayList.get(position);
+                            showStatusDialog(customer);
+                        }
                     }
                     else{
                         Const.customerPosition = position;
                         Customer customer = Const.allCustomerdataArrayList.get(position);
                         showStatusDialog(customer);
                     }
-                }
-                else{
-                    Const.customerPosition = position;
-                    Customer customer = Const.allCustomerdataArrayList.get(position);
-                    showStatusDialog(customer);
-                }
 
-            }
-        });
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return view;
     }
 

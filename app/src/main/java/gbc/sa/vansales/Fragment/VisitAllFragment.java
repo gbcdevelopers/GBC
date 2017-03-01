@@ -94,83 +94,84 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        view =inflater.inflate(R.layout.visitall_fragment, container, false);
-        flag = DriverRouteFlags.get();
-        new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
-            @Override
-            public void callbackSuccess(android.location.Location location) {
-                myLocation = location;
+        try{
+            view =inflater.inflate(R.layout.visitall_fragment, container, false);
+            flag = DriverRouteFlags.get();
+            new gbc.sa.vansales.google.Location(getActivity(), new Callback() {
+                @Override
+                public void callbackSuccess(android.location.Location location) {
+                    myLocation = location;
+                }
+                @Override
+                public void callbackFailure() {
+                }
+            });
+            reasonsList = OrderReasons.get();
+            db = new DatabaseHandler(getActivity());
+            if(Const.dataArrayList.size()>0){
+                dataAdapter = new DataAdapter(getActivity().getBaseContext(),Const.dataArrayList);
+                adapter = new CustomerStatusAdapter(getActivity(),arrayList);
+                loadCustomerStatus();
+                listView = (ListView)view.findViewById(R.id.journeyPlanList);
+                listView.setAdapter(dataAdapter);
             }
-            @Override
-            public void callbackFailure() {
-            }
-        });
-        reasonsList = OrderReasons.get();
-        db = new DatabaseHandler(getActivity());
-//        dataArrayList =new ArrayList<>();
-//        loadData();
-        dataAdapter = new DataAdapter(getActivity().getBaseContext(),Const.dataArrayList);
-        adapter = new CustomerStatusAdapter(getActivity(),arrayList);
-        loadCustomerStatus();
-        listView = (ListView)view.findViewById(R.id.journeyPlanList);
-        listView.setAdapter(dataAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Const.customerPosition = position;
-                final Customer customer = Const.dataArrayList.get(position);
-                // Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Const.customerPosition = position;
+                    final Customer customer = Const.dataArrayList.get(position);
+                    // Intent intent=new Intent(getActivity(), CustomerDetailActivity.class);
                 /*Intent intent = new Intent(getActivity(), SelectCustomerStatus.class);
                 intent.putExtra("headerObj", customer);
                 intent.putExtra("msg","visit");
                 startActivity(intent);*/
-                if (customerFlagExist(customer)) {
-                    loadCustomerFlag(customer);
-                    if (App.CustomerRouteControl.isVerifyGPS()) {
-                        if (verifyGPS(customer, App.CustomerRouteControl.getThresholdLimit())) {
-                            showStatusDialog(customer);
+                    if (customerFlagExist(customer)) {
+                        loadCustomerFlag(customer);
+                        if (App.CustomerRouteControl.isVerifyGPS()) {
+                            if (verifyGPS(customer, App.CustomerRouteControl.getThresholdLimit())) {
+                                showStatusDialog(customer);
+                            } else {
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                alertDialogBuilder.setTitle("Message")
+                                        .setMessage(getString(R.string.coordinate_mismatch_msg))
+                                        .setCancelable(false)
+                                        .setPositiveButton(getString(R.string.continue_lbl), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                                showAccessCode(customer);
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                // create alert dialog
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                // show it
+                                alertDialog.show();
+                            }
                         } else {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                            alertDialogBuilder.setTitle("Message")
-                                    .setMessage(getString(R.string.coordinate_mismatch_msg))
-                                    .setCancelable(false)
-                                    .setPositiveButton(getString(R.string.continue_lbl), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                            showAccessCode(customer);
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.cancel();
-                                        }
-                                    });
-                            // create alert dialog
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            // show it
-                            alertDialog.show();
+                            showStatusDialog(customer);
                         }
                     } else {
+                        Log.e("I dont have Flag", "Flag");
+                        App.CustomerRouteControl obj = new App.CustomerRouteControl();
+                        obj.setThresholdLimit("99");
+                        obj.setIsVerifyGPS(false);
+                        obj.setIsEnableIVCopy(true);
+                        obj.setIsDelayPrint(true);
+                        obj.setIsEditOrders(true);
+                        obj.setIsEditInvoice(true);
+                        obj.setIsReturns(true);
+                        obj.setIsDamaged(true);
+                        obj.setIsSignCapture(true);
+                        obj.setIsReturnCustomer(true);
+                        obj.setIsCollection(true);
                         showStatusDialog(customer);
                     }
-                } else {
-                    Log.e("I dont have Flag", "Flag");
-                    App.CustomerRouteControl obj = new App.CustomerRouteControl();
-                    obj.setThresholdLimit("99");
-                    obj.setIsVerifyGPS(false);
-                    obj.setIsEnableIVCopy(true);
-                    obj.setIsDelayPrint(true);
-                    obj.setIsEditOrders(true);
-                    obj.setIsEditInvoice(true);
-                    obj.setIsReturns(true);
-                    obj.setIsDamaged(true);
-                    obj.setIsSignCapture(true);
-                    obj.setIsReturnCustomer(true);
-                    obj.setIsCollection(true);
-                    showStatusDialog(customer);
-                }
 
 
 
@@ -181,9 +182,14 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
                 else{
                     Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
                 }*/
-            }
-        });
+                }
+            });
 
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
         return view;
     }

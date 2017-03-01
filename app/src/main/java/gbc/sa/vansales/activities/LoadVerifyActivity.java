@@ -1109,8 +1109,8 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 JSONArray data = new JSONArray();
                 data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
                 data.put(UrlBuilder.decodeString(obj.getItemDescription()));
-                //data.put(obj.getItem_description_ar().equals("")?App.ARABIC_TEXT_MISSING:obj.getItem_description_ar());
-                data.put("شد 48*200مل بيرين PH8");
+                data.put(obj.getItem_description_ar().equals("")?App.ARABIC_TEXT_MISSING:obj.getItem_description_ar());
+                //data.put("شد 48*200مل بيرين PH8");
                 data.put("1");
                 data.put("+0");
                 data.put("+" + obj1.getQuantityCases());

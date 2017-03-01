@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,6 +26,11 @@ import gbc.sa.vansales.models.ItemList;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
+/************************************************************
+ @ This class is called when u click on the balances by expanding
+ @ the button on the customer detail screen. It gives the outstanding
+ @ balances for the customer
+ ************************************************************/
 public class BalanceActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
@@ -62,6 +69,7 @@ public class BalanceActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     public class loadBalance extends AsyncTask<Void, Void, Void> {
@@ -90,6 +98,7 @@ public class BalanceActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
             return null;
@@ -118,6 +127,7 @@ public class BalanceActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }

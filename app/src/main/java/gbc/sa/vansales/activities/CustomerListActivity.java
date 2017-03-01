@@ -8,9 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import gbc.sa.vansales.R;
-
+/************************************************************
+ @ This screen shows the list of customers the driver served
+ @ in the particular day. This information is available from
+ @ the informations tab button.
+ ************************************************************/
 public class CustomerListActivity extends AppCompatActivity {
-
     ImageView iv_back;
     TextView tv_top_header;
     View view1;

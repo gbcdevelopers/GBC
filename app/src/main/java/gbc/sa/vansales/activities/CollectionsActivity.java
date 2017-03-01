@@ -32,6 +32,13 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.UrlBuilder;
+/************************************************************
+ @ This activity is called when the collection button is clicked
+ @ on the customer detail screen. All the open invoices or the invoices
+ @ created from the HHT devices and are not cleared/cleared will appear
+ @ here under this screen. The driver needs to perform collection for the
+ @ open invoices.
+ ************************************************************/
 public class CollectionsActivity extends AppCompatActivity {
     ListView lv_colletions_view;
     ImageView iv_back;
@@ -82,6 +89,10 @@ public class CollectionsActivity extends AppCompatActivity {
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /************************************************************
+                 @ Once the driver performs all the collection and clicks on back to go back
+                 @ to the customer detail screen, trigger a post in background
+                 ************************************************************/
                 if (Helpers.isNetworkAvailable(getApplicationContext())) {
                     Helpers.createBackgroundJob(getApplicationContext());
                 }
@@ -95,23 +106,11 @@ public class CollectionsActivity extends AppCompatActivity {
             }
         });
         tv_amt_paid = (TextView) findViewById(R.id.tv_amt_paid);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
-                intent.putExtra("from", "collection");
-                intent.putExtra("msg", "collection");
-                intent.putExtra("headerObj", object);
-                intent.putExtra("amountdue","0");
-                intent.putExtra("customer",object.getCustomerID());
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);*/
-//                startActivityForResult(intent, 1);
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+
             }
         });
         // setData();
@@ -122,9 +121,18 @@ public class CollectionsActivity extends AppCompatActivity {
                 try {
                     double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount()) - Double.parseDouble(colletionDatas.get(position).getAmountCleared());
                     if (amountdue == 0) {
+                        /************************************************************
+                         @ Do not allow user to go inside if there is no due left on
+                         @ the invoice
+                         ************************************************************/
                         Helpers.logData(CollectionsActivity.this, "User clicked on already cleared invoice" + colletionDatas.get(position).getInvoiceNo());
                         Toast.makeText(CollectionsActivity.this, "Invoice already cleared", Toast.LENGTH_SHORT).show();
                     } else {
+                        /************************************************************
+                         @ There are indicators against the invoices coming from backend
+                         @ with values "H" or "S". Only the one with "S" indicator
+                         @ needs to be collected. "H" indicator invoices need not be collected.
+                         ************************************************************/
                         if (colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)) {
                             Helpers.logData(CollectionsActivity.this, "List item clicked. Going for collection of invoice no" + colletionDatas.get(position).getInvoiceNo());
                             Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);

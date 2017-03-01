@@ -1720,7 +1720,8 @@ public class PrinterHelper {
             this.outStream.write(this.NewLine);
             this.outStream.write(this.NewLine);
 
-            printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
+            printlines1(getAccurateText(object.getString("invoicefooter"), 80, 1), 1, object, 1, args, 5);
+            //printlines1(getAccurateText("For any complaints please contact supervisor on " + object.getString("supervisorno"), 80, 1), 1, object, 1, args, 5);
             // printlines1(getAccurateText("For any complaints please contact " + object.getString("supervisorname") + "on" + object.getString("supervisorno"), 40, 0), false, 1);
 
             //jSONObject = object;

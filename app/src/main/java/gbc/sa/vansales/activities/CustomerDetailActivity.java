@@ -45,6 +45,10 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/3/2016.
  */
+/************************************************************
+ @ This screen opens when u select a customer from the list of
+ @ customers.
+ ************************************************************/
 public class CustomerDetailActivity extends AppCompatActivity {
     GridView gridView;
     CustomerOperationAdapter adapter;
@@ -160,6 +164,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Helpers.logData(CustomerDetailActivity.this, "Back Clicked");
+                    /************************************************************
+                     @ If the driver didnt perform any operation on the customer,
+                     @ prompt the driver for the reason.
+                     ************************************************************/
                     if (shouldShowDialog()) {
                         Helpers.logData(CustomerDetailActivity.this, "No activity performed. Showing unserviced reason");
                         showStatusDialog();
@@ -255,6 +263,9 @@ public class CustomerDetailActivity extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         case 1:
+                            /************************************************************
+                             @ Checking if collection flag is enabled for the customer
+                             ************************************************************/
                             if (App.CustomerRouteControl.isCollection()) {
                                 Helpers.logData(CustomerDetailActivity.this, "Clicked for Collection");
                                 Intent intent1 = new Intent(CustomerDetailActivity.this, CollectionsActivity.class);
@@ -268,10 +279,18 @@ public class CustomerDetailActivity extends AppCompatActivity {
                             }
                         case 2:
                             if (!(flag == null)) {
+                                /************************************************************
+                                 @ Checking if no sale flag is enabled for the customer
+                                 ************************************************************/
                                 if (!flag.isNoSale()) {
                                     Helpers.logData(CustomerDetailActivity.this, "Sale not allowed for customer");
                                     break;
                                 } else {
+                                    /************************************************************
+                                     @ If there are any open invoices for the customer which
+                                     @ are due for the current date, driver cannot perform sale
+                                     @ on that customer.
+                                     ************************************************************/
                                     if (canPerformSale() && isLimitAvailable) {
                                         Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
                                         Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
@@ -286,6 +305,11 @@ public class CustomerDetailActivity extends AppCompatActivity {
                                     }
                                 }
                             } else {
+                                /************************************************************
+                                 @ If there are any open invoices for the customer which
+                                 @ are due for the current date, driver cannot perform sale
+                                 @ on that customer.
+                                 ************************************************************/
                                 if (canPerformSale() && isLimitAvailable) {
                                     Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
                                     Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
@@ -355,6 +379,11 @@ public class CustomerDetailActivity extends AppCompatActivity {
 
     }
     private boolean shouldShowDialog() {
+        /************************************************************
+         @ Checking if any of the operation from order, delivery, sales,
+         @ collection etc. were performed for the customer then do not
+         @ show dialog else prompt the driver
+         ************************************************************/
         try {
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());

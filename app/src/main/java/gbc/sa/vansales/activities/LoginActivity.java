@@ -3,13 +3,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import gbc.sa.vansales.App;
@@ -67,7 +71,7 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         db = new DatabaseHandler(this);
-
+        setAppInfo();
         if( Boolean.parseBoolean(Settings.getString(App.IS_LOGGED_ID))){
             Settings.setString(App.IS_LOGGED_ID, "false");
             Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
@@ -82,7 +86,33 @@ public class LoginActivity extends Activity {
         }
         Helpers.logData(LoginActivity.this, "On Login Screen");
         loadingSpinner = new LoadingSpinner(this);
-}
+    }
+
+    public void setAppInfo(){
+        TextView appinfo = (TextView)findViewById(R.id.tv_appinfo);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        /*LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)appinfo.getLayoutParams();
+        params.setMargins(0, 110, 0, -300);
+        appinfo.setLayoutParams(params);*/
+        StringBuilder sb = new StringBuilder();
+        sb.append("App Ver:");
+        sb.append(pInfo.versionName + "." + pInfo.versionCode);
+        sb.append("\t \t");
+        sb.append("Build:");
+        sb.append(App.ENVIRONMENT);
+        /*sb.append("\n");
+        sb.append("Copyright" + "\u00A9" + "; Engineering Office");*/
+        // sb.append("\u00A9");
+        appinfo.setTextSize(13);
+        appinfo.setTypeface(null, Typeface.ITALIC);
+        appinfo.setText(sb.toString());
+    }
+
     public void login(View view){
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
@@ -223,6 +253,9 @@ public class LoginActivity extends Activity {
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 }*/
                                         dialog.dismiss();
+                                        if(loadingSpinner.isShowing()){
+                                            loadingSpinner.hide();
+                                        }
                                     }
                                 })
                                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {

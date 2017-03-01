@@ -1504,7 +1504,7 @@ public class PaymentDetails extends AppCompatActivity {
             String testAr = "هذا هو اختبار النص العربي";
             if(object != null) {
                 mainArr.put("CUSTOMER", UrlBuilder.decodeString(object.getCustomerName()) + "-" + testAr);
-                mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?object.getCustomerAddress():"This is just test address");
+                mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?"This is just test address":object.getCustomerAddress());
                 mainArr.put("ARBADDRESS",object.getCustomerAddress());
             }
             else{

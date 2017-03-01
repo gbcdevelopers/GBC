@@ -75,7 +75,16 @@
             android:textColor="@color/white"
             android:onClick="login"
             android:text="@string/login"/>
-
+        <TextView
+            android:id="@+id/tv_appinfo"
+            android:text="Test"
+            android:gravity="center|bottom"
+            android:layout_marginBottom="2dp"
+            android:textColor="@color/black"
+            android:textSize="@dimen/label_x_min"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
 </ScrollView>

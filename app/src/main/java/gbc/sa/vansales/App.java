@@ -13,11 +13,21 @@ public class App extends Application {
     public static final String ACCOUNT_TYPE = "gbc.sa.vansales";
     public static final String ACCOUNT = "GBC";
 
+    //Open these when building for release
+    /*@ Production Connection details*/
+   /* public static final String ENVIRONMENT = "Production";
+    public static final String HOST = "78.93.41.222";
+    public static final int PORT = 8054;
+    public static final String SAP_CLIENT = "SAP-CLIENT";
+    public static final String SAP_CLIENT_ID = "800";*/
+
+    //Open these properties for development
     public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
-    public static final int PORT = 8047;
+    public static final int PORT = 8041;
     public static final String SAP_CLIENT = "SAP-CLIENT";
     public static final String SAP_CLIENT_ID = "350";
+
     public static final boolean IS_HTTPS = false;
     public static final String SERVER_DOMAIN = "default";
     public static final String URL = "/sap/opu/odata/sap/ZSFA_DOWNLOAD_SRV/";
@@ -41,7 +51,7 @@ public class App extends Application {
     public static final String DIVISION = "Division";
     public static final String DIST_CHANNEL = "DistChannel";
 
-
+    //Defining Date and Time Format for various screens
     public static final String DATE_TIME_FORMAT = "yyyy.MM.dd.HH:mm:ss";
     public static final String DATE_FORMAT = "yyyy.MM.dd";
     public static final String DATE_FORMAT_HYPHEN = "yyyy-MM-dd";
@@ -179,6 +189,38 @@ public class App extends Application {
         Settings.initialize(getApplicationContext());
     }
 
+    /*
+    @ This is the model for Driver Flags. Driver Flags are used for controlling operations on the screen
+    @ Route Type - This is for hybrid, delivery, merchandize etc. (Currently not used)
+    @ Prompt Odometer - 0 - When 0, it will not prompt for odometer after begin day
+                        1 - When 1, it will prompt the user to enter the odometer after clicking on begin day
+    @ EodSalesReports - 0 - When 0, Driver cannot see the end of day sales reports
+                        1 - When 1, driver can see the reports
+    @ isDeleteInvoice - 0 - Cannot delete already created invoice
+                        1 - Can delete created invoice(Currently not used)
+    @ isNoSale        - 0 - Driver cannot perform sale operation under any customer
+                        1 - Driver can perform sales operation
+    @ isAddCustomer   - 0 - Driver cannot add customer on the fly from visit list screen
+                        1 - Driver can enter customer from visit list screen
+    @ isDelayPrint    - 0 - Do not Print button is inactive
+                        1 - Do not print button is active
+    @ isDefaultDeliveryDays - 0 - If 0, the driver can select the delivery date when booking an order
+                            - (1 to n) - Driver cannot edit the date, and date will be default to current date + value
+    @ password1-password5- These are assignment passwords used with below flags
+    @ isViewVanStock - if value is (1-5), theere will be a password prompt and the password will be the corresponding password
+                       for eg if value is 1, the user needs to enter password1 value
+    @ isLoadSecurityGuard - During unload, there will be a password prompt and password will be the corresponding password
+    @ isStartOfDay - During begin day click, there will be a password prompt and password will be the corresponding password
+    @ isEndTrip - When end trip is clicked, there will be a password prompt and password will be the corresponding password
+    @ isInformationButton - When information button is clicked, there will be a password prompt
+    @ isCallSequence - 0 - Driver needs to follow the sequence customer, in the same order as in the visit list and cannot select customer
+                           from all customers screen
+                       1 - Driver can select customer from either tabs
+    @ isDisplayInvoiceSummary - 0 - Invoice summary option is locked for the driver.
+                                1 - Invoice summary option is not locked for the driver.
+    @ isAllowRadius - This is the allowed geo radius in metres
+    @ isEnableGPS - GPS is enabled on the device.
+    */
     public static class DriverRouteControl implements Parcelable {
         private static String tripID;
         private static String driver;
@@ -417,6 +459,28 @@ public class App extends Application {
         }
 
     }
+
+    /*
+    @ This is the model for Driver Flags. Driver Flags are used for controlling operations on the screen
+    @ thresholdLimit - This is the allowed threshold limit/geo radius from the customers location
+    @ isVerifyGPS     - 0 - When 0, it will check the drivers location and customers location + thresholdlimit
+                        1 - When 1, there is no check on gps verification
+    @ isEnableIVCopy  - 0 - When 0, driver cannot print invoice copy
+                        1 - When 1, driver can print invoice copy (Currently not used)
+    @ isDelayPrint    - 0 - Do not print button is inactive
+                        1 - Do not print button is active(Currently not used)
+    @ isEditOrders    - 0 - Driver cannot edit order
+                        1 - Driver can edit order(Currently not used)
+    @ isEditInvoice   - 0 - Driver cannot edit invoice
+                        1 - Driver can edit invoice(Currently not used)
+    @ isReturns       - 0 - Driver cannot take good returns from customer
+                        1 - Driver can take good returns from customer
+    @ isDamaged       - 0 - Driver cannot take bad returns from customer
+                        1 - Driver can take bad returns from customer
+    @ isSignCapture   - No functionality for this
+    @ isCollection   - 0 - Driver cannot take collection for this customer
+                       1 - Driver can take collection.
+    */
     public static class CustomerRouteControl implements Parcelable{
         private static String thresholdLimit;
         private static boolean isVerifyGPS;

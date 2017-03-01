@@ -20,7 +20,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
+import gbc.sa.vansales.App;
 public class Logger {
     private boolean isAppenlog;
     private Context context;
@@ -46,6 +48,7 @@ public class Logger {
                         documentsFolder.mkdirs();
                     }
                     //File logFile = new File(documentsFolder + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
+
                     File logFile = new File(documentsFolder.getPath() + File.separator + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
                     if (!logFile.exists()) {
                         try {

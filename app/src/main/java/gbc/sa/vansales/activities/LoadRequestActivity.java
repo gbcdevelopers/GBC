@@ -1131,8 +1131,8 @@ public class LoadRequestActivity extends AppCompatActivity {
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
                     data.put(obj.getItemName());
-                    //data.put(obj.getItemNameAr());
-                    data.put("شد 48*200مل بيرين PH8");
+                    data.put(obj.getItemNameAr().equals("")?App.ARABIC_TEXT_MISSING:obj.getItemNameAr());
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put(obj.getCases());
                     totalPcs += Double.parseDouble(obj.getCases());

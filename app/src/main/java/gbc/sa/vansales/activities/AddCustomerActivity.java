@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -36,6 +38,10 @@ import gbc.sa.vansales.utils.Settings;
 /**
  * Created by Rakshit on 12-Jan-17.
  */
+/*
+@ This activity will be called when the + button is clicked on the visit list or all customer screen.
+@ This will create a customer in the backend.
+*/
 public class AddCustomerActivity extends AppCompatActivity {
     Button addCustomer;
     ImageView iv_back;
@@ -148,6 +154,10 @@ public class AddCustomerActivity extends AppCompatActivity {
                         params.put(db.KEY_IS_COLLECTION_POSTED, App.DATA_NOT_POSTED);
                         params.put(db.KEY_IS_MERCHANDIZE_POSTED, App.DATA_NOT_POSTED);
                         params.put(db.KEY_IS_NEW_CUSTOMER, App.TRUE);
+                        /************************************************************
+                        @ The customer created should become a part of the visit list
+                        @ so adding the customer in the visit list table
+                        ************************************************************/
                         db.addData(db.VISIT_LIST, params);
 
                         HashMap<String, String> headerParams = new HashMap<>();
@@ -183,12 +193,11 @@ public class AddCustomerActivity extends AppCompatActivity {
                         headerParams.put(db.KEY_LONGITUDE,"0.000000");
                         headerParams.put(db.KEY_TERMS , App.CASH_CUSTOMER_CODE);
                         headerParams.put(db.KEY_TERMS_DESCRIPTION ,App.CASH_CUSTOMER);
-
+                        /************************************************************
+                         @ The customer created should become a part of the customer master as well
+                         @ so adding the customer in the customer table
+                         ************************************************************/
                         db.addData(db.CUSTOMER_HEADER, headerParams);
-                /*VisitAllFragment.dataAdapter.notifyDataSetChanged();
-                AllCustomerFragment.dataAdapter1.notifyDataSetChanged();
-                finish();*/
-
 
                         HashMap<String, String> newCustomer = new HashMap<>();
                         newCustomer.put(db.KEY_CUSTOMER_NO,tv_customer_id.getText().toString());
@@ -208,8 +217,16 @@ public class AddCustomerActivity extends AppCompatActivity {
                         newCustomer.put(db.KEY_DIVISION,division);
                         newCustomer.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                         newCustomer.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                        /************************************************************
+                         @ The customer created should also be posted to the backend.
+                         @ so adding the customer in the posting table
+                         ************************************************************/
                         db.addData(db.NEW_CUSTOMER_POST,newCustomer);
 
+                        /************************************************************
+                         @ Checking if there is internet and if yes then create a post job
+                         @ in the background using Job Scheduler or Alarm Manager
+                         ************************************************************/
                         if (Helpers.isNetworkAvailable(AddCustomerActivity.this)) {
                             Helpers.createBackgroundJob(AddCustomerActivity.this);
                         }
@@ -220,6 +237,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -255,7 +273,6 @@ public class AddCustomerActivity extends AppCompatActivity {
 
         return returnvalue;
     }
-
     void showDialog(String type,String param){
         try{
             if(type.equals("Distribution")){

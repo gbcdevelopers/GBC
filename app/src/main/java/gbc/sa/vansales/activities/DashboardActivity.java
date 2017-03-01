@@ -54,6 +54,9 @@ import gbc.sa.vansales.views.MarqueeLayout;
 /**
  * Created by Rakshit on 15-Nov-16.
  */
+/************************************************************
+ @ This is the dashboard screen
+ ************************************************************/
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     Button btnBDay;
@@ -171,6 +174,10 @@ public class DashboardActivity extends AppCompatActivity
             if (navigationView != null) {
                 setupDrawerContent(navigationView);
             }
+            /************************************************************
+             @ This function is for the side list menu activation or
+             @ deactivation
+             ************************************************************/
             prepareListData();
             mMenuAdapter = new ExpanableListAdapterActivity(this, listDataHeader, listDataChild, expandableList);
             // setting list adapter
@@ -241,6 +248,7 @@ public class DashboardActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
     private void loadTotalSales() {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -299,6 +307,14 @@ public class DashboardActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        tv_route.setText(getString(R.string.route_code_101) + Settings.getString(App.ROUTE));
+        try {
+            String driverName = Settings.getString(App.LANGUAGE).equals("en") ? Settings.getString(App.DRIVER_NAME_EN) : Settings.getString(App.DRIVER_NAME_AR);
+            tv_driver_no.setText(getString(R.string.welcome_john_doe_1000002445) + Settings.getString(App.DRIVER) + " , " + driverName);
+            tv_tripid.setText(getString(R.string.trip) + Settings.getString(App.TRIP_ID));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         setBeginDayVisibility();
     }
     void createPieChart() {
@@ -397,61 +413,6 @@ public class DashboardActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
-    /*void createLineChart() {
-        LineChart lineChart = (LineChart) findViewById(R.id.lineChart);
-        ArrayList<Entry> salesEntries = new ArrayList<>();
-        salesEntries.add(new Entry(300f, 0));
-        salesEntries.add(new Entry(853f, 1));
-        salesEntries.add(new Entry(430f, 2));
-        salesEntries.add(new Entry(1147f, 3));
-        salesEntries.add(new Entry(843f, 4));
-        salesEntries.add(new Entry(888f, 5));
-        salesEntries.add(new Entry(607f, 6));
-        ArrayList<Entry> returnEntries = new ArrayList<>();
-        returnEntries.add(new Entry(155f, 0));
-        returnEntries.add(new Entry(33f, 1));
-        returnEntries.add(new Entry(56f, 2));
-        returnEntries.add(new Entry(23f, 3));
-        returnEntries.add(new Entry(49f, 4));
-        returnEntries.add(new Entry(52f, 5));
-        returnEntries.add(new Entry(0f, 6));
-        ArrayList<Entry> damageEntries = new ArrayList<>();
-        damageEntries.add(new Entry(0f, 0));
-        damageEntries.add(new Entry(0f, 1));
-        damageEntries.add(new Entry(0f, 2));
-        damageEntries.add(new Entry(0f, 3));
-        damageEntries.add(new Entry(69f, 4));
-        damageEntries.add(new Entry(0f, 5));
-        damageEntries.add(new Entry(221f, 6));
-        LineDataSet salesDataSet = new LineDataSet(salesEntries, "");
-        LineDataSet returnDataSet = new LineDataSet(returnEntries, "");
-        LineDataSet damageDataSet = new LineDataSet(damageEntries, "");
-        ArrayList<String> labels = new ArrayList<String>();
-        labels.add("18/11");
-        labels.add("17/11");
-        labels.add("16/11");
-        labels.add("15/11");
-        labels.add("14/11");
-        labels.add("13/11");
-        labels.add("12/11");
-        LineData data = new LineData(labels, salesDataSet);
-        data.addDataSet(returnDataSet);
-        data.addDataSet(damageDataSet);
-        salesDataSet.setColors(ColorTemplate.COLORFUL_COLORS); //
-        salesDataSet.setDrawCubic(true);
-        salesDataSet.setDrawFilled(true);
-        returnDataSet.setColor(Color.GREEN);
-        returnDataSet.setDrawCubic(true);
-        damageDataSet.setColor(Color.BLACK);
-        damageDataSet.setDrawCubic(true);
-        lineChart.setDescription("");
-        lineChart.setData(data);
-        //   lineChart.setData(combinedData);
-        lineChart.getLegend().setEnabled(false);
-        lineChart.getAxisRight().setEnabled(false);
-        lineChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        lineChart.animateY(2000);
-    }*/
     void createBarChart() {
         BarChart barChart = (BarChart) findViewById(R.id.barChart);
         barChart.setDrawBarShadow(false);

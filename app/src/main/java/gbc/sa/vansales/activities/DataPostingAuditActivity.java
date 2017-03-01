@@ -28,6 +28,7 @@ import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
+
 public class DataPostingAuditActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;

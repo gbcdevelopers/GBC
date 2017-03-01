@@ -540,6 +540,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 OrderRequest loadRequest = new OrderRequest();
                 loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                loadRequest.setItemNameAr(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC2)));
                 ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 if (isPosted) {
 
@@ -1057,8 +1058,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             mainArr.put("ORDERNO",orderNo);
             mainArr.put("invoicepaymentterms","3");
             String testAr = "هذا هو اختبار النص العربي";
-            mainArr.put("CUSTOMER", object.getCustomerName() + "-" + (object.getCustomer_name_ar()==null||object.getCustomer_name_ar().equals("")?testAr: object.getCustomer_name_ar()));
-            mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?object.getCustomerAddress():"This is just test address");
+            mainArr.put("CUSTOMER", object.getCustomerName() + "-" + (object.getCustomer_name_ar()==null||object.getCustomer_name_ar().equals("")?App.ARABIC_TEXT_MISSING: object.getCustomer_name_ar()));
+            mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?object.getCustomerAddress():"-");
             mainArr.put("ARBADDRESS",object.getCustomerAddress());
             mainArr.put("TripID",Settings.getString(App.TRIP_ID));
             //mainArr.put("Load Number","1");
@@ -1087,7 +1088,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterialNo(),"0"));
                     data.put(obj.getItemName());
-                    data.put("شد 48*200مل بيرين PH8");
+                    data.put(obj.getItemNameAr().equals("")?App.ARABIC_TEXT_MISSING:obj.getItemNameAr());
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put(obj.getCases());
                     totalPcs += Double.parseDouble(obj.getCases());

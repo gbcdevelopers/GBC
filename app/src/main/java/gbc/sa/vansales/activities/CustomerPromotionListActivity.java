@@ -31,6 +31,10 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 /**
  * Created by eheuristic on 12/7/2016.
  */
+/************************************************************
+ @ This is launched when the promotion is clicked on the up down
+ @ button.
+ ************************************************************/
 public class CustomerPromotionListActivity extends AppCompatActivity implements DataListener{
     ListView list_promotion;
     ArrayAdapter<Promotions> adapter;

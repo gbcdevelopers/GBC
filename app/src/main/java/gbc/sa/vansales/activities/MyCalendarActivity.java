@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -393,7 +395,7 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
             } else {
                 tv_event.setText("");
             }
-            gridcell.setTag(theday + "-" + themonth + "-" + theyear);
+            gridcell.setTag(StringUtils.leftPad(theday,2,"0") + "-" + StringUtils.leftPad(themonth,2,"0") + "-" + theyear);
             Log.d(tag, "Setting GridCell " + theday + "-" + themonth + "-"
                     + theyear);
             if (day_color[1].equals("GREY")) {

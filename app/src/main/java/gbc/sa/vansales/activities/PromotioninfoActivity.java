@@ -2271,7 +2271,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         map.put(db.KEY_DRIVER,"");
 
         HashMap<String,String> filterMap = new HashMap<>();
-        filterMap.put(db.KEY_USERNAME,object.getCustomerID());
+        filterMap.put(db.KEY_USERNAME,Settings.getString(App.DRIVER));
         filterMap.put(db.KEY_STRUCTURE,App.INVOICE_FOOTER_KEY);
 
         Cursor cursor = db.getData(db.MESSAGES,map,filterMap);
@@ -2341,7 +2341,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterial_no(), "0"));
                     data.put(obj.getMaterial_description());
-                    data.put("شد 48*200مل بيرين PH8");
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,obj.getMaterial_no());
+                    if(articleHeader!=null){
+                        data.put(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                    }
+                    else{
+                        data.put(App.ARABIC_TEXT_MISSING);
+                    }
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put("+" + obj.getCases());
                     totalPcs += Double.parseDouble(obj.getCases());
@@ -2357,7 +2364,15 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterial_no(), "0"));
                     data.put(UrlBuilder.decodeString(obj.getMaterial_description()));
-                    data.put("شد 48*200مل بيرين PH8");
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,obj.getMaterial_no());
+                    if(articleHeader!=null){
+                        data.put(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                    }
+                    else{
+                        data.put(App.ARABIC_TEXT_MISSING);
+                    }
+                    //data.put("شد 48*200مل بيرين PH8");
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put("+" + obj.getCases());
                     totalPcs += Double.parseDouble(obj.getCases());
@@ -2376,7 +2391,15 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterial_no(), "0"));
                     data.put(UrlBuilder.decodeString(obj.getMaterial_description()));
-                    data.put("شد 48*200مل بيرين PH8");
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,obj.getMaterial_no());
+                    if(articleHeader!=null){
+                        data.put(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                    }
+                    else{
+                        data.put(App.ARABIC_TEXT_MISSING);
+                    }
+                    //data.put("شد 48*200مل بيرين PH8");
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put("+" + obj.getCases());
                     totalPcs += Double.parseDouble(obj.getCases());
@@ -2407,6 +2430,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     //This will be used for Delivery
     public JSONArray createPrintDeliveryData(String type, String orderDate, String orderNo) {
         JSONArray jArr = new JSONArray();
+        String invoiceFooter = "";
+        HashMap<String,String> map = new HashMap<>();
+        map.put(db.KEY_USERNAME,"");
+        map.put(db.KEY_STRUCTURE,"");
+        map.put(db.KEY_MESSAGE,"");
+        map.put(db.KEY_DRIVER,"");
+
+        HashMap<String,String> filterMap = new HashMap<>();
+        filterMap.put(db.KEY_USERNAME,Settings.getString(App.DRIVER));
+        filterMap.put(db.KEY_STRUCTURE,App.INVOICE_FOOTER_KEY);
+
+        Cursor cursor = db.getData(db.MESSAGES,map,filterMap);
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            invoiceFooter = UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MESSAGE)));
+        }
         try {
             double totalPcs = 0;
             double totalAmount = 0;
@@ -2424,7 +2463,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             mainArr.put("ORDERNO", orderNo);  //Load Summary No
             mainArr.put("TRIP START DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
             mainArr.put("supervisorname", "Mr ABC");
-            mainArr.put("supervisorno", "056123456");
+            mainArr.put("supervisorno", "-");
+            mainArr.put("invoicefooter",invoiceFooter);
             mainArr.put("TripID", Settings.getString(App.TRIP_ID));
             mainArr.put("invheadermsg", "");
             mainArr.put("LANG", "en");
@@ -2461,7 +2501,14 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     JSONArray data = new JSONArray();
                     data.put(StringUtils.stripStart(obj.getMaterialNo(), "0"));
                     data.put(UrlBuilder.decodeString(obj.getItemDescription()));
-                    data.put("شد 48*200مل بيرين PH8");
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,obj.getMaterialNo());
+                    if(articleHeader!=null){
+                        data.put(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                    }
+                    else{
+                        data.put(App.ARABIC_TEXT_MISSING);
+                    }
+                    //data.put("شد 48*200مل بيرين PH8");
                     data.put("1");
                     data.put("+" + obj.getItemCase());
                     totalPcs += Double.parseDouble(obj.getItemCase());

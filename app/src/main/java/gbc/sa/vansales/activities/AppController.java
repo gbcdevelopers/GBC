@@ -34,6 +34,7 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 //        Fabric.with(this, new Crashlytics());
         mInstance = this;
         System.out.println("On Create");
@@ -84,6 +85,7 @@ public class AppController extends Application {
             resources.updateConfiguration(config, resources.getDisplayMetrics());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     public static void saveLocale(String lang) {

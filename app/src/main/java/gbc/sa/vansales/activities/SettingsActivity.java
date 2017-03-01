@@ -340,7 +340,7 @@ public class SettingsActivity extends AppCompatActivity {
         appinfo.setLayoutParams(params);*/
         StringBuilder sb = new StringBuilder();
         sb.append("App Ver:");
-        sb.append(pInfo.versionName);
+        sb.append(pInfo.versionName + "." + pInfo.versionCode);
         sb.append("\t \t");
         sb.append("Build:");
         sb.append(App.ENVIRONMENT);
