@@ -113,6 +113,7 @@ public class LoginActivity extends Activity {
         appinfo.setText(sb.toString());
     }
 
+
     public void login(View view){
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
