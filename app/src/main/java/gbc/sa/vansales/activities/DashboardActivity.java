@@ -23,6 +23,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -176,7 +177,7 @@ public class DashboardActivity extends AppCompatActivity
             }
             /************************************************************
              @ This function is for the side list menu activation or
-             @ deactivation
+             @ deactivation based on the application flow
              ************************************************************/
             prepareListData();
             mMenuAdapter = new ExpanableListAdapterActivity(this, listDataHeader, listDataChild, expandableList);
@@ -246,9 +247,15 @@ public class DashboardActivity extends AppCompatActivity
             lbl_targetachieved.setText("0.00/0.00");
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
-
+    /************************************************************
+     @ This function is used to load total sales in terms of
+     @ money that the driver created for the day. This includes
+     @ summation of all the sales made in terms of order and sales
+     @ invoice.
+     ************************************************************/
     private void loadTotalSales() {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -269,8 +276,15 @@ public class DashboardActivity extends AppCompatActivity
             lbl_totalsales.setText(String.valueOf(totalSales) + " " + getString(R.string.currency));
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
+    /************************************************************
+     @ This function is used to load amount received in terms of
+     @ money that the driver collected for the day. This includes
+     @ summation of all the collection from sales invoice and open
+     @ items collection.
+     ************************************************************/
     private void loadTotalReceipt() {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -350,6 +364,10 @@ public class DashboardActivity extends AppCompatActivity
         // pieChart.setUsePercentValues(true);
         pieChart.animateY(3000);
     }
+    /************************************************************
+     @ This function is for the side list menu activation or
+     @ deactivation based on the application flow
+     ************************************************************/
     private void prepareListData() {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -411,6 +429,7 @@ public class DashboardActivity extends AppCompatActivity
             listDataChild.put(listDataHeader.get(1), manageInventoryItems);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     void createBarChart() {
@@ -442,6 +461,12 @@ public class DashboardActivity extends AppCompatActivity
         barChart.getLegend().setEnabled(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
     }
+    /************************************************************
+     @ This function is called to create create bar chart from live
+     @ data. Barchart is composed of total sales, total good returns
+     @ and total bad returns. These are calculated in terms of units
+     @ sold for the material
+     ************************************************************/
     void createBarChartFromLiveData(float salesCount, float goodreturnsCount, float badreturnsCount) {
         try {
             Log.e("Count in Live Data", "" + salesCount + "/" + goodreturnsCount + "/" + badreturnsCount);
@@ -477,8 +502,17 @@ public class DashboardActivity extends AppCompatActivity
             barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
+    /************************************************************
+     @ This function is used to create a pie chart from data for
+     @ the number of customers visited by the drivers and based on
+     @ the payment type of the customer. Customer payment types are
+     @ Cash
+     @ Credit
+     @ Temporary Credit
+     ************************************************************/
     void createPieChartFromLiveData(int cashCustomerCount, int creditCustomerCount, int tcCustomerCount) {
         try {
             if (cashCustomerCount == 0 && creditCustomerCount == 0 && tcCustomerCount == 0) {
@@ -549,6 +583,7 @@ public class DashboardActivity extends AppCompatActivity
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override
@@ -827,6 +862,7 @@ public class DashboardActivity extends AppCompatActivity
             return count;
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
             return 0;
         }
     }

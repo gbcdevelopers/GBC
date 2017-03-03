@@ -39,6 +39,11 @@ import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
+
+/*****************************************************************************************
+ @ This activity is called when driver clicks on order request in the
+ @ Customer detail screen
+ ****************************************************************************************/
 public class PreSaleOrderActivity extends AppCompatActivity {
     ImageView iv_back, iv_refresh;
     TextView tv_top_header;
@@ -113,6 +118,9 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+            /********************************************************
+             @ Reading details of order created locally on the device
+             ********************************************************/
             list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -156,9 +164,6 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-       // new loadOrders().execute();
-       // new loadOrdersLocal().execute();
-
     }
     public class loadOrders extends AsyncTask<Void, Void, Void> {
         @Override
@@ -229,7 +234,6 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             ArrayList<String> temp = new ArrayList<String>();
             temp.clear();
             arrayList.clear();
-            //Log.e("Cursor", "" + cursor.getCount());
             do {
                 OrderList orderList = new OrderList();
                 //orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID)));

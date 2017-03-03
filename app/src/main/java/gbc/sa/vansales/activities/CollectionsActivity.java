@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -152,6 +154,7 @@ public class CollectionsActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });
@@ -188,6 +191,13 @@ public class CollectionsActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
+            /*************************************************
+             @ Loading all the open invoices and the invoices created for the customer
+             @ fetching the invoice no(reference number passed when creating invoice),
+             @ due date for the invoice, invoice amount, invoice date, the amount cleared
+             @ indicator(S means driver can collect, H driver cannot collect as its a debit
+             @ invoice, and whether invoice is complete or not.
+             *************************************************/
             try {
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, "");
@@ -243,6 +253,7 @@ public class CollectionsActivity extends AppCompatActivity {
             while (c.moveToNext());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 }

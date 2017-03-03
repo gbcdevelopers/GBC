@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
+/************************************************************
+ @ This activity loads all the driver collections that were pending
+ @ in the previous system and are open items against driver.
+ ************************************************************/
 public class DriverCollectionsActivity extends AppCompatActivity {
     ListView lv_colletions_view;
     ImageView iv_back;
@@ -113,6 +119,7 @@ public class DriverCollectionsActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });
@@ -158,9 +165,13 @@ public class DriverCollectionsActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
+    /************************************************************
+     @ Loading the collections for the driver.
+     ************************************************************/
     public class loadCollections extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -204,5 +215,4 @@ public class DriverCollectionsActivity extends AppCompatActivity {
 
         }
     }
-
 }

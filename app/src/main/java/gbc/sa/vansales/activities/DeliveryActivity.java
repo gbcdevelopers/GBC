@@ -27,6 +27,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -57,6 +59,11 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/10/2016.
  */
+/************************************************************
+ @ This activity is launched when u click on the delivery button
+ @ on the customer detail screen. The screen will show all the deliveries
+ @ for the said day for the customer.
+ ************************************************************/
 public class DeliveryActivity extends AppCompatActivity {
     ImageView iv_back, iv_refresh;
     TextView tv_top_header;
@@ -127,9 +134,13 @@ public class DeliveryActivity extends AppCompatActivity {
             list_delivery = (ListView) findViewById(R.id.list_delivery);
             iv_refresh = (ImageView) findViewById(R.id.img_refresh);
             iv_refresh.setVisibility(View.GONE);
+
+            /************************************************************
+             @ Registering the listview containing delivery for context menu
+             @ which will allow the driver to delete the delivery if the customer
+             @ doesnt wish to take the delivery.
+             ************************************************************/
             registerForContextMenu(list_delivery);
-            //  adapter = new DeliveryAdapter(DeliveryActivity.this, 2, R.layout.custom_delivery, "delivery");
-            // list_delivery.setAdapter(adapter);
             list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -172,6 +183,7 @@ public class DeliveryActivity extends AppCompatActivity {
             });
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override
@@ -182,12 +194,23 @@ public class DeliveryActivity extends AppCompatActivity {
             inflater.inflate(R.menu.menu_delivery, menu);
         }
     }
+    /************************************************************
+     @ These are the context menu option which pop up if the item is long
+     @ clicked. Options are
+     @ 1. Remove - This will mark the delivery for deletion but will stay
+                   on the list with a cross mark.
+     @ 2. Cancel - This will just close the context menu
+     ************************************************************/
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.remove:
-                // add stuff here
+                /************************************************************
+                 @ Once remove is clicked it will prompt if user wants to
+                 @ delete the delivery or not. If the driver clicks on Yes
+                 @ it will prompt to select the reason for deletion.
+                 ************************************************************/
                 Helpers.logData(DeliveryActivity.this, "Driver deleting delivery");
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(DeliveryActivity.this);
                 alertDialogBuilder.setTitle(getString(R.string.message))
@@ -221,6 +244,10 @@ public class DeliveryActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
+    /************************************************************
+     @ This function will load all the deliveries for the customer
+     @ for the said day.
+     ************************************************************/
     public class loadDeliveries extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -243,6 +270,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }
@@ -275,6 +303,7 @@ public class DeliveryActivity extends AppCompatActivity {
             while (cursor.moveToNext());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     public void dispatchRefresh() {
@@ -290,6 +319,12 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+    /************************************************************
+     @ Once remove is clicked it will prompt if user wants to
+     @ delete the delivery or not. If the driver clicks on Yes
+     @ it will prompt to select the reason for deletion. This function
+     @ will load and show the reasons in a dialog form.
+     ************************************************************/
     private void showReasonDialog(ArrayList<OrderList> list, final int position) {
         try {
             final int pos = position;
@@ -328,6 +363,10 @@ public class DeliveryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    /************************************************************
+     @ This function will delete the items within the delivery no and
+     @ add it to the the table for posting the entries.
+     ************************************************************/
     private void deleteDeliveryItems(String deliveryNo, String reasonCode, String reasonDescription) {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -392,6 +431,7 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     public void deleteDelivery(int pos) {
@@ -413,6 +453,7 @@ public class DeliveryActivity extends AppCompatActivity {
         }
         statusAdapter.notifyDataSetChanged();
     }
+
     public class returnDeliveryItems extends AsyncTask<Void, Void, Void> {
         private String deliveryID = "";
         private returnDeliveryItems(String deliveryID) {
@@ -479,6 +520,12 @@ public class DeliveryActivity extends AppCompatActivity {
             }
         }
     }
+    /************************************************************
+     @ When delivery are loaded at the start of the day, stock is
+     @ blocked in the van for the delivery. Since delivery is getting
+     @ deleted, the blocked stock needs to be returned back to the
+     @ truck to be available for sale.
+     ************************************************************/
     private void returnData(Cursor cursor) {
         try {
             Helpers.logData(DeliveryActivity.this, "Returning Data to Van Stock");

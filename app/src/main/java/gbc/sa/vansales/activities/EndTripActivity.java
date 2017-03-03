@@ -27,6 +27,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +58,10 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by eheuristic on 12/10/2016.
  */
+/************************************************************
+ @ This activity is launched when user clicks on end trip from
+ @ the slide menu.
+ ************************************************************/
 public class EndTripActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
@@ -144,9 +150,14 @@ public class EndTripActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 
+    /************************************************************
+     @ Fetching all the data captured by the driver from the
+     @ driver collection screen
+     ************************************************************/
     public class loadDriverCollectionData extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -187,7 +198,10 @@ public class EndTripActivity extends AppCompatActivity {
 
         }
     }
-
+    /************************************************************
+     @ Fetching all the data captured for the customer from the
+     @ customer collection screen
+     ************************************************************/
     public class loadCollectionData extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -284,6 +298,9 @@ public class EndTripActivity extends AppCompatActivity {
         while(c.moveToNext());
         Helpers.logData(EndTripActivity.this, "Driver Cheque Total" + driverchequeTotal + "Driver Cash Total" + drivercashTotal);
     }
+    /************************************************************
+     @ Adding animation to the counter
+     ************************************************************/
     private void startCountAnimation(final TextView element,Integer value) {
 
         final Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/counterFont.ttf");

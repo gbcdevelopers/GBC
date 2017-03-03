@@ -18,12 +18,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import gbc.sa.vansales.adapters.LoadDeliveryHeaderAdapter;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
+/************************************************************
+ @ This activity shows all the load for the said driver for the
+ @ day. Could be one or multiple. This activity is launched automatically
+ @ once begin day is done or manually when the user clicks on Load button
+ @ from the manage inventory screen
+ ************************************************************/
 public class LoadActivity extends AppCompatActivity {
     private static final String TRIP_ID = "ITripId";
     public static Object o;
@@ -61,6 +69,7 @@ public class LoadActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -154,6 +163,9 @@ public class LoadActivity extends AppCompatActivity {
 
         //Log.e("adapter", "" + adapter.getCount());
     }
+    /************************************************************
+     @ Fetching loads for the driver
+     ************************************************************/
     private class fetchLoads extends AsyncTask<Void, Void, Void> {
         String tripId;
         private fetchLoads(String tripId) {

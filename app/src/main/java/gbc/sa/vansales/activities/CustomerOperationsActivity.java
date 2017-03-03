@@ -106,12 +106,6 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
                 return false;
             }
         });
-
-
-
-
-
-
        /* setupTabs();*/
         loadingSpinner = new LoadingSpinner(this);
 //        adapter = new JourneyPlanBadgeAdapter(this, journeyList);
@@ -240,20 +234,19 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
         }
         return super.onOptionsItemSelected(item);
     }
+    /* public void loadData(){
+ //        planBadgeAdapter.clear();
 
-   /* public void loadData(){
-//        planBadgeAdapter.clear();
+         for (int i = 0; i < 10; i++) {
+ //            Customer customer = createCustomerData(i);
 
-        for (int i = 0; i < 10; i++) {
-//            Customer customer = createCustomerData(i);
+ //            journeyList.add(customer);
 
-//            journeyList.add(customer);
+             CustomerData customerData=createCustomerData(i);
+             dataArrayList.add(customerData);
+         }
 
-            CustomerData customerData=createCustomerData(i);
-            dataArrayList.add(customerData);
-        }
-
-    }*/
+     }*/
     public static CustomerData createCustomerData(int index) {
         CustomerData customer = new CustomerData();
         int i = 100 + index;

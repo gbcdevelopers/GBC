@@ -273,6 +273,10 @@ public class AddCustomerActivity extends AppCompatActivity {
 
         return returnvalue;
     }
+    /***************************************************
+     @ There are two drop down list for the driver to choose
+     @ distribution channel and division.
+     ***************************************************/
     void showDialog(String type,String param){
         try{
             if(type.equals("Distribution")){

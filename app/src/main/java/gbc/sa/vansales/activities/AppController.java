@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import com.crashlytics.android.ndk.CrashlyticsNdk;
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
@@ -34,7 +35,7 @@ public class AppController extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 //        Fabric.with(this, new Crashlytics());
         mInstance = this;
         System.out.println("On Create");

@@ -3,6 +3,7 @@
 				package="gbc.sa.vansales"
 				android:versionCode="0"
 				android:versionName="1.0"
+				xmlns:tools="http://schemas.android.com/tools"
 				xmlns:android="http://schemas.android.com/apk/res/android">
 
 				<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
@@ -25,15 +26,15 @@
 								android:label="@string/app_name"
 								android:supportsRtl="true"
 								android:theme="@style/AppTheme"
+								tools:node="replace"
 								>
 								<meta-data
 												android:name="com.google.android.geo.API_KEY"
 												android:value="AIzaSyB1kGfUFdnC-bFd7KDrfuX8qTCsAuPlbPE"/>
 
 								<meta-data
-												android:name="io.fabric.ApiKey"
-												android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28"
-												/>
+            android:name="io.fabric.ApiKey"
+            android:value="eebbd41c80af326a45eee71ec8328ddfbc98cdfc" />
 
 								<receiver android:name=".sap.ConnectionChangeReceiver" android:label="NetworkChangeReceiver">
 												<intent-filter>
@@ -78,11 +79,6 @@
 												android:label="@string/dashboard"
 												android:windowSoftInputMode="stateHidden"
 												android:screenOrientation="portrait" />-->
-								<activity
-												android:name=".activities.OdometerPopupActivity"
-												android:screenOrientation="portrait"
-												android:label="Single Item"/>
-
 								<activity
 									android:name=".activities.PromotioninfoActivity"
 									android:screenOrientation="portrait"
@@ -494,8 +490,5 @@
 								<meta-data
 												android:name="com.google.android.gms.version"
 												android:value="@integer/google_play_services_version"/>
-								<meta-data
-												android:name="io.fabric.ApiKey"
-												android:value="d21956d210e265d5b0c4b0501b8eccb9bf89ea28"/>
 				</application>
 </manifest>

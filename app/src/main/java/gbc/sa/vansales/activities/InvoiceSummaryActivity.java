@@ -16,6 +16,11 @@ import gbc.sa.vansales.adapters.SalesAdapter;
 /**
  * Created by eheuristic on 12/5/2016.
  */
+/************************************************************
+ @ This activity is never been used for invoice summary.
+ @ Check the other one if you came here to view code for
+ @ invoice Summary :D
+ ************************************************************/
 public class InvoiceSummaryActivity extends AppCompatActivity {
     GridView gridView;
     TextView tv_top_header;

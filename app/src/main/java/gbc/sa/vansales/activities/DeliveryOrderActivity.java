@@ -32,6 +32,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -165,8 +167,9 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             }
         });
         new loadDeliveryItems().execute();
-        //setData();
-        //registerForContextMenu(deliveryItemsList);
+        /************************************************************
+         @ Confirming delivery for the items
+         ************************************************************/
         btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,10 +211,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         deliveryItemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                try{
-                    Helpers.logData(DeliveryOrderActivity.this,"Delivery Item Clicked");
+                try {
+                    Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Clicked");
                     final DeliveryItem item = arrayList.get(position);
-                    Helpers.logData(DeliveryOrderActivity.this,"Delivery Item Selected" + item.getMaterialNo());
+                    Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Selected" + item.getMaterialNo());
                     final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
                     final String[] reasonCode = {""};
                     dialog.setContentView(R.layout.dialog_with_crossbutton);
@@ -267,10 +270,8 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     }
                     //ed_cases.setText(item.getItemCase());
                     //ed_pcs.setText(item.getItemUnits());
-
-                    ed_cases.setText(item.getItemCase().equals("0")?"":item.getItemCase());
-                    ed_pcs.setText(item.getItemUnits().equals("0")?"":item.getItemUnits());
-
+                    ed_cases.setText(item.getItemCase().equals("0") ? "" : item.getItemCase());
+                    ed_pcs.setText(item.getItemUnits().equals("0") ? "" : item.getItemUnits());
                     LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
                     iv_cancle.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -279,7 +280,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                         }
                     });
                     if (canEdit) {
-                        Helpers.logData(DeliveryOrderActivity.this,"Edit Is flagged on. Showing dialog");
+                        Helpers.logData(DeliveryOrderActivity.this, "Edit Is flagged on. Showing dialog");
                         dialog.show();
                     } else {
                     }
@@ -311,14 +312,14 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                                 strpcs = "0";
                                 item.setItemUnits(strpcs);
                             } else {
-                                item.setItemCase(strCase.trim().equals("")?"0":strCase.trim());
-                                item.setItemUnits(strpcs.trim().equals("")?"0":strpcs.trim());
+                                item.setItemCase(strCase.trim().equals("") ? "0" : strCase.trim());
+                                item.setItemUnits(strpcs.trim().equals("") ? "0" : strpcs.trim());
                                 //item.setItemCase(strCase);
                                 //item.setItemUnits(strpcs);
                                 item.setReasonCode(reasonCode[0]);
                                 arrayList.remove(position);
                                 arrayList.add(position, item);
-                                Helpers.logData(DeliveryOrderActivity.this, "Item details changed and saved" + item.getMaterialNo() +"-" + item.getItemCase()
+                                Helpers.logData(DeliveryOrderActivity.this, "Item details changed and saved" + item.getMaterialNo() + "-" + item.getItemCase()
                                         + "-" + item.getItemUnits() + "-" + item.getReasonCode() + "-" + item.getAmount());
                                 calculatePrice();
                                 adapter.notifyDataSetChanged();
@@ -326,11 +327,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
-
             }
         });
         deliveryItemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -339,6 +339,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                 return false;
             }
         });
+        /************************************************************
+         @ When edit button is clicked it will allow user to change quantity
+         @ of materials within the delivery list
+         ************************************************************/
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -607,6 +611,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             Helpers.logData(DeliveryOrderActivity.this, "Total Delivery cost" + totalamt);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     private void saveData() {
@@ -655,6 +660,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override
@@ -663,6 +669,10 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+    /************************************************************
+     @ This function will load all delivery times against the delivery
+     @ no selected by the user in the previous screen.
+     ************************************************************/
     public class loadDeliveryItems extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {

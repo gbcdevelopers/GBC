@@ -18,6 +18,7 @@ import android.widget.Toast;
 /**
  * Created by Rakshit on 21-Nov-16.
  */
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -85,6 +86,7 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
             client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override
@@ -107,6 +109,9 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         lon.add(77.1025);
         lon.add(72.8777);
     }
+    /**********************************************************
+     @ Loading all the customers to plot the customers on map
+     **********************************************************/
     private class loadCustomers extends AsyncTask<Void, Void, Void> {
         Context context;
         GoogleMap map;
@@ -156,6 +161,7 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }
@@ -174,6 +180,7 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     private void drawMarkers() {

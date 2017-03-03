@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -50,6 +52,9 @@ public class ItemListActivity extends AppCompatActivity {
         adapter = new ItemListAdapter(this, arraylist);
         list = (ListView) findViewById(R.id.listview);
     }
+    /************************************************************
+     @ Load all items coming from article header service
+     ************************************************************/
     public class loadItems extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -102,6 +107,7 @@ public class ItemListActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }

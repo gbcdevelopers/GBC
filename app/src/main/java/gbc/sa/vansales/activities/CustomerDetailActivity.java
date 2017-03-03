@@ -20,6 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
+import io.fabric.sdk.android.services.common.Crash;
 /**
  * Created by eheuristic on 12/3/2016.
  */
@@ -351,10 +354,16 @@ public class CustomerDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
     private void loadCustomerStatus() {
+        /*************************************************
+         @ Loading all the customer status to show in case
+         @ if driver clicked on back button without performing
+         @ any operation on the customer
+         **************************************************/
         try{
             for (Reasons reason : reasonsList) {
                 CustomerStatus status = new CustomerStatus();
@@ -375,6 +384,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -401,6 +411,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return false;
     }
@@ -458,7 +469,10 @@ public class CustomerDetailActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    /*To check if customer has any pending invoices due by today*/
+    /***********************************************************
+    @ To check if customer has any pending invoices due by today
+    @ these are fetched from the Customer open items web service
+    ***********************************************************/
     private boolean canPerformSale() {
         int trueCount = 0;
         int falseCount = 0;
@@ -506,12 +520,18 @@ public class CustomerDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return true;
 
         //return true;
     }
-    /*To calculate available limit*/
+    /**********************************************************
+     @ Calculating available limit for the customer.
+     @ To calculate available limit its calculated against
+     @ credit limit of customer - available limit - sum of all the
+     @ open items
+     *********************************************************/
     private void calculateAvailableLimit() {
         try {
             HashMap<String, String> map = new HashMap<>();
@@ -564,6 +584,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override

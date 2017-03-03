@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +48,11 @@ import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
+/************************************************************
+ @ This activity is used to view details of the Sales invoice
+ @ in terms of sales, good returns and bad returns. Free of Cost
+ @ (FOC) is currently not implemented in the application
+ ************************************************************/
 public class InvoiceSummeryActivity extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
@@ -178,6 +185,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         Button btn_complete_invoice = (Button) findViewById(R.id.btn_complete_invoice);
@@ -207,6 +215,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             }
         });
     }
+    /************************************************************
+     @ Loading all the sales data for the customer
+     ************************************************************/
     public class loadData extends AsyncTask<Void, Void, Void> {
         float case_sale = 0;
         float unit_sale = 0;
@@ -309,6 +320,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             }
         }
     }
+    /************************************************************
+     @ Loading free of Cost data for the customer
+     ************************************************************/
     public class loadFOC extends AsyncTask<Void, Void, Void> {
         float case_sale = 0;
         float unit_sale = 0;
@@ -345,6 +359,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             et_foc_amount.setText("N/A");
         }
     }
+    /************************************************************
+     @ Loading good returns and bad returns data for the customer
+     ************************************************************/
     public class loadReturns extends AsyncTask<Void, Void, Void> {
         float case_sale = 0;
         float unit_sale = 0;
@@ -424,6 +441,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             tv_total_amount.setText(String.valueOf(totalamnt));
         }
     }
+    /************************************************************
+     @ Not used
+     ************************************************************/
     public class postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> returnList;
         private String orderID = "";
@@ -500,6 +520,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             }
         }
     }
+    /************************************************************
+     @ Not used
+     ************************************************************/
     public String postData() {
         String orderID = "";
         try {
@@ -571,6 +594,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         }
         return orderID;
     }
+    /************************************************************
+     @ Not used
+     ************************************************************/
     public void updateStockinVan() {
         try{
             loadingSpinner.show();
@@ -617,6 +643,9 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         }
 
     }
+    /************************************************************
+     @ Not used
+     ************************************************************/
     public void showDialog(String type) {
         try{
             final Dialog dialog = new Dialog(InvoiceSummeryActivity.this);

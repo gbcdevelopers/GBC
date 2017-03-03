@@ -158,6 +158,14 @@ public class PrintDocumentActivity extends AppCompatActivity {
 
     }
 
+    /********************************************************
+     @ Reading data for all the printable activities possible
+     @ on the device which were executed.
+     @ Load Summary, Order Request, Load Request, Sales Invoice,
+     @ Invoice Receipt, Delivery Note, Good Return, Bad Return,
+     @ Unload Summary etc.
+     ********************************************************/
+
     public class loadPrintItems extends AsyncTask<Void,Void,Void> {
         @Override
         protected void onPreExecute() {
@@ -251,7 +259,6 @@ public class PrintDocumentActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
-
     private void setPrintItems(Cursor loadSummaryCursor,Cursor loadRequestCursor,Cursor cursor1, Cursor cursor2, Cursor cursor3,Cursor cursor4, Cursor cursor5,Cursor cursor6, Cursor cursor7,Cursor cursor8){
         Cursor loadSummary = loadSummaryCursor;
         Cursor loadRequest = loadRequestCursor;

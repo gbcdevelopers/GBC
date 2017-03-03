@@ -149,24 +149,11 @@ public class PrintCustomerActivity extends AppCompatActivity {
 
         new loadPrintItems().execute();
     }
-    public void getData()
-    {
-
-
-        /*for(int i=0;i<10;i++)
-        {
-            ItemList model = new ItemList();
-            model.setItem_number(i);
-            model.setItem_des("print items");
-            model.setCase_price(100 + i);
-
-            arrayList.add(model);
-        }
-
-        adapter = new PriceListAdapter(PrintCustomerActivity.this,arrayList);
-        listView.setAdapter(adapter);*/
-    }
-
+    /********************************************************
+     @ Loading all the print documents for the customer
+     @ for eg order request, sales invoice, invoice receipt,
+     @ delivery note, good return/bad return note
+     ********************************************************/
     public class loadPrintItems extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {

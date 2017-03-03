@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.daimajia.swipe.SwipeLayout;
 
 import java.util.ArrayList;
@@ -58,6 +59,10 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
+/**************************************************************
+ @ This activity is called when the user clicks on the load for
+ @ the day. It brings down all the line items for the load.
+ **************************************************************/
 public class LoadSummaryActivity extends AppCompatActivity {
     private ArrayList<LoadSummary> loadSummaryList;
     private ArrayList<LoadSummary> loadSummaryUnmodList;
@@ -100,6 +105,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.list_item);
         verifyAll = (Button) findViewById(R.id.btn_verify_all);
         loadListView = (ListView) findViewById(R.id.srListView);
+        /**************************************************************
+         @ Showing dialog when a particular item is clicked in the list
+         @ to record the variance against the original stock
+         **************************************************************/
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
@@ -233,6 +242,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -244,6 +254,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // listView.setAdapter(null);
                 // LoadActivity.fullObject.setStatus("Checked");
+                /*********************************************************
+                 @ This is called when verify all button is clicked on the
+                 @ header
+                 *********************************************************/
                 Helpers.logData(LoadSummaryActivity.this, "Driver verified the load by clicking verify all");
                 loadSummaryUnmodList = loadDataOld();
                 Intent intent = new Intent(LoadSummaryActivity.this, LoadVerifyActivity.class);
@@ -251,17 +265,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 intent.putParcelableArrayListExtra("loadSummaryOld", loadSummaryUnmodList);
                 intent.putExtra("headerObj", object);
                 startActivity(intent);
-
-                /*String size=Integer.toString(0);
-                if(size=="0")
-                {
-                    Toast.makeText(getApplicationContext(), "All Loads Verified",Toast.LENGTH_SHORT).show();
-
-                    Toast.makeText(getApplicationContext(), "Going to VanStock",Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(LoadSummaryActivity.this,VanStockActivity.class);
-                    startActivity(i);
-                }
-                Toast.makeText(getApplicationContext(),"Load Verified!",Toast.LENGTH_SHORT).show();*/
             }
         });
     }
@@ -284,6 +287,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
             loadSummaryList.add(loadSummary);
         }
     }
+    /*********************************************************
+     @ Calculating the cost of the load with its base price
+     *********************************************************/
     private void calculateCost() {
         int salesTotal = 0;
         int pcsTotal = 0;
@@ -300,6 +306,11 @@ public class LoadSummaryActivity extends AppCompatActivity {
         tv.setText(String.valueOf(total));
         adapter.notifyDataSetChanged();//update adapter
     }
+    /*********************************************************
+     @ Loading unchanged data for the load against the load
+     @ number which was originally saved when downloaded from the
+     @ webservice
+     *********************************************************/
     private ArrayList<LoadSummary> loadDataOld() {
         // adapter.clear();
         try {
@@ -369,6 +380,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         return loadSummaryUnmodList;
     }
+    /*********************************************************
+     @ Not used anymore
+     *********************************************************/
     private void setListView() {
         try {
             LayoutInflater inflater = getLayoutInflater();
@@ -380,6 +394,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         // listView.addHeaderView(header);
     }
+    /*********************************************************
+     @ Not used anymore
+     *********************************************************/
     private void setSwipeViewFeatures() {
         //set show mode.
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
@@ -463,6 +480,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         return loadSummary;
     }
+    /*********************************************************
+     @ Fetching load items against the load number selected.
+     *********************************************************/
     private class loadSummary extends AsyncTask<String, Void, Void> {
         private String deliveryNo;
         private loadSummary(String deliveryNo) {
@@ -633,6 +653,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
         reasons.setReasonType("");
         reasonsList.add(0, reasons);
     }
+    /*********************************************************
+     @ Filtering reasons starting with reason code "ZU" which
+     @ are to be used when in load or unload screen.
+     *********************************************************/
     private void refine(ArrayList<Reasons>arrayList){
         ArrayList<Reasons>temp = new ArrayList<>();
         for(Reasons reasons:arrayList){

@@ -1,19 +1,13 @@
 package gbc.sa.vansales.Fragment;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.Service;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,36 +16,23 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.EditText;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.activities.BeginDay;
 import gbc.sa.vansales.activities.BeginTripActivity;
-import gbc.sa.vansales.activities.DashboardActivity;
 import gbc.sa.vansales.activities.LoadActivity;
-import gbc.sa.vansales.activities.LoadSummaryActivity;
-import gbc.sa.vansales.activities.OdometerPopupActivity;
-import gbc.sa.vansales.activities.UnloadActivity;
 import gbc.sa.vansales.data.DriverRouteFlags;
-import gbc.sa.vansales.data.TripHeader;
-import gbc.sa.vansales.sap.DataListener;
 import gbc.sa.vansales.sap.IntegrationService;
 import gbc.sa.vansales.utils.ConfigStore;
 import gbc.sa.vansales.utils.DatabaseHandler;
@@ -59,12 +40,6 @@ import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
-import static gbc.sa.vansales.R.id.currentMonth;
-import static gbc.sa.vansales.R.id.day;
-import static gbc.sa.vansales.R.id.editTextDialogUserInput;
-import static gbc.sa.vansales.R.id.thing_proto;
 /**
  * Created by eheuristic on 12/2/2016.
  */

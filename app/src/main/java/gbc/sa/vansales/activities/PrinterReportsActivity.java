@@ -219,7 +219,6 @@ public class PrinterReportsActivity extends AppCompatActivity {
             }
         }
     }
-
     public void loadData(String type){
         switch (type){
             case App.DEPOSIT_REPORT:{
@@ -441,7 +440,6 @@ public class PrinterReportsActivity extends AppCompatActivity {
             }
         }
     }
-
     public void printReport(String type){
         PrinterHelper object = new PrinterHelper(PrinterReportsActivity.this,PrinterReportsActivity.this);
 
@@ -856,6 +854,4 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         return jArr;
     }
-
-
 }

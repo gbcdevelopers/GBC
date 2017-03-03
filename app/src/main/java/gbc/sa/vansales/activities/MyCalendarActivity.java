@@ -133,30 +133,6 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
         adapter.notifyDataSetChanged();
         calendarView.setAdapter(adapter);
     }
-//	private DatePickerDialog createDialogWithoutDateField() {
-//		DatePickerDialog dpd = new DatePickerDialog(this, null, 2014, 1, 24);
-//		try {
-//			java.lang.reflect.Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
-//			for (java.lang.reflect.Field datePickerDialogField : datePickerDialogFields) {
-//				if (datePickerDialogField.getName().equals("mDatePicker")) {
-//					datePickerDialogField.setAccessible(true);
-//					DatePicker datePicker = (DatePicker) datePickerDialogField.get(dpd);
-//					java.lang.reflect.Field[] datePickerFields = datePickerDialogField.getType().getDeclaredFields();
-//					for (java.lang.reflect.Field datePickerField : datePickerFields) {
-//						Log.i("dialog_with_crossbutton", datePickerField.getName());
-//						if ("mDaySpinner".equals(datePickerField.getName())) {
-//							datePickerField.setAccessible(true);
-//							Object dayPicker = datePickerField.get(datePicker);
-//							((View) dayPicker).setVisibility(View.GONE);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		catch (Exception ex) {
-//		}
-//		return dpd;
-//	}
     @Override
     public void onClick(View v) {
         if (v == prevMonth) {

@@ -49,6 +49,10 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Rakshit on 19-Nov-16.
  */
+/*********************************************************
+ @ Once variance are captured, this activity will be launched
+ @ and user will see the quantity and their variance
+ *********************************************************/
 public class LoadVerifyActivity extends AppCompatActivity {
     ArrayList<LoadSummary> loadSummaryList;
     ArrayList<LoadSummary> varianceLoadSummaryList;
@@ -74,6 +78,11 @@ public class LoadVerifyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         dataNew = new ArrayList<>();
         dataOld = new ArrayList<>();
+        /*********************************************************
+         @ dataNew will contain the changed data that the user must have
+         @ recorded.
+         @ dataOld will contain the unchanged data that was originally loaded
+         *********************************************************/
         dataNew = intent.getParcelableArrayListExtra("loadSummary");
         dataOld = intent.getParcelableArrayListExtra("loadSummaryOld");
         object = (LoadDeliveryHeader) intent.getParcelableExtra("headerObj");
@@ -88,6 +97,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.loadSummaryList);
         listView.setAdapter(adapter);
     }
+    /*********************************************************
+     @ Calculating total cost of the changed load
+     *********************************************************/
     private void calculateCost() {
         try{
             int salesTotal = 0;
@@ -109,6 +121,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+    /*********************************************************
+     @ Confirming the load the user had entered
+     *********************************************************/
     public void confirmLoad(View v) {
         Helpers.logData(LoadVerifyActivity.this, "Confirm clicked on load verify screen");
         try{
@@ -118,6 +133,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
             filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
             db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
             addItemstoVan(dataNew);
+            /*********************************************************
+             @ If the user has reached to the last of the load,
+             @ then create a post request and submit it.
+             *********************************************************/
             if (!checkIfLoadExists()) {
                 Helpers.logData(LoadVerifyActivity.this, "Reached to the last load and preparing data for post");
                 if (createDataForPost(dataNew, dataOld)){
@@ -174,7 +193,12 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 /*Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);*/
                 }
-            } else {
+            }
+            /*********************************************************
+             @ If there are more loads for the user, create a post request
+             @ and go back to the load screen.
+             *********************************************************/
+            else {
                 Helpers.logData(LoadVerifyActivity.this, "Adding Data to mark as post and going back for another load");
                 HashMap<String, String> searchMap = new HashMap<>();
                 searchMap.put(db.KEY_ORDER_ID, "");
@@ -204,8 +228,11 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+    /*********************************************************
+     @ If user clicks on cancel button, ask the user for confirmation
+     @ and take the user back to the previous screen
+     *********************************************************/
     public void cancel(View v) {
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadVerifyActivity.this);
         alertDialogBuilder.setTitle(getString(R.string.message))
                 .setMessage(getString(R.string.cancel_msg))
@@ -234,6 +261,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
 
     }
+    /*********************************************************
+     @ Check if there are any loads for the user that is not verified
+     *********************************************************/
     private boolean checkIfLoadExists() {
         try{
             HashMap<String, String> map = new HashMap<>();
@@ -258,6 +288,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+    /*********************************************************
+     @ Check if the material already exists in the van or not.
+     *********************************************************/
     private boolean checkMaterialExists(String materialno, String uom) {
         try{
             HashMap<String, String> map = new HashMap<>();
@@ -288,6 +321,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+    /*********************************************************
+     @ Adding the verified load to the Van.
+     *********************************************************/
     private void addItemstoVan(ArrayList<LoadSummary> dataNew) {
         Helpers.logData(LoadVerifyActivity.this,"Adding items to van");
         try{
@@ -446,6 +482,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+
     private boolean createDataForPost(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
         try{
             for (int i = 0; i < dataNew.size(); i++) {
@@ -471,6 +508,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
         return true;
     }
+    /*********************************************************
+     @ Generating data to show on screen
+     *********************************************************/
     public ArrayList<LoadSummary> generateData(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
         try{
             Helpers.logData(LoadVerifyActivity.this, "Generating data to show on screen");
@@ -502,6 +542,12 @@ public class LoadVerifyActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
         return loadSummaryList;
     }
+    /*****************************************************************************************
+     @ Recording variance and creating post request. If there is any
+     @ variance a driver debit/credit note is created.
+     @ Debit Note : If the actual quantity recorded for item is less than the loaded quantity
+     @ Credit Note : If the actual quantity recorded for item is more than the loaded quantity
+     ****************************************************************************************/
     private boolean addVarianceforPost(ArrayList<LoadSummary> dataNew, ArrayList<LoadSummary> dataOld) {
         try{
             for (int i = 0; i < dataNew.size(); i++) {
@@ -891,6 +937,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
             }*/
         }
     }
+    /*****************************************************************************************
+     @ If there are delivery for the customer, stocked needs to be blocked from the van for the customer
+     @ against the materials in the van.
+     ****************************************************************************************/
     public class updateStockforCustomer extends AsyncTask<Void, Void, Void> {
         LoadingSpinner updateSpinner = new LoadingSpinner(LoadVerifyActivity.this, getString(R.string.updatingdata));
         @Override
@@ -961,6 +1011,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
 
         }
     }
+
     void calculateStock() {
         Helpers.logData(LoadVerifyActivity.this,"Updating stock for customer start");
         try{
@@ -1064,6 +1115,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
 
     }
+    /*****************************************************************************************
+     @ Creating data for print and saving it in DB for future printing
+     ****************************************************************************************/
     public JSONArray createPrintData(String orderDate,String orderNo){
         JSONArray jArr = new JSONArray();
         try{
@@ -1140,6 +1194,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         return jArr;
     }
+    /*****************************************************************************************
+     @ Callback function once the printing is completed
+     ****************************************************************************************/
     public void callbackFunction(){
         Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
         startActivity(intent);

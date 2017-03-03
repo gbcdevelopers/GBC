@@ -42,6 +42,8 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,6 +75,11 @@ import gbc.sa.vansales.utils.UrlBuilder;
 /**
  * Created by Muhammad Umair on 02/12/2016.
  */
+/************************************************************
+ @ This activity is used to create a load request. This activity
+ @ is launched when the user clicks on Load Request from the
+ @ manage inventory screen
+ ************************************************************/
 public class LoadRequestActivity extends AppCompatActivity {
     Button processLoadRequest;
     ListView list;
@@ -123,22 +130,16 @@ public class LoadRequestActivity extends AppCompatActivity {
                 putOnHoldValueChanged = true;
                 if (isChecked) {
                     isPutOnHold = true;
-                    //Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
                 } else {
                     isPutOnHold = false;
-                    // Toast.makeText(getApplicationContext(),String.valueOf(isPutOnHold),Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        // Generate sample data
         datepickerdialogbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // setContentView(R.layout.activity_load_request);
                 new DatePickerDialog(LoadRequestActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-                /*DialogFragment dialogfragment = new DatePickerDialogClass();
-                dialogfragment.show(getFragmentManager(), "Please Select Your Date");*/
             }
         });
         date = new DatePickerDialog.OnDateSetListener() {
@@ -152,12 +153,15 @@ public class LoadRequestActivity extends AppCompatActivity {
                 updateLabel();
             }
         };
-
+        /************************************************************
+         @ This will post or save the load request data based on whether
+         @ the checkbox is clicked or not. If put on hold is checked
+         @ the data entered is not posted but saved in the database of the device
+         @ Once its unchecked only then data will be added for post.
+         ************************************************************/
         processLoadRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*new postData().execute();*/
-                //String purchaseNum = isPutOnHold?"":Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type);
                 setTitle("Print Activity");
                 try{
                     if (putOnHoldValueChanged) {
@@ -540,6 +544,10 @@ public class LoadRequestActivity extends AppCompatActivity {
                 //Log.e("Filter","" + adapter.getFilter());
             }
         });
+        /************************************************************
+         @ Opening dialog for changing item quantities when user selects
+         @ the item
+         ************************************************************/
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -887,6 +895,9 @@ public class LoadRequestActivity extends AppCompatActivity {
 
         //  adapter.notifyDataSetChanged();
     }
+    /************************************************************
+     @ Creating request for posting data.
+     ************************************************************/
     public class postData extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> returnList;
         private String orderID = "";
@@ -1002,6 +1013,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }
@@ -1015,25 +1027,16 @@ public class LoadRequestActivity extends AppCompatActivity {
         return db.checkData(db.LOAD_REQUEST,map);
     }
     public void createBackgroundJob(){
-
+        /************************************************************
+         @ If network is available create a background job
+         ************************************************************/
         if(Helpers.isNetworkAvailable(getApplicationContext())){
             Helpers.createBackgroundJob(getApplicationContext());
         }
-        /*BackgroundJob backgroundJob = new BackgroundJob(LoadRequestActivity.this);
-        ComponentName mServiceComponent = new ComponentName(this, BackgroundJob.class);
-        JobInfo.Builder builder = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            builder = new JobInfo.Builder(kJobId++, mServiceComponent);
-            builder.setMinimumLatency(2 * 1000); // wait at least
-            builder.setOverrideDeadline(50 * 1000); // maximum delay
-            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // require unmetered network
-            builder.setRequiresDeviceIdle(false); // device should be idle
-            builder.setRequiresCharging(false); // we don't care if the device is charging or not
-            JobScheduler jobScheduler = (JobScheduler) getApplication().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(builder.build());
-        }*/
-
     }
+    /************************************************************
+     @ This method will create a printout when post is completed
+     ************************************************************/
     private void createPrintout(String orderDate,String orderNo,boolean isDelayPrint){
         if(!isDelayPrint){
             try{
@@ -1080,6 +1083,12 @@ public class LoadRequestActivity extends AppCompatActivity {
 
         }
     }
+    /************************************************************
+     @ Creating a json array so that when the user selects do not
+     @ print and wants to print in future we dont have to regenerate
+     @ the data. Rather can save the generated json array within the
+     @ database for future printing
+     ************************************************************/
     public JSONArray createPrintData(String orderDate,String orderNo){
         JSONArray jArr = new JSONArray();
         try{
@@ -1159,9 +1168,13 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
+    /************************************************************
+     @ Callback method is called once printing is completed
+     ************************************************************/
     public void callback(){
         Intent intent = new Intent(LoadRequestActivity.this, ManageInventory.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

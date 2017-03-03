@@ -313,7 +313,6 @@ public class PaymentDetails extends AppCompatActivity {
                 total_amt = cash_amt + check_amt;
                 if(allowPartial){
                     if (from.equals("delivery")) {
-
                         HashMap<String, String> map = new HashMap<String, String>();
                         map.put(db.KEY_AMOUNT_CLEARED, "");
                         map.put(db.KEY_CASH_AMOUNT, "");

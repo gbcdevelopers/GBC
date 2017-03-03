@@ -27,6 +27,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,6 +63,10 @@ import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.PrinterHelper;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
+/************************************************************
+ @ This activity is called when driver selects a line item from
+ @ the driver collections screen
+ ************************************************************/
 public class DriverPaymentDetails extends AppCompatActivity {
     ImageView iv_back;
     TextView tv_top_header;
@@ -236,6 +242,9 @@ public class DriverPaymentDetails extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /************************************************************
+                 @ Adding data in driver collection table
+                 ************************************************************/
                 try{
                     double cash_amt = getcashamt();
                     double check_amt = getcheckamt();
@@ -432,6 +441,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -451,12 +461,18 @@ public class DriverPaymentDetails extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         tv_date.setText(sdf.format(myCalendar.getTime()));
     }
+    /************************************************************
+     @ Returns cash amount entered by the user
+     ************************************************************/
     public double getcashamt() {
         if (edt_cash_amt.getText().toString().equals("")) {
             return 0;
         }
         return Double.parseDouble(edt_cash_amt.getText().toString());
     }
+    /************************************************************
+     @ Returns cheque amount entered by the user
+     ************************************************************/
     public double getcheckamt() {
         if (edt_check_amt.getText().toString().equals("")) {
             return 0;
