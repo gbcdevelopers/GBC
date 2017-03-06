@@ -387,6 +387,7 @@
     <string name="start">START</string>
     <string name="stocktake">Berain-Take Stock</string>
     <string name="submit">Submit Order</string>
+    <string name="submitsurvey">Submit Survey</string>
     <string name="synchronize">Synchronize Data</string>
     <string name="targetgoal">TARGET/GOALS</string>
     <string name="targetachieved">Achieved/Target</string>
