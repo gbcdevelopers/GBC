@@ -508,6 +508,7 @@ public class CustomerDetailActivity extends AppCompatActivity {
                 while (cursor.moveToNext());
                 if(falseCount>0){
                     return false;
+                    //return true;
                 }
                 else{
                     return true;

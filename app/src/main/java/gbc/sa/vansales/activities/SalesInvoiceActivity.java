@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,10 +112,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     }
                     if(Const.brBundle!=null){
                         badReturnList = Const.brBundle.getParcelableArrayList("br");
-                        Helpers.logData(SalesInvoiceActivity.this, "GR done are" + badReturnList.size());
+                        Helpers.logData(SalesInvoiceActivity.this, "BR done are" + badReturnList.size());
                     }
                     if(Const.focBundle!=null){
                         focList = Const.focBundle.getParcelableArrayList("foc");
+                        Helpers.logData(SalesInvoiceActivity.this, "FOC done are" + badReturnList.size());
                     }
                     if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
                         salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList,focList);
@@ -244,10 +247,11 @@ public class SalesInvoiceActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        switch (tab_position) {
-            case 0:
-                button1.setVisibility(View.INVISIBLE);
-                button.setVisibility(View.INVISIBLE);
+        try{
+            switch (tab_position) {
+                case 0:
+                    button1.setVisibility(View.INVISIBLE);
+                    button.setVisibility(View.INVISIBLE);
 //                if (SalesFragment.salesarrayList != null && SalesFragment.adapter != null) {
 //                    ArrayList<Sales> productArrayList = new ArrayList<>();
 //                    for (int i = 0; i < Const.addlist.size(); i++) {
@@ -260,56 +264,63 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 //                    SalesFragment.salesarrayList.addAll(productArrayList);
 //                    SalesFragment.adapter.notifyDataSetChanged();
 //                }
-                break;
-            case 1:
-                /*if (FocFragment.salesarrayList != null && FocFragment.adapter != null) {
-                    ArrayList<Sales> productArrayList = new ArrayList<>();
-                    for (int i = 0; i < Const.addlist.size(); i++) {
-                        Sales sales = new Sales();
-                        sales.setName(Const.addlist.get(i));
-                        sales.setCases("0");
-                        sales.setPic("0");
-                        productArrayList.add(sales);
+                    break;
+                case 1:
+                    if (FocFragment.salesarrayList != null && FocFragment.adapter != null) {
+                        ArrayList<Sales> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < Const.addlist.size(); i++) {
+                            Sales sales = new Sales();
+                            sales.setName(Const.addlist.get(i));
+                            sales.setCases("0");
+                            sales.setPic("0");
+                            productArrayList.add(sales);
+                        }
+                        Log.e("On Resume","FOC");
+                       // FocFragment.salesarrayList.addAll(productArrayList);
+                        FocFragment.adapter.notifyDataSetChanged();
                     }
-                    FocFragment.salesarrayList.addAll(productArrayList);
-                    FocFragment.adapter.notifyDataSetChanged();
-                }*/
-                break;
-            case 2:
-                if (GListFragment.arrProductList != null && GListFragment.adapter != null) {
-                    ArrayList<Sales> productArrayList = new ArrayList<>();
-                    for (int i = 0; i < Const.addlist.size(); i++) {
-                        Sales sales = new Sales();
-                        sales.setName(Const.addlist.get(i));
-                        sales.setCases("0");
-                        sales.setPic("0");
-                        productArrayList.add(sales);
-                    }
-                    Log.e("On Resume","Good Return");
-                    //GListFragment.arrProductList.addAll(productArrayList);
-                    GListFragment.adapter.notifyDataSetChanged();
+                    break;
+                case 2:
+                    if (GListFragment.arrProductList != null && GListFragment.adapter != null) {
+                        ArrayList<Sales> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < Const.addlist.size(); i++) {
+                            Sales sales = new Sales();
+                            sales.setName(Const.addlist.get(i));
+                            sales.setCases("0");
+                            sales.setPic("0");
+                            productArrayList.add(sales);
+                        }
+                        Log.e("On Resume","Good Return");
+                        //GListFragment.arrProductList.addAll(productArrayList);
+                        GListFragment.adapter.notifyDataSetChanged();
 
-                }
-                break;
-            case 3:
-                if (BListFragment.arrProductList != null && BListFragment.adapter != null) {
-                    ArrayList<Sales> productArrayList = new ArrayList<>();
-                    for (int i = 0; i < Const.addlist.size(); i++) {
-                        Sales sales = new Sales();
-                        sales.setName(Const.addlist.get(i));
-                        sales.setCases("0");
-                        sales.setPic("0");
-                        productArrayList.add(sales);
                     }
-                    //BListFragment.arrProductList.addAll(productArrayList);
-                    Log.e("On Resume","Bad Return");
-                    BListFragment.adapter.notifyDataSetChanged();
+                    break;
+                case 3:
+                    if (BListFragment.arrProductList != null && BListFragment.adapter != null) {
+                        ArrayList<Sales> productArrayList = new ArrayList<>();
+                        for (int i = 0; i < Const.addlist.size(); i++) {
+                            Sales sales = new Sales();
+                            sales.setName(Const.addlist.get(i));
+                            sales.setCases("0");
+                            sales.setPic("0");
+                            productArrayList.add(sales);
+                        }
+                        //BListFragment.arrProductList.addAll(productArrayList);
+                        Log.e("On Resume","Bad Return");
+                        BListFragment.adapter.notifyDataSetChanged();
 
-                }
-                break;
-            default:
-                break;
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
 
     @Override
@@ -410,6 +421,36 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                     }
                     Helpers.logData(SalesInvoiceActivity.this,"Sales done for ref no" + orderID + ":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
                             + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
+
+                    if(focList.size()>0){
+                        for(Sales sales:focList){
+                            HashMap<String,String>mapFOC = new HashMap<String, String>();
+                            mapFOC.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                            mapFOC.put(db.KEY_TRIP_ID,"");
+                            mapFOC.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                            mapFOC.put(db.KEY_ORDER_ID,orderID);
+                            mapFOC.put(db.KEY_PURCHASE_NUMBER,orderID);
+                            mapFOC.put(db.KEY_ITEM_NO, sale.getItem_code());
+                            mapFOC.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                            mapFOC.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                            mapFOC.put(db.KEY_MATERIAL_GROUP, "");
+                            mapFOC.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                            mapFOC.put(db.KEY_ORG_CASE, sale.getCases());
+                            mapFOC.put(db.KEY_UOM,sale.getUom());
+                            mapFOC.put(db.KEY_ORG_UNITS, sale.getPic());
+                            mapFOC.put(db.KEY_AMOUNT, sale.getPrice());
+                            mapFOC.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                            mapFOC.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                            if(db.checkData(db.FOC_INVOICE,updateFilter)){
+                                db.updateData(db.FOC_INVOICE, mapFOC,updateFilter);
+                            }
+                            else{
+                                if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                    db.addData(db.FOC_INVOICE,mapFOC);
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if(grList.size()>0){
@@ -591,7 +632,6 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 
                 if(salesInvoiceList.size()>0){
                     if(value){
-
                         for (Sales sale : salesInvoiceList) {
                             HashMap<String, String> map = new HashMap<>();
                             map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
@@ -614,6 +654,31 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                             }
                             Helpers.logData(SalesInvoiceActivity.this,"Sale done for Reference" + purchaseNumber +":" + sale.getMaterial_no() + "-" + sale.getMaterial_description()
                                     + "-" + sale.getCases() + "-" + sale.getPic() + "-" + sale.getUom() + "-" + sale.getPrice());
+                        }
+
+                        if(focList.size()>0){
+                            for(Sales sale:focList){
+                                HashMap<String,String>map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_TRIP_ID,"");
+                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                map.put(db.KEY_ORDER_ID,purchaseNumber);
+                                map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                                map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                                map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                                map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                map.put(db.KEY_MATERIAL_GROUP, "");
+                                map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                                map.put(db.KEY_ORG_CASE, sale.getCases());
+                                map.put(db.KEY_UOM,sale.getUom());
+                                map.put(db.KEY_ORG_UNITS, sale.getPic());
+                                map.put(db.KEY_AMOUNT, sale.getPrice());
+                                map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                                if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                    db.addData(db.FOC_INVOICE, map);
+                                }
+                            }
                         }
 
                         //Check if any GR was done before invoice

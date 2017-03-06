@@ -325,6 +325,7 @@
 				<string name="receipit">ايصال</string>
 				<string name="reference_no">رقم المرجع</string>
 				<string name="reload_data">اعاده التحميل</string>
+				<string name="reload_msg">Are you sure you want to reload. Confirming will lock all the transactions until you confirm the load</string>
 				<string name="remark">تعليق</string>
 				<string name="rental">تاجير</string>
 				<string name="requiredFields">يرجى تعبئة جميع الحقول المطلوبة</string>

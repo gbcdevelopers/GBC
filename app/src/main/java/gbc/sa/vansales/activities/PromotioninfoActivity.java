@@ -73,6 +73,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     ArrayList<Sales> arraylist = new ArrayList<>();
     ArrayList<Sales> arraylistGR = new ArrayList<>();
     ArrayList<Sales> arraylistBR = new ArrayList<>();
+    ArrayList<Sales> focList = new ArrayList<>();
     ArrayList<Sales> grList = new ArrayList<>();
     ArrayList<Sales> brList = new ArrayList<>();
     ArrayList<DeliveryItem> deliveryArrayList = new ArrayList<>();
@@ -1150,6 +1151,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                 filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                 Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
+                Cursor foccursor = db.getData(db.FOC_INVOICE,map,filter);
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     do {
@@ -1185,6 +1187,24 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     }
                     while (cursor.moveToNext());
                 }
+                if(foccursor.getCount()>0){
+                    foccursor.moveToFirst();
+                    do {
+                        Sales sale = new Sales();
+                        sale.setMaterial_no(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        sale.setMaterial_description(UrlBuilder.decodeString(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                        sale.setPic(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        sale.setCases(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        sale.setUom(foccursor.getString(foccursor.getColumnIndex(db.KEY_UOM)));
+                        float tempPrice = 0;
+                        HashMap<String, String> filterComp = new HashMap<>();
+                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        filterComp.put(db.KEY_MATERIAL_NO, foccursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        sale.setPrice(String.valueOf(tempPrice));
+                        focList.add(sale);
+                    }
+                    while (foccursor.moveToNext());
+                }
                 if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
                     for (Sales sale : arraylist) {
                         HashMap<String, String> postmap = new HashMap<String, String>();
@@ -1198,6 +1218,21 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
                         filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
                         db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
+
+                    }
+                    for (Sales sale : focList) {
+                        HashMap<String, String> postmap = new HashMap<String, String>();
+                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        HashMap<String, String> filtermap = new HashMap<>();
+                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                        //Update foc table on Generation of Invoice
+                        db.updateData(db.FOC_INVOICE,postmap,filtermap);
                     }
                     //Creating an invoice for customer
                     if (object.getPaymentMethod().equals(App.CREDIT_CUSTOMER) || object.getPaymentMethod().equals(App.TC_CUSTOMER)) {
@@ -1603,6 +1638,41 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                 loadingSpinner.show();
                 //Log.e("ArrayList Size", "" + arraylist.size());
                 for (Sales sale : arraylist) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_MATERIAL_NO, "");
+                    map.put(db.KEY_REMAINING_QTY_CASE, "");
+                    map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                    HashMap<String, String> filter = new HashMap<>();
+                    // Log.e("Filter MN", "" + sale.getMaterial_no());
+                    filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                    Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                    // Log.e("Cursor count", "" + cursor.getCount());
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        do {
+                            HashMap<String, String> updateDataMap = new HashMap<>();
+                            float remainingCase = 0;
+                            float remainingUnit = 0;
+                            remainingCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                            remainingUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                            //Log.e("RemainingCs", "" + remainingCase + sale.getCases());
+                            //Log.e("RemainingPc", "" + remainingUnit + sale.getPic());
+                            if (!(sale.getCases().isEmpty() || sale.getCases().equals("") || sale.getCases() == null || sale.getCases().equals("0"))) {
+                                remainingCase = remainingCase - Float.parseFloat(sale.getCases());
+                            }
+                            if (!(sale.getPic().isEmpty() || sale.getPic().equals("") || sale.getPic() == null || sale.getPic().equals("0"))) {
+                                remainingUnit = remainingUnit - Float.parseFloat(sale.getPic());
+                            }
+                            updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                            updateDataMap.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingUnit));
+                            HashMap<String, String> filterInter = new HashMap<>();
+                            filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);
+                        }
+                        while (cursor.moveToNext());
+                    }
+                }
+                for (Sales sale : focList) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_MATERIAL_NO, "");
                     map.put(db.KEY_REMAINING_QTY_CASE, "");
@@ -2361,6 +2431,30 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     jData.put(data);
                 }
             }
+            JSONArray focData = new JSONArray();
+            for (Sales obj : focList) {
+                if (Double.parseDouble(obj.getCases()) > 0 || Double.parseDouble(obj.getPic()) > 0) {
+                    JSONArray data = new JSONArray();
+                    data.put(StringUtils.stripStart(obj.getMaterial_no(), "0"));
+                    data.put(UrlBuilder.decodeString(obj.getMaterial_description()));
+                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,obj.getMaterial_no());
+                    if(articleHeader!=null){
+                        data.put(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                    }
+                    else{
+                        data.put(App.ARABIC_TEXT_MISSING);
+                    }
+                    //data.put("شد 48*200مل بيرين PH8");
+                    //data.put("شد 48*200مل بيرين PH8");
+                    data.put("1");
+                    data.put("+" + obj.getCases());
+                    totalPcs += Double.parseDouble(obj.getCases());
+                    data.put(obj.getPrice());
+                    data.put("-" + String.valueOf(Double.parseDouble(obj.getCases()) * Double.parseDouble(obj.getPrice())));
+                    totalAmount -= Double.parseDouble(obj.getCases()) * Double.parseDouble(obj.getPrice());
+                    focData.put(data);
+                }
+            }
             JSONArray grData = new JSONArray();
             for (Sales obj : grList) {
                 if (Double.parseDouble(obj.getCases()) > 0 || Double.parseDouble(obj.getPic()) > 0) {
@@ -2419,6 +2513,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             TOTAL.put(totalObj);
             mainArr.put("TOTAL", TOTAL);
             mainArr.put("data", jData);
+            mainArr.put("foc", focData);
             mainArr.put("gr", grData);
             mainArr.put("br", brData);
             jDict.put("mainArr", mainArr);

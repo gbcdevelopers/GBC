@@ -26,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
@@ -61,6 +63,7 @@ public class SalesFragment extends Fragment {
     private  ArrayList<Sales> salesarrayList;
     private ArrayList<Sales>goodsReturnList = new ArrayList<>();
     private ArrayList<Sales>badReturnList = new ArrayList<>();
+    private ArrayList<Sales>focList = new ArrayList<>();
     FloatingActionButton fab;
     FloatingActionButton add;
     boolean workStarted = false;
@@ -98,6 +101,7 @@ public class SalesFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Override
@@ -112,6 +116,7 @@ public class SalesFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -308,25 +313,169 @@ public class SalesFragment extends Fragment {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(orderID.equals("")||orderID==null){
-                        boolean value = false;
-                        //To check if invoice doesnt contain any data
-                        if(salesarrayList.size()>0){
-                            for (Sales sale : salesarrayList){
-                                if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
-                                    value = true;
-                                    break;
+                    try{
+                        if(orderID.equals("")||orderID==null){
+                            boolean value = false;
+                            //To check if invoice doesnt contain any data
+                            if(salesarrayList.size()>0){
+                                for (Sales sale : salesarrayList){
+                                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                        value = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            String purchaseNumber = "";
+                            if(value){
+                                purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
+                            }
+
+                            if(salesarrayList.size()>0){
+                                if(value){
+                                    for (Sales sale : salesarrayList) {
+                                        HashMap<String, String> map = new HashMap<>();
+                                        map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                        map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                                        map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                                        map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                        map.put(db.KEY_MATERIAL_GROUP, "");
+                                        map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                                        map.put(db.KEY_ORG_CASE, sale.getCases());
+                                        map.put(db.KEY_UOM,sale.getUom());
+                                        map.put(db.KEY_ORG_UNITS, sale.getPic());
+                                        map.put(db.KEY_AMOUNT, sale.getPrice());
+                                        map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                        map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                                        map.put(db.KEY_ORDER_ID, purchaseNumber);
+                                        map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
+                                        if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                            db.addData(db.CAPTURE_SALES_INVOICE, map);
+                                        }
+                                    }
+                                    if(focArrayList.size()>0){
+                                        for(Sales sale:focArrayList){
+                                            HashMap<String,String>map = new HashMap<String, String>();
+                                            map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                                            map.put(db.KEY_TRIP_ID,"");
+                                            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                            map.put(db.KEY_ORDER_ID,purchaseNumber);
+                                            map.put(db.KEY_PURCHASE_NUMBER,purchaseNumber);
+                                            map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                                            map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                                            map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                            map.put(db.KEY_MATERIAL_GROUP, "");
+                                            map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                                            map.put(db.KEY_ORG_CASE, sale.getCases());
+                                            map.put(db.KEY_UOM,sale.getUom());
+                                            map.put(db.KEY_ORG_UNITS, sale.getPic());
+                                            map.put(db.KEY_AMOUNT, sale.getPrice());
+                                            map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                            map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                                            if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                                db.addData(db.FOC_INVOICE, map);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if(goodsReturnList.size()>0){
+                                String grPRNo= "";
+                                if(value){
+                                    grPRNo = purchaseNumber;
+                                }
+                                else{
+                                    grPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
+                                }
+                                for(Sales sale:goodsReturnList){
+                                    HashMap<String, String> map = new HashMap<>();
+                                    map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                    map.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                                    map.put(db.KEY_REASON_CODE,sale.getReasonCode());
+                                    map.put(db.KEY_ITEM_NO,sale.getItem_code());
+                                    map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                                    map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                                    map.put(db.KEY_MATERIAL_GROUP,"");
+                                    map.put(db.KEY_CASE,sale.getCases());
+                                    map.put(db.KEY_UNIT,sale.getPic());
+                                    map.put(db.KEY_UOM,sale.getUom());
+                                    map.put(db.KEY_PRICE,sale.getPrice());
+                                    map.put(db.KEY_ORDER_ID,grPRNo);
+                                    map.put(db.KEY_PURCHASE_NUMBER,grPRNo);
+                                    map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                    map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                        db.addData(db.RETURNS, map);
+                                    }
+                                }
+                            }
+                            if(badReturnList.size()>0){
+                                String brPRNo= "";
+                                if(value){
+                                    brPRNo = purchaseNumber;
+                                }
+                                else{
+                                    brPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
+                                }
+                                for (Sales sale : badReturnList) {
+                                    HashMap<String, String> map = new HashMap<>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    map.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                                    map.put(db.KEY_REASON_CODE, sale.getReasonCode());
+                                    map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                                    map.put(db.KEY_MATERIAL_DESC1, sale.getName());
+                                    map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                    map.put(db.KEY_MATERIAL_GROUP, "");
+                                    map.put(db.KEY_CASE, sale.getCases());
+                                    map.put(db.KEY_UNIT, sale.getPic());
+                                    map.put(db.KEY_UOM, sale.getUom());
+                                    map.put(db.KEY_PRICE, sale.getPrice());
+                                    map.put(db.KEY_ORDER_ID, brPRNo);
+                                    map.put(db.KEY_PURCHASE_NUMBER, brPRNo);
+                                    map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                    map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                        db.addData(db.RETURNS, map);
+                                    }
                                 }
                             }
                         }
-                        String purchaseNumber = "";
-                        if(value){
-                            purchaseNumber = Helpers.generateNumber(db, ConfigStore.InvoiceRequest_PR_Type);
-                        }
-
-                        if(salesarrayList.size()>0){
-                            if(value){
-                                for (Sales sale : salesarrayList) {
+                        else{
+                            for (Sales sale : salesarrayList) {
+                                HashMap<String, String> map = new HashMap<>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                map.put(db.KEY_ITEM_NO, sale.getItem_code());
+                                map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
+                                map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                map.put(db.KEY_MATERIAL_GROUP, "");
+                                map.put(db.KEY_MATERIAL_DESC1,sale.getName());
+                                map.put(db.KEY_ORG_CASE, sale.getCases());
+                                map.put(db.KEY_UOM,sale.getUom());
+                                map.put(db.KEY_ORG_UNITS, sale.getPic());
+                                map.put(db.KEY_AMOUNT, sale.getPrice());
+                                map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                                map.put(db.KEY_ORDER_ID,orderID);
+                                map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                                filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
+                                    db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
+                                }
+                                else{
+                                    db.addData(db.CAPTURE_SALES_INVOICE,map);
+                                }
+                            }
+                            if(focArrayList.size()>0){
+                                for (Sales sale : focArrayList) {
                                     HashMap<String, String> map = new HashMap<>();
                                     map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                                     map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
@@ -341,119 +490,37 @@ public class SalesFragment extends Fragment {
                                     map.put(db.KEY_AMOUNT, sale.getPrice());
                                     map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                                     map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-                                    map.put(db.KEY_ORDER_ID, purchaseNumber);
-                                    map.put(db.KEY_PURCHASE_NUMBER, purchaseNumber);
-                                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
-                                        db.addData(db.CAPTURE_SALES_INVOICE, map);
+                                    map.put(db.KEY_ORDER_ID,orderID);
+                                    map.put(db.KEY_PURCHASE_NUMBER,orderID);
+                                    HashMap<String, String> filter = new HashMap<>();
+                                    filter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                                    filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                    filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                    filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                    if(db.checkData(db.FOC_INVOICE,filter)){
+                                        db.updateData(db.FOC_INVOICE, map,filter);
+                                    }
+                                    else{
+                                        db.addData(db.FOC_INVOICE,map);
                                     }
                                 }
                             }
                         }
-                        if(goodsReturnList.size()>0){
-                            String grPRNo= "";
-                            if(value){
-                                grPRNo = purchaseNumber;
-                            }
-                            else{
-                                grPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
-                            }
-                            for(Sales sale:goodsReturnList){
-                                HashMap<String, String> map = new HashMap<>();
-                                map.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                map.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
-                                map.put(db.KEY_REASON_CODE,sale.getReasonCode());
-                                map.put(db.KEY_ITEM_NO,sale.getItem_code());
-                                map.put(db.KEY_MATERIAL_DESC1,sale.getName());
-                                map.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
-                                map.put(db.KEY_MATERIAL_GROUP,"");
-                                map.put(db.KEY_CASE,sale.getCases());
-                                map.put(db.KEY_UNIT,sale.getPic());
-                                map.put(db.KEY_UOM,sale.getUom());
-                                map.put(db.KEY_PRICE,sale.getPrice());
-                                map.put(db.KEY_ORDER_ID,grPRNo);
-                                map.put(db.KEY_PURCHASE_NUMBER,grPRNo);
-                                map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                                map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                                if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
-                                    db.addData(db.RETURNS, map);
-                                }
-                            }
-                        }
-                        if(badReturnList.size()>0){
-                            String brPRNo= "";
-                            if(value){
-                                brPRNo = purchaseNumber;
-                            }
-                            else{
-                                brPRNo = Helpers.generateNumber(db, ConfigStore.GoodReturns_PR_Type);
-                            }
-                            for (Sales sale : badReturnList) {
-                                HashMap<String, String> map = new HashMap<>();
-                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                                map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                                map.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
-                                map.put(db.KEY_REASON_CODE, sale.getReasonCode());
-                                map.put(db.KEY_ITEM_NO, sale.getItem_code());
-                                map.put(db.KEY_MATERIAL_DESC1, sale.getName());
-                                map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                                map.put(db.KEY_MATERIAL_GROUP, "");
-                                map.put(db.KEY_CASE, sale.getCases());
-                                map.put(db.KEY_UNIT, sale.getPic());
-                                map.put(db.KEY_UOM, sale.getUom());
-                                map.put(db.KEY_PRICE, sale.getPrice());
-                                map.put(db.KEY_ORDER_ID, brPRNo);
-                                map.put(db.KEY_PURCHASE_NUMBER, brPRNo);
-                                map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                                map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                                if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
-                                    db.addData(db.RETURNS, map);
-                                }
-                            }
-                        }
-                    }
-                    else{
-                        for (Sales sale : salesarrayList) {
-                            HashMap<String, String> map = new HashMap<>();
-                            map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            map.put(db.KEY_ITEM_NO, sale.getItem_code());
-                            map.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
-                            map.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                            map.put(db.KEY_MATERIAL_GROUP, "");
-                            map.put(db.KEY_MATERIAL_DESC1,sale.getName());
-                            map.put(db.KEY_ORG_CASE, sale.getCases());
-                            map.put(db.KEY_UOM,sale.getUom());
-                            map.put(db.KEY_ORG_UNITS, sale.getPic());
-                            map.put(db.KEY_AMOUNT, sale.getPrice());
-                            map.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                            map.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-                            map.put(db.KEY_ORDER_ID,orderID);
-                            map.put(db.KEY_PURCHASE_NUMBER,orderID);
-                            HashMap<String, String> filter = new HashMap<>();
-                            filter.put(db.KEY_PURCHASE_NUMBER,orderID);
-                            filter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                            filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                            if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
-                                db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
-                            }
-                            else{
-                                db.addData(db.CAPTURE_SALES_INVOICE,map);
-                            }
+                        //  Const.salesarrayList = salesarrayList;
 
-                        }
+                        getActivity().finish();
                     }
-                    //  Const.salesarrayList = salesarrayList;
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
+                    }
 
-                    getActivity().finish();
                 }
             });
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         return viewmain;
@@ -541,6 +608,7 @@ public class SalesFragment extends Fragment {
                 myAdapter.notifyDataSetChanged();
                 listSales.setAdapter(myAdapter);
                 calculateCost();
+                setFOC(salesarrayList);
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -571,7 +639,7 @@ public class SalesFragment extends Fragment {
                     } else {
                         loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                         product.setName(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-
+                        product.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)));
                     }
                     product.setInv_cases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_CASE)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)) : "0");
                     //product.setInv_piece(cursor.getString(cursor.getColumnIndex(db.KEY_UOM_UNIT)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)) : "0");
@@ -683,106 +751,126 @@ public class SalesFragment extends Fragment {
         myAdapter = new SalesInvoiceAdapter(getActivity(), arrayList);
         listSales.setAdapter(myAdapter);
         calculateCost();
+        setFOC(arrayList);
         myAdapter.notifyDataSetChanged();
     }
     private void setFOC(ArrayList<Sales> arrayList){
         focArrayList.clear();
-        for(Sales sale:arrayList){
-            HashMap<String,String>map = new HashMap<>();
-            map.put(db.KEY_FOC_ASSIGNING_ITEM,"");
-            map.put(db.KEY_FOC_QUALIFYING_QUANTITY,"");
-            map.put(db.KEY_FOC_ASSIGNING_QUANTITY,"");
-            map.put(db.KEY_FOC_DATE_FROM,"");
-            map.put(db.KEY_FOC_DATE_TO,"");
-            HashMap<String,String>filter = new HashMap<>();
-            filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-            filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
-            Cursor c = db.getData(db.FOC_RULES,map,filter);
-            if(c.getCount()>0){
-                do{
-                    HashMap<String,String>vanStockCheckFilter = new HashMap<>();
-                    vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
-                    double quantityVan = 0;
-                    if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
-                        HashMap<String,String>vanStockCheckMap = new HashMap<>();
-                        vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
-                        vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
-                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
-                        if(cursor.getCount()>0){
-                            cursor.moveToFirst();
-                            quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                            if(quantityVan>0){
-                                double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
-                                        ?sale.getCases():sale.getPic());
-                                double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
-                                String freeCases = "0";
-                                if(inputQuantity<focQuantity){
+        boolean value = false;
+        for(Sales sales:arrayList){
+            if(Double.parseDouble(sales.getCases())>0||Double.parseDouble(sales.getPic())>0){
+                value = true;
+            }
+        }
+        if(value){
+            try{
+                if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
+                {
+                    for(Sales sale:arrayList){
+                        if(Double.parseDouble(sale.getCases())>0||Double.parseDouble(sale.getPic())>0){
+                            HashMap<String,String>map = new HashMap<>();
+                            map.put(db.KEY_FOC_ASSIGNING_ITEM,"");
+                            map.put(db.KEY_FOC_QUALIFYING_QUANTITY,"");
+                            map.put(db.KEY_FOC_ASSIGNING_QUANTITY,"");
+                            map.put(db.KEY_FOC_DATE_FROM,"");
+                            map.put(db.KEY_FOC_DATE_TO,"");
+                            HashMap<String,String>filter = new HashMap<>();
+                            //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                            filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
+                            Cursor c = db.getData(db.FOC_RULES,map,filter);
+                            if(c.getCount()>0){
+                                do{
+                                    HashMap<String,String>vanStockCheckFilter = new HashMap<>();
+                                    vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                    double quantityVan = 0;
+                                    if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
+                                        HashMap<String,String>vanStockCheckMap = new HashMap<>();
+                                        vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
+                                        vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
+                                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
+                                        if(cursor.getCount()>0){
+                                            cursor.moveToFirst();
+                                            quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                            if(quantityVan>0){
+                                                double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
+                                                        ?sale.getCases():sale.getPic());
+                                                double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                String freeCases = "0";
+                                                if(inputQuantity<focQuantity){
 
-                                }
-                                else {
-                                    if(inputQuantity%focQuantity==0){
-                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
-                                    }
-                                    else if(inputQuantity%focQuantity>0){
-                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
-                                    }
-                                }
+                                                }
+                                                else {
+                                                    if(inputQuantity%focQuantity==0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }
+                                                    else if(inputQuantity%focQuantity>0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }
+                                                }
 
-                                ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
-                                if(article!=null){
-                                    Sales newSale = new Sales();
-                                    newSale.setItem_code(article.getArticleNo());
-                                    newSale.setItem_category(article.getArticleCategory());
-                                    newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                                    newSale.setMaterial_no(article.getMaterialNo());
-                                    newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                                    newSale.setUom(article.getBaseUOM());
-                                    if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
-                                        newSale.setCases(freeCases);
-                                        newSale.setPic("0");
-                                    }
-                                    newSale.setPrice("0.00");
-                                    HashMap<String,String> filterPart = new HashMap<>();
-                                    filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
+                                                ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                                if(article!=null){
+                                                    Sales newSale = new Sales();
+                                                    newSale.setItem_code(article.getArticleNo());
+                                                    newSale.setItem_category(article.getArticleCategory());
+                                                    newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                    newSale.setMaterial_no(article.getMaterialNo());
+                                                    newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                    newSale.setUom(article.getBaseUOM());
+                                                    if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
+                                                        newSale.setCases(freeCases);
+                                                        newSale.setPic("0");
+                                                    }
+                                                    newSale.setPrice("0.00");
+                                                    HashMap<String,String> filterPart = new HashMap<>();
+                                                    filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
 
-                                    HashMap<String,String> priceMap = new HashMap<>();
-                                    priceMap.put(db.KEY_MATERIAL_NO, "");
-                                    priceMap.put(db.KEY_AMOUNT,"");
-                                    if(db.checkData(db.PRICING,filterPart)){
-                                        //Pricing exists for Product for customer
-                                        //Pricing exists for Product for customer
-                                        Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
-                                        if(priceCursor.getCount()>0){
-                                            priceCursor.moveToFirst();
-                                            String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
-                                            newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                    HashMap<String,String> priceMap = new HashMap<>();
+                                                    priceMap.put(db.KEY_MATERIAL_NO, "");
+                                                    priceMap.put(db.KEY_AMOUNT,"");
+                                                    if(db.checkData(db.PRICING,filterPart)){
+                                                        //Pricing exists for Product for customer
+                                                        //Pricing exists for Product for customer
+                                                        Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                                                        if(priceCursor.getCount()>0){
+                                                            priceCursor.moveToFirst();
+                                                            String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                                                            newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                        }
+                                                    }
+                                                    else{
+                                                        newSale.setPrice("0");
+                                                    }
+                                                    if(freeCases!="0"&&Double.parseDouble(freeCases)<quantityVan){
+                                                        focArrayList.add(newSale);
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
                                     else{
-                                        newSale.setPrice("0");
+                                        Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
                                     }
-                                    if(freeCases!="0"&&Double.parseDouble(freeCases)<quantityVan){
-                                        focArrayList.add(newSale);
-                                    }
+
                                 }
-                            }
-                            else{
-                                Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
+                                while (c.moveToNext());
                             }
                         }
-                    }
-                    else{
-                        Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
-                    }
 
+                    }
+                    Const.focBundle = new Bundle();
+                    Const.focBundle.putParcelableArrayList("foc",focArrayList);
+                    Log.e("FOC Array","" + focArrayList.size());
+                    Const.focList = focArrayList;
                 }
-                while (c.moveToNext());
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
-        Const.focBundle = new Bundle();
-        Const.focBundle.putParcelableArrayList("foc",focArrayList);
-        Log.e("FOC Array","" + focArrayList.size());
-        Const.focList = focArrayList;
-
     }
 }

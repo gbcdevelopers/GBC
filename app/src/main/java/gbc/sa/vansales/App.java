@@ -24,7 +24,7 @@ public class App extends Application {
     //Open these properties for development
    /* public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
-    public static final int PORT = 8041;
+    public static final int PORT = 8047;
     public static final String SAP_CLIENT = "SAP-CLIENT";
     public static final String SAP_CLIENT_ID = "350";*/
 
@@ -138,7 +138,7 @@ public class App extends Application {
     public static final String INVOICE_PARTIAL = "P";
 
     //Posting Constants
-    public static final String STORAGE_LOCATION = "VAN";
+    public static final String STORAGE_LOCATION = "";
     public static final String PLANT = "1000";
 
     //Activity Type

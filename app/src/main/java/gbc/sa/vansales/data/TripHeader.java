@@ -34,6 +34,7 @@ public class TripHeader {
         HashMap<String, String>params = new HashMap<>();
         params.put(TRIP_ID,tripId);
 
+        //params.put(TRIP_ID,"0000040000000044");
         HashMap<String,String>expansion = new HashMap<>();
         expansion.put(TRIP_SALES_AREA,TRIP_SALES_AREA);
 

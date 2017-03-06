@@ -731,6 +731,7 @@ public class IntegrationService extends IntentService {
            // post.addHeader("Authorization", "Basic " + new String(authEncBytes));
             post.addHeader(CONTENT_TYPE, APPLICATION_BATCH);
             post.addHeader(ACCEPT, APPLICATION_JSON);
+            post.addHeader("prefer", "odata.continue-on-error");
             post.addHeader(X_REQUESTED_WITH_KEY, X_REQUESTED_WITH_VAL);
             //   post.addHeader(X_CSRF_TOKEN_KEY,token);
             post.setEntity(getPayloadBatch(arrayList));
@@ -1093,6 +1094,7 @@ public class IntegrationService extends IntentService {
                             }
                             else if(!(jsonError==null)){
                                 offlineResponse.setCustomerID("0000000");
+                                offlineResponse.setFunction("ERROR");
                                 offlineResponse.setOrderID("00000000");
                                 offlineResponse.setPurchaseNumber("00000000");
                                 arrayList.add(offlineResponse);

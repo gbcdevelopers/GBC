@@ -1350,6 +1350,55 @@ public class PrinterHelper {
             this.outStream.write(this.NewLine);
             this.outStream.write(this.NewLine);
             //printheaders(object.getString("invheadermsg"), false, 3);
+
+            JSONArray focData = object.getJSONArray("foc");
+            if(focData.length()>0){
+                printheaders(getAccurateText("FREE GOODS", 40, 1), false, 2);
+                this.outStream.write(this.BoldOff);
+                this.outStream.write(this.DoubleWideOff);
+                this.outStream.write(this.NewLine);
+                this.outStream.write(this.NewLine);
+
+                this.outStream.write(this.CompressOn);
+                printlines1(strheader, 1, object, 1, args, 1);
+                // printlines1(strHeaderBottom, 1, object, 1, args, 5);
+                printlines1(printSepratorcomp(), 1, object, 1, args, 1);
+                this.outStream.write(this.CompressOff);
+
+                for (i = 0; i < focData.length(); i++) {
+                    JSONArray jArr = focData.getJSONArray(i);
+                    String strData = "";
+                    for (int j = 0; j < jArr.length(); j++) {
+                        int i2;
+                        Object obj;
+                        String itemDescrion = jArr.getString(j);
+                        if (j == 0) {
+                            //itemDescrion = new StringBuilder(String.valueOf(i + 1)).toString();
+                        } else if (j == 2) {
+                            itemDescrion = "           @" + jArr.getString(j) + "!";
+                        }
+                        stringBuilder = new StringBuilder(String.valueOf(strData));
+                        if (j == 2) {
+                            //i2 = 60;
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        } else {
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        }
+                        HashMap hashMap = this.hashPositions;
+                        if (j == 7) {
+                            obj = "Description";
+                        } else {
+                            obj = headers.getString(j).toString();
+                        }
+                        strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                    }
+                    this.outStream.write(this.CompressOn);
+                    this.count++;
+                    printlines1(strData, 1, object, 1, args, 1);
+                    this.outStream.write(this.CompressOff);
+                }
+            }
+
             JSONArray grData = object.getJSONArray("gr");
             if(grData.length()>0){
                 printheaders(getAccurateText("GOOD RETURN", 40, 1), false, 2);

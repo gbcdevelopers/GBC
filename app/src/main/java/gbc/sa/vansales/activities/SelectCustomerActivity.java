@@ -337,7 +337,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
 
                     customer.setOpenDelivery(db.checkData(db.CUSTOMER_DELIVERY_HEADER,filter));
                     customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
-                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
+                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
                     customer.setCollection(db.checkData(db.COLLECTION,collectionMap)||db.checkData(db.COLLECTION,collectionMap1));
                     customer.setMerchandize(false);
                     customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map));
@@ -420,7 +420,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                     customer.setOpenDelivery(db.checkData(db.CUSTOMER_DELIVERY_HEADER, filter));
 
                     customer.setOrder(db.checkData(db.ORDER_REQUEST,map));
-                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, collectionMap));
+                    customer.setSale(db.checkData(db.CAPTURE_SALES_INVOICE, map));
                     customer.setCollection(db.checkData(db.COLLECTION, collectionMap) || db.checkData(db.COLLECTION,collectionMap1));
                     customer.setMerchandize(false);
                     customer.setDelivery(db.checkData(db.CUSTOMER_DELIVERY_ITEMS_POST, map)||db.checkData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST,map));
