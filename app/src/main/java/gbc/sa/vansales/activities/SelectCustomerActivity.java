@@ -199,9 +199,13 @@ public class SelectCustomerActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.v("addtext", "change");
                 if (tab_position == 0) {
-                    VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
+                    if(dataAdapter.getCount()>0){
+                        VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
+                    }
                 } else {
-                    AllCustomerFragment.dataAdapter1.getFilter().filter(s.toString());
+                    if(dataAdapter.getCount()>0){
+                        AllCustomerFragment.dataAdapter1.getFilter().filter(s.toString());
+                    }
                 }
                 //planBadgeAdapter.notifyDataSetChanged();
             }
@@ -537,5 +541,8 @@ public class SelectCustomerActivity extends AppCompatActivity {
             setTabs();
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

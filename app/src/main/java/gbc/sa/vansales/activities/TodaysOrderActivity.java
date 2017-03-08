@@ -117,4 +117,8 @@ public class TodaysOrderActivity extends AppCompatActivity {
         }
         while (activityCursor.moveToNext());
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

@@ -90,6 +90,10 @@ public class CustomerOperationsMapActivity extends FragmentActivity implements O
         }
     }
     @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

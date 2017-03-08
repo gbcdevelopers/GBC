@@ -250,4 +250,8 @@ public class CustomerPromotionListActivity extends AppCompatActivity implements 
 
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

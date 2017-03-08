@@ -322,7 +322,10 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         }
 
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);

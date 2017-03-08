@@ -123,10 +123,14 @@ public class InformationsActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }*/
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
     //User This sample for Load Summary
     public JSONArray createDataForPrint() {

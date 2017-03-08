@@ -1031,7 +1031,6 @@ public class UnloadActivity extends AppCompatActivity {
             //db.deleteData(db.VAN_STOCK_ITEMS, map);
         }
     }
-
     public JSONArray createPrintData(){
         JSONArray jArr = new JSONArray();
         try{
@@ -1381,9 +1380,13 @@ public class UnloadActivity extends AppCompatActivity {
         });
 
     }
-
     public void callbackFunction(){
         Intent intent = new Intent(UnloadActivity.this,DashboardActivity.class);
         startActivity(intent);
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
+
 }

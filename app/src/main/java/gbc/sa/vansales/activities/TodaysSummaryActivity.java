@@ -76,7 +76,6 @@ public class TodaysSummaryActivity extends AppCompatActivity {
         });
 
     }
-
     public class loadVanData extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -109,7 +108,6 @@ public class TodaysSummaryActivity extends AppCompatActivity {
             new loadSalesData().execute();
         }
     }
-
     private void setLoadData(Cursor cursor){
         cursor.moveToFirst();
         do{
@@ -130,7 +128,6 @@ public class TodaysSummaryActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext());
     }
-
     public class loadSalesData extends AsyncTask<Void,Void,Void>{
         @Override
         protected void onPreExecute() {
@@ -168,7 +165,6 @@ public class TodaysSummaryActivity extends AppCompatActivity {
 
         }
     }
-
     private void setSalesData(Cursor cursor){
         Cursor c = cursor;
         c.moveToFirst();
@@ -188,5 +184,8 @@ public class TodaysSummaryActivity extends AppCompatActivity {
         }
         while (c.moveToNext());
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

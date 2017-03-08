@@ -447,4 +447,8 @@ public class AddCustomerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

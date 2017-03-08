@@ -5,6 +5,7 @@ package gbc.sa.vansales.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Build;
 
 import gbc.sa.vansales.R;
 public class LoadingSpinner {
@@ -44,8 +45,9 @@ public class LoadingSpinner {
     }
 
     public void show() {
-        if (((Activity) context).isDestroyed()) return;
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (((Activity) context).isDestroyed()) return;
+        }
         ((Activity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {

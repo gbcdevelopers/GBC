@@ -111,4 +111,8 @@ public class ItemListActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

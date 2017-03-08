@@ -645,6 +645,10 @@ public class LoadRequestActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(
                 LoadRequestActivity.this.getCurrentFocus().getWindowToken(), 0);
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
     public String postData() {
         String orderID = "";
         String purchaseNumber = "";

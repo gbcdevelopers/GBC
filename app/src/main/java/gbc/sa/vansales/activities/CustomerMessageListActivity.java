@@ -218,4 +218,8 @@ public class CustomerMessageListActivity extends AppCompatActivity {
             Crashlytics.logException(e);
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

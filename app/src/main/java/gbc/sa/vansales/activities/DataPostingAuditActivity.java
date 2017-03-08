@@ -97,8 +97,8 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         swipeDetector = new SwipeDetector();
 
 
-        //new loadTransactions().execute();
-        new loadDriverTransactions().execute();
+        new loadTransactions().execute();
+        //new loadDriverTransactions().execute();
     }
 
     /************************************************************
@@ -183,6 +183,59 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... params) {
             try{
+
+                HashMap<String,String>beginDayMap = new HashMap<>();
+                beginDayMap.put(db.KEY_PURCHASE_NUMBER,"");
+                beginDayMap.put(db.KEY_IS_POSTED,"");
+
+                HashMap<String,String>odoMeterMap = new HashMap<>();
+                odoMeterMap.put(db.KEY_PURCHASE_NUMBER,"");
+                odoMeterMap.put(db.KEY_IS_POSTED, "");
+
+                HashMap<String,String>lconMap = new HashMap<>();
+                lconMap.put(db.KEY_ORDER_ID,"");
+                lconMap.put(db.KEY_IS_POSTED,"");
+
+                HashMap<String,String>filter = new HashMap<>();
+
+                HashMap<String,String>bdFilter = new HashMap<>();
+                bdFilter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
+
+                HashMap<String,String>edFilter = new HashMap<>();
+                edFilter.put(db.KEY_FUNCTION,ConfigStore.EndDayFunction);
+
+                HashMap<String,String>odometerFilter = new HashMap<>();
+                odometerFilter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_BEGIN_DAY);
+
+                HashMap<String,String>odometerEndFilter = new HashMap<>();
+                odometerEndFilter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
+
+                Cursor beginDay = db.getData(db.BEGIN_DAY,beginDayMap,bdFilter);
+                Cursor endDay = db.getData(db.BEGIN_DAY,beginDayMap,edFilter);
+                Cursor odoMeter = db.getData(db.ODOMETER,odoMeterMap,odometerFilter);
+                Cursor odoMeterEnd = db.getData(db.ODOMETER,odoMeterMap,odometerEndFilter);
+                Cursor loadConfirmation = db.getData(db.LOAD_CONFIRMATION_HEADER,lconMap,filter);
+                Cursor unloadRequest = db.getData(db.UNLOAD_TRANSACTION,beginDayMap,filter);
+                if(beginDay.getCount()>0){
+                    beginDay.moveToFirst();
+                }
+                if(odoMeter.getCount()>0){
+                    odoMeter.moveToFirst();
+                }
+                if(loadConfirmation.getCount()>0){
+                    loadConfirmation.moveToFirst();
+                }
+                if(endDay.getCount()>0){
+                    endDay.moveToFirst();
+                }
+                if(odoMeterEnd.getCount()>0){
+                    odoMeterEnd.moveToFirst();
+                }
+                if(unloadRequest.getCount()>0){
+                    unloadRequest.moveToFirst();
+                }
+                setDriverAuditItems(beginDay, odoMeter, loadConfirmation,endDay,odoMeterEnd,unloadRequest);
+
                 HashMap<String,String>map = new HashMap<>();
                 map.put(db.KEY_PURCHASE_NUMBER,"");
                 map.put(db.KEY_IS_POSTED,"");
@@ -208,7 +261,7 @@ public class DataPostingAuditActivity extends AppCompatActivity {
 
                 Cursor invoiceMarkPosted = db.getData(db.COLLECTION,collection,collectionFilter1);
 
-                HashMap<String,String>filter = new HashMap<>();
+                //HashMap<String,String>filter = new HashMap<>();
                 Cursor orderRequest = db.getData(db.ORDER_REQUEST,map,filter);
                 Cursor salesRequest = db.getData(db.CAPTURE_SALES_INVOICE,map,filter);
                 Cursor deliveryRequest = db.getData(db.CUSTOMER_DELIVERY_ITEMS_POST,map,filter);
@@ -568,5 +621,9 @@ public class DataPostingAuditActivity extends AppCompatActivity {
             e.printStackTrace();
             Crashlytics.logException(e);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
 }

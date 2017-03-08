@@ -196,4 +196,8 @@ public class TodaysScheduleActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

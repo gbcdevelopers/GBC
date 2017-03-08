@@ -52,4 +52,8 @@ public class SelectOperationActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

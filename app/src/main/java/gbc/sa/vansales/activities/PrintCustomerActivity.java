@@ -387,4 +387,8 @@ public class PrintCustomerActivity extends AppCompatActivity {
             while (invoiceMarkPosted.moveToNext());
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

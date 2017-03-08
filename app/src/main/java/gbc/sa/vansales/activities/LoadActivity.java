@@ -106,7 +106,6 @@ public class LoadActivity extends AppCompatActivity {
 
     }
     public void dispatchRefresh() {
-
         try{
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoadActivity.this);
             alertDialogBuilder.setTitle(R.string.message)
@@ -117,11 +116,14 @@ public class LoadActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             if(Helpers.isNetworkAvailable(LoadActivity.this)){
-                                refreshLayout.setRefreshing(true);
-                                if (refreshLayout.isRefreshing()) {
-                                    refreshLayout.setRefreshing(false);
-                                    new reloadLoads(Settings.getString(App.TRIP_ID));
+                                if(fetchloadComplete){
+                                    refreshLayout.setRefreshing(true);
+                                    if (refreshLayout.isRefreshing()) {
+                                        refreshLayout.setRefreshing(false);
+                                        new reloadLoads(Settings.getString(App.TRIP_ID));
+                                    }
                                 }
+
                             }
                             else{
                                 refreshLayout.setRefreshing(false);
@@ -172,6 +174,10 @@ public class LoadActivity extends AppCompatActivity {
         Helpers.logData(LoadActivity.this, "Clicked Back on Load Screen.");
         Intent i = new Intent(LoadActivity.this, DashboardActivity.class);
         startActivity(i);
+    }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
     private ArrayList<LoadConstants> GetSearchResults() {
         ArrayList<LoadConstants> results = new ArrayList<LoadConstants>();
@@ -298,14 +304,21 @@ public class LoadActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            fetchloadComplete = true;
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
+            try{
+                fetchloadComplete = true;
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                adapter = new LoadDeliveryHeaderAdapter(LoadActivity.this, loadDeliveryHeaders);
+                lv.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                Helpers.logData(LoadActivity.this, "Completed Fetching loads for driver against trip id:" + this.tripId);
             }
-            adapter = new LoadDeliveryHeaderAdapter(LoadActivity.this, loadDeliveryHeaders);
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-            Helpers.logData(LoadActivity.this, "Completed Fetching loads for driver against trip id:" + this.tripId);
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
         }
     }
     /***********************************************************
@@ -351,14 +364,20 @@ public class LoadActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
+            try{
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                if(changeCount>0){
+                    lockTransactions();
+                }
+                if(fetchloadComplete){
+                    new fetchLoads(Settings.getString(App.TRIP_ID));
+                }
             }
-            if(changeCount>0){
-                lockTransactions();
-            }
-            if(fetchloadComplete){
-                new fetchLoads(Settings.getString(App.TRIP_ID));
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }

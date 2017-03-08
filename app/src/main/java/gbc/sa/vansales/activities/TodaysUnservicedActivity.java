@@ -29,6 +29,9 @@ public class TodaysUnservicedActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+    }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
 }

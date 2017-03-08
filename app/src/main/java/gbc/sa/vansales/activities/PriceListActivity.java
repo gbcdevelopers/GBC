@@ -97,5 +97,9 @@ public class PriceListActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext());
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 
 }

@@ -118,4 +118,8 @@ public class SelectCustomerStatus extends AppCompatActivity {
         }
         while (c.moveToNext());
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

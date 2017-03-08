@@ -472,5 +472,9 @@ public class PrintDocumentActivity extends AppCompatActivity {
             while (unloadRequest.moveToNext());
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 
 }

@@ -841,7 +841,7 @@ public class SalesFragment extends Fragment {
                                                     else{
                                                         newSale.setPrice("0");
                                                     }
-                                                    if(freeCases!="0"&&Double.parseDouble(freeCases)<quantityVan){
+                                                    if(freeCases!="0"&&Double.parseDouble(freeCases)<=quantityVan){
                                                         focArrayList.add(newSale);
                                                     }
                                                 }

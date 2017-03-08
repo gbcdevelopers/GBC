@@ -432,9 +432,13 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         //Log.e("Date", "" + tv_date.getText().toString());
         // Const.proceedArrayList.add(Const.id, proceed);
     }
-    @Override
+   /* @Override
     public void onBackPressed() {
         finish();
+    }*/
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
     @Override
     public void onProcessingComplete() {

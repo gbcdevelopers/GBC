@@ -266,5 +266,8 @@ public class ReturnsActivity extends AppCompatActivity {
             // super.onPostExecute(aVoid);
         }
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

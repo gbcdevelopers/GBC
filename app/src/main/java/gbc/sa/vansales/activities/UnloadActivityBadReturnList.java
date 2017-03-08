@@ -169,4 +169,8 @@ public class UnloadActivityBadReturnList extends AppCompatActivity {
             new loadData().execute();
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

@@ -287,4 +287,8 @@ public class CustomerOperationsActivity extends AppCompatActivity implements Ada
             //Log.e("KeyBoardUtil", e.toString(), e);
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

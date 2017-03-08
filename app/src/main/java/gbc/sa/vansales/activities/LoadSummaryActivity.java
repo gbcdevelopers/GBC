@@ -332,10 +332,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                   // loadItem.setItem_description_ar(article.getMaterialDesc2());
+                    loadItem.setItem_description_ar(article.getMaterialDesc2());
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                   // loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_UOM, "");
@@ -539,10 +539,10 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 //Log.e("Article IF", "" + article);
                 if (!(article == null)) {
                     loadItem.setItemDescription(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                    //loadItem.setItem_description_ar(article.getMaterialDesc2());
+                    loadItem.setItem_description_ar(article.getMaterialDesc2());
                 } else {
                     loadItem.setItemDescription(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                   // loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                    loadItem.setItem_description_ar(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 }
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_UOM, "");
@@ -666,5 +666,9 @@ public class LoadSummaryActivity extends AppCompatActivity {
         }
         reasonsList = new ArrayList<>();
         reasonsList = temp;
+    }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
 }

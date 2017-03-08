@@ -2682,4 +2682,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             }
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

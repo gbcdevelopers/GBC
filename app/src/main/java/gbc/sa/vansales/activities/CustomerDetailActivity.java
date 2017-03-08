@@ -591,8 +591,20 @@ public class CustomerDetailActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        ll_updown.setVisibility(View.GONE);
+        try{
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+            ll_updown.setVisibility(View.GONE);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
+
+    }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
 }

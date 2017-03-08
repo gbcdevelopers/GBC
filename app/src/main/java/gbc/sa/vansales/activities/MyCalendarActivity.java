@@ -422,4 +422,8 @@ public class MyCalendarActivity extends Activity implements OnClickListener {
             this.currentWeekDay = currentWeekDay;
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

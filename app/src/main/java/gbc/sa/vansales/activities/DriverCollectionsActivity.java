@@ -124,10 +124,14 @@ public class DriverCollectionsActivity extends AppCompatActivity {
             }
         });
     }
-    @Override
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }*/
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

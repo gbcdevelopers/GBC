@@ -161,8 +161,7 @@ public class CollectionsActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+       //Do not allow back hardware press
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

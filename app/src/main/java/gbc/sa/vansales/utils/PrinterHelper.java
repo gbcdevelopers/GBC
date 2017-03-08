@@ -25,6 +25,8 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,6 +163,7 @@ public class PrinterHelper {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 
@@ -170,27 +173,34 @@ public class PrinterHelper {
 
         public void onReceive(Context context, Intent intent) {
             Message msg = Message.obtain();
-            if ("android.bluetooth.device.action.FOUND".equals(intent.getAction())) {
-                Toast.makeText(context, "ACTION_FOUND", 0).show();
-                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
-                if (PrinterHelper.this.arrayListBluetoothDevices.size() < 1) {
-                    PrinterHelper.this.detectedAdapter.add(device.getName() + StringUtilities.LF + device.getAddress());
-                    PrinterHelper.this.arrayListBluetoothDevices.add(device);
-                    PrinterHelper.this.detectedAdapter.notifyDataSetChanged();
-                    return;
-                }
-                boolean flag = true;
-                for (int i = 0; i < PrinterHelper.this.arrayListBluetoothDevices.size(); i++) {
-                    if (device.getAddress().equals(((BluetoothDevice) PrinterHelper.this.arrayListBluetoothDevices.get(i)).getAddress())) {
-                        flag = false;
+            try{
+                if ("android.bluetooth.device.action.FOUND".equals(intent.getAction())) {
+                    Toast.makeText(context, "ACTION_FOUND", 0).show();
+                    BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra("android.bluetooth.device.extra.DEVICE");
+                    if (PrinterHelper.this.arrayListBluetoothDevices.size() < 1) {
+                        PrinterHelper.this.detectedAdapter.add(device.getName() + StringUtilities.LF + device.getAddress());
+                        PrinterHelper.this.arrayListBluetoothDevices.add(device);
+                        PrinterHelper.this.detectedAdapter.notifyDataSetChanged();
+                        return;
+                    }
+                    boolean flag = true;
+                    for (int i = 0; i < PrinterHelper.this.arrayListBluetoothDevices.size(); i++) {
+                        if (device.getAddress().equals(((BluetoothDevice) PrinterHelper.this.arrayListBluetoothDevices.get(i)).getAddress())) {
+                            flag = false;
+                        }
+                    }
+                    if (flag) {
+                        PrinterHelper.this.detectedAdapter.add(device.getName() + StringUtilities.LF + device.getAddress());
+                        PrinterHelper.this.arrayListBluetoothDevices.add(device);
+                        PrinterHelper.this.detectedAdapter.notifyDataSetChanged();
                     }
                 }
-                if (flag) {
-                    PrinterHelper.this.detectedAdapter.add(device.getName() + StringUtilities.LF + device.getAddress());
-                    PrinterHelper.this.arrayListBluetoothDevices.add(device);
-                    PrinterHelper.this.detectedAdapter.notifyDataSetChanged();
-                }
             }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
         }
     }
 
@@ -206,6 +216,7 @@ public class PrinterHelper {
                 Log.e("Success", "success" + ((Boolean) btDeviceInstance.getMethod("setPin", new Class[]{byte[].class}).invoke(newDevice, new Object[]{pin})).booleanValue());
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }
@@ -215,14 +226,20 @@ public class PrinterHelper {
         }
 
         public void onReceive1(Context context, Intent intent) {
-            if ("android.bluetooth.device.action.BOND_STATE_CHANGED".equals(intent.getAction())) {
-                int state = intent.getIntExtra("android.bluetooth.device.extra.BOND_STATE", ExploreByTouchHelper.INVALID_ID);
-                int prevState = intent.getIntExtra("android.bluetooth.device.extra.PREVIOUS_BOND_STATE", ExploreByTouchHelper.INVALID_ID);
-                if (state == 12 && prevState == 11) {
-                    Toast.makeText(context, "Paired", Toast.LENGTH_SHORT).show();
-                } else if (state == 10 && prevState == 12) {
-                    Toast.makeText(context, "Unpaired", Toast.LENGTH_SHORT).show();
+            try{
+                if ("android.bluetooth.device.action.BOND_STATE_CHANGED".equals(intent.getAction())) {
+                    int state = intent.getIntExtra("android.bluetooth.device.extra.BOND_STATE", ExploreByTouchHelper.INVALID_ID);
+                    int prevState = intent.getIntExtra("android.bluetooth.device.extra.PREVIOUS_BOND_STATE", ExploreByTouchHelper.INVALID_ID);
+                    if (state == 12 && prevState == 11) {
+                        Toast.makeText(context, "Paired", Toast.LENGTH_SHORT).show();
+                    } else if (state == 10 && prevState == 12) {
+                        Toast.makeText(context, "Unpaired", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
 
@@ -340,6 +357,7 @@ public class PrinterHelper {
                 }
             } catch (Exception e2) {
                 e2.printStackTrace();
+                Crashlytics.logException(e2);
                 return Boolean.valueOf(false);
             }
         }
@@ -484,31 +502,37 @@ public class PrinterHelper {
 
         protected void onPostExecute(Set<BluetoothDevice> pairedDevices) {
             super.onPostExecute(pairedDevices);
-            if (pairedDevices == null) {
-                return;
-            }
-            if (pairedDevices.size() > 0) {
-                for (BluetoothDevice device : pairedDevices) {
-                    Log.e("devices", device.getName() + StringUtilities.LF + device.getAddress());
-                    System.out.println("devices" + device.getName() + StringUtilities.LF + device.getAddress());
-                    DevicesData d1 = new DevicesData();
-                    d1.setAddress(device.getAddress());
-                    d1.setName(device.getName());
-                    PrinterHelper.this.arrData.add(d1);
+            try{
+                if (pairedDevices == null) {
+                    return;
                 }
-                PrinterHelper.this.showDialog(PrinterHelper.this.arrData);
-                return;
+                if (pairedDevices.size() > 0) {
+                    for (BluetoothDevice device : pairedDevices) {
+                        Log.e("devices", device.getName() + StringUtilities.LF + device.getAddress());
+                        System.out.println("devices" + device.getName() + StringUtilities.LF + device.getAddress());
+                        DevicesData d1 = new DevicesData();
+                        d1.setAddress(device.getAddress());
+                        d1.setName(device.getName());
+                        PrinterHelper.this.arrData.add(d1);
+                    }
+                    PrinterHelper.this.showDialog(PrinterHelper.this.arrData);
+                    return;
+                }
+                Toast.makeText(context, "No Devices Found!", 0).show();
+                System.out.println("No devices");
+                Log.e("devices", "No devices");
+                try {
+                    PrinterHelper.this.status.put("status", false);
+                    PrinterHelper.this.status.put("isconnected", -7);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                PrinterHelper.this.sendUpdate(PrinterHelper.this.status, true);
             }
-            Toast.makeText(context, "No Devices Found!", 0).show();
-            System.out.println("No devices");
-            Log.e("devices", "No devices");
-            try {
-                PrinterHelper.this.status.put("status", false);
-                PrinterHelper.this.status.put("isconnected", -7);
-            } catch (JSONException e) {
+            catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
-            PrinterHelper.this.sendUpdate(PrinterHelper.this.status, true);
         }
     }
 
@@ -566,17 +590,31 @@ public class PrinterHelper {
             }
         } catch (Exception e2) {
             e2.printStackTrace();
+            Crashlytics.logException(e2);
         }
     }
 
     private void showProgressDialog() {
-        this.progressDialog = ProgressDialog.show(context, "Please Wait", "Connecting to printer..", false);
+        try{
+            this.progressDialog = ProgressDialog.show(context, "Please Wait", "Connecting to printer..", false);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
 
     private void dismissProgress() {
-        if (this.progressDialog != null && this.progressDialog.isShowing()) {
-            this.progressDialog.dismiss();
+        try{
+            if (this.progressDialog != null && this.progressDialog.isShowing()) {
+                this.progressDialog.dismiss();
+            }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
 
     private String printSepratorcomp() {
@@ -634,6 +672,7 @@ public class PrinterHelper {
             this.outStream.write(endbet.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 
@@ -656,6 +695,7 @@ public class PrinterHelper {
                 this.outStream.write(this.NewLine);
             } catch (IOException e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }
@@ -741,6 +781,7 @@ public class PrinterHelper {
             this.outStream.write(this.NewLine);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 

@@ -663,11 +663,15 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             Crashlytics.logException(e);
         }
     }
-    @Override
+    /*@Override
     public void onBackPressed() {
         Helpers.logData(DeliveryOrderActivity.this,"Hardware back clicked on delivery order details screen");
         super.onBackPressed();
         finish();
+    }*/
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
     }
     /************************************************************
      @ This function will load all delivery times against the delivery

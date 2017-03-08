@@ -294,4 +294,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

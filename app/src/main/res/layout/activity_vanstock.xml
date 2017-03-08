@@ -28,6 +28,7 @@
         android:layout_marginBottom="@dimen/space"
         android:background="@color/buttoncolor"
         android:paddingLeft="@dimen/space"
+        android:visibility="gone"
         android:paddingRight="@dimen/space"
         android:textAllCaps="true"
         android:text="@string/printload"

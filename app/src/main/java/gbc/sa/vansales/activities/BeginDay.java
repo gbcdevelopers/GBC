@@ -159,4 +159,8 @@ public class BeginDay extends Activity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

@@ -114,4 +114,8 @@ public class DriverCollectionDetailsActivity extends AppCompatActivity {
         bankAdapter.notifyDataSetChanged();
         sp_item.setAdapter(bankAdapter);
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

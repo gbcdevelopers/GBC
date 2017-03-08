@@ -179,4 +179,8 @@ public class ShopStatusActivity extends AppCompatActivity implements AdapterView
             // super.onPostExecute(aVoid);
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

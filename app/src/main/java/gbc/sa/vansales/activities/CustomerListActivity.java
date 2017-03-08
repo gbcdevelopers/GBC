@@ -69,4 +69,8 @@ public class CustomerListActivity extends AppCompatActivity {
         });
 
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

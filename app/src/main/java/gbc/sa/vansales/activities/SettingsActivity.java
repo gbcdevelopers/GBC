@@ -351,4 +351,8 @@ public class SettingsActivity extends AppCompatActivity {
         appinfo.setTypeface(null, Typeface.ITALIC);
         appinfo.setText(sb.toString());
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

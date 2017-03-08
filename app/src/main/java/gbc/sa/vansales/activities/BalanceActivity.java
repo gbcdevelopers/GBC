@@ -131,4 +131,9 @@ public class BalanceActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

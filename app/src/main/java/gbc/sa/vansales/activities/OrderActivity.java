@@ -129,4 +129,8 @@ public class OrderActivity extends AppCompatActivity implements AdapterView.OnIt
             // super.onPostExecute(aVoid);
         }
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }

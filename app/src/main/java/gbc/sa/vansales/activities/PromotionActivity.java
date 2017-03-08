@@ -169,7 +169,10 @@ public class PromotionActivity extends AppCompatActivity {
             }
         });
     }
-
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
     public class loadPromotions extends AsyncTask<Void,Void,Void>{
         private String promoCode;
         private String from;

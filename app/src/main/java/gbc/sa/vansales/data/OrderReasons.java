@@ -60,7 +60,6 @@ public class OrderReasons {
     }
 
     public static ArrayList<Reasons> get() {
-        Log.e("Data","" + data.get(0).getReasonDescriptionAr());
         return data;
     }
 }

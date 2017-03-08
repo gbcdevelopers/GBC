@@ -701,4 +701,8 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public void onBackPressed() {
+        // Do not allow hardware back navigation
+    }
 }
