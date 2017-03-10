@@ -65,7 +65,7 @@ public class MerchandizingActivity extends AppCompatActivity {
                         break;
                     case 4:
                         //Planogram
-                        Intent intent4 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
+                        Intent intent4 = new Intent(MerchandizingActivity.this, PlanogramActivity.class);
                         startActivity(intent4);
                         break;
                     case 5:

@@ -751,7 +751,8 @@ public class LoadRequestActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
+                //onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -544,8 +544,15 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 OrderRequest loadRequest = new OrderRequest();
                 loadRequest.setItemCode(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                 loadRequest.setItemName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                loadRequest.setItemNameAr(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC2)));
-                ArticleHeader article = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+
+                ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                if(articleHeader!=null){
+                    loadRequest.setItemNameAr(articleHeader.getMaterialDesc2().equals("")?App.ARABIC_TEXT_MISSING:articleHeader.getMaterialDesc2());
+                }
+                else{
+                    loadRequest.setItemNameAr(App.ARABIC_TEXT_MISSING);
+                }
+
                 if (isPosted) {
 
                     loadRequest.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM) ? cursor.getString(cursor.getColumnIndex(db.KEY_CASE)) : "0");

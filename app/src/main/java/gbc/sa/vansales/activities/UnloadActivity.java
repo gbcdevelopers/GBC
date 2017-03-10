@@ -325,7 +325,8 @@ public class UnloadActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 //  navigation();
-                onBackPressed();
+                finish();
+                //onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

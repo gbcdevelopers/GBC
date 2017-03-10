@@ -19,6 +19,11 @@
 				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 				<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+				<!-- Accessing camera hardware -->
+				<uses-feature android:name="android.hardware.camera" />
+				<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+				<uses-permission android:name="android.permission.RECORD_AUDIO" />
+
 				<application
 								android:name="gbc.sa.vansales.activities.AppController"
 								android:allowBackup="true"
@@ -156,6 +161,12 @@
 												android:windowSoftInputMode="stateHidden"/>
 								<activity
 												android:name=".activities.CaptureImageActivity"
+												android:label="@string/dashboard"
+												android:screenOrientation="portrait"
+												android:theme="@style/AppTheme.NoActionBar"
+												android:windowSoftInputMode="stateHidden"/>
+								<activity
+												android:name=".activities.PlanogramActivity"
 												android:label="@string/dashboard"
 												android:screenOrientation="portrait"
 												android:theme="@style/AppTheme.NoActionBar"

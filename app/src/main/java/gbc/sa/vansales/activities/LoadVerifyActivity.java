@@ -205,19 +205,34 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 HashMap<String, String> filterMap = new HashMap<>();
                 filterMap.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
                 Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, searchMap, filterMap);
+                String orderID = "";
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     tempOrderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
+                    orderID = cursor.getString(cursor.getColumnIndex(db.KEY_ORDER_ID));
                 }
+                Log.e("ORDER ID","" + orderID);
                 //tempOrderID = "0000000075";
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
                 map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                map.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
                 map.put(db.KEY_FUNCTION, ConfigStore.LoadConfirmationFunction);
-                map.put(db.KEY_ORDER_ID, tempOrderID);
+                map.put(db.KEY_ORDER_ID, orderID);
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
                 db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+
+                JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                JSONObject data = new JSONObject();
+                data.put("data",(JSONArray)jsonArray);
+                HashMap<String,String>printMap = new HashMap<>();
+                printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                printMap.put(db.KEY_DATA,data.toString());
+                //map.put(db.KEY_DATA,jsonArray.toString());
+                db.addDataPrint(db.DELAY_PRINT, printMap);
 
                 Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
                 startActivity(intent);

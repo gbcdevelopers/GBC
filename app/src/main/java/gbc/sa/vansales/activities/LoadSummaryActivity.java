@@ -432,7 +432,8 @@ public class LoadSummaryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                //onBackPressed();
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -670,5 +671,6 @@ public class LoadSummaryActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Do not allow hardware back navigation
+        //finish();
     }
 }
