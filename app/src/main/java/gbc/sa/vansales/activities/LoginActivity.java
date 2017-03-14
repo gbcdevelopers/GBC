@@ -82,7 +82,7 @@ public class LoginActivity extends Activity {
         Settings.setString(App.IS_LOGGED_ID, "false");
         Settings.setString(App.LOGIN_DATE, "");
         if(Settings.getString(App.LANGUAGE)==null){
-           Settings.setString(App.LANGUAGE,"en");
+            Settings.setString(App.LANGUAGE,"en");
         }
         Helpers.logData(LoginActivity.this, "On Login Screen");
         loadingSpinner = new LoadingSpinner(this);
@@ -236,8 +236,8 @@ public class LoginActivity extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         loadingSpinner.show();
-                                 //For development purpose only
-                                // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
+                                        //For development purpose only
+                                        // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
                                 /*if(!checkTripID("Y000030000000014")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
                                     Settings.setString(TRIP_ID, "Y000030000000014");
@@ -253,6 +253,7 @@ public class LoginActivity extends Activity {
                                     finish();
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 }*/
+                                        //Comment removal ends here
                                         dialog.dismiss();
                                         if(loadingSpinner.isShowing()){
                                             loadingSpinner.hide();

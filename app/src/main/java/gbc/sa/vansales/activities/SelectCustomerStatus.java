@@ -13,6 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -109,14 +111,20 @@ public class SelectCustomerStatus extends AppCompatActivity {
     }
 
     private void setCustomerStatus(Cursor cursor){
-        Cursor c = cursor;
-        do{
-            CustomerStatus status = new CustomerStatus();
-            status.setReasonCode(c.getString(c.getColumnIndex(db.KEY_REASON_CODE)));
-            status.setReasonDescription(c.getString(c.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
-            arrayList.add(status);
+        try{
+            Cursor c = cursor;
+            do{
+                CustomerStatus status = new CustomerStatus();
+                status.setReasonCode(c.getString(c.getColumnIndex(db.KEY_REASON_CODE)));
+                status.setReasonDescription(c.getString(c.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
+                arrayList.add(status);
+            }
+            while (c.moveToNext());
         }
-        while (c.moveToNext());
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
     @Override
     public void onBackPressed() {

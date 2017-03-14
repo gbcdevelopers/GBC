@@ -30,6 +30,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.daimajia.swipe.SwipeLayout;
 
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -101,6 +103,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     @Nullable
@@ -344,6 +347,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         return viewmain;
@@ -457,6 +461,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return null;
     }
@@ -530,6 +535,7 @@ public class  BListFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }
@@ -564,6 +570,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -603,6 +610,7 @@ public class  BListFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }

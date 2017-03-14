@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,36 +68,43 @@ public class LoadVerifyActivity extends AppCompatActivity {
     LoadingSpinner loadingSpinner;
     private String tempOrderID = "";
     private boolean print = false;
+    private boolean isStockAdded = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_verify);
         db = new DatabaseHandler(LoadVerifyActivity.this);
-        loadingSpinner = new LoadingSpinner(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
-        dataNew = new ArrayList<>();
-        dataOld = new ArrayList<>();
-        /*********************************************************
-         @ dataNew will contain the changed data that the user must have
-         @ recorded.
-         @ dataOld will contain the unchanged data that was originally loaded
-         *********************************************************/
-        dataNew = intent.getParcelableArrayListExtra("loadSummary");
-        dataOld = intent.getParcelableArrayListExtra("loadSummaryOld");
-        object = (LoadDeliveryHeader) intent.getParcelableExtra("headerObj");
-        // Log.e("****",""+dataOld.size());
-        loadSummaryList = new ArrayList<>();
-        varianceLoadSummaryList = new ArrayList<>();
-        Helpers.logData(LoadVerifyActivity.this, "Driver is now on load Verification SCreen");
-        //  loadSummaryList = dataNew;
-        adapter = new LoadVerifyBadgeAdapter(this, loadSummaryList);
-        loadSummaryList = generateData(dataNew, dataOld);
-        calculateCost();
-        listView = (ListView) findViewById(R.id.loadSummaryList);
-        listView.setAdapter(adapter);
+        try{
+            loadingSpinner = new LoadingSpinner(this);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Intent intent = getIntent();
+            dataNew = new ArrayList<>();
+            dataOld = new ArrayList<>();
+            /*********************************************************
+             @ dataNew will contain the changed data that the user must have
+             @ recorded.
+             @ dataOld will contain the unchanged data that was originally loaded
+             *********************************************************/
+            dataNew = intent.getParcelableArrayListExtra("loadSummary");
+            dataOld = intent.getParcelableArrayListExtra("loadSummaryOld");
+            object = (LoadDeliveryHeader) intent.getParcelableExtra("headerObj");
+            // Log.e("****",""+dataOld.size());
+            loadSummaryList = new ArrayList<>();
+            varianceLoadSummaryList = new ArrayList<>();
+            Helpers.logData(LoadVerifyActivity.this, "Driver is now on load Verification SCreen");
+            //  loadSummaryList = dataNew;
+            adapter = new LoadVerifyBadgeAdapter(this, loadSummaryList);
+            loadSummaryList = generateData(dataNew, dataOld);
+            calculateCost();
+            listView = (ListView) findViewById(R.id.loadSummaryList);
+            listView.setAdapter(adapter);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
     /*********************************************************
      @ Calculating total cost of the changed load
@@ -118,6 +127,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -132,7 +142,9 @@ public class LoadVerifyActivity extends AppCompatActivity {
             HashMap<String, String> filters = new HashMap<>();
             filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
             db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
-            addItemstoVan(dataNew);
+            if(!isStockAdded){
+                addItemstoVan(dataNew);
+            }
             /*********************************************************
              @ If the user has reached to the last of the load,
              @ then create a post request and submit it.
@@ -223,23 +235,75 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
                 db.addData(db.LOAD_CONFIRMATION_HEADER, map);
 
-                JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
-                JSONObject data = new JSONObject();
-                data.put("data",(JSONArray)jsonArray);
-                HashMap<String,String>printMap = new HashMap<>();
-                printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-                printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
-                printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
-                printMap.put(db.KEY_DATA,data.toString());
-                //map.put(db.KEY_DATA,jsonArray.toString());
-                db.addDataPrint(db.DELAY_PRINT, printMap);
+                final Dialog dialog = new Dialog(LoadVerifyActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_doprint);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
 
-                Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
-                startActivity(intent);
+
+
+                btn_print.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        print = true;
+                        try{
+                            JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                            JSONObject data = new JSONObject();
+                            data.put("data",(JSONArray)jsonArray);
+                            HashMap<String,String>printMap = new HashMap<>();
+                            printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                            printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                            printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                            printMap.put(db.KEY_DATA, data.toString());
+                            //map.put(db.KEY_DATA,jsonArray.toString());
+                            db.addDataPrint(db.DELAY_PRINT, printMap);
+                            PrinterHelper object = new PrinterHelper(LoadVerifyActivity.this,LoadVerifyActivity.this);
+                            object.execute("", jsonArray);
+                            dialog.dismiss();
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        //finish();
+                    }
+                });
+                btn_notprint.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        print = false;
+                        try{
+                            JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                            JSONObject data = new JSONObject();
+                            data.put("data",(JSONArray)jsonArray);
+                            HashMap<String,String>printMap = new HashMap<>();
+                            printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                            printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                            printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                            printMap.put(db.KEY_DATA, data.toString());
+                            //map.put(db.KEY_DATA,jsonArray.toString());
+                            db.addDataPrint(db.DELAY_PRINT, printMap);
+                            dialog.dismiss();
+                            Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+                            startActivity(intent);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                dialog.setCancelable(false);
+                dialog.show();
+
+                /*Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+                startActivity(intent);*/
             }
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -299,6 +363,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
             return false;
         }
 
@@ -332,6 +397,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
             return false;
         }
 
@@ -340,6 +406,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
      @ Adding the verified load to the Van.
      *********************************************************/
     private void addItemstoVan(ArrayList<LoadSummary> dataNew) {
+        isStockAdded = true;
         Helpers.logData(LoadVerifyActivity.this,"Adding items to van");
         try{
             for (int i = 0; i < dataNew.size(); i++) {
@@ -494,6 +561,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -657,6 +725,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         return true;
@@ -685,6 +754,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             // orderID = IntegrationService.postDataBackup(LoadVerifyActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return orderID + "," + tempOrderID;
     }
@@ -778,6 +848,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("Variance Error", "Variance Error");
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
         Log.e("ORDERID", "" + orderID);
@@ -869,6 +940,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     loadingSpinner.hide();
                 }
                 e.printStackTrace();
+                Crashlytics.logException(e);
                 new updateStockforCustomer().execute();
             }
 
@@ -998,6 +1070,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
             else{
@@ -1020,6 +1093,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -1127,6 +1201,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -1206,6 +1281,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -1213,8 +1289,15 @@ public class LoadVerifyActivity extends AppCompatActivity {
      @ Callback function once the printing is completed
      ****************************************************************************************/
     public void callbackFunction(){
-        Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
-        startActivity(intent);
+        if (!checkIfLoadExists()){
+            Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
+            startActivity(intent);
+        }
+        else{
+            Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+            startActivity(intent);
+        }
+
     }
     @Override
     public void onBackPressed() {

@@ -309,32 +309,48 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         }
     }
     private boolean returnExist(String returnType) {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_TIME_STAMP, "");
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-        if (returnType.equals("") || returnType == null) {
-        } else {
-            filter.put(db.KEY_REASON_TYPE, returnType);
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TIME_STAMP, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            if (returnType.equals("") || returnType == null) {
+            } else {
+                filter.put(db.KEY_REASON_TYPE, returnType);
+            }
+            if (db.checkData(db.RETURNS, filter)) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (db.checkData(db.RETURNS, filter)) {
-            return true;
-        } else {
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
             return false;
         }
+
     }
     private boolean invoiceExist() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_TIME_STAMP, "");
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-        filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-        if (db.checkData(db.CAPTURE_SALES_INVOICE, filter)) {
-            return true;
-        } else {
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_TIME_STAMP, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+            if (db.checkData(db.CAPTURE_SALES_INVOICE, filter)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
             return false;
         }
+
     }
     public void recalculateTotal(Cursor cursor, String from, String source) {
         try{
@@ -344,32 +360,38 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     saleCursor.moveToFirst();
                     float amount = 0;
                     do {
-                        float tempPrice = 0;
-                        HashMap<String, String> filterComp = new HashMap<>();
-                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put(db.KEY_MATERIAL_NO, "");
-                        map.put(db.KEY_AMOUNT, "");
-                        if (db.checkData(db.PRICING, filterComp)) {
-                            Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
-                            if (customerPriceCursor.getCount() > 0) {
-                                customerPriceCursor.moveToFirst();
-                                tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                            }
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        try{
+                            float tempPrice = 0;
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put(db.KEY_MATERIAL_NO, "");
+                            map.put(db.KEY_AMOUNT, "");
+                            if (db.checkData(db.PRICING, filterComp)) {
+                                Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
+                                if (customerPriceCursor.getCount() > 0) {
+                                    customerPriceCursor.moveToFirst();
+                                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                                }
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                                }
                             } else {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                                }
                             }
-                        } else {
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_CASE)));
-                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                            } else {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                            }
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                            Crashlytics.logException(e);
                         }
                     }
                     while (saleCursor.moveToNext());
@@ -379,44 +401,51 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     saleCursor.moveToFirst();
                     float amount = 0;
                     do {
-                        float tempPrice = 0;
-                        HashMap<String, String> filterComp = new HashMap<>();
-                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put(db.KEY_MATERIAL_NO, "");
-                        map.put(db.KEY_AMOUNT, "");
-                        if (db.checkData(db.PRICING, filterComp)) {
-                            Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
-                            if (customerPriceCursor.getCount() > 0) {
-                                customerPriceCursor.moveToFirst();
-                                tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                            }
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
-                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        try{
+                            float tempPrice = 0;
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put(db.KEY_MATERIAL_NO, "");
+                            map.put(db.KEY_AMOUNT, "");
+                            if (db.checkData(db.PRICING, filterComp)) {
+                                Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
+                                if (customerPriceCursor.getCount() > 0) {
+                                    customerPriceCursor.moveToFirst();
+                                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                                }
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                                }
                             } else {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                                    tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                                    tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
+                                }
                             }
-                        } else {
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
-                                tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
-                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                            } else {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
-                                tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
-                            }
+                            //Added only for printout
+                            Sales sales = new Sales();
+                            sales.setItem_code(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ITEM_NO)));
+                            sales.setMaterial_no(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            sales.setMaterial_description(UrlBuilder.decodeString(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                            sales.setCases(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                            sales.setPic(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                            sales.setPrice(String.valueOf(tempPrice));
+                            grList.add(sales);
                         }
-                        //Added only for printout
-                        Sales sales = new Sales();
-                        sales.setItem_code(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ITEM_NO)));
-                        sales.setMaterial_no(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        sales.setMaterial_description(UrlBuilder.decodeString(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                        sales.setCases(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
-                        sales.setPic(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
-                        sales.setPrice(String.valueOf(tempPrice));
-                        grList.add(sales);
+                        catch (Exception e){
+                            e.printStackTrace();
+                            Crashlytics.logException(e);
+                        }
+
                     }
                     while (saleCursor.moveToNext());
                     goodreturntotal = amount;
@@ -425,10 +454,63 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                     saleCursor.moveToFirst();
                     float amount = 0;
                     do {
+                        try{
+                            float tempPrice = 0;
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put(db.KEY_MATERIAL_NO, "");
+                            map.put(db.KEY_AMOUNT, "");
+                            if (db.checkData(db.PRICING, filterComp)) {
+                                Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
+                                if (customerPriceCursor.getCount() > 0) {
+                                    customerPriceCursor.moveToFirst();
+                                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                                }
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                                }
+                            } else {
+                                if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                                    tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                                    tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
+                                }
+                            }
+                            //Added only for printout
+                            Sales sales = new Sales();
+                            sales.setItem_code(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ITEM_NO)));
+                            sales.setMaterial_no(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            sales.setMaterial_description(UrlBuilder.decodeString(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                            sales.setCases(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                            sales.setPic(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
+                            sales.setPrice(String.valueOf(tempPrice));
+                            brList.add(sales);
+                        }
+                        catch (Exception e){
+                            e.printStackTrace();
+                            Crashlytics.logException(e);
+                        }
+                    }
+                    while (saleCursor.moveToNext());
+                    badreturntotal = amount;
+                }
+            } else {
+                Cursor deliveryCursor = cursor;
+                deliveryCursor.moveToFirst();
+                do {
+                    try{
                         float tempPrice = 0;
                         HashMap<String, String> filterComp = new HashMap<>();
                         filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filterComp.put(db.KEY_MATERIAL_NO, saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        filterComp.put(db.KEY_MATERIAL_NO, deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                         HashMap<String, String> map = new HashMap<>();
                         map.put(db.KEY_MATERIAL_NO, "");
                         map.put(db.KEY_AMOUNT, "");
@@ -438,62 +520,22 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                 customerPriceCursor.moveToFirst();
                                 tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
                             }
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
+                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                totalamnt += tempPrice * Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
                                 //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                            } else {
-                                amount += tempPrice * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
                             }
                         } else {
-                            if (saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
-                                tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
+                            if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                totalamnt += Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
                                 //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                            } else {
-                                amount += Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE))) * Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
-                                tempPrice = Float.parseFloat(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_PRICE)));
                             }
                         }
-                        //Added only for printout
-                        Sales sales = new Sales();
-                        sales.setItem_code(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_ITEM_NO)));
-                        sales.setMaterial_no(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        sales.setMaterial_description(UrlBuilder.decodeString(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                        sales.setCases(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_CASE)));
-                        sales.setPic(saleCursor.getString(saleCursor.getColumnIndex(db.KEY_UNIT)));
-                        sales.setPrice(String.valueOf(tempPrice));
-                        brList.add(sales);
                     }
-                    while (saleCursor.moveToNext());
-                    badreturntotal = amount;
-                }
-            } else {
-                Cursor deliveryCursor = cursor;
-                deliveryCursor.moveToFirst();
-                do {
-                    float tempPrice = 0;
-                    HashMap<String, String> filterComp = new HashMap<>();
-                    filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    filterComp.put(db.KEY_MATERIAL_NO, deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_MATERIAL_NO, "");
-                    map.put(db.KEY_AMOUNT, "");
-                    if (db.checkData(db.PRICING, filterComp)) {
-                        Cursor customerPriceCursor = db.getData(db.PRICING, map, filterComp);
-                        if (customerPriceCursor.getCount() > 0) {
-                            customerPriceCursor.moveToFirst();
-                            tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                        }
-                        if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                            totalamnt += tempPrice * Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
-                            //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        }
-                    } else {
-                        if (deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM_NEW) || deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                            totalamnt += Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_AMOUNT))) * Float.parseFloat(deliveryCursor.getString(deliveryCursor.getColumnIndex(db.KEY_CASE)));
-                            //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                        }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
                     }
+
                 }
                 while (deliveryCursor.moveToNext());
             }
@@ -539,6 +581,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -784,7 +827,6 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             if (returnType.equals(App.GOOD_RETURN)) {
-
                                                 HashMap<String, String> todaysSalesSummary = new HashMap<>();
                                                 todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
                                                 todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
@@ -915,6 +957,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                                 }
                                                 catch (Exception e){
                                                     e.printStackTrace();
+                                                    Crashlytics.logException(e);
                                                 }
                                             }
                                             else{
@@ -953,6 +996,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                                 }
                                                 catch (Exception e){
                                                     e.printStackTrace();
+                                                    Crashlytics.logException(e);
                                                 }
                                             }
 
@@ -2378,6 +2422,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             mainArr.put("invoicenumber", orderNo);
             mainArr.put("INVOICETYPE", type);
             String arabicCustomer = "اللولو هايبر ماركت";
+            mainArr.put("CUSTOMERID", object.getCustomerID());
             mainArr.put("CUSTOMER", UrlBuilder.decodeString(object.getCustomerName()) + "-" + arabicCustomer);
             if (object.getPaymentMethod().equals(App.CASH_CUSTOMER)) {
                 mainArr.put("customertype", "1");

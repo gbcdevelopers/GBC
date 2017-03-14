@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -110,6 +112,7 @@ public class BeginDayFragment extends Fragment {
             time.setText(new SimpleDateFormat("HH:mm:ss").format(new Date()));
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         btn_continue = (Button) view.findViewById(R.id.btnBack);
         boolean isMessageClicked = ((BeginTripActivity) getActivity()).hello;
@@ -184,6 +187,7 @@ public class BeginDayFragment extends Fragment {
                                             }
                                             catch (Exception e){
                                                 e.printStackTrace();
+                                                Crashlytics.logException(e);
                                             }
                                         }
                                         else{
@@ -228,6 +232,7 @@ public class BeginDayFragment extends Fragment {
                             }
                             catch (Exception e){
                                 e.printStackTrace();
+                                Crashlytics.logException(e);
                             }
                         }
                     }
@@ -249,6 +254,7 @@ public class BeginDayFragment extends Fragment {
                         }
                         catch (Exception e){
                             e.printStackTrace();
+                            Crashlytics.logException(e);
                         }
                     }
 
@@ -271,6 +277,7 @@ public class BeginDayFragment extends Fragment {
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                        Crashlytics.logException(e);
                     }
                 }
 
@@ -384,6 +391,7 @@ public class BeginDayFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }

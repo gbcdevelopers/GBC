@@ -144,6 +144,7 @@ public class ConfigStore {
     public static final String BadReturns_TR = "BR";
     public static final String InventoryRequest_TR = "INV";
     public static final String CollectionRequest_TR = "AR";
+    public static final String DriverCollectionRequest_TR = "DR";
     public static final String DeliveryRequest_TR = "DLV";
     public static final String UnloadRequest_TR = "UL";
     public static final String BeginDayRequest_TR = "BD";

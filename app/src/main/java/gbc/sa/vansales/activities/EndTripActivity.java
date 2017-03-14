@@ -244,59 +244,73 @@ public class EndTripActivity extends AppCompatActivity {
         }
     }
     private void setCollection(Cursor cursor){
-        Cursor c = cursor;
-        do {
-            chequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-            cashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-            ChequeCollection chequeCollection = new ChequeCollection();
-            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
-            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
-            String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).split(",");
+        try{
+            Cursor c = cursor;
+            do {
+                chequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                cashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                ChequeCollection chequeCollection = new ChequeCollection();
+                String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+                String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).split(",");
+                String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).split(",");
 
-            if(cheques.length>1){
-                chequeCollection.setChequeNo(cheques[1]);
-                chequeCollection.setBankCode(bankCode[1]);
-                chequeCollection.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                chequeList.add(chequeCollection);
-            }
-        }
-        while(c.moveToNext());
-        Helpers.logData(EndTripActivity.this, "Cheque Total" + chequeTotal + "Cash Total" + cashTotal);
-    }
-    private void setDriverCollection(Cursor cursor){
-        Cursor c = cursor;
-        do {
-            driverchequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-            drivercashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-            ChequeCollection chequeCollection = new ChequeCollection();
-            String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).replaceAll("2C",",").split(",");
-            String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).replaceAll("2C", ",").split(",");
-            String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).replaceAll("2C",",").split(",");
-
-            if(cheques.length>1&&cheques.length<2){
-                chequeCollection.setChequeNo(cheques[1]);
-                chequeCollection.setBankCode(bankCode[1]);
-                chequeCollection.setCustomerNo(Settings.getString(App.DRIVER));
-                chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                driverchequeList.add(chequeCollection);
-            }
-            else if(cheques.length>2){
-                for(int i=0;i<cheques.length;i++){
-                    ChequeCollection cQ = new ChequeCollection();
-                    cQ.setChequeNo(cheques[i]);
-                    cQ.setBankCode(bankCode[i]);
-                    cQ.setCustomerNo(Settings.getString(App.DRIVER));
-                    cQ.setChequeAmount(chequeAmount[i]);
-                    if(!cheques[i].equals("0000")){
-                        driverchequeList.add(cQ);
-                    }
-
+                if(cheques.length>1){
+                    chequeCollection.setChequeNo(cheques[1]);
+                    chequeCollection.setBankCode(bankCode[1]);
+                    chequeCollection.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                    chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                    chequeList.add(chequeCollection);
                 }
             }
+            while(c.moveToNext());
+            Helpers.logData(EndTripActivity.this, "Cheque Total" + chequeTotal + "Cash Total" + cashTotal);
         }
-        while(c.moveToNext());
-        Helpers.logData(EndTripActivity.this, "Driver Cheque Total" + driverchequeTotal + "Driver Cash Total" + drivercashTotal);
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
+    }
+    private void setDriverCollection(Cursor cursor){
+        try{
+            Cursor c = cursor;
+            do {
+                driverchequeTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                drivercashTotal+=Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                ChequeCollection chequeCollection = new ChequeCollection();
+                String[]cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).replaceAll("2C",",").split(",");
+                String[]bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE))).replaceAll("2C", ",").split(",");
+                String[]chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL))).replaceAll("2C",",").split(",");
+
+                if(cheques.length>1&&cheques.length<2){
+                    chequeCollection.setChequeNo(cheques[1]);
+                    chequeCollection.setBankCode(bankCode[1]);
+                    chequeCollection.setCustomerNo(Settings.getString(App.DRIVER));
+                    chequeCollection.setChequeAmount(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                    driverchequeList.add(chequeCollection);
+                }
+                else if(cheques.length>2){
+                    for(int i=0;i<cheques.length;i++){
+                        ChequeCollection cQ = new ChequeCollection();
+                        cQ.setChequeNo(cheques[i]);
+                        cQ.setBankCode(bankCode[i]);
+                        cQ.setCustomerNo(Settings.getString(App.DRIVER));
+                        cQ.setChequeAmount(chequeAmount[i]);
+                        if(!cheques[i].equals("0000")){
+                            driverchequeList.add(cQ);
+                        }
+
+                    }
+                }
+            }
+            while(c.moveToNext());
+            Helpers.logData(EndTripActivity.this, "Driver Cheque Total" + driverchequeTotal + "Driver Cash Total" + drivercashTotal);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     /************************************************************
      @ Adding animation to the counter
@@ -418,61 +432,68 @@ public class EndTripActivity extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (loadingSpinner.isShowing()) {
-                loadingSpinner.hide();
-            }
-            if (!this.orderID.contains("Error") && !this.orderID.equals("")) {
-                if (this.orderID.equals(this.purchaseNumber)) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
-                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
-                    db.updateData(db.BEGIN_DAY, map, filter);
-                } else {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                    map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
-                    filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
-                    db.updateData(db.BEGIN_DAY, map, filter);
+            try{
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
                 }
-                if(cashTotal>0){
-                    new postEndTrip("CASH");
-                }
-                else if(chequeTotal>0){
-                    new postEndTrip("CHEQUE");
-                }
-                else{
-                    Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
-                    startActivity(intent);
-                }
+                if (!this.orderID.contains("Error") && !this.orderID.equals("")) {
+                    if (this.orderID.equals(this.purchaseNumber)) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                        filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                        db.updateData(db.BEGIN_DAY, map, filter);
+                    } else {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                        map.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_FUNCTION, ConfigStore.EndDayFunction);
+                        filter.put(db.KEY_PURCHASE_NUMBER, this.purchaseNumber);
+                        db.updateData(db.BEGIN_DAY, map, filter);
+                    }
+                    if(cashTotal>0){
+                        new postEndTrip("CASH");
+                    }
+                    else if(chequeTotal>0){
+                        new postEndTrip("CHEQUE");
+                    }
+                    else{
+                        Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
+                        startActivity(intent);
+                    }
 
                 /**/
 
-            } else if (this.orderID.contains("Error")) {
-                Toast.makeText(EndTripActivity.this, this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
-            } else {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EndTripActivity.this);
-                alertDialogBuilder.setTitle(R.string.error_title)
-                        .setMessage(R.string.error_message)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (loadingSpinner.isShowing()) {
-                                    loadingSpinner.hide();
+                } else if (this.orderID.contains("Error")) {
+                    Toast.makeText(EndTripActivity.this, this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EndTripActivity.this);
+                    alertDialogBuilder.setTitle(R.string.error_title)
+                            .setMessage(R.string.error_message)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (loadingSpinner.isShowing()) {
+                                        loadingSpinner.hide();
+                                    }
+                                    dialog.dismiss();
                                 }
-                                dialog.dismiss();
-                            }
-                        });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
+                            });
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
             }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
         }
     }
     public class postEndTrip extends AsyncTask<Void,Void,Void>{
@@ -486,74 +507,81 @@ public class EndTripActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            if(source.equals("CASH")){
-                HashMap<String,String>map = new HashMap<>();
-                map.put("OrderValue",String.valueOf(cashTotal));
-                map.put("VisitID",source);
-                map.put("Function",ConfigStore.ClearingFunction);
-                map.put("CustomerId",Settings.getString(App.DRIVER));
-
-                HashMap<String,String>driverMap = new HashMap<>();
-                driverMap.put("OrderValue",String.valueOf(drivercashTotal));
-                driverMap.put("VisitID",source);
-                driverMap.put("Function",ConfigStore.ClearingFunction);
-                driverMap.put("CustomerId",Settings.getString(App.DRIVER));
-
-                JSONArray deepEntity = new JSONArray();
-                JSONObject obj = new JSONObject();
-                deepEntity.put(obj);
-                this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
-                this.orderIdDriver = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,driverMap,deepEntity);
-                Log.e("Order ID","" + orderId);
-            }
-            else if(source.equals("CHEQ")){
-                try{
+            try{
+                if(source.equals("CASH")){
                     HashMap<String,String>map = new HashMap<>();
-                    map.put("OrderValue",String.valueOf(chequeTotal));
+                    map.put("OrderValue",String.valueOf(cashTotal));
                     map.put("VisitID",source);
                     map.put("Function",ConfigStore.ClearingFunction);
                     map.put("CustomerId",Settings.getString(App.DRIVER));
-                    JSONArray deepEntity = new JSONArray();
-                    for(ChequeCollection chequeCollection:chequeList){
-                        JSONObject obj = new JSONObject();
-                        obj.put("OrderId",chequeCollection.getChequeNo().toString());
-                        obj.put("Material", chequeCollection.getCustomerNo().toString());
-                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
-                        if(customerHeader!=null){
-                            obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
-                        }
-                        obj.put("Value",chequeCollection.getChequeAmount().toString());
-                        obj.put("Route",chequeCollection.getBankCode().toString());
-                        deepEntity.put(obj);
-                    }
-                    this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
-                    Log.e("Order ID","" + orderId);
 
                     HashMap<String,String>driverMap = new HashMap<>();
-                    driverMap.put("OrderValue",String.valueOf(driverchequeTotal));
+                    driverMap.put("OrderValue",String.valueOf(drivercashTotal));
                     driverMap.put("VisitID",source);
                     driverMap.put("Function",ConfigStore.ClearingFunction);
                     driverMap.put("CustomerId",Settings.getString(App.DRIVER));
-                    JSONArray deepEntityDriver = new JSONArray();
-                    for(ChequeCollection chequeCollection:driverchequeList){
-                        JSONObject obj = new JSONObject();
-                        obj.put("OrderId",chequeCollection.getChequeNo().toString());
-                        obj.put("Material", chequeCollection.getCustomerNo().toString());
-                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
-                        if(customerHeader!=null){
-                            obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
+
+                    JSONArray deepEntity = new JSONArray();
+                    JSONObject obj = new JSONObject();
+                    deepEntity.put(obj);
+                    this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                    this.orderIdDriver = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,driverMap,deepEntity);
+                    Log.e("Order ID","" + orderId);
+                }
+                else if(source.equals("CHEQ")){
+                    try{
+                        HashMap<String,String>map = new HashMap<>();
+                        map.put("OrderValue",String.valueOf(chequeTotal));
+                        map.put("VisitID",source);
+                        map.put("Function",ConfigStore.ClearingFunction);
+                        map.put("CustomerId",Settings.getString(App.DRIVER));
+                        JSONArray deepEntity = new JSONArray();
+                        for(ChequeCollection chequeCollection:chequeList){
+                            JSONObject obj = new JSONObject();
+                            obj.put("OrderId",chequeCollection.getChequeNo().toString());
+                            obj.put("Material", chequeCollection.getCustomerNo().toString());
+                            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
+                            if(customerHeader!=null){
+                                obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
+                            }
+                            obj.put("Value",chequeCollection.getChequeAmount().toString());
+                            obj.put("Route",chequeCollection.getBankCode().toString());
+                            deepEntity.put(obj);
                         }
-                        obj.put("Value",chequeCollection.getChequeAmount().toString());
-                        obj.put("Route",chequeCollection.getBankCode().toString());
-                        deepEntityDriver.put(obj);
+                        this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                        Log.e("Order ID","" + orderId);
+
+                        HashMap<String,String>driverMap = new HashMap<>();
+                        driverMap.put("OrderValue",String.valueOf(driverchequeTotal));
+                        driverMap.put("VisitID",source);
+                        driverMap.put("Function",ConfigStore.ClearingFunction);
+                        driverMap.put("CustomerId",Settings.getString(App.DRIVER));
+                        JSONArray deepEntityDriver = new JSONArray();
+                        for(ChequeCollection chequeCollection:driverchequeList){
+                            JSONObject obj = new JSONObject();
+                            obj.put("OrderId",chequeCollection.getChequeNo().toString());
+                            obj.put("Material", chequeCollection.getCustomerNo().toString());
+                            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,chequeCollection.getCustomerNo());
+                            if(customerHeader!=null){
+                                obj.put("Description",UrlBuilder.decodeString(customerHeader.getName1()));
+                            }
+                            obj.put("Value",chequeCollection.getChequeAmount().toString());
+                            obj.put("Route",chequeCollection.getBankCode().toString());
+                            deepEntityDriver.put(obj);
+                        }
+
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
                     }
 
                 }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-
             }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
             return null;
         }
         @Override

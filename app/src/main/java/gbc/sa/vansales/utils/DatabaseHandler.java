@@ -407,12 +407,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     //Delay Print
     public static final String KEY_DATA = "data";
-
+    private Context mContext;
 
 
     private static DatabaseHandler sInstance;
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.mContext = context;
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -1115,6 +1116,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_SALES_AREA + " TEXT,"
                 + KEY_DISTRIBUTION + " TEXT,"
                 + KEY_DIVISION + " TEXT,"
+                + KEY_LATITUDE + " TEXT,"
+                + KEY_LONGITUDE + " TEXT,"
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
@@ -1345,6 +1348,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         int records = db.update(tablename, values, filterKeys, filterArray);
         Log.e("Records updated", "" + records);
+        Helpers.logData(mContext,String.valueOf(records) + "updated for table" + tablename);
         db.setTransactionSuccessful();
         db.endTransaction();
         db.close();

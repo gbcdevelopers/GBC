@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -271,6 +273,7 @@ public class InformationsActivity extends AppCompatActivity {
             jArr.put(HEADERS);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -382,6 +385,7 @@ public class InformationsActivity extends AppCompatActivity {
             jArr.put(HEADERS);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -518,6 +522,7 @@ public class InformationsActivity extends AppCompatActivity {
             jArr.put(HEADERS);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -600,6 +605,7 @@ public class InformationsActivity extends AppCompatActivity {
             jArr.put(HEADERS);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -769,6 +775,7 @@ public class InformationsActivity extends AppCompatActivity {
             jArr.put(HEADERS);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }

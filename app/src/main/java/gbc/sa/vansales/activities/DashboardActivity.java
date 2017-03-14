@@ -568,8 +568,11 @@ public class DashboardActivity extends AppCompatActivity
                 PieData data = new PieData(labels, dataset);
                 List<Integer> colorCodes = new ArrayList<Integer>();
                 colorCodes.add(Color.parseColor("#c15525"));
+                //colorCodes.add(Color.parseColor("#0000FF"));
                 colorCodes.add(Color.parseColor("#ffc502"));
+                //colorCodes.add(Color.parseColor("#FF0000"));
                 colorCodes.add(Color.parseColor("#ff9201"));
+                //colorCodes.add(Color.parseColor("#FFC200"));
                 dataset.setColors(colorCodes); //
                 //  pieChart.setDescription("Description");
                 pieChart.setDrawSliceText(false);

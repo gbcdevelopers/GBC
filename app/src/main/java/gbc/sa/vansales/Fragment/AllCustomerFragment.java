@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -84,49 +86,48 @@ public class AllCustomerFragment extends Fragment {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.e("Call Sec","" + flag.isCallSequence());
-                    if(!(flag==null)){
-                        if(!flag.isCallSequence()){
-                            Toast.makeText(getActivity(),getString(R.string.not_in_sequence),Toast.LENGTH_SHORT).show();
-                        }
-                        else{
+                    Log.e("Call Sec", "" + flag.isCallSequence());
+                    if (!(flag == null)) {
+                        if (!flag.isCallSequence()) {
+                            Toast.makeText(getActivity(), getString(R.string.not_in_sequence), Toast.LENGTH_SHORT).show();
+                        } else {
                             Const.customerPosition = position;
                             Customer customer = Const.allCustomerdataArrayList.get(position);
                             showStatusDialog(customer);
                         }
-                    }
-                    else{
+                    } else {
                         Const.customerPosition = position;
                         Customer customer = Const.allCustomerdataArrayList.get(position);
                         showStatusDialog(customer);
                     }
-
                 }
             });
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return view;
     }
 
     private void showStatusDialog(final Customer customer){
-        final Dialog dialog = new Dialog(getActivity());
-       // dialog.setTitle(getString(R.string.shop_status));
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
-        ListView lv = (ListView) view.findViewById(R.id.statusList);
-        Button cancel = (Button)view.findViewById(R.id.btnCancel);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        lv.setAdapter(adapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        try{
+            final Dialog dialog = new Dialog(getActivity());
+            // dialog.setTitle(getString(R.string.shop_status));
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            View view = getActivity().getLayoutInflater().inflate(R.layout.activity_select_customer_status, null);
+            ListView lv = (ListView) view.findViewById(R.id.statusList);
+            Button cancel = (Button)view.findViewById(R.id.btnCancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            lv.setAdapter(adapter);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                /* HashMap<String,String>filter = new HashMap<String, String>();
                 filter.put(db.KEY_CUSTOMER_IN_TIMESTAMP, Helpers.getCurrentTimeStamp());
@@ -142,93 +143,104 @@ public class AllCustomerFragment extends Fragment {
                     db.addData(db.VISIT_LIST,map);
                 }*/
 
-                //Visit List Posting
-                HashMap<String,String>newMap = new HashMap<String, String>();
-                newMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                newMap.put(db.KEY_START_TIMESTAMP,Helpers.getCurrentTimeStamp());
-                newMap.put(db.KEY_VISITLISTID,Helpers.generateVisitList(db));
-                newMap.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
-                int activityID = 0;
+                    //Visit List Posting
+                    HashMap<String,String>newMap = new HashMap<String, String>();
+                    newMap.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_START_TIMESTAMP,Helpers.getCurrentTimeStamp());
+                    newMap.put(db.KEY_VISITLISTID,Helpers.generateVisitList(db));
+                    newMap.put(db.KEY_VISIT_SERVICED_REASON,arrayList.get(position).getReasonCode());
+                    int activityID = 0;
 
-                //Check if any Activity for Customer
-                String activityId = "";
-                HashMap<String,String>activityMap = new HashMap<String, String>();
-                activityMap.put(db.KEY_ACTIVITY_ID,"");
-                HashMap<String,String>filterMap = new HashMap<String, String>();
-                filterMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
-                if(db.checkData(db.VISIT_LIST_POST,filterMap)){
-                    Cursor c = db.getData(db.VISIT_LIST_POST,activityMap,filterMap);
-                    if(c.getCount()>0){
-                        c.moveToFirst();
-                        if(c.getCount()==1){
-                            activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
-                        }
-                        else{
-                            do{
+                    //Check if any Activity for Customer
+                    String activityId = "";
+                    HashMap<String,String>activityMap = new HashMap<String, String>();
+                    activityMap.put(db.KEY_ACTIVITY_ID,"");
+                    HashMap<String,String>filterMap = new HashMap<String, String>();
+                    filterMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    if(db.checkData(db.VISIT_LIST_POST,filterMap)){
+                        Cursor c = db.getData(db.VISIT_LIST_POST,activityMap,filterMap);
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            if(c.getCount()==1){
                                 activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
                             }
-                            while (c.moveToNext());
+                            else{
+                                do{
+                                    activityId = c.getString(c.getColumnIndex(db.KEY_ACTIVITY_ID));
+                                }
+                                while (c.moveToNext());
+                            }
                         }
                     }
-                }
-                if(!activityId.equals("")){
-                    activityID = Integer.parseInt(activityId);
-                }
-                newMap.put(db.KEY_ACTIVITY_ID,String.valueOf(++activityID));
-                newMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
-                newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
-                newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
-                //newMap.put(db.KEY_CUSTOMER_TYPE,customer.getPaymentMethod());
-                db.addData(db.VISIT_LIST_POST,newMap);
+                    if(!activityId.equals("")){
+                        activityID = Integer.parseInt(activityId);
+                    }
+                    newMap.put(db.KEY_ACTIVITY_ID,String.valueOf(++activityID));
+                    newMap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    newMap.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+                    newMap.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                    newMap.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
+                    //newMap.put(db.KEY_CUSTOMER_TYPE,customer.getPaymentMethod());
+                    db.addData(db.VISIT_LIST_POST,newMap);
 
 
-                if (customerFlagExist(customer)) {
-                    loadCustomerFlag(customer);
-                } else {
-                    App.CustomerRouteControl obj = new App.CustomerRouteControl();
-                    obj.setThresholdLimit("99");
-                    obj.setIsVerifyGPS(false);
-                    obj.setIsEnableIVCopy(true);
-                    obj.setIsDelayPrint(true);
-                    obj.setIsEditOrders(true);
-                    obj.setIsEditInvoice(true);
-                    obj.setIsReturns(true);
-                    obj.setIsDamaged(true);
-                    obj.setIsSignCapture(true);
-                    obj.setIsReturnCustomer(true);
-                    obj.setIsCollection(true);
+                    if (customerFlagExist(customer)) {
+                        loadCustomerFlag(customer);
+                    } else {
+                        App.CustomerRouteControl obj = new App.CustomerRouteControl();
+                        obj.setThresholdLimit("99");
+                        obj.setIsVerifyGPS(false);
+                        obj.setIsEnableIVCopy(true);
+                        obj.setIsDelayPrint(true);
+                        obj.setIsEditOrders(true);
+                        obj.setIsEditInvoice(true);
+                        obj.setIsReturns(true);
+                        obj.setIsDamaged(true);
+                        obj.setIsSignCapture(true);
+                        obj.setIsReturnCustomer(true);
+                        obj.setIsCollection(true);
+                    }
+                    Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
+                    intent.putExtra("headerObj", customer);
+                    intent.putExtra("msg", "visit");
+                    startActivity(intent);
                 }
-                Intent intent = new Intent(getActivity(), CustomerDetailActivity.class);
-                intent.putExtra("headerObj", customer);
-                intent.putExtra("msg", "visit");
-                startActivity(intent);
-            }
-        });
-        dialog.setContentView(view);
-        dialog.setCancelable(false);
-        dialog.show();
+            });
+            dialog.setContentView(view);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
 
     }
     private void loadCustomerStatus(){
-        for(Reasons reason:reasonsList){
-            CustomerStatus status = new CustomerStatus();
-            if(reason.getReasonType().equals(App.VisitReasons)){
-                status.setReasonCode(reason.getReasonID());
-                if(Settings.getString(App.LANGUAGE).equals("en")){
-                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+        try{
+            for(Reasons reason:reasonsList){
+                CustomerStatus status = new CustomerStatus();
+                if(reason.getReasonType().equals(App.VisitReasons)){
+                    status.setReasonCode(reason.getReasonID());
+                    if(Settings.getString(App.LANGUAGE).equals("en")){
+                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                    }
+                    else{
+                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
+                    }
+                    if(status.getReasonCode().contains("V")){
+                        arrayList.add(status);
+                    }
+                    //status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                    //arrayList.add(status);
                 }
-                else{
-                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
-                }
-                if(status.getReasonCode().contains("V")){
-                    arrayList.add(status);
-                }
-                //status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
-                //arrayList.add(status);
             }
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
     private boolean checkIfinSequence(Customer customer){
         String itemNo = customer.getCustomerItemNo();
@@ -256,42 +268,47 @@ public class AllCustomerFragment extends Fragment {
         return db.checkData(db.CUSTOMER_FLAGS,filter);
     }
     public void loadCustomerFlag(Customer customer){
-        HashMap<String,String>map = new HashMap<>();
-        map.put(db.KEY_TRIP_ID,"");
-        map.put(db.KEY_CUSTOMER_NO,"");
-        map.put(db.KEY_THRESHOLD_LIMIT,"");
-        map.put(db.KEY_VERIFYGPS,"");
-        map.put(db.KEY_GPS_SAVE,"");
-        map.put(db.KEY_ENABLE_INVOICE,"");
-        map.put(db.KEY_ENABLE_DELAY_PRINT,"");
-        map.put(db.KEY_ENABLE_EDIT_ORDERS,"");
-        map.put(db.KEY_ENABLE_EDIT_INVOICE,"");
-        map.put(db.KEY_ENABLE_RETURNS,"");
-        map.put(db.KEY_ENABLE_DAMAGED,"");
-        map.put(db.KEY_ENABLE_SIGN_CAPTURE,"");
-        map.put(db.KEY_ENABLE_RETURN,"");
-        map.put(db.KEY_ENABLE_AR_COLLECTION,"");
-        map.put(db.KEY_ENABLE_POS_EQUI,"");
-        map.put(db.KEY_ENABLE_SUR_AUDIT,"");
-        HashMap<String,String>filter = new HashMap<>();
-        filter.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
-        Cursor cursor = db.getData(db.CUSTOMER_FLAGS,map,filter);
-        if(cursor.getCount()>0){
-            cursor.moveToFirst();
-            App.CustomerRouteControl obj = new App.CustomerRouteControl();
-            obj.setThresholdLimit(cursor.getString(cursor.getColumnIndex(db.KEY_THRESHOLD_LIMIT)));
-            obj.setIsVerifyGPS(cursor.getString(cursor.getColumnIndex(db.KEY_VERIFYGPS)).equals("0") ? false : true);
-            obj.setIsEnableIVCopy(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_INVOICE)).equals("0") ? false : true);
-            obj.setIsDelayPrint(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DELAY_PRINT)).equals("0") ? false : true);
-            obj.setIsEditOrders(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_ORDERS)).equals("0") ? false : true);
-            obj.setIsEditInvoice(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_INVOICE)).equals("0") ? false : true);
-            obj.setIsReturns(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURNS)).equals("0") ? false : true);
-            obj.setIsDamaged(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DAMAGED)).equals("0") ? false : true);
-            obj.setIsSignCapture(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_SIGN_CAPTURE)).equals("0")?false:true);
-            obj.setIsReturnCustomer(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURN)).equals("0")?false:true);
-            obj.setIsCollection(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_AR_COLLECTION)).equals("0")?false:true);
+        try{
+            HashMap<String,String>map = new HashMap<>();
+            map.put(db.KEY_TRIP_ID,"");
+            map.put(db.KEY_CUSTOMER_NO,"");
+            map.put(db.KEY_THRESHOLD_LIMIT,"");
+            map.put(db.KEY_VERIFYGPS,"");
+            map.put(db.KEY_GPS_SAVE,"");
+            map.put(db.KEY_ENABLE_INVOICE,"");
+            map.put(db.KEY_ENABLE_DELAY_PRINT,"");
+            map.put(db.KEY_ENABLE_EDIT_ORDERS,"");
+            map.put(db.KEY_ENABLE_EDIT_INVOICE,"");
+            map.put(db.KEY_ENABLE_RETURNS,"");
+            map.put(db.KEY_ENABLE_DAMAGED,"");
+            map.put(db.KEY_ENABLE_SIGN_CAPTURE,"");
+            map.put(db.KEY_ENABLE_RETURN,"");
+            map.put(db.KEY_ENABLE_AR_COLLECTION,"");
+            map.put(db.KEY_ENABLE_POS_EQUI,"");
+            map.put(db.KEY_ENABLE_SUR_AUDIT,"");
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_CUSTOMER_NO,customer.getCustomerID());
+            Cursor cursor = db.getData(db.CUSTOMER_FLAGS,map,filter);
+            if(cursor.getCount()>0){
+                cursor.moveToFirst();
+                App.CustomerRouteControl obj = new App.CustomerRouteControl();
+                obj.setThresholdLimit(cursor.getString(cursor.getColumnIndex(db.KEY_THRESHOLD_LIMIT)));
+                obj.setIsVerifyGPS(cursor.getString(cursor.getColumnIndex(db.KEY_VERIFYGPS)).equals("0") ? false : true);
+                obj.setIsEnableIVCopy(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_INVOICE)).equals("0") ? false : true);
+                obj.setIsDelayPrint(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DELAY_PRINT)).equals("0") ? false : true);
+                obj.setIsEditOrders(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_ORDERS)).equals("0") ? false : true);
+                obj.setIsEditInvoice(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_EDIT_INVOICE)).equals("0") ? false : true);
+                obj.setIsReturns(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURNS)).equals("0") ? false : true);
+                obj.setIsDamaged(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_DAMAGED)).equals("0") ? false : true);
+                obj.setIsSignCapture(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_SIGN_CAPTURE)).equals("0")?false:true);
+                obj.setIsReturnCustomer(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_RETURN)).equals("0")?false:true);
+                obj.setIsCollection(cursor.getString(cursor.getColumnIndex(db.KEY_ENABLE_AR_COLLECTION)).equals("0")?false:true);
+            }
         }
-
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
     public boolean verifyGPS(){
 

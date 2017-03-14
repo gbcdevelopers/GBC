@@ -18,6 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -99,62 +101,69 @@ public class ReturnsActivity extends AppCompatActivity {
 
     void showChangeDialog(int position){
 
-        GoodReturn item = new GoodReturn();
-        final Dialog dialog = new Dialog(ReturnsActivity.this);
-        dialog.setContentView(R.layout.alert_good_return);
+        try{
+            GoodReturn item = new GoodReturn();
+            final Dialog dialog = new Dialog(ReturnsActivity.this);
+            dialog.setContentView(R.layout.alert_good_return);
 
-        Button btn_add = (Button)dialog.findViewById(R.id.btn_add_item_return);
-        Button btn_cancel = (Button)dialog.findViewById(R.id.btn_cancel_item_return);
+            Button btn_add = (Button)dialog.findViewById(R.id.btn_add_item_return);
+            Button btn_cancel = (Button)dialog.findViewById(R.id.btn_cancel_item_return);
 
-        final TextView tv_item_code = (TextView)dialog.findViewById(R.id.lbl_item_code);
-        final TextView tv_item_description = (TextView)dialog.findViewById(R.id.lbl_item_description);
-        final EditText et_quantity_cs = (EditText)dialog.findViewById(R.id.et_quantitycs_return);
-        final EditText et_quantity_bt = (EditText)dialog.findViewById(R.id.et_quantitybt_return);
-        final RadioGroup radioGroup = (RadioGroup)dialog.findViewById(R.id.radioGroup);
-        RadioButton btn_good_return = (RadioButton)dialog.findViewById(R.id.btn_radio_good_return);
-        RadioButton btn_bad_return = (RadioButton)dialog.findViewById(R.id.btn_radio_bad_return);
-        final EditText et_return_reason = (EditText)dialog.findViewById(R.id.et_return_reason);
+            final TextView tv_item_code = (TextView)dialog.findViewById(R.id.lbl_item_code);
+            final TextView tv_item_description = (TextView)dialog.findViewById(R.id.lbl_item_description);
+            final EditText et_quantity_cs = (EditText)dialog.findViewById(R.id.et_quantitycs_return);
+            final EditText et_quantity_bt = (EditText)dialog.findViewById(R.id.et_quantitybt_return);
+            final RadioGroup radioGroup = (RadioGroup)dialog.findViewById(R.id.radioGroup);
+            RadioButton btn_good_return = (RadioButton)dialog.findViewById(R.id.btn_radio_good_return);
+            RadioButton btn_bad_return = (RadioButton)dialog.findViewById(R.id.btn_radio_bad_return);
+            final EditText et_return_reason = (EditText)dialog.findViewById(R.id.et_return_reason);
 
-        if(itemDropDownList.size()>position){
-            if(position>0) {
-                item = itemDropDownList.get(position);
-                tv_item_code.setText(item.getItemSKU());
-                tv_item_description.setText(item.getItemDescription());
+            if(itemDropDownList.size()>position){
+                if(position>0) {
+                    item = itemDropDownList.get(position);
+                    tv_item_code.setText(item.getItemSKU());
+                    tv_item_description.setText(item.getItemDescription());
+                }
             }
-        }
-        else{
-            tv_item_code.setText("BA0001");
-            tv_item_description.setText("Test");
-        }
-        if(position==0){
+            else{
+                tv_item_code.setText("BA0001");
+                tv_item_description.setText("Test");
+            }
+            if(position==0){
+
+            }
+            else{
+                dialog.show();
+            }
+            final GoodReturn finalItem = item;
+            btn_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finalItem.setItemSKU(tv_item_code.getText().toString());
+                    finalItem.setItemDescription(tv_item_description.getText().toString());
+                    finalItem.setQuantityCS(et_quantity_cs.getText().toString());
+                    finalItem.setQuantityBT(et_quantity_bt.getText().toString());
+                    finalItem.setReason(et_return_reason.getText().toString());
+                    int selectedID = radioGroup.getCheckedRadioButtonId();
+                    RadioButton btn = (RadioButton) dialog.findViewById(selectedID);
+                    finalItem.setReturnType(btn.getText().toString());
+                    addItemstoList(finalItem);
+                    dialog.dismiss();
+                }
+            });
+            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
 
         }
-        else{
-            dialog.show();
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
-        final GoodReturn finalItem = item;
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finalItem.setItemSKU(tv_item_code.getText().toString());
-                finalItem.setItemDescription(tv_item_description.getText().toString());
-                finalItem.setQuantityCS(et_quantity_cs.getText().toString());
-                finalItem.setQuantityBT(et_quantity_bt.getText().toString());
-                finalItem.setReason(et_return_reason.getText().toString());
-                int selectedID = radioGroup.getCheckedRadioButtonId();
-                RadioButton btn = (RadioButton) dialog.findViewById(selectedID);
-                finalItem.setReturnType(btn.getText().toString());
-                addItemstoList(finalItem);
-                dialog.dismiss();
-            }
-        });
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
 
     }
 

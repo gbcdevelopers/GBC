@@ -1,5 +1,7 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
 import android.hardware.usb.UsbInterface;
@@ -7,12 +9,18 @@ import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +50,7 @@ import gbc.sa.vansales.models.LoadDeliveryHeader;
 import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.DatabaseHandler;
 import gbc.sa.vansales.utils.Helpers;
+import gbc.sa.vansales.utils.OTPGenerator;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
 import io.fabric.sdk.android.services.common.Crash;
@@ -52,7 +61,7 @@ import io.fabric.sdk.android.services.common.Crash;
  @ This screen opens when u select a customer from the list of
  @ customers.
  ************************************************************/
-public class CustomerDetailActivity extends AppCompatActivity {
+public class CustomerDetailActivity extends AppCompatActivity implements View.OnFocusChangeListener,View.OnKeyListener,TextWatcher {
     GridView gridView;
     CustomerOperationAdapter adapter;
     String strText[] = {};/*{getString(R.string.order_request), getString(R.string.order_request), getString(R.string.sales), getString(R.string.merchandizing), getString(R.string.delivery), getString(R.string.print)};*/
@@ -77,6 +86,14 @@ public class CustomerDetailActivity extends AppCompatActivity {
     TextView tv_credit_days;
     TextView tv_credit_limit;
     TextView tv_available_limit;
+    private EditText mPinFirstDigitEditText;
+    private EditText mPinSecondDigitEditText;
+    private EditText mPinThirdDigitEditText;
+    private EditText mPinForthDigitEditText;
+    private EditText mPinFifthDigitEditText;
+    private EditText mPinSixthDigitEditText;
+    private EditText mPinHiddenEditText;
+    private String accessCodeEntered = "";
     App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -302,9 +319,21 @@ public class CustomerDetailActivity extends AppCompatActivity {
                                         startActivity(intent2);
                                         break;
                                     } else {
-                                        Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
-                                        Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
-                                        break;
+                                        if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                                            Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
+                                            Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                                            intent2.putExtra("from", "customerdetail");
+                                            intent2.putExtra("headerObj", object);
+                                            startActivity(intent2);
+                                            break;
+                                        }
+                                        else{
+                                            Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
+                                            Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
+                                            showAccessCode(object);
+                                            break;
+                                        }
+                                        //break;
                                     }
                                 }
                             } else {
@@ -321,9 +350,24 @@ public class CustomerDetailActivity extends AppCompatActivity {
                                     startActivity(intent2);
                                     break;
                                 } else {
-                                    Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
+                                    if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                                        Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
+                                        Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                                        intent2.putExtra("from", "customerdetail");
+                                        intent2.putExtra("headerObj", object);
+                                        startActivity(intent2);
+                                        break;
+                                    }
+                                    else{
+                                        Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
+                                        Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
+                                        showAccessCode(object);
+                                        break;
+                                    }
+                                    /*Helpers.logData(CustomerDetailActivity.this, "Sale cannot be performed because of no limit");
                                     Toast.makeText(CustomerDetailActivity.this, getString(R.string.pending_invoice), Toast.LENGTH_SHORT).show();
-                                    break;
+                                    showAccessCode(object);*/
+                                    //break;
                                 }
                             }
                         case 3:
@@ -358,6 +402,254 @@ public class CustomerDetailActivity extends AppCompatActivity {
         }
 
     }
+    public void showAccessCode(final Customer customer){
+        try{
+            String accessCode = Helpers.getCurrentTimeStampAccessCode() + StringUtils.stripStart(customer.getCustomerID(),"0") + App.CUSTOMER_OUT_OF_RANGE;
+            byte[] code = accessCode.getBytes();
+            final String generatedCode = OTPGenerator.generateOTP(code, 1, 6, false, 1);
+            Log.e("Generated code", "" + generatedCode);
+
+            final Dialog dialog = new Dialog(CustomerDetailActivity.this);
+            //dialog.setTitle(getString(R.string.shop_status));
+            View view = this.getLayoutInflater().inflate(R.layout.activity_access_code, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerDetailActivity.this);
+            builder.setView(view);
+
+            TextView tv_access_code = (TextView)view.findViewById(R.id.tv_access_code);
+            tv_access_code.setText(getString(R.string.accesscode) + "\n" + accessCode);
+            mPinFirstDigitEditText = (EditText)view.findViewById(R.id.pin_first_edittext);
+            mPinSecondDigitEditText = (EditText) view.findViewById(R.id.pin_second_edittext);
+            mPinThirdDigitEditText = (EditText) view.findViewById(R.id.pin_third_edittext);
+            mPinForthDigitEditText = (EditText) view.findViewById(R.id.pin_forth_edittext);
+            mPinFifthDigitEditText = (EditText) view.findViewById(R.id.pin_fifth_edittext);
+            mPinSixthDigitEditText = (EditText) view.findViewById(R.id.pin_sixth_edittext);
+            mPinHiddenEditText = (EditText)view.findViewById(R.id.pin_hidden_edittext);
+            setPINListeners();
+            final AlertDialog dialog1 = builder.create();
+            Button cancel = (Button)view.findViewById(R.id.btn_cancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog1.dismiss();
+                }
+            });
+            Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+            btn_continue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("CODE", "" + accessCodeEntered);
+                    if(accessCodeEntered.equals(generatedCode)){
+                        dialog1.dismiss();
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
+                        Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                        intent2.putExtra("from", "customerdetail");
+                        intent2.putExtra("headerObj", object);
+                        startActivity(intent2);
+                    }
+                    else{
+                        dialog1.dismiss();
+                        Helpers.logData(CustomerDetailActivity.this, "Clicked for Sales Invoice");
+                        Intent intent2 = new Intent(CustomerDetailActivity.this, SalesInvoiceOptionActivity.class);
+                        intent2.putExtra("from", "customerdetail");
+                        intent2.putExtra("headerObj", object);
+                        startActivity(intent2);
+                       /* Toast.makeText(getActivity(),getString(R.string.code_mismatch),Toast.LENGTH_SHORT).show();
+                        showAccessCode(customer);*/
+                    }
+                    dialog1.dismiss();
+                }
+            });
+            dialog1.setCancelable(false);
+            dialog1.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void setPINListeners() {
+        mPinHiddenEditText.addTextChangedListener(this);
+        mPinFirstDigitEditText.setOnFocusChangeListener(this);
+        mPinSecondDigitEditText.setOnFocusChangeListener(this);
+        mPinThirdDigitEditText.setOnFocusChangeListener(this);
+        mPinForthDigitEditText.setOnFocusChangeListener(this);
+        mPinFifthDigitEditText.setOnFocusChangeListener(this);
+        mPinSixthDigitEditText.setOnFocusChangeListener(this);
+
+        mPinFirstDigitEditText.setOnKeyListener(this);
+        mPinSecondDigitEditText.setOnKeyListener(this);
+        mPinThirdDigitEditText.setOnKeyListener(this);
+        mPinForthDigitEditText.setOnKeyListener(this);
+        mPinFifthDigitEditText.setOnKeyListener(this);
+        mPinHiddenEditText.setOnKeyListener(this);
+        mPinSixthDigitEditText.setOnKeyListener(this);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        final int id = v.getId();
+        switch (id) {
+            case R.id.pin_first_edittext:
+
+                if (hasFocus) {
+                    setFocus(mPinHiddenEditText);
+                    showSoftKeyboard(mPinHiddenEditText);
+                }
+                break;
+
+            case R.id.pin_second_edittext:
+                if (hasFocus) {
+                    setFocus(mPinHiddenEditText);
+                    showSoftKeyboard(mPinHiddenEditText);
+                }
+                break;
+
+            case R.id.pin_third_edittext:
+                if (hasFocus) {
+                    setFocus(mPinHiddenEditText);
+                    showSoftKeyboard(mPinHiddenEditText);
+                }
+                break;
+
+            case R.id.pin_forth_edittext:
+                if (hasFocus) {
+                    setFocus(mPinHiddenEditText);
+                    showSoftKeyboard(mPinHiddenEditText);
+                }
+                break;
+
+            case R.id.pin_fifth_edittext:
+                if (hasFocus) {
+                    setFocus(mPinHiddenEditText);
+                    showSoftKeyboard(mPinHiddenEditText);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            final int id = v.getId();
+            switch (id) {
+                case R.id.pin_hidden_edittext:
+                    if (keyCode == KeyEvent.KEYCODE_DEL) {
+                        if (mPinHiddenEditText.getText().length() == 5)
+                            mPinFifthDigitEditText.setText("");
+                        else if (mPinHiddenEditText.getText().length() == 4)
+                            mPinForthDigitEditText.setText("");
+                        else if (mPinHiddenEditText.getText().length() == 3)
+                            mPinThirdDigitEditText.setText("");
+                        else if (mPinHiddenEditText.getText().length() == 2)
+                            mPinSecondDigitEditText.setText("");
+                        else if (mPinHiddenEditText.getText().length() == 1)
+                            mPinFirstDigitEditText.setText("");
+
+                        if (mPinHiddenEditText.length() > 0)
+                            mPinHiddenEditText.setText(mPinHiddenEditText.getText().subSequence(0, mPinHiddenEditText.length() - 1));
+
+                        return true;
+                    }
+
+                    break;
+
+                default:
+                    return false;
+            }
+        }
+
+        return false;
+    }
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        setDefaultPinBackground(mPinFirstDigitEditText);
+        setDefaultPinBackground(mPinSecondDigitEditText);
+        setDefaultPinBackground(mPinThirdDigitEditText);
+        setDefaultPinBackground(mPinForthDigitEditText);
+        setDefaultPinBackground(mPinFifthDigitEditText);
+        setDefaultPinBackground(mPinSixthDigitEditText);
+        if (s.length() == 0) {
+            setFocusedPinBackground(mPinFirstDigitEditText);
+            mPinFirstDigitEditText.setText("");
+        } else if (s.length() == 1) {
+            setFocusedPinBackground(mPinSecondDigitEditText);
+            mPinFirstDigitEditText.setText(s.charAt(0) + "");
+            mPinSecondDigitEditText.setText("");
+            mPinThirdDigitEditText.setText("");
+            mPinForthDigitEditText.setText("");
+            mPinFifthDigitEditText.setText("");
+            mPinSixthDigitEditText.setText("");
+        } else if (s.length() == 2) {
+            setFocusedPinBackground(mPinThirdDigitEditText);
+            mPinSecondDigitEditText.setText(s.charAt(1) + "");
+            mPinThirdDigitEditText.setText("");
+            mPinForthDigitEditText.setText("");
+            mPinFifthDigitEditText.setText("");
+            mPinSixthDigitEditText.setText("");
+        } else if (s.length() == 3) {
+            setFocusedPinBackground(mPinForthDigitEditText);
+            mPinThirdDigitEditText.setText(s.charAt(2) + "");
+            mPinForthDigitEditText.setText("");
+            mPinFifthDigitEditText.setText("");
+            mPinSixthDigitEditText.setText("");
+        } else if (s.length() == 4) {
+            setFocusedPinBackground(mPinFifthDigitEditText);
+            mPinForthDigitEditText.setText(s.charAt(3) + "");
+            mPinFifthDigitEditText.setText("");
+            mPinSixthDigitEditText.setText("");
+        } else if (s.length() == 5) {
+            setDefaultPinBackground(mPinFifthDigitEditText);
+            mPinFifthDigitEditText.setText(s.charAt(4) + "");
+            mPinSixthDigitEditText.setText("");
+        }else if (s.length() == 6) {
+            setDefaultPinBackground(mPinFifthDigitEditText);
+            mPinSixthDigitEditText.setText(s.charAt(5) + "");
+            accessCodeEntered = s.toString();
+            hideSoftKeyboard(mPinFifthDigitEditText);
+        }
+    }
+    @Override
+    public void afterTextChanged(Editable s) {
+    }
+
+    public void showSoftKeyboard(EditText editText) {
+        if (editText == null)
+            return;
+
+        InputMethodManager imm = (InputMethodManager)this.getSystemService(Service.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, 0);
+    }
+
+    public void hideSoftKeyboard(EditText editText) {
+        if (editText == null)
+            return;
+
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Service.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    public static void setFocus(EditText editText) {
+        if (editText == null)
+            return;
+
+        editText.setFocusable(true);
+        editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+    }
+    private void setDefaultPinBackground(EditText editText) {
+        //setViewBackground(editText, getResources().getDrawable(R.drawable.textfield_default_holo_light));
+    }
+    private void setFocusedPinBackground(EditText editText) {
+        //setViewBackground(editText, getResources().getDrawable(R.drawable.textfield_focused_holo_light));
+    }
+
     private void loadCustomerStatus() {
         /*************************************************
          @ Loading all the customer status to show in case
@@ -501,7 +793,13 @@ public class CustomerDetailActivity extends AppCompatActivity {
                         Date dueDate = Helpers.stringToDate(cursor.getString(cursor.getColumnIndex(db.KEY_DUE_DATE)),App.DATE_FORMAT_HYPHEN);
                         if(dueDate.compareTo(today)<0){
                             //return false;
-                            falseCount++;
+                            if((Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                    Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT_CLEARED))))==0){
+                                trueCount++;
+                            }
+                            else{
+                                falseCount++;
+                            }
                         }
                     }
                 }

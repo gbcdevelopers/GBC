@@ -85,7 +85,7 @@ public class LoadActivity extends AppCompatActivity {
             });
             loadDeliveryHeaders = new ArrayList<>();
             // searchResults= GetSearchResults();
-
+            adapter = new LoadDeliveryHeaderAdapter(LoadActivity.this, loadDeliveryHeaders);
             lv = (ListView) findViewById(R.id.srListView);
             new fetchLoads(Settings.getString(TRIP_ID));
             lv.setOnItemClickListener(new OnItemClickListener() {
@@ -246,6 +246,7 @@ public class LoadActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         //Log.e("adapter", "" + adapter.getCount());
@@ -359,6 +360,7 @@ public class LoadActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }
@@ -382,72 +384,79 @@ public class LoadActivity extends AppCompatActivity {
         }
     }
     void parseJSON(String metadata,JSONArray jsonArray) throws JSONException {
-        switch (metadata){
-            case ConfigStore.LoadDeliveryEntity:
-                for(int i=0;i<jsonArray.length();i++){
-                    JSONObject headerObj = jsonArray.getJSONObject(i);
-                    JSONArray loadItems = headerObj.getJSONObject("LoadDelItems").getJSONArray("results");
+        try{
+            switch (metadata){
+                case ConfigStore.LoadDeliveryEntity:
+                    for(int i=0;i<jsonArray.length();i++){
+                        JSONObject headerObj = jsonArray.getJSONObject(i);
+                        JSONArray loadItems = headerObj.getJSONObject("LoadDelItems").getJSONArray("results");
 
-                    HashMap<String, String> headerParams = new HashMap<>();
-                    headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
-                    headerParams.put(db.KEY_DELIVERY_NO  ,headerObj.get("DeliveryNo").toString());
-                    headerParams.put(db.KEY_CREATED_BY ,headerObj.get("CreatedBy").toString());
-                    headerParams.put(db.KEY_CREATED_TIME,headerObj.get("EntryTime").toString());
-                    headerParams.put(db.KEY_SALES_DIST, headerObj.get("SalesDist").toString());
-                    headerParams.put(db.KEY_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Creationdate").toString()), App.DATE_FORMAT));
-                    //headerParams.put(db.KEY_AS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Asdate").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_SHIPPING_PT  ,headerObj.get("ShippingPt").toString());
-                    headerParams.put(db.KEY_SALES_ORG  ,headerObj.get("SalesOrg").toString());
-                    headerParams.put(db.KEY_DELIVERY_TYPE  ,headerObj.get("Delvtype").toString());
-                    headerParams.put(db.KEY_DELIVERY_DEFN  ,headerObj.get("DelvDefin").toString());
-                    headerParams.put(db.KEY_ORDER_COMB  ,headerObj.get("OrderComb").toString());
-                    headerParams.put(db.KEY_GOODS_MOVEMENT_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("GoodsMvtdate").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_LOADING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("LoadingDat").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_TRANSPLANT_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("TransplDate").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_DELIVERY_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("DelvDate").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_PICKING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("PickingDae").toString()), App.DATE_FORMAT));
-                    headerParams.put(db.KEY_UNLOAD_POINT, headerObj.get("UnloadPt").toString());
-                    headerParams.put(db.KEY_IS_VERIFIED, "false");
+                        HashMap<String, String> headerParams = new HashMap<>();
+                        headerParams.put(db.KEY_TRIP_ID,Settings.getString(App.TRIP_ID));
+                        headerParams.put(db.KEY_DELIVERY_NO  ,headerObj.get("DeliveryNo").toString());
+                        headerParams.put(db.KEY_CREATED_BY ,headerObj.get("CreatedBy").toString());
+                        headerParams.put(db.KEY_CREATED_TIME,headerObj.get("EntryTime").toString());
+                        headerParams.put(db.KEY_SALES_DIST, headerObj.get("SalesDist").toString());
+                        headerParams.put(db.KEY_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Creationdate").toString()), App.DATE_FORMAT));
+                        //headerParams.put(db.KEY_AS_DATE, Helpers.formatDate(Helpers.formatDate(headerObj.get("Asdate").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_SHIPPING_PT  ,headerObj.get("ShippingPt").toString());
+                        headerParams.put(db.KEY_SALES_ORG  ,headerObj.get("SalesOrg").toString());
+                        headerParams.put(db.KEY_DELIVERY_TYPE  ,headerObj.get("Delvtype").toString());
+                        headerParams.put(db.KEY_DELIVERY_DEFN  ,headerObj.get("DelvDefin").toString());
+                        headerParams.put(db.KEY_ORDER_COMB  ,headerObj.get("OrderComb").toString());
+                        headerParams.put(db.KEY_GOODS_MOVEMENT_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("GoodsMvtdate").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_LOADING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("LoadingDat").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_TRANSPLANT_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("TransplDate").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_DELIVERY_DATE  ,Helpers.formatDate(Helpers.formatDate(headerObj.get("DelvDate").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_PICKING_DATE   ,Helpers.formatDate(Helpers.formatDate(headerObj.get("PickingDae").toString()), App.DATE_FORMAT));
+                        headerParams.put(db.KEY_UNLOAD_POINT, headerObj.get("UnloadPt").toString());
+                        headerParams.put(db.KEY_IS_VERIFIED, "false");
 
-                    HashMap<String,String>filterMap = new HashMap<>();
-                    filterMap.put(db.KEY_DELIVERY_NO, headerObj.get("DeliveryNo").toString());
-                    if(!db.checkData(db.LOAD_DELIVERY_HEADER,filterMap)){
-                        changeCount++;
-                        db.addData(db.LOAD_DELIVERY_HEADER, headerParams);
-                    }
+                        HashMap<String,String>filterMap = new HashMap<>();
+                        filterMap.put(db.KEY_DELIVERY_NO, headerObj.get("DeliveryNo").toString());
+                        if(!db.checkData(db.LOAD_DELIVERY_HEADER,filterMap)){
+                            changeCount++;
+                            db.addData(db.LOAD_DELIVERY_HEADER, headerParams);
+                        }
 
-                    for(int j=0;j<loadItems.length();j++){
-                        JSONObject object = loadItems.getJSONObject(j);
-                        HashMap<String, String> params = new HashMap<>();
-                        params.put(db.KEY_DELIVERY_NO,object.get("DeliveryNo").toString());
-                        params.put(db.KEY_ORDER_ID,object.get("OrderId").toString());
-                        params.put(db.KEY_ITEM_NO,object.get("Itemno").toString());
-                        params.put(db.KEY_ITEM_CATEGORY, object.get("DelvItmCat").toString());
-                        params.put(db.KEY_CREATED_BY, object.get("CreatedBy").toString());
-                        params.put(db.KEY_ENTRY_TIME  ,object.get("EntryTime").toString());
-                        params.put(db.KEY_DATE   ,Helpers.formatDate(Helpers.formatDate(object.get("CreationDat").toString()), App.DATE_FORMAT));
-                        params.put(db.KEY_MATERIAL_NO   ,object.get("MaterialNo").toString());
-                        params.put(db.KEY_MATERIAL_ENTERED   ,object.get("MaterialEntered").toString());
-                        params.put(db.KEY_MATERIAL_GROUP ,object.get("MatGroup").toString());
-                        params.put(db.KEY_PLANT ,object.get("Plant").toString());
-                        params.put(db.KEY_STORAGE_LOCATION , object.get("StorLocation").toString());
-                        params.put(db.KEY_BATCH , object.get("Batch").toString());
-                        params.put(db.KEY_ACTUAL_QTY,object.get("ActQtyDel").toString());
-                        params.put(db.KEY_REMAINING_QTY,object.get("ActQtyDel").toString());
-                        params.put(db.KEY_UOM ,object.get("Uom").toString());
-                        params.put(db.KEY_DIST_CHANNEL ,object.get("DistCha").toString());
-                        params.put(db.KEY_DIVISION ,object.get("Division").toString());
-                        params.put(db.KEY_IS_VERIFIED,"false");
+                        for(int j=0;j<loadItems.length();j++){
+                            JSONObject object = loadItems.getJSONObject(j);
+                            HashMap<String, String> params = new HashMap<>();
+                            params.put(db.KEY_DELIVERY_NO,object.get("DeliveryNo").toString());
+                            params.put(db.KEY_ORDER_ID,object.get("OrderId").toString());
+                            params.put(db.KEY_ITEM_NO,object.get("Itemno").toString());
+                            params.put(db.KEY_ITEM_CATEGORY, object.get("DelvItmCat").toString());
+                            params.put(db.KEY_CREATED_BY, object.get("CreatedBy").toString());
+                            params.put(db.KEY_ENTRY_TIME  ,object.get("EntryTime").toString());
+                            params.put(db.KEY_DATE   ,Helpers.formatDate(Helpers.formatDate(object.get("CreationDat").toString()), App.DATE_FORMAT));
+                            params.put(db.KEY_MATERIAL_NO   ,object.get("MaterialNo").toString());
+                            params.put(db.KEY_MATERIAL_ENTERED   ,object.get("MaterialEntered").toString());
+                            params.put(db.KEY_MATERIAL_GROUP ,object.get("MatGroup").toString());
+                            params.put(db.KEY_PLANT ,object.get("Plant").toString());
+                            params.put(db.KEY_STORAGE_LOCATION , object.get("StorLocation").toString());
+                            params.put(db.KEY_BATCH , object.get("Batch").toString());
+                            params.put(db.KEY_ACTUAL_QTY,object.get("ActQtyDel").toString());
+                            params.put(db.KEY_REMAINING_QTY,object.get("ActQtyDel").toString());
+                            params.put(db.KEY_UOM ,object.get("Uom").toString());
+                            params.put(db.KEY_DIST_CHANNEL ,object.get("DistCha").toString());
+                            params.put(db.KEY_DIVISION ,object.get("Division").toString());
+                            params.put(db.KEY_IS_VERIFIED,"false");
 
-                        HashMap<String,String>filterItem = new HashMap<>();
-                        filterItem.put(db.KEY_DELIVERY_NO, object.get("DeliveryNo").toString());
-                        if(!db.checkData(db.LOAD_DELIVERY_ITEMS,filterItem)){
-                            db.addData(db.LOAD_DELIVERY_ITEMS,params);
+                            HashMap<String,String>filterItem = new HashMap<>();
+                            filterItem.put(db.KEY_DELIVERY_NO, object.get("DeliveryNo").toString());
+                            if(!db.checkData(db.LOAD_DELIVERY_ITEMS,filterItem)){
+                                db.addData(db.LOAD_DELIVERY_ITEMS,params);
+                            }
                         }
                     }
-                }
-                break;
+                    break;
+            }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     void lockTransactions(){
         HashMap<String, String> altMap = new HashMap<>();

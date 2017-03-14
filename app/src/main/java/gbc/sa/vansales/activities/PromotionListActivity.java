@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -97,6 +99,7 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         btn_apply.setOnClickListener(new View.OnClickListener() {
@@ -153,27 +156,34 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
     }
 
     private void setPromotions(String promocode){
-        if(promocode.equals(App.Promotions02)){
-            Promotions promotions = new Promotions();
-            promotions.setIsMandatory(true);
-            promotions.setPromotionCode(App.Promotions02);
-            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions02));
-            arrayList.add(promotions);
+        try{
+            if(promocode.equals(App.Promotions02)){
+                Promotions promotions = new Promotions();
+                promotions.setIsMandatory(true);
+                promotions.setPromotionCode(App.Promotions02);
+                promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions02));
+                arrayList.add(promotions);
+            }
+            else if(promocode.equals(App.Promotions05)){
+                Promotions promotions = new Promotions();
+                promotions.setIsMandatory(true);
+                promotions.setPromotionCode(App.Promotions05);
+                promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions05));
+                arrayList.add(promotions);
+            }
+            else if(promocode.equals(App.Promotions07)){
+                Promotions promotions = new Promotions();
+                promotions.setIsMandatory(true);
+                promotions.setPromotionCode(App.Promotions07);
+                promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions07));
+                arrayList.add(promotions);
+            }
         }
-        else if(promocode.equals(App.Promotions05)){
-            Promotions promotions = new Promotions();
-            promotions.setIsMandatory(true);
-            promotions.setPromotionCode(App.Promotions05);
-            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions05));
-            arrayList.add(promotions);
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
-        else if(promocode.equals(App.Promotions07)){
-            Promotions promotions = new Promotions();
-            promotions.setIsMandatory(true);
-            promotions.setPromotionCode(App.Promotions07);
-            promotions.setPromotionDescription(ConfigStore.getCode(App.Promotions07));
-            arrayList.add(promotions);
-        }
+
     }
     @Override
     public void onProcessingComplete() {
@@ -186,28 +196,35 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
     }
 
     private void checkPromotions(){
-        String Promotions02 = App.Promotions02;
-        String Promotions05 = App.Promotions05;
-        String Promotions07 = App.Promotions07;
+        try{
+            String Promotions02 = App.Promotions02;
+            String Promotions05 = App.Promotions05;
+            String Promotions07 = App.Promotions07;
 
-        HashMap<String,String>filter = new HashMap<>();
-        filter.put(db.KEY_PROMOTION_TYPE,Promotions02);
-        //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-        HashMap<String,String>filter1 = new HashMap<>();
-        filter1.put(db.KEY_PROMOTION_TYPE,Promotions05);
-        //filter1.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-        HashMap<String,String>filter2 = new HashMap<>();
-        filter2.put(db.KEY_PROMOTION_TYPE,Promotions07);
-        //filter2.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-        if(db.checkData(db.PROMOTIONS,filter)) {
-            setPromotions(Promotions02);
+            HashMap<String,String>filter = new HashMap<>();
+            filter.put(db.KEY_PROMOTION_TYPE,Promotions02);
+            //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            HashMap<String,String>filter1 = new HashMap<>();
+            filter1.put(db.KEY_PROMOTION_TYPE,Promotions05);
+            //filter1.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            HashMap<String,String>filter2 = new HashMap<>();
+            filter2.put(db.KEY_PROMOTION_TYPE,Promotions07);
+            //filter2.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+            if(db.checkData(db.PROMOTIONS,filter)) {
+                setPromotions(Promotions02);
+            }
+            if(db.checkData(db.PROMOTIONS,filter1)) {
+                setPromotions(Promotions05);
+            }
+            if(db.checkData(db.PROMOTIONS,filter2)) {
+                setPromotions(Promotions07);
+            }
         }
-        if(db.checkData(db.PROMOTIONS,filter1)) {
-            setPromotions(Promotions05);
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
-        if(db.checkData(db.PROMOTIONS,filter2)) {
-            setPromotions(Promotions07);
-        }
+
     }
     public class loadPromotions extends AsyncTask<Void,Void,Void>{
         String promotionType = "";
@@ -232,35 +249,31 @@ public class PromotionListActivity extends AppCompatActivity implements DataList
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(loadingSpinner.isShowing()){
-                loadingSpinner.hide();
-            }
-            adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
-            list_promotion.setAdapter(adapter);
-            if(arrayList.size()==0){
-                if (from.equals("review")){
-
-                }
-                else{
-                    Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
-                    intent.putExtra("msg", "Final Invoice");
-                    intent.putExtra("delivery",delivery);
-                    intent.putExtra("from",from);
-                    intent.putExtra("headerObj", object);
-                    startActivity(intent);
-                }
-
-            }
-          //  adapter.notifyDataSetChanged();
-           // onProcessingComplete();
-            /*count++;
-            if(count==3){
+            try{
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();
                 }
-                onProcessingComplete();
-            }*/
+                adapter = new PromotionsAdapter(PromotionListActivity.this, arrayList);
+                list_promotion.setAdapter(adapter);
+                if(arrayList.size()==0){
+                    if (from.equals("review")){
 
+                    }
+                    else{
+                        Intent intent = new Intent(PromotionListActivity.this, PromotioninfoActivity.class);
+                        intent.putExtra("msg", "Final Invoice");
+                        intent.putExtra("delivery",delivery);
+                        intent.putExtra("from",from);
+                        intent.putExtra("headerObj", object);
+                        startActivity(intent);
+                    }
+
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
         }
     }
     @Override

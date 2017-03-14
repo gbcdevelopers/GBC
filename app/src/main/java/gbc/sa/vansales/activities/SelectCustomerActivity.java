@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -76,169 +78,188 @@ public class SelectCustomerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
-        flag = DriverRouteFlags.get();
-        Helpers.logData(SelectCustomerActivity.this, "At Customer Activity Screen");
-        loadingSpinner = new LoadingSpinner(this);
-        customers = CustomerHeaders.get();
-        OrderReasons.loadData(getApplicationContext());
-        new loadVisitList(Settings.getString(App.TRIP_ID));
-        new loadAllCustomers(Settings.getString(App.TRIP_ID));
+        try{
+            flag = DriverRouteFlags.get();
+            Helpers.logData(SelectCustomerActivity.this, "At Customer Activity Screen");
+            loadingSpinner = new LoadingSpinner(this);
+            customers = CustomerHeaders.get();
+            OrderReasons.loadData(getApplicationContext());
+            new loadVisitList(Settings.getString(App.TRIP_ID));
+            new loadAllCustomers(Settings.getString(App.TRIP_ID));
         /*viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("Sequence"));
         tabLayout.addTab(tabLayout.newTab().setText("All"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);*/
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        floatButton = (FloatingActionButton) findViewById(R.id.float_map);
-        addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
-        if(!(flag == null)){
-            if(!flag.isAddCustomer()){
-                addCustomer.setEnabled(false);
-                addCustomer.setAlpha(0.5f);
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            floatButton = (FloatingActionButton) findViewById(R.id.float_map);
+            addCustomer = (FloatingActionButton)findViewById(R.id.addCustomer);
+            if(!(flag == null)){
+                if(!flag.isAddCustomer()){
+                    addCustomer.setEnabled(false);
+                    addCustomer.setAlpha(0.5f);
+                }
             }
-        }
 
         /*if(!App.DriverRouteControl.isAddCustomer()){
             addCustomer.setEnabled(false);
             addCustomer.setAlpha(0.5f);
         }*/
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.select_customer));
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectCustomerActivity.this,DashboardActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
-        dataArrayList = new ArrayList<>();
-        //loadData();
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        if (tv_top_header != null) {
+            iv_back.setVisibility(View.VISIBLE);
             tv_top_header.setVisibility(View.VISIBLE);
             tv_top_header.setText(getString(R.string.select_customer));
-        }
-        toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        if (toolbar_iv_back != null) {
-            toolbar_iv_back.setVisibility(View.VISIBLE);
-        }
-        iv_search = (ImageView) findViewById(R.id.iv_search);
-        if (iv_search != null) {
-            iv_search.setVisibility(View.VISIBLE);
-        }
-        iv_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iv_search.setVisibility(View.GONE);
-                et_search.setVisibility(View.VISIBLE);
-                toolbar_iv_back.setVisibility(View.GONE);
-                tv_top_header.setVisibility(View.GONE);
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SelectCustomerActivity.this,DashboardActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            dataArrayList = new ArrayList<>();
+            //loadData();
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            if (tv_top_header != null) {
+                tv_top_header.setVisibility(View.VISIBLE);
+                tv_top_header.setText(getString(R.string.select_customer));
             }
-        });
-        floatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(SelectCustomerActivity.this,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(SelectCustomerActivity.this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_LOCATION);
-                } else {
-                    Intent intent = new Intent(SelectCustomerActivity.this, CustomerOperationsMapActivity.class);
+            toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            if (toolbar_iv_back != null) {
+                toolbar_iv_back.setVisibility(View.VISIBLE);
+            }
+            iv_search = (ImageView) findViewById(R.id.iv_search);
+            if (iv_search != null) {
+                iv_search.setVisibility(View.VISIBLE);
+            }
+            iv_search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iv_search.setVisibility(View.GONE);
+                    et_search.setVisibility(View.VISIBLE);
+                    toolbar_iv_back.setVisibility(View.GONE);
+                    tv_top_header.setVisibility(View.GONE);
+                }
+            });
+            floatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (ContextCompat.checkSelfPermission(SelectCustomerActivity.this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(SelectCustomerActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_LOCATION);
+                    } else {
+                        Intent intent = new Intent(SelectCustomerActivity.this, CustomerOperationsMapActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+            addCustomer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SelectCustomerActivity.this, AddCustomerActivity.class);
                     startActivity(intent);
                 }
-            }
-        });
-        addCustomer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectCustomerActivity.this, AddCustomerActivity.class);
-                startActivity(intent);
-            }
-        });
-        et_search = (EditText) findViewById(R.id.et_search_customer);
-        et_search.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-                        et_search.setVisibility(View.GONE);
-                        iv_search.setVisibility(View.VISIBLE);
-                        toolbar_iv_back.setVisibility(View.VISIBLE);
-                        tv_top_header.setVisibility(View.VISIBLE);
-                        return true;
+            });
+            et_search = (EditText) findViewById(R.id.et_search_customer);
+            et_search.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_LEFT = 0;
+                    final int DRAWABLE_TOP = 1;
+                    final int DRAWABLE_RIGHT = 2;
+                    final int DRAWABLE_BOTTOM = 3;
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            // your action here
+                            et_search.setVisibility(View.GONE);
+                            iv_search.setVisibility(View.VISIBLE);
+                            toolbar_iv_back.setVisibility(View.VISIBLE);
+                            tv_top_header.setVisibility(View.VISIBLE);
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            }
-        });
-        toolbar_iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectCustomerActivity.this,DashboardActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+            });
+            toolbar_iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SelectCustomerActivity.this,DashboardActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
                 /*finish();*/
-            }
-        });
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("addtext", "change");
-                if (tab_position == 0) {
-                    if(dataAdapter.getCount()>0){
-                        VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
-                    }
-                } else {
-                    if(dataAdapter.getCount()>0){
-                        AllCustomerFragment.dataAdapter1.getFilter().filter(s.toString());
-                    }
                 }
-                //planBadgeAdapter.notifyDataSetChanged();
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+            });
+            et_search.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    Log.v("addtext", "change");
+                    if (tab_position == 0) {
+                        if( VisitAllFragment.dataAdapter.getCount()>0){
+                            if(s.toString().length()>0){
+                                VisitAllFragment.dataAdapter.getFilter().filter(s.toString());
+                            }
+                            else{
+                                VisitAllFragment.dataAdapter.getFilter().filter("");
+                            }
+
+                        }
+                    } else {
+                        if(AllCustomerFragment.dataAdapter1.getCount()>0){
+                            AllCustomerFragment.dataAdapter1.getFilter().filter(s.toString());
+                        }
+                    }
+                    //planBadgeAdapter.notifyDataSetChanged();
+                }
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
 
     public void setTabs(){
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sequence).toUpperCase()));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.all).toUpperCase()));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        try{
+            viewPager = (ViewPager) findViewById(R.id.pager);
+            tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sequence).toUpperCase()));
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.all).toUpperCase()));
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), "s");
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                tab_position = tab.getPosition();
-            }
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+            final PagerAdapter adapter = new PagerAdapter
+                    (getSupportFragmentManager(), tabLayout.getTabCount(), "s");
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                    tab_position = tab.getPosition();
+                }
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                }
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
 
     @Override
@@ -439,6 +460,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
 
@@ -482,6 +504,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } finally {
                 db.close();
             }
@@ -522,6 +545,7 @@ public class SelectCustomerActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } finally {
                 db.close();
             }

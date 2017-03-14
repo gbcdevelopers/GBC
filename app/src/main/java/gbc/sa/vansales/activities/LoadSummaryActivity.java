@@ -277,6 +277,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             setListView();
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         //new loadSummary().execute();
     }
@@ -291,20 +292,26 @@ public class LoadSummaryActivity extends AppCompatActivity {
      @ Calculating the cost of the load with its base price
      *********************************************************/
     private void calculateCost() {
-        int salesTotal = 0;
-        int pcsTotal = 0;
-        double total = 0;
-        for (LoadSummary item : loadSummaryList) {
-            double itemPrice = 0;
-            if (!item.isAltUOM()) {
-                itemPrice = Double.parseDouble(item.getQuantityCases()) * Double.parseDouble(item.getPrice());
+        try{
+            int salesTotal = 0;
+            int pcsTotal = 0;
+            double total = 0;
+            for (LoadSummary item : loadSummaryList) {
+                double itemPrice = 0;
+                if (!item.isAltUOM()) {
+                    itemPrice = Double.parseDouble(item.getQuantityCases()) * Double.parseDouble(item.getPrice());
+                }
+                total += itemPrice;
             }
-            total += itemPrice;
+            Helpers.logData(LoadSummaryActivity.this, "Total Cost of Load" + String.valueOf(total));
+            TextView tv = (TextView) findViewById(R.id.tv_amt);
+            tv.setText(String.valueOf(total));
+            adapter.notifyDataSetChanged();//update adapter
         }
-        Helpers.logData(LoadSummaryActivity.this, "Total Cost of Load" + String.valueOf(total));
-        TextView tv = (TextView) findViewById(R.id.tv_amt);
-        tv.setText(String.valueOf(total));
-        adapter.notifyDataSetChanged();//update adapter
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
     }
     /*********************************************************
      @ Loading unchanged data for the load against the load
@@ -375,6 +382,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             while (cursor.moveToNext());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         } finally {
             db.close();
         }
@@ -391,6 +399,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
             setSwipeViewFeatures();
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         // listView.addHeaderView(header);
     }
@@ -498,22 +507,28 @@ public class LoadSummaryActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             //Logic to fetch Data
-            HashMap<String, String> map = new HashMap<>();
-            map.put(db.KEY_DELIVERY_NO, "");
-            map.put(db.KEY_ITEM_NO, "");
-            map.put(db.KEY_ITEM_CATEGORY, "");
-            map.put(db.KEY_MATERIAL_NO, "");
-            map.put(db.KEY_ACTUAL_QTY, "");
-            map.put(db.KEY_UOM, "");
-            map.put(db.KEY_IS_VERIFIED, "");
-            HashMap<String, String> filter = new HashMap<>();
-            filter.put(db.KEY_DELIVERY_NO, this.deliveryNo);
-            filter.put(db.KEY_IS_VERIFIED, "false");
-            Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, map, filter);
-            if (cursor.getCount() > 0) {
-                Helpers.logData(LoadSummaryActivity.this, "Loaded delivery items for load " + deliveryNo + "with" + cursor.getCount() + "items");
-                setLoadItems(cursor);
+            try{
+                HashMap<String, String> map = new HashMap<>();
+                map.put(db.KEY_DELIVERY_NO, "");
+                map.put(db.KEY_ITEM_NO, "");
+                map.put(db.KEY_ITEM_CATEGORY, "");
+                map.put(db.KEY_MATERIAL_NO, "");
+                map.put(db.KEY_ACTUAL_QTY, "");
+                map.put(db.KEY_UOM, "");
+                map.put(db.KEY_IS_VERIFIED, "");
+                HashMap<String, String> filter = new HashMap<>();
+                filter.put(db.KEY_DELIVERY_NO, this.deliveryNo);
+                filter.put(db.KEY_IS_VERIFIED, "false");
+                Cursor cursor = db.getData(db.LOAD_DELIVERY_ITEMS, map, filter);
+                if (cursor.getCount() > 0) {
+                    Helpers.logData(LoadSummaryActivity.this, "Loaded delivery items for load " + deliveryNo + "with" + cursor.getCount() + "items");
+                    setLoadItems(cursor);
+                }
             }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
             return null;
         }
         @Override
@@ -585,6 +600,7 @@ public class LoadSummaryActivity extends AppCompatActivity {
                 loadSummaryList.add(loadItem);
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
         while (cursor.moveToNext());

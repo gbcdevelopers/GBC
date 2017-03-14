@@ -74,16 +74,14 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     isSelectAll = true;
-                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this,arrayList,isSelectAll);
+                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this, arrayList, isSelectAll);
                     listView.setAdapter(adapter);
-
                     adapter.notifyDataSetChanged();
-                }
-                else{
+                } else {
                     isSelectAll = false;
-                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this,arrayList,isSelectAll);
+                    adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this, arrayList, isSelectAll);
                     listView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
@@ -91,13 +89,20 @@ public class DataPostingAuditActivity extends AppCompatActivity {
                 listView.setAdapter(adapter);*/
             }
         });
-        listView = (ListView) findViewById(R.id.print_document_list);
-        adapter = new DataPostingAuditAdapter(this,arrayList,isSelectAll);
-        listView.setAdapter(adapter);
-        swipeDetector = new SwipeDetector();
+        try{
+            listView = (ListView) findViewById(R.id.print_document_list);
+            adapter = new DataPostingAuditAdapter(this,arrayList,isSelectAll);
+            listView.setAdapter(adapter);
+            swipeDetector = new SwipeDetector();
 
 
-        new loadTransactions().execute();
+            new loadTransactions().execute();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
         //new loadDriverTransactions().execute();
     }
 
@@ -180,6 +185,10 @@ public class DataPostingAuditActivity extends AppCompatActivity {
      @ bad returns, collection etc.
      ************************************************************/
     public class loadTransactions extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            loadingSpinner.show();
+        }
         @Override
         protected Void doInBackground(Void... params) {
             try{
@@ -297,6 +306,21 @@ public class DataPostingAuditActivity extends AppCompatActivity {
                 Crashlytics.logException(e);
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            try{
+                if(loadingSpinner.isShowing()){
+                    loadingSpinner.hide();
+                }
+                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
         }
     }
     private void setAuditItems(Cursor cursor1,Cursor cursor2,Cursor cursor3,Cursor cursor4,Cursor cursor5,Cursor cursor6, Cursor cursor7,Cursor cursor8){

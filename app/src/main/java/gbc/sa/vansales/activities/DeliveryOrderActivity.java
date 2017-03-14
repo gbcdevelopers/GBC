@@ -106,254 +106,261 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_order);
         articles = ArticleHeaders.get();
-        loadingSpinner = new LoadingSpinner(this);
-        deliveryItemsList = (ListView) findViewById(R.id.list_delivery_items);
-        Helpers.logData(DeliveryOrderActivity.this,"Delivery Details Opened");
-        arrayList = new ArrayList<>();
-        adapter = new DeliveryItemBadgeAdapter(this, arrayList);
-        custLayout = (LinearLayout) findViewById(R.id.ll_common);
-        labelView = (LinearLayout) findViewById(R.id.labelView);
-        custLayout.setVisibility(View.GONE);
-        labelView.setVisibility(View.GONE);
-        reasonsList = OrderReasons.get();
-        reasonsAdapter = new ReasonAdapter(DeliveryOrderActivity.this, android.R.layout.simple_spinner_item, reasonsList);
-        myAdapter = new CustomerStatusAdapter(this, rejectReasonList);
-        loadRejectReasons();
-        edit = (FloatingActionButton) findViewById(R.id.edit);
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        delivery = (OrderList) i.getParcelableExtra("delivery");
-        customers = CustomerHeaders.get();
-        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
-        TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
-        TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
-        TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
-        TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
-        if (!(customerHeader == null)) {
-            tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
-            tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
-            tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
-            tv_customer_contact.setText(customerHeader.getPhone());
-        } else {
-            tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
-            tv_customer_address.setText(object.getCustomerAddress().toString());
-            tv_customer_pobox.setText("");
-            tv_customer_contact.setText("");
+        try{
+            loadingSpinner = new LoadingSpinner(this);
+            deliveryItemsList = (ListView) findViewById(R.id.list_delivery_items);
+            Helpers.logData(DeliveryOrderActivity.this,"Delivery Details Opened");
+            arrayList = new ArrayList<>();
+            adapter = new DeliveryItemBadgeAdapter(this, arrayList);
+            custLayout = (LinearLayout) findViewById(R.id.ll_common);
+            labelView = (LinearLayout) findViewById(R.id.labelView);
+            custLayout.setVisibility(View.GONE);
+            labelView.setVisibility(View.GONE);
+            reasonsList = OrderReasons.get();
+            reasonsAdapter = new ReasonAdapter(DeliveryOrderActivity.this, android.R.layout.simple_spinner_item, reasonsList);
+            myAdapter = new CustomerStatusAdapter(this, rejectReasonList);
+            loadRejectReasons();
+            edit = (FloatingActionButton) findViewById(R.id.edit);
+            Intent i = this.getIntent();
+            object = (Customer) i.getParcelableExtra("headerObj");
+            delivery = (OrderList) i.getParcelableExtra("delivery");
+            customers = CustomerHeaders.get();
+            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
+            TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
+            TextView tv_customer_address = (TextView) findViewById(R.id.tv_customer_address);
+            TextView tv_customer_pobox = (TextView) findViewById(R.id.tv_customer_pobox);
+            TextView tv_customer_contact = (TextView) findViewById(R.id.tv_customer_contact);
+            if (!(customerHeader == null)) {
+                tv_customer_name.setText(StringUtils.stripStart(customerHeader.getCustomerNo(), "0") + " " + customerHeader.getName1());
+                tv_customer_address.setText(UrlBuilder.decodeString(customerHeader.getStreet()));
+                tv_customer_pobox.setText(getString(R.string.pobox) + " " + customerHeader.getPostCode());
+                tv_customer_contact.setText(customerHeader.getPhone());
+            } else {
+                tv_customer_name.setText(StringUtils.stripStart(object.getCustomerID(), "0") + " " + object.getCustomerName().toString());
+                tv_customer_address.setText(object.getCustomerAddress().toString());
+                tv_customer_pobox.setText("");
+                tv_customer_contact.setText("");
+            }
+
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            tv_date = (TextView) findViewById(R.id.tv_date);
+            tv_date.setText(delivery.getOrderDate());
+            iv_back.setVisibility(View.VISIBLE);
+            tv_top_header.setVisibility(View.VISIBLE);
+            tv_top_header.setText(getString(R.string.delivery_order) + "(" + StringUtils.stripStart(delivery.getOrderId(), "0") + ")");
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            tv_amt = (TextView) findViewById(R.id.tv_amt);
+            editTextArrayList = new ArrayList<>();
+            iv_calendar = (ImageView) findViewById(R.id.iv_calander_presale_proced);
+            btn_confirm_delivery = (RelativeLayout) findViewById(R.id.btn_confirm_delivery);
+            float_presale_proceed = (FloatingActionButton) findViewById(R.id.float_presale_proceed);
+            float_presale_proceed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    arrSize = arrSize + 1;
+                    //setData();
+                }
+            });
+            new loadDeliveryItems().execute();
+            /************************************************************
+             @ Confirming delivery for the items
+             ************************************************************/
+            btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Helpers.logData(DeliveryOrderActivity.this,"Confirm Button for Delivery Clicked");
+                    saveData();
+                    // Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
+                    Intent intent = new Intent(DeliveryOrderActivity.this, PromotionListActivity.class);
+                    intent.putExtra("msg", "delivery");
+                    intent.putExtra("from", "delivery");
+                    intent.putExtra("headerObj", object);
+                    intent.putExtra("delivery", delivery);
+                    intent.putExtra("invoiceamount", tv_amt.getText().toString());
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            myCalendar = Calendar.getInstance();
+            int year = myCalendar.get(Calendar.YEAR);
+            int month = myCalendar.get(Calendar.MONTH);
+            int day = myCalendar.get(Calendar.DAY_OF_MONTH);
+            updateLabel(year, month, day);
+            iv_calendar.setEnabled(false);
+            iv_calendar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new DatePickerDialog(DeliveryOrderActivity.this, date, myCalendar
+                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                            myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                }
+            });
+            date = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    // TODO Auto-generated method stub
+                    updateLabel(year, monthOfYear, dayOfMonth);
+                }
+            };
+            deliveryItemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                    try {
+                        Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Clicked");
+                        final DeliveryItem item = arrayList.get(position);
+                        Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Selected" + item.getMaterialNo());
+                        final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
+                        final String[] reasonCode = {""};
+                        dialog.setContentView(R.layout.dialog_with_crossbutton);
+                        dialog.setCancelable(false);
+                        TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
+                        tv.setText(item.getItemDescription());
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
+                        Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+                        final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
+                        final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
+                        final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
+                        final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
+                        RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
+                        rl_specify.setVisibility(View.VISIBLE);
+                        final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
+                        spin.setAdapter(reasonsAdapter);
+                        if (item.getReasonCode() != null) {
+                            spin.setSelection(getIndex(item.getReasonCode()));
+                        }
+                        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                reasonCode[0] = reasonsList.get(position).getReasonID();
+                            }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put(db.KEY_REMAINING_QTY_CASE, "");
+                        map.put(db.KEY_REMAINING_QTY_UNIT, "");
+                        HashMap<String, String> filter = new HashMap<String, String>();
+                        filter.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
+                        Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
+                        if (c.getCount() > 0) {
+                            c.moveToFirst();
+                            if (!item.isAltUOM()) {
+                                ed_cases_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                            } else {
+                                ed_pcs_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                            }
+                        } else {
+                            ed_cases_inv.setText("0");
+                            ed_pcs_inv.setText("0");
+                        }
+                        ed_cases_inv.setEnabled(false);
+                        ed_pcs_inv.setEnabled(false);
+                        if (item.isAltUOM()) {
+                            ed_pcs.setEnabled(true);
+                        } else {
+                            ed_pcs.setEnabled(false);
+                        }
+                        //ed_cases.setText(item.getItemCase());
+                        //ed_pcs.setText(item.getItemUnits());
+                        ed_cases.setText(item.getItemCase().equals("0") ? "" : item.getItemCase());
+                        ed_pcs.setText(item.getItemUnits().equals("0") ? "" : item.getItemUnits());
+                        LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
+                        iv_cancle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.cancel();
+                            }
+                        });
+                        if (canEdit) {
+                            Helpers.logData(DeliveryOrderActivity.this, "Edit Is flagged on. Showing dialog");
+                            dialog.show();
+                        } else {
+                        }
+                        btn_save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String strCase = ed_cases.getText().toString();
+                                String strpcs = ed_pcs.getText().toString();
+                                String strcaseinv = ed_cases_inv.getText().toString();
+                                String strpcsinv = ed_pcs_inv.getText().toString();
+                                if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
+                                    strCase = String.valueOf(0);
+                                }
+                                if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
+                                    strpcs = String.valueOf(0);
+                                }
+                                if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
+                                    strcaseinv = String.valueOf(0);
+                                }
+                                if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
+                                    strpcsinv = String.valueOf(0);
+                                }
+                                if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
+                                    Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                    strCase = "0";
+                                    item.setItemCase("0");
+                                } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
+                                    Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
+                                    strpcs = "0";
+                                    item.setItemUnits(strpcs);
+                                } else {
+                                    item.setItemCase(strCase.trim().equals("") ? "0" : strCase.trim());
+                                    item.setItemUnits(strpcs.trim().equals("") ? "0" : strpcs.trim());
+                                    //item.setItemCase(strCase);
+                                    //item.setItemUnits(strpcs);
+                                    item.setReasonCode(reasonCode[0]);
+                                    arrayList.remove(position);
+                                    arrayList.add(position, item);
+                                    Helpers.logData(DeliveryOrderActivity.this, "Item details changed and saved" + item.getMaterialNo() + "-" + item.getItemCase()
+                                            + "-" + item.getItemUnits() + "-" + item.getReasonCode() + "-" + item.getAmount());
+                                    calculatePrice();
+                                    adapter.notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
+                    }
+                }
+            });
+            deliveryItemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    return false;
+                }
+            });
+            /************************************************************
+             @ When edit button is clicked it will allow user to change quantity
+             @ of materials within the delivery list
+             ************************************************************/
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Helpers.logData(DeliveryOrderActivity.this, "Edit button clicked");
+                    if (canEdit) {
+                        canEdit = false;
+                    } else {
+                        canEdit = true;
+                    }
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        tv_date = (TextView) findViewById(R.id.tv_date);
-        tv_date.setText(delivery.getOrderDate());
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.delivery_order) + "(" + StringUtils.stripStart(delivery.getOrderId(), "0") + ")");
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        tv_amt = (TextView) findViewById(R.id.tv_amt);
-        editTextArrayList = new ArrayList<>();
-        iv_calendar = (ImageView) findViewById(R.id.iv_calander_presale_proced);
-        btn_confirm_delivery = (RelativeLayout) findViewById(R.id.btn_confirm_delivery);
-        float_presale_proceed = (FloatingActionButton) findViewById(R.id.float_presale_proceed);
-        float_presale_proceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                arrSize = arrSize + 1;
-                //setData();
-            }
-        });
-        new loadDeliveryItems().execute();
-        /************************************************************
-         @ Confirming delivery for the items
-         ************************************************************/
-        btn_confirm_delivery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helpers.logData(DeliveryOrderActivity.this,"Confirm Button for Delivery Clicked");
-                saveData();
-                // Intent intent = new Intent(DeliveryOrderActivity.this, PromotionActivity.class);
-                Intent intent = new Intent(DeliveryOrderActivity.this, PromotionListActivity.class);
-                intent.putExtra("msg", "delivery");
-                intent.putExtra("from", "delivery");
-                intent.putExtra("headerObj", object);
-                intent.putExtra("delivery", delivery);
-                intent.putExtra("invoiceamount", tv_amt.getText().toString());
-                startActivity(intent);
-                finish();
-            }
-        });
-        myCalendar = Calendar.getInstance();
-        int year = myCalendar.get(Calendar.YEAR);
-        int month = myCalendar.get(Calendar.MONTH);
-        int day = myCalendar.get(Calendar.DAY_OF_MONTH);
-        updateLabel(year, month, day);
-        iv_calendar.setEnabled(false);
-        iv_calendar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(DeliveryOrderActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                updateLabel(year, monthOfYear, dayOfMonth);
-            }
-        };
-        deliveryItemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                try {
-                    Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Clicked");
-                    final DeliveryItem item = arrayList.get(position);
-                    Helpers.logData(DeliveryOrderActivity.this, "Delivery Item Selected" + item.getMaterialNo());
-                    final Dialog dialog = new Dialog(DeliveryOrderActivity.this);
-                    final String[] reasonCode = {""};
-                    dialog.setContentView(R.layout.dialog_with_crossbutton);
-                    dialog.setCancelable(false);
-                    TextView tv = (TextView) dialog.findViewById(R.id.dv_title);
-                    tv.setText(item.getItemDescription());
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    ImageView iv_cancle = (ImageView) dialog.findViewById(R.id.imageView_close);
-                    Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
-                    final EditText ed_cases = (EditText) dialog.findViewById(R.id.ed_cases);
-                    final EditText ed_pcs = (EditText) dialog.findViewById(R.id.ed_pcs);
-                    final EditText ed_cases_inv = (EditText) dialog.findViewById(R.id.ed_cases_inv);
-                    final EditText ed_pcs_inv = (EditText) dialog.findViewById(R.id.ed_pcs_inv);
-                    RelativeLayout rl_specify = (RelativeLayout) dialog.findViewById(R.id.rl_specify_reason);
-                    rl_specify.setVisibility(View.VISIBLE);
-                    final Spinner spin = (Spinner) dialog.findViewById(R.id.spin);
-                    spin.setAdapter(reasonsAdapter);
-                    if (item.getReasonCode() != null) {
-                        spin.setSelection(getIndex(item.getReasonCode()));
-                    }
-                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            reasonCode[0] = reasonsList.get(position).getReasonID();
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put(db.KEY_REMAINING_QTY_CASE, "");
-                    map.put(db.KEY_REMAINING_QTY_UNIT, "");
-                    HashMap<String, String> filter = new HashMap<String, String>();
-                    filter.put(db.KEY_MATERIAL_NO, item.getMaterialNo());
-                    Cursor c = db.getData(db.VAN_STOCK_ITEMS, map, filter);
-                    if (c.getCount() > 0) {
-                        c.moveToFirst();
-                        if (!item.isAltUOM()) {
-                            ed_cases_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                        } else {
-                            ed_pcs_inv.setText(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
-                        }
-                    } else {
-                        ed_cases_inv.setText("0");
-                        ed_pcs_inv.setText("0");
-                    }
-                    ed_cases_inv.setEnabled(false);
-                    ed_pcs_inv.setEnabled(false);
-                    if (item.isAltUOM()) {
-                        ed_pcs.setEnabled(true);
-                    } else {
-                        ed_pcs.setEnabled(false);
-                    }
-                    //ed_cases.setText(item.getItemCase());
-                    //ed_pcs.setText(item.getItemUnits());
-                    ed_cases.setText(item.getItemCase().equals("0") ? "" : item.getItemCase());
-                    ed_pcs.setText(item.getItemUnits().equals("0") ? "" : item.getItemUnits());
-                    LinearLayout ll_1 = (LinearLayout) dialog.findViewById(R.id.ll_1);
-                    iv_cancle.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                        }
-                    });
-                    if (canEdit) {
-                        Helpers.logData(DeliveryOrderActivity.this, "Edit Is flagged on. Showing dialog");
-                        dialog.show();
-                    } else {
-                    }
-                    btn_save.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String strCase = ed_cases.getText().toString();
-                            String strpcs = ed_pcs.getText().toString();
-                            String strcaseinv = ed_cases_inv.getText().toString();
-                            String strpcsinv = ed_pcs_inv.getText().toString();
-                            if (strCase.isEmpty() || strCase == null || strCase.trim().equals("")) {
-                                strCase = String.valueOf(0);
-                            }
-                            if (strpcs.isEmpty() || strpcs == null || strpcs.trim().equals("")) {
-                                strpcs = String.valueOf(0);
-                            }
-                            if (strcaseinv.isEmpty() || strcaseinv == null || strcaseinv.trim().equals("")) {
-                                strcaseinv = String.valueOf(0);
-                            }
-                            if (strpcsinv.isEmpty() || strpcsinv == null || strpcsinv.trim().equals("")) {
-                                strpcsinv = String.valueOf(0);
-                            }
-                            if (Float.parseFloat(strCase) > Float.parseFloat(strcaseinv)) {
-                                Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                                strCase = "0";
-                                item.setItemCase("0");
-                            } else if (Float.parseFloat(strpcs) > Float.parseFloat(strpcsinv)) {
-                                Toast.makeText(DeliveryOrderActivity.this, getString(R.string.input_larger), Toast.LENGTH_SHORT).show();
-                                strpcs = "0";
-                                item.setItemUnits(strpcs);
-                            } else {
-                                item.setItemCase(strCase.trim().equals("") ? "0" : strCase.trim());
-                                item.setItemUnits(strpcs.trim().equals("") ? "0" : strpcs.trim());
-                                //item.setItemCase(strCase);
-                                //item.setItemUnits(strpcs);
-                                item.setReasonCode(reasonCode[0]);
-                                arrayList.remove(position);
-                                arrayList.add(position, item);
-                                Helpers.logData(DeliveryOrderActivity.this, "Item details changed and saved" + item.getMaterialNo() + "-" + item.getItemCase()
-                                        + "-" + item.getItemUnits() + "-" + item.getReasonCode() + "-" + item.getAmount());
-                                calculatePrice();
-                                adapter.notifyDataSetChanged();
-                                dialog.dismiss();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Crashlytics.logException(e);
-                }
-            }
-        });
-        deliveryItemsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return false;
-            }
-        });
-        /************************************************************
-         @ When edit button is clicked it will allow user to change quantity
-         @ of materials within the delivery list
-         ************************************************************/
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Helpers.logData(DeliveryOrderActivity.this, "Edit button clicked");
-                if (canEdit) {
-                    canEdit = false;
-                } else {
-                    canEdit = true;
-                }
-            }
-        });
     }
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -430,6 +437,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
 
@@ -515,6 +523,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     public void setData(Cursor cursor) {
@@ -586,6 +595,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             while (cursor.moveToNext());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     private void updateLabel(int year, int monthOfYear, int dayOfMonth) {
@@ -656,6 +666,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         } catch (Exception e) {

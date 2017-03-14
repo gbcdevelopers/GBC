@@ -549,6 +549,7 @@ public class SalesFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     private class loadItems extends AsyncTask<Void, Void, Void> {
@@ -593,6 +594,7 @@ public class SalesFragment extends Fragment {
                 }
             catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
 
@@ -612,6 +614,7 @@ public class SalesFragment extends Fragment {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }
@@ -704,6 +707,7 @@ public class SalesFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e("Exception 1","Exception 1");
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
             while (cursor.moveToNext());
@@ -743,6 +747,7 @@ public class SalesFragment extends Fragment {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         // adapter.notifyDataSetChanged();

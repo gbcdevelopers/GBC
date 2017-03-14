@@ -15,6 +15,7 @@ public class Pricing {
 
     public static void load(Context context,String driver, DatabaseHandler db){
         HashMap<String, String> params = new HashMap<>();
+        driver = driver.toUpperCase();
         params.put(DRIVER,driver);
         HashMap<String,String>expansion = new HashMap<>();
 

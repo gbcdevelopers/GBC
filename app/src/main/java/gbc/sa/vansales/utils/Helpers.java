@@ -513,7 +513,8 @@ public class Helpers {
                                                                 String tradename,String tradename_ar,String area,
                                                                 String street,String crno, String pobox,
                                                                 String email,String telephone,String fax,
-                                                                String salesArea,String distribution,String division){
+                                                                String salesArea,String distribution,String division,
+                                                                String latitude,String longitude){
         HashMap<String, String> map = new HashMap<>();
         map.put("Kunnr",customerid);
         map.put("Name1",ownername);
@@ -530,7 +531,8 @@ public class Helpers {
         map.put("Vtweg",distribution);
         map.put("Spart",division);
         map.put("Driver",Settings.getString(App.DRIVER));
-
+        map.put("Latitude",latitude);
+        map.put("Longitude",longitude);
         return map;
     }
 

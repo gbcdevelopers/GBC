@@ -212,6 +212,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 }
@@ -248,6 +249,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
                             }
@@ -298,6 +300,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                             }
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 }
@@ -334,6 +337,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
                             }
@@ -423,6 +427,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
                             }
@@ -459,6 +464,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    Crashlytics.logException(e);
                                 }
                             }
                         }
@@ -513,6 +519,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -627,6 +634,7 @@ public class LoadRequestActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });
@@ -729,6 +737,7 @@ public class LoadRequestActivity extends AppCompatActivity {
            // orderID = IntegrationService.postDataBackup(LoadRequestActivity.this, App.POST_COLLECTION, map, deepEntity);
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return orderID + "," + purchaseNumber;
     }
@@ -896,6 +905,7 @@ public class LoadRequestActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         //  adapter.notifyDataSetChanged();
@@ -1062,6 +1072,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }
@@ -1084,6 +1095,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }

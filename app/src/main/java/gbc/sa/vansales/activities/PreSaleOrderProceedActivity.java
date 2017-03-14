@@ -31,6 +31,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -330,6 +332,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             Helpers.logData(PreSaleOrderProceedActivity.this,"Order Total" + orderTotalValue);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Crashlytics.logException(e);
                         }
                     }
                     final Dialog dialog = new Dialog(PreSaleOrderProceedActivity.this);
@@ -374,6 +377,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -612,6 +616,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -736,6 +741,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }
@@ -833,6 +839,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
 
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return orderID + "," + purchaseNumber;
     }
@@ -919,6 +926,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
 
@@ -963,6 +971,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -1000,6 +1009,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -1039,6 +1049,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
                 /*JSONArray jsonArray = createPrintData(orderDate,orderNo);
                 PrinterHelper object = new PrinterHelper(PreSaleOrderProceedActivity.this,PreSaleOrderProceedActivity.this);
@@ -1127,6 +1138,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }

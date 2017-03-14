@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import gbc.sa.vansales.utils.Settings;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
@@ -45,6 +47,38 @@ public class AppController extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if ( isExternalStorageWritable() ) {
+
+            File appDirectory = new File(Environment.getExternalStorageDirectory(),
+                    "Download" + File.separator + "SFA");
+            File logDirectory = new File( appDirectory + "/log" );
+            File logFile = new File( logDirectory, "logcat" + System.currentTimeMillis() + ".txt" );
+
+            // create app folder
+            if ( !appDirectory.exists() ) {
+                appDirectory.mkdir();
+            }
+
+            // create log folder
+            if ( !logDirectory.exists() ) {
+                logDirectory.mkdir();
+            }
+
+            // clear the previous logcat and then write the new one to the file
+            try {
+                Process process = Runtime.getRuntime().exec( "logcat -c");
+                process = Runtime.getRuntime().exec( "logcat -f " + logFile + " *:S MyActivity:D MyActivity2:D");
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
+        } else if ( isExternalStorageReadable() ) {
+            // only readable
+        } else {
+            // not accessible
+        }
+
 //        Helpers.logData(getApplicationContext(),"Start of Application");
         if (lang == null) {
             Settings.setString(App.LANGUAGE, "en");
@@ -112,5 +146,23 @@ public class AppController extends Application {
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(tag);
         }
+    }
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+            return true;
+        }
+        return false;
     }
 }

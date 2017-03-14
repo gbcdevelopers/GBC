@@ -266,6 +266,8 @@ public class SyncData extends IntentService {
                     map.put(db.KEY_DIVISION,"");
                     map.put(db.KEY_IS_POSTED,"");
                     map.put(db.KEY_IS_PRINTED,"");
+                    map.put(db.KEY_LATITUDE,"");
+                    map.put(db.KEY_LONGITUDE,"");
                     HashMap<String, String> filter = new HashMap<>();
                     filter.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                     Cursor c = db.getData(db.NEW_CUSTOMER_POST,map,filter);
@@ -280,7 +282,8 @@ public class SyncData extends IntentService {
                                     c.getString(c.getColumnIndex(db.KEY_PO_BOX)), c.getString(c.getColumnIndex(db.KEY_EMAIL)),
                                     c.getString(c.getColumnIndex(db.KEY_TELEPHONE)), c.getString(c.getColumnIndex(db.KEY_FAX)),
                                     c.getString(c.getColumnIndex(db.KEY_SALES_AREA)), c.getString(c.getColumnIndex(db.KEY_DISTRIBUTION)),
-                                    c.getString(c.getColumnIndex(db.KEY_DIVISION))));
+                                    c.getString(c.getColumnIndex(db.KEY_DIVISION)),c.getString(c.getColumnIndex(db.KEY_LATITUDE)),
+                                    c.getString(c.getColumnIndex(db.KEY_LONGITUDE))));
                             object.setDeepEntity(deepEntity);
                             Helpers.logData(getApplication(), "Add Customer Batch Header" + object.getMap().toString());
                             Helpers.logData(getApplication(), "Add Customer Batch Body" + deepEntity.toString());
@@ -806,6 +809,7 @@ public class SyncData extends IntentService {
                         filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
 
                         Cursor pendingInvoiceCursor = db.getData(db.CAPTURE_SALES_INVOICE,itemMap,filter);
+                        Cursor foccursor = db.getData(db.FOC_INVOICE,itemMap,filter);
                         if(pendingInvoiceCursor.getCount()>0){
                             pendingInvoiceCursor.moveToFirst();
                             int itemno = 10;
@@ -1951,6 +1955,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_FUNCTION,ConfigStore.BeginDayFunction);
+                                Helpers.logData(getApplication(),"Going for Update" + ConfigStore.BeginDayFunction);
                                 db.updateData(db.BEGIN_DAY, map, filter);
                             }
                             else{
@@ -1975,6 +1980,7 @@ public class SyncData extends IntentService {
                                 HashMap<String,String>filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                Helpers.logData(getApplication(), "Going for Update" + "Odometer");
                                 db.updateData(db.ODOMETER,map,filter);
                             }
                             else{
@@ -2000,6 +2006,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + "Visit List");
                                 db.updateData(db.VISIT_LIST_POST,map,filter);
                             }
                             else{
@@ -2017,15 +2024,30 @@ public class SyncData extends IntentService {
                         }
                         case ConfigStore.LoadConfirmationFunction:{
                             if(response.getResponse_code().equals("201")){
-                                HashMap<String,String>map = new HashMap<>();
-                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                if(response.getOrderID().equals("9999999999")){
+                                    HashMap<String,String>map = new HashMap<>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
 
-                                HashMap<String,String> filter = new HashMap<>();
-                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                                filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
-                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                                db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
+                                    HashMap<String,String> filter = new HashMap<>();
+                                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                    filter.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                                    //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
+                                }
+                                else{
+                                    HashMap<String,String>map = new HashMap<>();
+                                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                    map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+
+                                    HashMap<String,String> filter = new HashMap<>();
+                                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                    filter.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                                    //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                    Helpers.logData(getApplication(),"Going for Update" + "LCON");
+                                    db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
+                                }
+
                             }
                             else{
                                 HashMap<String,String>map = new HashMap<>();
@@ -2034,7 +2056,8 @@ public class SyncData extends IntentService {
 
                                 HashMap<String,String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 db.updateData(db.LOAD_CONFIRMATION_HEADER,map,filter);
                             }
                             break;
@@ -2051,6 +2074,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceDebit);
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.LoadVarianceDebit);
                                 db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
                             }
                             else{
@@ -2081,6 +2105,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_DOCUMENT_TYPE,ConfigStore.LoadVarianceCredit);
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.LoadVarianceCredit);
                                 db.updateData(db.LOAD_VARIANCE_ITEMS_POST, map, filter);
                             }
                             else{
@@ -2110,6 +2135,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.LoadRequestFunction);
                                 db.updateData(db.LOAD_REQUEST, map, filter);
                             }
                             else{
@@ -2138,6 +2164,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + "Order Request");
                                 db.updateData(db.ORDER_REQUEST, map, filter);
                             }
                             else{
@@ -2168,13 +2195,27 @@ public class SyncData extends IntentService {
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.InvoiceRequestFunction);
                                 db.updateData(db.CAPTURE_SALES_INVOICE, map, filter);
+
+                                HashMap<String, String> map1 = new HashMap<String, String>();
+                                map1.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map1.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                map1.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter1 = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                filter1.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                Helpers.logData(getApplication(), "Going for Update2" + ConfigStore.InvoiceRequestFunction);
+                                db.updateData(db.CAPTURE_SALES_INVOICE, map1, filter1);
 
                                 HashMap<String,String>returnFilter = new HashMap<>();
                                 returnFilter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 returnFilter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 returnFilter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
                                 if(db.checkData(db.RETURNS,returnFilter)){
+                                    Helpers.logData(getApplication(), "Going for Update" + "Returns");
                                     db.updateData(db.RETURNS,map,returnFilter);
                                 }
                             }
@@ -2207,6 +2248,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_ORDER_ID, response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 filter.put(db.KEY_REASON_TYPE,App.GOOD_RETURN);
+                                Helpers.logData(getApplication(), "Going for Update" + "Good Returns");
                                 db.updateData(db.RETURNS, map, filter);
                             }
                             else{
@@ -2239,6 +2281,7 @@ public class SyncData extends IntentService {
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
                                 filter.put(db.KEY_REASON_TYPE,App.BAD_RETURN);
+                                Helpers.logData(getApplication(), "Going for Update" + "Bad Returns");
                                 db.updateData(db.RETURNS, map, filter);
                             }
                             else{
@@ -2270,6 +2313,7 @@ public class SyncData extends IntentService {
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.CustomerDeliveryRequestFunction);
                                 db.updateData(db.CUSTOMER_DELIVERY_ITEMS_POST, map, filter);
                             }
                             else{
@@ -2299,6 +2343,7 @@ public class SyncData extends IntentService {
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.CustomerDeliveryDeleteRequestFunction);
                                 db.updateData(db.CUSTOMER_DELIVERY_ITEMS_DELETE_POST, map, filter);
                             }
                             else{
@@ -2346,6 +2391,7 @@ public class SyncData extends IntentService {
                                     map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
                                     map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
                                 }
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.CollectionFunction);
                                 db.updateData(db.COLLECTION,map,filter);
                             }
                             else{
@@ -2409,6 +2455,7 @@ public class SyncData extends IntentService {
                                     map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
                                     map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
                                 }
+                                Helpers.logData(getApplication(), "Going for Update" + "Driver Collection");
                                 db.updateData(db.DRIVER_COLLECTION,map,filter);
                             }
                             else{
@@ -2451,6 +2498,7 @@ public class SyncData extends IntentService {
                                 HashMap<String,String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.AddCustomerFunction);
                                 db.updateData(db.NEW_CUSTOMER_POST,map,filter);
                             }
                             else{
@@ -2478,6 +2526,7 @@ public class SyncData extends IntentService {
                                 HashMap<String,String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                // filter.put(db.KEY_CUSTOMER_NO,response.getCustomerID());
+                                Helpers.logData(getApplication(), "Going for Update" + "Unload Function");
                                 db.updateData(db.UNLOAD_VARIANCE,map,filter);
                                 db.updateData(db.UNLOAD_TRANSACTION,map,filter);
                             }

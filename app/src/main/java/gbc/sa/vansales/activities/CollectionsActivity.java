@@ -217,6 +217,7 @@ public class CollectionsActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }

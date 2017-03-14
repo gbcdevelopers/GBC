@@ -55,74 +55,81 @@ public class DriverCollectionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collections);
-        loadingSpinner = new LoadingSpinner(this);
-        TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
-        TextView tv_method_of_payment = (TextView) findViewById(R.id.tv_method_of_payment);
-        tv_customer_name.setText(Settings.getString(App.DRIVER) + " " + Settings.getString(App.DRIVER_NAME_EN));
-        tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.cash) + "/" + getString(R.string.credit));
+        try{
+            loadingSpinner = new LoadingSpinner(this);
+            TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);
+            TextView tv_method_of_payment = (TextView) findViewById(R.id.tv_method_of_payment);
+            tv_customer_name.setText(Settings.getString(App.DRIVER) + " " + Settings.getString(App.DRIVER_NAME_EN));
+            tv_method_of_payment.setText(getString(R.string.methodofPayment) + "-" + getString(R.string.cash) + "/" + getString(R.string.credit));
 
-        lv_colletions_view = (ListView) findViewById(R.id.lv_colletions_view);
-        colletionAdapter = new CollectionAdapter(DriverCollectionsActivity.this, colletionDatas);
+            lv_colletions_view = (ListView) findViewById(R.id.lv_colletions_view);
+            colletionAdapter = new CollectionAdapter(DriverCollectionsActivity.this, colletionDatas);
 
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.collection));
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            iv_back.setVisibility(View.VISIBLE);
+            tv_top_header.setVisibility(View.VISIBLE);
+            tv_top_header.setText(getString(R.string.collection));
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                /* if (Helpers.isNetworkAvailable(getApplicationContext())) {
                     Helpers.createBackgroundJob(getApplicationContext());
                 }*/
-                Intent intent = new Intent(DriverCollectionsActivity.this, DashboardActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
-        tv_amt_paid = (TextView) findViewById(R.id.tv_amt_paid);
+                    Intent intent = new Intent(DriverCollectionsActivity.this, DashboardActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            tv_amt_paid = (TextView) findViewById(R.id.tv_amt_paid);
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
-       // setData();
-        new loadCollections().execute();
-        lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try{
-                    double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
-                    if(amountdue==0){
-                        Toast.makeText(DriverCollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
-                            Intent intent = new Intent(DriverCollectionsActivity.this, DriverPaymentDetails.class);
-                            intent.putExtra("msg", "drivercollection");
-                            intent.putExtra("from","drivercollection");
-                            intent.putExtra("pos", position);
-                            float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                            intent.putExtra("drivercollection",colletionDatas.get(position));
-                            intent.putExtra("amountdue",String.valueOf(dueamount));
-                            startActivity(intent);
+                }
+            });
+            // setData();
+            new loadCollections().execute();
+            lv_colletions_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    try{
+                        double amountdue = Double.parseDouble(colletionDatas.get(position).getInvoiceAmount())-Double.parseDouble(colletionDatas.get(position).getAmountCleared());
+                        if(amountdue==0){
+                            Toast.makeText(DriverCollectionsActivity.this,"Invoice already cleared",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            Toast.makeText(DriverCollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                            if(colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)){
+                                Intent intent = new Intent(DriverCollectionsActivity.this, DriverPaymentDetails.class);
+                                intent.putExtra("msg", "drivercollection");
+                                intent.putExtra("from","drivercollection");
+                                intent.putExtra("pos", position);
+                                float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount())- Float.parseFloat(colletionDatas.get(position).getAmountCleared());
+                                intent.putExtra("drivercollection",colletionDatas.get(position));
+                                intent.putExtra("amountdue",String.valueOf(dueamount));
+                                startActivity(intent);
+                            }
+                            else{
+                                Toast.makeText(DriverCollectionsActivity.this,getString(R.string.debit_invoice),Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
+                    }
                 }
-                catch (Exception e){
-                    e.printStackTrace();
-                    Crashlytics.logException(e);
-                }
-            }
-        });
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     /*@Override
     public void onBackPressed() {
@@ -215,6 +222,7 @@ public class DriverCollectionsActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }

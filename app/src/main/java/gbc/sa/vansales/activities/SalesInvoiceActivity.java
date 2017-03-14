@@ -71,165 +71,166 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
 
-        Intent i = this.getIntent();
-        object = (Customer) i.getParcelableExtra("headerObj");
-        customers = CustomerHeaders.get();
+        try{
+            Intent i = this.getIntent();
+            object = (Customer) i.getParcelableExtra("headerObj");
+            customers = CustomerHeaders.get();
 
-        button = (FloatingActionButton) findViewById(R.id.float_map);
-        button1 = (FloatingActionButton) findViewById(R.id.addCustomer);
-        button.setVisibility(View.GONE);
-        button1.setVisibility(View.GONE);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sales)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.promo)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.gr)));
-        tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.br)));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        et_search = (EditText) findViewById(R.id.et_search_customer);
-        iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        iv_back.setVisibility(View.VISIBLE);
-        tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText(getString(R.string.sales_invoice));
-        iv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("Back Clicked","Back Clicked");
-                Helpers.logData(SalesInvoiceActivity.this, "Sales Invoice back clicked");
-                ArrayList<Sales> salesarrayList = new ArrayList<>();;
-                ArrayList<Sales>goodsReturnList = new ArrayList<>();
-                ArrayList<Sales>badReturnList = new ArrayList<>();
-                ArrayList<Sales>focList = new ArrayList<>();
-                try{
-                    if(Const.siBundle!=null){
-                        salesarrayList = Const.siBundle.getParcelableArrayList("si");
-                        Helpers.logData(SalesInvoiceActivity.this, "Sales done are" + salesarrayList.size());
-                    }
-                    if(Const.grBundle!=null){
-                        goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
-                        Helpers.logData(SalesInvoiceActivity.this, "GR done are" + goodsReturnList.size());
-                    }
-                    if(Const.brBundle!=null){
-                        badReturnList = Const.brBundle.getParcelableArrayList("br");
-                        Helpers.logData(SalesInvoiceActivity.this, "BR done are" + badReturnList.size());
-                    }
-                    if(Const.focBundle!=null){
-                        focList = Const.focBundle.getParcelableArrayList("foc");
-                        Helpers.logData(SalesInvoiceActivity.this, "FOC done are" + badReturnList.size());
-                    }
-                    if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
-                        salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList,focList);
-                    }
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-                finish();
-            }
-        });
-        tv_top_header = (TextView) findViewById(R.id.tv_top_header);
-        if (tv_top_header != null) {
+            button = (FloatingActionButton) findViewById(R.id.float_map);
+            button1 = (FloatingActionButton) findViewById(R.id.addCustomer);
+            button.setVisibility(View.GONE);
+            button1.setVisibility(View.GONE);
+            viewPager = (ViewPager) findViewById(R.id.pager);
+            tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.sales)));
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.promo)));
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.gr)));
+            tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.br)));
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            et_search = (EditText) findViewById(R.id.et_search_customer);
+            iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            iv_back.setVisibility(View.VISIBLE);
             tv_top_header.setVisibility(View.VISIBLE);
             tv_top_header.setText(getString(R.string.sales_invoice));
-        }
-        toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
-        if (toolbar_iv_back != null) {
-            toolbar_iv_back.setVisibility(View.VISIBLE);
-        }
-
-        if (toolbar_iv_back != null) {
-            toolbar_iv_back.setVisibility(View.VISIBLE);
-        }
-        iv_search = (ImageView) findViewById(R.id.iv_search2);
-        if (iv_search != null) {
-            iv_search.setVisibility(View.VISIBLE);
-        }
-        iv_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iv_search.setVisibility(View.GONE);
-                et_search.setVisibility(View.VISIBLE);
-                et_search.setHint("Search Products..");
-                toolbar_iv_back.setVisibility(View.GONE);
-                tv_top_header.setVisibility(View.GONE);
-            }
-        });
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("data", object);
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount(), "sales", bundle);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                tab_position = tab.getPosition();
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-        et_search.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        // your action here
-                        et_search.setVisibility(View.GONE);
-                        iv_search.setVisibility(View.VISIBLE);
-                        toolbar_iv_back.setVisibility(View.VISIBLE);
-                        tv_top_header.setVisibility(View.VISIBLE);
-                        et_search.setText("");
-                        if (tab_position == 0) {
-                            SalesFragment.adapter.getFilter().filter("");
-                        } else if (tab_position == 1) {
-                            FocFragment.adapter.getFilter().filter("");
-                        } else if (tab_position == 2) {
-                         //`   GListFragment.adapter.getFilter().filter("");
-                        } else if (tab_position == 3) {
-                            BListFragment.adapter.getFilter().filter("");
+            iv_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("Back Clicked","Back Clicked");
+                    Helpers.logData(SalesInvoiceActivity.this, "Sales Invoice back clicked");
+                    ArrayList<Sales> salesarrayList = new ArrayList<>();;
+                    ArrayList<Sales>goodsReturnList = new ArrayList<>();
+                    ArrayList<Sales>badReturnList = new ArrayList<>();
+                    ArrayList<Sales>focList = new ArrayList<>();
+                    try{
+                        if(Const.siBundle!=null){
+                            salesarrayList = Const.siBundle.getParcelableArrayList("si");
+                            Helpers.logData(SalesInvoiceActivity.this, "Sales done are" + salesarrayList.size());
                         }
-                        return true;
+                        if(Const.grBundle!=null){
+                            goodsReturnList = Const.grBundle.getParcelableArrayList("gr");
+                            Helpers.logData(SalesInvoiceActivity.this, "GR done are" + goodsReturnList.size());
+                        }
+                        if(Const.brBundle!=null){
+                            badReturnList = Const.brBundle.getParcelableArrayList("br");
+                            Helpers.logData(SalesInvoiceActivity.this, "BR done are" + badReturnList.size());
+                        }
+                        if(Const.focBundle!=null){
+                            focList = Const.focBundle.getParcelableArrayList("foc");
+                            Helpers.logData(SalesInvoiceActivity.this, "FOC done are" + badReturnList.size());
+                        }
+                        if(salesarrayList.size()>0||goodsReturnList.size()>0||badReturnList.size()>0){
+                            salesInvoiceDataonBack(salesarrayList,goodsReturnList,badReturnList,focList);
+                        }
                     }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    finish();
                 }
-                return false;
+            });
+            tv_top_header = (TextView) findViewById(R.id.tv_top_header);
+            if (tv_top_header != null) {
+                tv_top_header.setVisibility(View.VISIBLE);
+                tv_top_header.setText(getString(R.string.sales_invoice));
             }
-        });
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            toolbar_iv_back = (ImageView) findViewById(R.id.toolbar_iv_back);
+            if (toolbar_iv_back != null) {
+                toolbar_iv_back.setVisibility(View.VISIBLE);
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("addtext", "change");
-                if (tab_position == 0) {
-          //          SalesFragment.adapter.getFilter().filter(s.toString());
-                } else if (tab_position == 1) {
-                    FocFragment.adapter.getFilter().filter(s.toString());
-                } else if (tab_position == 2) {
-             //       GListFragment.adapter.getFilter().filter(s.toString());
-                } else if (tab_position == 3) {
-                    BListFragment.adapter.getFilter().filter(s.toString());
+            if (toolbar_iv_back != null) {
+                toolbar_iv_back.setVisibility(View.VISIBLE);
+            }
+            iv_search = (ImageView) findViewById(R.id.iv_search2);
+            if (iv_search != null) {
+                iv_search.setVisibility(View.VISIBLE);
+            }
+            iv_search.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    iv_search.setVisibility(View.GONE);
+                    et_search.setVisibility(View.VISIBLE);
+                    et_search.setHint("Search Products..");
+                    toolbar_iv_back.setVisibility(View.GONE);
+                    tv_top_header.setVisibility(View.GONE);
                 }
-                //planBadgeAdapter.notifyDataSetChanged();
-            }
+            });
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("data", object);
+            final PagerAdapter adapter = new PagerAdapter
+                    (getSupportFragmentManager(), tabLayout.getTabCount(), "sales", bundle);
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                    tab_position = tab.getPosition();
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                }
+
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
+                }
+            });
+            et_search.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_LEFT = 0;
+                    final int DRAWABLE_TOP = 1;
+                    final int DRAWABLE_RIGHT = 2;
+                    final int DRAWABLE_BOTTOM = 3;
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (event.getRawX() >= (et_search.getRight() - et_search.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            // your action here
+                            et_search.setVisibility(View.GONE);
+                            iv_search.setVisibility(View.VISIBLE);
+                            toolbar_iv_back.setVisibility(View.VISIBLE);
+                            tv_top_header.setVisibility(View.VISIBLE);
+                            et_search.setText("");
+                            if (tab_position == 0) {
+                                SalesFragment.adapter.getFilter().filter("");
+                            } else if (tab_position == 1) {
+                                FocFragment.adapter.getFilter().filter("");
+                            } else if (tab_position == 2) {
+                                //`   GListFragment.adapter.getFilter().filter("");
+                            } else if (tab_position == 3) {
+                                BListFragment.adapter.getFilter().filter("");
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
+            et_search.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    Log.v("addtext", "change");
+                    if (tab_position == 0) {
+                        //          SalesFragment.adapter.getFilter().filter(s.toString());
+                    } else if (tab_position == 1) {
+                        FocFragment.adapter.getFilter().filter(s.toString());
+                    } else if (tab_position == 2) {
+                        //       GListFragment.adapter.getFilter().filter(s.toString());
+                    } else if (tab_position == 3) {
+                        BListFragment.adapter.getFilter().filter(s.toString());
+                    }
+                    //planBadgeAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
 
 
        /* iv_search.setOnClickListener(new View.OnClickListener() {
@@ -242,6 +243,12 @@ public class SalesInvoiceActivity extends AppCompatActivity {
 
             }
         });*/
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
 
     @Override
@@ -341,28 +348,35 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.remove:
                 // add stuff here
-                if (SalesInvoiceActivity.tab_position == 2) {
-                    Sales sales = GListFragment.arrProductList.get(info.position);
-                    HashMap<String, String> grFilter = new HashMap<>();
-                    grFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    grFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    grFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
-                    grFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
-                    db.deleteData(db.RETURNS,grFilter);
-                    GListFragment.arrProductList.remove(info.position);
-                    GListFragment.adapter.notifyDataSetChanged();
-                } else if (SalesInvoiceActivity.tab_position == 3) {
-                    Sales sales = BListFragment.arrProductList.get(info.position);
-                    HashMap<String, String> brFilter = new HashMap<>();
-                    brFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    brFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                    brFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
-                    brFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
-                    db.deleteData(db.RETURNS,brFilter);
+                try{
+                    if (SalesInvoiceActivity.tab_position == 2) {
+                        Sales sales = GListFragment.arrProductList.get(info.position);
+                        HashMap<String, String> grFilter = new HashMap<>();
+                        grFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        grFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        grFilter.put(db.KEY_REASON_TYPE, App.GOOD_RETURN);
+                        grFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
+                        db.deleteData(db.RETURNS,grFilter);
+                        GListFragment.arrProductList.remove(info.position);
+                        GListFragment.adapter.notifyDataSetChanged();
+                    } else if (SalesInvoiceActivity.tab_position == 3) {
+                        Sales sales = BListFragment.arrProductList.get(info.position);
+                        HashMap<String, String> brFilter = new HashMap<>();
+                        brFilter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        brFilter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                        brFilter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                        brFilter.put(db.KEY_MATERIAL_NO,sales.getMaterial_no());
+                        db.deleteData(db.RETURNS,brFilter);
 
-                    BListFragment.arrProductList.remove(info.position);
-                    BListFragment.adapter.notifyDataSetChanged();
+                        BListFragment.arrProductList.remove(info.position);
+                        BListFragment.adapter.notifyDataSetChanged();
+                    }
                 }
+                catch (Exception e){
+                    e.printStackTrace();
+                    Crashlytics.logException(e);
+                }
+
                 return true;
             case R.id.cancel:
                 // edit stuff here
@@ -813,6 +827,7 @@ public class SalesInvoiceActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
 

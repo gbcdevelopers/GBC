@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
@@ -222,32 +224,38 @@ public class ManageInventory extends AppCompatActivity {
         }
     }
     private void setButtonVisibility() {
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_IS_BEGIN_DAY, "");
-        map.put(db.KEY_IS_LOAD_VERIFIED, "");
-        map.put(db.KEY_IS_UNLOAD,"");
-        map.put(db.KEY_IS_END_DAY, "");
-        HashMap<String, String> filter = new HashMap<>();
-        Cursor cursor = db.getData(db.LOCK_FLAGS, map, filter);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
+        try{
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_IS_BEGIN_DAY, "");
+            map.put(db.KEY_IS_LOAD_VERIFIED, "");
+            map.put(db.KEY_IS_UNLOAD,"");
+            map.put(db.KEY_IS_END_DAY, "");
+            HashMap<String, String> filter = new HashMap<>();
+            Cursor cursor = db.getData(db.LOCK_FLAGS, map, filter);
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+            }
+            boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
+            boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
+            boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
+            boolean isUnloadenabled = setUnloadVisibility();
+            // boolean isUnloadenabled = true;  //This is only for testing purpose;
+            if(isBeginTripEnabled){
+                if (!isloadVerifiedEnabled) {
+                    loadRequest.setEnabled(false);
+                    loadRequest.setAlpha(.5f);
+                    vanStock.setEnabled(false);
+                    vanStock.setAlpha(.5f);
+                }
+                if(!isUnloadenabled){
+                    unload.setEnabled(false);
+                    unload.setAlpha(.5f);
+                }
+            }
         }
-        boolean isBeginTripEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_BEGIN_DAY)));
-        boolean isloadVerifiedEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_LOAD_VERIFIED)));
-        boolean isEndDayEnabled = Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(db.KEY_IS_END_DAY)));
-        boolean isUnloadenabled = setUnloadVisibility();
-       // boolean isUnloadenabled = true;  //This is only for testing purpose;
-        if(isBeginTripEnabled){
-            if (!isloadVerifiedEnabled) {
-                loadRequest.setEnabled(false);
-                loadRequest.setAlpha(.5f);
-                vanStock.setEnabled(false);
-                vanStock.setAlpha(.5f);
-            }
-            if(!isUnloadenabled){
-                unload.setEnabled(false);
-                unload.setAlpha(.5f);
-            }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -265,52 +273,59 @@ public class ManageInventory extends AppCompatActivity {
         return canActivate;
     }
     public void showDialog() {
-        LayoutInflater li = LayoutInflater.from(ManageInventory.this);
-        View promptsView = li.inflate(R.layout.activity_odometer_popup, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
-        alertDialogBuilder.setView(promptsView);
-        //Reading last save odometer
-        HashMap<String, String> map = new HashMap<>();
-        map.put(db.KEY_ODOMETER_VALUE, "");
-        HashMap<String, String> filter = new HashMap<>();
-        filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-        if (db.checkData(db.ODOMETER, filter)) {
-            Cursor cursor = db.getData(db.ODOMETER, map, filter);
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
+        try{
+            LayoutInflater li = LayoutInflater.from(ManageInventory.this);
+            View promptsView = li.inflate(R.layout.activity_odometer_popup, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
+            alertDialogBuilder.setView(promptsView);
+            //Reading last save odometer
+            HashMap<String, String> map = new HashMap<>();
+            map.put(db.KEY_ODOMETER_VALUE, "");
+            HashMap<String, String> filter = new HashMap<>();
+            filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+            if (db.checkData(db.ODOMETER, filter)) {
+                Cursor cursor = db.getData(db.ODOMETER, map, filter);
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    lastValue = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE)));
+                }
+            } else {
             }
-        } else {
-        }
-        final EditText userInput = (EditText) promptsView
-                .findViewById(R.id.editTextDialogUserInput);
-        // set dialog message
-        alertDialogBuilder
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String input = userInput.getText().toString();
-                                if (input.equals("")) {
-                                    dialog.cancel();
-                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    postOdometer(input);
+            final EditText userInput = (EditText) promptsView
+                    .findViewById(R.id.editTextDialogUserInput);
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    String input = userInput.getText().toString();
+                                    if (input.equals("")) {
+                                        dialog.cancel();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        postOdometer(input);
+                                    }
                                 }
-                            }
-                        })
-                .setNegativeButton(getString(R.string.cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                hideKeyboard();
-                                dialog.cancel();
+                            })
+                    .setNegativeButton(getString(R.string.cancel),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    hideKeyboard();
+                                    dialog.cancel();
 //                                Intent i=new Intent(getActivity(),DashboardActivity.class);
 //                                startActivity(i);
-                            }
-                        });
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+                                }
+                            });
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
 
     public void postOdometer(String value) {
@@ -336,6 +351,7 @@ public class ManageInventory extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -365,98 +381,99 @@ public class ManageInventory extends AppCompatActivity {
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (loadingSpinner.isShowing()) {
-                loadingSpinner.hide();
-            }
-            hideKeyboard();
-            if (this.flag1.equals(purchaseNumber)) {
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
-                db.updateData(db.ODOMETER, map, filter);
+            try{
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                hideKeyboard();
+                if (this.flag1.equals(purchaseNumber)) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
+                    db.updateData(db.ODOMETER, map, filter);
 
 
-                if(!(flag==null)){
-                    if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
-                        String passwordkey = flag.getIsLoadSecurityGuard();
-                        String password = "";
-                        if(passwordkey.equals("1")){
-                            password = flag.getPassword1();
-                        }
-                        if(passwordkey.equals("2")){
-                            password = flag.getPassword2();
-                        }
-                        if(passwordkey.equals("3")){
-                            password = flag.getPassword3();
-                        }
-                        if(passwordkey.equals("4")){
-                            password = flag.getPassword4();
-                        }
-                        if(passwordkey.equals("5")){
-                            password = flag.getPassword5();
-                        }
-                        final Dialog dialog = new Dialog(ManageInventory.this);
-                        View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
-                        final EditText userInput = (EditText) view
-                                .findViewById(R.id.password);
-                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
-                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
-                        final String finalPassword = password;
-                        btn_continue.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                hideKeyboard();
-                                String input = userInput.getText().toString();
-                                if (input.equals("")) {
-                                    dialog.cancel();
-                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    if (input.equals(finalPassword)){
-                                        try{
-                                            dialog.dismiss();
-                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                                            startActivity(i);
-                                        }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else{
+                    if(!(flag==null)){
+                        if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
+                            String passwordkey = flag.getIsLoadSecurityGuard();
+                            String password = "";
+                            if(passwordkey.equals("1")){
+                                password = flag.getPassword1();
+                            }
+                            if(passwordkey.equals("2")){
+                                password = flag.getPassword2();
+                            }
+                            if(passwordkey.equals("3")){
+                                password = flag.getPassword3();
+                            }
+                            if(passwordkey.equals("4")){
+                                password = flag.getPassword4();
+                            }
+                            if(passwordkey.equals("5")){
+                                password = flag.getPassword5();
+                            }
+                            final Dialog dialog = new Dialog(ManageInventory.this);
+                            View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                            final EditText userInput = (EditText) view
+                                    .findViewById(R.id.password);
+                            Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                            Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                            final String finalPassword = password;
+                            btn_continue.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    hideKeyboard();
+                                    String input = userInput.getText().toString();
+                                    if (input.equals("")) {
                                         dialog.cancel();
-                                        hideKeyboard();
-                                        Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        if (input.equals(finalPassword)){
+                                            try{
+                                                dialog.dismiss();
+                                                Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                                                startActivity(i);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        else{
+                                            dialog.cancel();
+                                            hideKeyboard();
+                                            Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
-                            }
-                        });
-                        btn_cancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
-                            }
-                        });
-                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                        lp.copyFrom(dialog.getWindow().getAttributes());
-                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                        lp.gravity = Gravity.CENTER;
-                        dialog.getWindow().setAttributes(lp);
-                        dialog.setContentView(view);
-                        dialog.setCancelable(false);
-                        dialog.show();
+                            });
+                            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.cancel();
+                                }
+                            });
+                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                            lp.copyFrom(dialog.getWindow().getAttributes());
+                            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            lp.gravity = Gravity.CENTER;
+                            dialog.getWindow().setAttributes(lp);
+                            dialog.setContentView(view);
+                            dialog.setCancelable(false);
+                            dialog.show();
+                        }
+                        else{
+                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                            startActivity(i);
+                        }
                     }
                     else{
                         Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
                         startActivity(i);
                     }
-                }
-                else{
-                    Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                    startActivity(i);
-                }
 
 
 
@@ -497,93 +514,93 @@ public class ManageInventory extends AppCompatActivity {
                 dialog.show();
 */
 
-            } else if (this.flag1.equals("Y")) {
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
-                db.updateData(db.ODOMETER, map, filter);
+                } else if (this.flag1.equals("Y")) {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                    map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    filter.put(db.KEY_ODOMETER_TYPE,App.ODOMETER_END_DAY);
+                    db.updateData(db.ODOMETER, map, filter);
 
-                if(!(flag==null)){
-                    if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
-                        String passwordkey = flag.getIsLoadSecurityGuard();
-                        String password = "";
-                        if(passwordkey.equals("1")){
-                            password = flag.getPassword1();
-                        }
-                        if(passwordkey.equals("2")){
-                            password = flag.getPassword2();
-                        }
-                        if(passwordkey.equals("3")){
-                            password = flag.getPassword3();
-                        }
-                        if(passwordkey.equals("4")){
-                            password = flag.getPassword4();
-                        }
-                        if(passwordkey.equals("5")){
-                            password = flag.getPassword5();
-                        }
-                        final Dialog dialog = new Dialog(ManageInventory.this);
-                        View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
-                        final EditText userInput = (EditText) view
-                                .findViewById(R.id.password);
-                        Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
-                        Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
-                        final String finalPassword = password;
-                        btn_continue.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                hideKeyboard();
-                                String input = userInput.getText().toString();
-                                if (input.equals("")) {
-                                    dialog.cancel();
-                                    Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    if (input.equals(finalPassword)){
-                                        try{
-                                            dialog.dismiss();
-                                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                                            startActivity(i);
-                                        }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else{
+                    if(!(flag==null)){
+                        if(!flag.getIsLoadSecurityGuard().equals("")&&!flag.getIsLoadSecurityGuard().equals("0")){
+                            String passwordkey = flag.getIsLoadSecurityGuard();
+                            String password = "";
+                            if(passwordkey.equals("1")){
+                                password = flag.getPassword1();
+                            }
+                            if(passwordkey.equals("2")){
+                                password = flag.getPassword2();
+                            }
+                            if(passwordkey.equals("3")){
+                                password = flag.getPassword3();
+                            }
+                            if(passwordkey.equals("4")){
+                                password = flag.getPassword4();
+                            }
+                            if(passwordkey.equals("5")){
+                                password = flag.getPassword5();
+                            }
+                            final Dialog dialog = new Dialog(ManageInventory.this);
+                            View view = getLayoutInflater().inflate(R.layout.password_prompt, null);
+                            final EditText userInput = (EditText) view
+                                    .findViewById(R.id.password);
+                            Button btn_continue = (Button)view.findViewById(R.id.btn_ok);
+                            Button btn_cancel = (Button)view.findViewById(R.id.btn_cancel);
+                            final String finalPassword = password;
+                            btn_continue.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    hideKeyboard();
+                                    String input = userInput.getText().toString();
+                                    if (input.equals("")) {
                                         dialog.cancel();
-                                        hideKeyboard();
-                                        Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(ManageInventory.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        if (input.equals(finalPassword)){
+                                            try{
+                                                dialog.dismiss();
+                                                Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                                                startActivity(i);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        else{
+                                            dialog.cancel();
+                                            hideKeyboard();
+                                            Toast.makeText(ManageInventory.this, getString(R.string.password_mismatch), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
                                 }
-                            }
-                        });
-                        btn_cancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.cancel();
-                            }
-                        });
-                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                        lp.copyFrom(dialog.getWindow().getAttributes());
-                        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                        lp.gravity = Gravity.CENTER;
-                        dialog.getWindow().setAttributes(lp);
-                        dialog.setContentView(view);
-                        dialog.setCancelable(false);
-                        dialog.show();
+                            });
+                            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.cancel();
+                                }
+                            });
+                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                            lp.copyFrom(dialog.getWindow().getAttributes());
+                            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                            lp.gravity = Gravity.CENTER;
+                            dialog.getWindow().setAttributes(lp);
+                            dialog.setContentView(view);
+                            dialog.setCancelable(false);
+                            dialog.show();
+                        }
+                        else{
+                            Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
+                            startActivity(i);
+                        }
                     }
                     else{
                         Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
                         startActivity(i);
                     }
-                }
-                else{
-                    Intent i = new Intent(ManageInventory.this, UnloadActivity.class);
-                    startActivity(i);
-                }
 
 
                 /*final Dialog dialog = new Dialog(ManageInventory.this);
@@ -621,26 +638,31 @@ public class ManageInventory extends AppCompatActivity {
                 dialog.setContentView(view);
                 dialog.setCancelable(false);
                 dialog.show();*/
-            } else if (this.flag1.contains("Error")) {
-                Toast.makeText(ManageInventory.this, this.flag1.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
-            } else {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
-                alertDialogBuilder.setTitle(R.string.error_title)
-                        .setMessage(R.string.error_message)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (loadingSpinner.isShowing()) {
-                                    loadingSpinner.hide();
+                } else if (this.flag1.contains("Error")) {
+                    Toast.makeText(ManageInventory.this, this.flag1.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                } else {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ManageInventory.this);
+                    alertDialogBuilder.setTitle(R.string.error_title)
+                            .setMessage(R.string.error_message)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (loadingSpinner.isShowing()) {
+                                        loadingSpinner.hide();
+                                    }
+                                    dialog.dismiss();
                                 }
-                                dialog.dismiss();
-                            }
-                        });
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                // show it
-                alertDialog.show();
+                            });
+                    // create alert dialog
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    // show it
+                    alertDialog.show();
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }

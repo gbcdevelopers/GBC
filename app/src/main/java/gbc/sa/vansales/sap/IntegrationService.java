@@ -875,7 +875,7 @@ public class IntegrationService extends IntentService {
         OfflineResponse offlineResponse = new OfflineResponse();
         try{
             for(int i=0;i<lines.length;i++){
-                Helpers.logData(ctx,"" + String.valueOf(i) + "-" + lines[i]);
+                Helpers.logData(ctx,"Unpack Item Line" + String.valueOf(i) + "-" + lines[i]);
                 if(lines[i].contains(boundary)){
                     String dataStr = lines[i];
                     try {

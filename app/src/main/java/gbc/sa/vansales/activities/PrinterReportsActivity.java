@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -220,243 +222,256 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
     }
     public void loadData(String type){
-        switch (type){
-            case App.DEPOSIT_REPORT:{
-                HashMap<String,String> map = new HashMap<>();
-                map.put(db.KEY_COLLECTION_TYPE,"");
-                map.put(db.KEY_CUSTOMER_TYPE,"");
-                map.put(db.KEY_CUSTOMER_NO,"");
-                map.put(db.KEY_INVOICE_NO,"");
-                map.put(db.KEY_INVOICE_AMOUNT,"");
-                map.put(db.KEY_DUE_DATE,"");
-                map.put(db.KEY_INVOICE_DATE,"");
-                map.put(db.KEY_AMOUNT_CLEARED,"");
-                map.put(db.KEY_CASH_AMOUNT,"");
-                map.put(db.KEY_CHEQUE_AMOUNT,"");
-                map.put(db.KEY_CHEQUE_NUMBER,"");
-                map.put(db.KEY_CHEQUE_DATE,"");
-                map.put(db.KEY_CHEQUE_BANK_CODE,"");
-                map.put(db.KEY_CHEQUE_BANK_NAME,"");
-                map.put(db.KEY_SAP_INVOICE_NO,"");
-                map.put(db.KEY_INVOICE_DAYS,"");
-                map.put(db.KEY_INDICATOR,"");
-                map.put(db.KEY_IS_POSTED,"");
-                map.put(db.KEY_IS_PRINTED,"");
-                map.put(db.KEY_IS_INVOICE_COMPLETE,"");
-                HashMap<String,String>filter = new HashMap<>();
-                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                Cursor c = db.getData(db.COLLECTION,map,filter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
-                    do{
-                        DepositReport depositReport = new DepositReport();
-                        depositReport.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
-                        depositReport.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        if(customerHeader!=null){
-                            depositReport.setCustomerName(customerHeader.getName1());
-                        }
-                        else{
-                            depositReport.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        }
-                        String[]cheques = new String[10];
-                        String[]chequeDate = new String[10];
-                        String[]chequeAmount = new String[10];
-                        String[]bankCode = new String[10];
-                        String[]bankNames = new String[10];
-                        Log.e("Cheq","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))));
-                        cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
-                        Log.e("cheqest","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))));
-                        chequeDate = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))).split(",");
-                        chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT))).split(",");
-                        bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_CODE))).split(",");
-                        bankNames = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_NAME))).split(",");
-                        if(cheques.length>2){
-                            for(int j=1;j<cheques.length;j++){
-                                depositReport.setChequeNo(cheques[j]);
-                                depositReport.setBankName(bankNames[j]);
-                                depositReport.setBankCode(bankCode[j]);
-                                depositReport.setChequeDate(chequeDate[j]);
-                                depositReport.setChequeAmount(chequeAmount[j]);
-                                depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                                depositReports.add(depositReport);
-                            }
-                        }
-                        else if(cheques.length==1){
-                            depositReport.setChequeNo(cheques[0].equals("0000") ? "-" : cheques[0]);
-                            depositReport.setBankName(bankNames[0].equals("0000") ? "-" : bankNames[0]);
-                            depositReport.setBankCode(bankCode[0].equals("0000") ? "-" : bankCode[0]);
-                            depositReport.setChequeDate(chequeDate[0].equals("0000") ? "-" : chequeDate[0]);
-                            depositReport.setChequeAmount(chequeAmount[0].equals("0000") ? "-" : chequeAmount[0]);
-                            depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-
-                        }
-                        else if(cheques.length==2){
-                            depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
-                            depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
-                            depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
-                            depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
-                            depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
-                            depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                        }
-                        depositReports.add(depositReport);
-                    }
-                    while (c.moveToNext());
-                }
-                break;
-            }
-            case App.SALES_SUMMARY:{
-                HashMap<String,String>map = new HashMap<>();
-                map.put(db.KEY_TIME_STAMP,"");
-                map.put(db.KEY_CUSTOMER_NO,"");
-                map.put(db.KEY_CUSTOMER_TYPE,"");
-                map.put(db.KEY_ACTIVITY_TYPE,"");
-                map.put(db.KEY_ORDER_TOTAL,"");
-                map.put(db.KEY_ORDER_NET_TOTAL,"");
-                map.put(db.KEY_RETURN_TOTAL,"");
-                map.put(db.KEY_GOOD_RETURN_TOTAL,"");
-                map.put(db.KEY_ORDER_DISCOUNT,"");
-                map.put(db.KEY_ORDER_ID,"");
-                HashMap<String,String>filter = new HashMap<>();
-                Cursor c = db.getData(db.TODAYS_SUMMARY_SALES,map,filter);
-                if(c.getCount()>0){
-                    c.moveToFirst();
-                    do{
-                        SalesSummary salesSummary = new SalesSummary();
-                        salesSummary.setTransactionNo(c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
-                        salesSummary.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        if(customerHeader!=null){
-                            salesSummary.setCustomerName(customerHeader.getName1());
-                        }
-                        else{
-                            salesSummary.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        }
-                        HashMap<String,String>invoiceClearMap = new HashMap<>();
-                        invoiceClearMap.put(db.KEY_CUSTOMER_NO,"");
-                        invoiceClearMap.put(db.KEY_INVOICE_NO,"");
-                        invoiceClearMap.put(db.KEY_INVOICE_AMOUNT,"");
-                        invoiceClearMap.put(db.KEY_DUE_DATE,"");
-                        invoiceClearMap.put(db.KEY_INVOICE_DATE,"");
-                        invoiceClearMap.put(db.KEY_AMOUNT_CLEARED,"");
-                        invoiceClearMap.put(db.KEY_INDICATOR,"");
-                        invoiceClearMap.put(db.KEY_IS_INVOICE_COMPLETE,"");
-                        HashMap<String,String>invoiceClearMapFilter = new HashMap<>();
-                        invoiceClearMapFilter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                        invoiceClearMapFilter.put(db.KEY_INVOICE_NO,c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
-                        Cursor ivCursor = db.getData(db.COLLECTION,invoiceClearMap,invoiceClearMapFilter);
-                        if(ivCursor.getCount()>0){
-                            ivCursor.moveToFirst();
-                            salesSummary.setAmountPaid(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-                            salesSummary.setAmountDue(String.valueOf(Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
-                            Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)))));
-                        }
-                        salesSummary.setTransactionType(c.getString(c.getColumnIndex(db.KEY_ACTIVITY_TYPE)).equals(App.ACTIVITY_INVOICE) ? "INV" : "DLV");
-                        salesSummary.setTotalSales(c.getString(c.getColumnIndex(db.KEY_ORDER_NET_TOTAL)));
-                        salesSummary.setTotalReturns(c.getString(c.getColumnIndex(db.KEY_RETURN_TOTAL)));
-                        salesSummary.setTotalgoodReturns(c.getString(c.getColumnIndex(db.KEY_GOOD_RETURN_TOTAL)));
-                        salesSummary.setDiscounts(c.getString(c.getColumnIndex(db.KEY_ORDER_DISCOUNT)));
-                        salesSummary.setNetSales(c.getString(c.getColumnIndex(db.KEY_ORDER_TOTAL)));
-                        if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CASH_CUSTOMER)){
-                            cashSales.add(salesSummary);
-                        }
-                        else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.TC_CUSTOMER)){
-                            tcSales.add(salesSummary);
-                        }
-                        else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CREDIT_CUSTOMER)){
-                            creditSales.add(salesSummary);
-                        }
-                    }
-                    while (c.moveToNext());
-                }
-                break;
-            }
-            case App.BAD_RETURN_REPORT:{
-                for (int i = 0; i < articles.size(); i++) {
-                    DamageReport damageReport = new DamageReport();
-                    float badReturnQuantity = 0;
-                    float badReturnVariance = 0;
-                    damageReport.setItemNo(articles.get(i).getMaterialNo());
-                    ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
-                    if(articleHeader!=null){
-                        damageReport.setItemDescription(articleHeader.getMaterialDesc1());
-                    }
-                    else{
-                        damageReport.setItemDescription(articles.get(i).getMaterialNo());
-                    }
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put(db.KEY_ITEM_NO, "");
-                    map.put(db.KEY_MATERIAL_NO, "");
-                    map.put(db.KEY_CASE, "");
-                    map.put(db.KEY_UNIT, "");
-                    HashMap<String, String> filter = new HashMap<>();
-                    filter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
-                    filter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
-                    Cursor cursor = db.getData(db.RETURNS, map, filter);
-                    if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
+        try{
+            switch (type){
+                case App.DEPOSIT_REPORT:{
+                    HashMap<String,String> map = new HashMap<>();
+                    map.put(db.KEY_COLLECTION_TYPE,"");
+                    map.put(db.KEY_CUSTOMER_TYPE,"");
+                    map.put(db.KEY_CUSTOMER_NO,"");
+                    map.put(db.KEY_INVOICE_NO,"");
+                    map.put(db.KEY_INVOICE_AMOUNT,"");
+                    map.put(db.KEY_DUE_DATE,"");
+                    map.put(db.KEY_INVOICE_DATE,"");
+                    map.put(db.KEY_AMOUNT_CLEARED,"");
+                    map.put(db.KEY_CASH_AMOUNT,"");
+                    map.put(db.KEY_CHEQUE_AMOUNT,"");
+                    map.put(db.KEY_CHEQUE_NUMBER,"");
+                    map.put(db.KEY_CHEQUE_DATE,"");
+                    map.put(db.KEY_CHEQUE_BANK_CODE,"");
+                    map.put(db.KEY_CHEQUE_BANK_NAME,"");
+                    map.put(db.KEY_SAP_INVOICE_NO,"");
+                    map.put(db.KEY_INVOICE_DAYS,"");
+                    map.put(db.KEY_INDICATOR,"");
+                    map.put(db.KEY_IS_POSTED,"");
+                    map.put(db.KEY_IS_PRINTED,"");
+                    map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                    HashMap<String,String>filter = new HashMap<>();
+                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                    Cursor c = db.getData(db.COLLECTION,map,filter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
                         do{
-                            badReturnQuantity += Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
-                        }
-                        while (cursor.moveToNext());
-                        HashMap<String, String> varMap = new HashMap<>();
-                        varMap.put(db.KEY_MATERIAL_NO, "");
-                        varMap.put(db.KEY_CASE, "");
-                        varMap.put(db.KEY_UNIT, "");
-                        HashMap<String, String> varFilter = new HashMap<>();
-                        varFilter.put(db.KEY_VARIANCE_TYPE, App.BAD_RETURN_VARIANCE);
-                        varFilter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
-                        Cursor varCursor = db.getData(db.UNLOAD_VARIANCE, varMap, varFilter);
-                        if(varCursor.getCount()>0){
-                            varCursor.moveToFirst();
-                            do{
-                                badReturnVariance+= Float.parseFloat(varCursor.getString(varCursor.getColumnIndex(db.KEY_CASE)));
+                            DepositReport depositReport = new DepositReport();
+                            depositReport.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
+                            depositReport.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            if(customerHeader!=null){
+                                depositReport.setCustomerName(customerHeader.getName1());
                             }
-                            while (varCursor.moveToNext());
+                            else{
+                                depositReport.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            }
+                            String[]cheques = new String[10];
+                            String[]chequeDate = new String[10];
+                            String[]chequeAmount = new String[10];
+                            String[]bankCode = new String[10];
+                            String[]bankNames = new String[10];
+                            Log.e("Cheq","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))));
+                            cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+                            Log.e("cheqest","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))));
+                            chequeDate = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))).split(",");
+                            chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT))).split(",");
+                            bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_CODE))).split(",");
+                            bankNames = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_NAME))).split(",");
+                            if(cheques.length>2){
+                                for(int j=1;j<cheques.length;j++){
+                                    depositReport.setChequeNo(cheques[j]);
+                                    depositReport.setBankName(bankNames[j]);
+                                    depositReport.setBankCode(bankCode[j]);
+                                    depositReport.setChequeDate(chequeDate[j]);
+                                    depositReport.setChequeAmount(chequeAmount[j]);
+                                    depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                    depositReports.add(depositReport);
+                                }
+                            }
+                            else if(cheques.length==1){
+                                depositReport.setChequeNo(cheques[0].equals("0000") ? "-" : cheques[0]);
+                                depositReport.setBankName(bankNames[0].equals("0000") ? "-" : bankNames[0]);
+                                depositReport.setBankCode(bankCode[0].equals("0000") ? "-" : bankCode[0]);
+                                depositReport.setChequeDate(chequeDate[0].equals("0000") ? "-" : chequeDate[0]);
+                                depositReport.setChequeAmount(chequeAmount[0].equals("0000") ? "-" : chequeAmount[0]);
+                                depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+
+                            }
+                            else if(cheques.length==2){
+                                depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
+                                depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
+                                depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
+                                depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
+                                depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
+                                depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                            }
+                            depositReports.add(depositReport);
                         }
-                        damageReport.setItemQuantity(String.valueOf(badReturnQuantity));
-                        damageReport.setItemVariance(String.valueOf(badReturnVariance));
+                        while (c.moveToNext());
                     }
-
-                    HashMap<String, String> priceMap = new HashMap<>();
-                    priceMap.put(db.KEY_AMOUNT, "");
-                    HashMap<String, String> filterPrice = new HashMap<>();
-                    filterPrice.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
-                    filterPrice.put(db.KEY_PRIORITY, "2");
-                    Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
-                    if (priceCursor.getCount() > 0) {
-                        priceCursor.moveToFirst();
-                        damageReport.setItemPrice(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                    } else {
-                        damageReport.setItemPrice("0");
-                    }
-
-
-                    if(badReturnQuantity>0){
-                        damageReports.add(damageReport);
-                    }
+                    break;
                 }
-                break;
+                case App.SALES_SUMMARY:{
+                    HashMap<String,String>map = new HashMap<>();
+                    map.put(db.KEY_TIME_STAMP,"");
+                    map.put(db.KEY_CUSTOMER_NO,"");
+                    map.put(db.KEY_CUSTOMER_TYPE,"");
+                    map.put(db.KEY_ACTIVITY_TYPE,"");
+                    map.put(db.KEY_ORDER_TOTAL,"");
+                    map.put(db.KEY_ORDER_NET_TOTAL,"");
+                    map.put(db.KEY_RETURN_TOTAL,"");
+                    map.put(db.KEY_GOOD_RETURN_TOTAL,"");
+                    map.put(db.KEY_ORDER_DISCOUNT,"");
+                    map.put(db.KEY_ORDER_ID,"");
+                    HashMap<String,String>filter = new HashMap<>();
+                    Cursor c = db.getData(db.TODAYS_SUMMARY_SALES,map,filter);
+                    if(c.getCount()>0){
+                        c.moveToFirst();
+                        do{
+                            SalesSummary salesSummary = new SalesSummary();
+                            salesSummary.setTransactionNo(c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
+                            salesSummary.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            if(customerHeader!=null){
+                                salesSummary.setCustomerName(customerHeader.getName1());
+                            }
+                            else{
+                                salesSummary.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            }
+                            HashMap<String,String>invoiceClearMap = new HashMap<>();
+                            invoiceClearMap.put(db.KEY_CUSTOMER_NO,"");
+                            invoiceClearMap.put(db.KEY_INVOICE_NO,"");
+                            invoiceClearMap.put(db.KEY_INVOICE_AMOUNT,"");
+                            invoiceClearMap.put(db.KEY_DUE_DATE,"");
+                            invoiceClearMap.put(db.KEY_INVOICE_DATE,"");
+                            invoiceClearMap.put(db.KEY_AMOUNT_CLEARED,"");
+                            invoiceClearMap.put(db.KEY_INDICATOR,"");
+                            invoiceClearMap.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                            HashMap<String,String>invoiceClearMapFilter = new HashMap<>();
+                            invoiceClearMapFilter.put(db.KEY_CUSTOMER_NO,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                            invoiceClearMapFilter.put(db.KEY_INVOICE_NO,c.getString(c.getColumnIndex(db.KEY_ORDER_ID)));
+                            Cursor ivCursor = db.getData(db.COLLECTION,invoiceClearMap,invoiceClearMapFilter);
+                            if(ivCursor.getCount()>0){
+                                ivCursor.moveToFirst();
+                                salesSummary.setAmountPaid(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                salesSummary.setAmountDue(String.valueOf(Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                        Double.parseDouble(ivCursor.getString(ivCursor.getColumnIndex(db.KEY_AMOUNT_CLEARED)))));
+                            }
+                            salesSummary.setTransactionType(c.getString(c.getColumnIndex(db.KEY_ACTIVITY_TYPE)).equals(App.ACTIVITY_INVOICE) ? "INV" : "DLV");
+                            salesSummary.setTotalSales(c.getString(c.getColumnIndex(db.KEY_ORDER_NET_TOTAL)));
+                            salesSummary.setTotalReturns(c.getString(c.getColumnIndex(db.KEY_RETURN_TOTAL)));
+                            salesSummary.setTotalgoodReturns(c.getString(c.getColumnIndex(db.KEY_GOOD_RETURN_TOTAL)));
+                            salesSummary.setDiscounts(c.getString(c.getColumnIndex(db.KEY_ORDER_DISCOUNT)));
+                            salesSummary.setNetSales(c.getString(c.getColumnIndex(db.KEY_ORDER_TOTAL)));
+                            if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CASH_CUSTOMER)){
+                                cashSales.add(salesSummary);
+                            }
+                            else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.TC_CUSTOMER)){
+                                tcSales.add(salesSummary);
+                            }
+                            else if(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_TYPE)).equals(App.CREDIT_CUSTOMER)){
+                                creditSales.add(salesSummary);
+                            }
+                        }
+                        while (c.moveToNext());
+                    }
+                    break;
+                }
+                case App.BAD_RETURN_REPORT:{
+                    for (int i = 0; i < articles.size(); i++) {
+                        DamageReport damageReport = new DamageReport();
+                        float badReturnQuantity = 0;
+                        float badReturnVariance = 0;
+                        damageReport.setItemNo(articles.get(i).getMaterialNo());
+                        ArticleHeader articleHeader = ArticleHeader.getArticle(articles,articles.get(i).getMaterialNo());
+                        if(articleHeader!=null){
+                            damageReport.setItemDescription(articleHeader.getMaterialDesc1());
+                        }
+                        else{
+                            damageReport.setItemDescription(articles.get(i).getMaterialNo());
+                        }
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put(db.KEY_ITEM_NO, "");
+                        map.put(db.KEY_MATERIAL_NO, "");
+                        map.put(db.KEY_CASE, "");
+                        map.put(db.KEY_UNIT, "");
+                        HashMap<String, String> filter = new HashMap<>();
+                        filter.put(db.KEY_REASON_TYPE, App.BAD_RETURN);
+                        filter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                        Cursor cursor = db.getData(db.RETURNS, map, filter);
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            do{
+                                badReturnQuantity += Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
+                            }
+                            while (cursor.moveToNext());
+                            HashMap<String, String> varMap = new HashMap<>();
+                            varMap.put(db.KEY_MATERIAL_NO, "");
+                            varMap.put(db.KEY_CASE, "");
+                            varMap.put(db.KEY_UNIT, "");
+                            HashMap<String, String> varFilter = new HashMap<>();
+                            varFilter.put(db.KEY_VARIANCE_TYPE, App.BAD_RETURN_VARIANCE);
+                            varFilter.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                            Cursor varCursor = db.getData(db.UNLOAD_VARIANCE, varMap, varFilter);
+                            if(varCursor.getCount()>0){
+                                varCursor.moveToFirst();
+                                do{
+                                    badReturnVariance+= Float.parseFloat(varCursor.getString(varCursor.getColumnIndex(db.KEY_CASE)));
+                                }
+                                while (varCursor.moveToNext());
+                            }
+                            damageReport.setItemQuantity(String.valueOf(badReturnQuantity));
+                            damageReport.setItemVariance(String.valueOf(badReturnVariance));
+                        }
+
+                        HashMap<String, String> priceMap = new HashMap<>();
+                        priceMap.put(db.KEY_AMOUNT, "");
+                        HashMap<String, String> filterPrice = new HashMap<>();
+                        filterPrice.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
+                        filterPrice.put(db.KEY_PRIORITY, "2");
+                        Cursor priceCursor = db.getData(db.PRICING, priceMap, filterPrice);
+                        if (priceCursor.getCount() > 0) {
+                            priceCursor.moveToFirst();
+                            damageReport.setItemPrice(priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                        } else {
+                            damageReport.setItemPrice("0");
+                        }
+
+
+                        if(badReturnQuantity>0){
+                            damageReports.add(damageReport);
+                        }
+                    }
+                    break;
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     public void printReport(String type){
-        PrinterHelper object = new PrinterHelper(PrinterReportsActivity.this,PrinterReportsActivity.this);
-
-        switch (type){
-            case App.DEPOSIT_REPORT:{
-                object.execute("",createDataforDeposit());
-                break;
-            }
-            case App.SALES_SUMMARY:{
-                object.execute("",createDataforSalesSummary());
-                break;
-            }
-            case App.BAD_RETURN_REPORT:{
-                object.execute("",createDataforBadReturns());
-                break;
+        try{
+            PrinterHelper object = new PrinterHelper(PrinterReportsActivity.this,PrinterReportsActivity.this);
+            switch (type){
+                case App.DEPOSIT_REPORT:{
+                    object.execute("",createDataforDeposit());
+                    break;
+                }
+                case App.SALES_SUMMARY:{
+                    object.execute("",createDataforSalesSummary());
+                    break;
+                }
+                case App.BAD_RETURN_REPORT:{
+                    object.execute("",createDataforBadReturns());
+                    break;
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     public JSONArray createDataforDeposit(){
         JSONArray jArr = new JSONArray();
@@ -587,6 +602,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -712,6 +728,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }
@@ -851,6 +868,7 @@ public class PrinterReportsActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return jArr;
     }

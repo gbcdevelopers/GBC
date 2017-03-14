@@ -361,6 +361,7 @@ public class DeliveryActivity extends AppCompatActivity {
             dialog.show();
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     /************************************************************
@@ -496,6 +497,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }
@@ -517,6 +519,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 new loadDeliveries().execute();
             } catch (Exception e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }
@@ -568,6 +571,7 @@ public class DeliveryActivity extends AppCompatActivity {
             while (cursor.moveToNext());
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 

@@ -147,6 +147,7 @@ public class DriverPaymentDetails extends AppCompatActivity {
                 pos = getIntent().getIntExtra("pos", 0);
                 amountdue = getIntent().getStringExtra("amountdue");
                 collection = (Collection) i.getParcelableExtra("drivercollection");
+                invoiceNo = collection.getInvoiceNo();
                 tv_due_amt.setText(amountdue);
                 TextView tv_cust_detail = (TextView) findViewById(R.id.tv_cust_detail);
                 tv_cust_detail.setText(Settings.getString(App.DRIVER) + " " + Settings.getString(App.DRIVER_NAME_EN));
@@ -310,10 +311,61 @@ public class DriverPaymentDetails extends AppCompatActivity {
                                 updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                             }
                             db.updateData(db.DRIVER_COLLECTION, updateMap, filter);
-                            Intent intent = new Intent(DriverPaymentDetails.this, DriverCollectionsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
 
+                            final Dialog dialog = new Dialog(DriverPaymentDetails.this);
+                            dialog.setContentView(R.layout.dialog_doprint);
+                            dialog.setCancelable(false);
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                            LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                            LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                            dialog.show();
+                            btn_print.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                    try {
+                                        JSONArray jsonArray = createPrintData("COLLECTION", invoiceNo,"");
+                                        JSONObject data = new JSONObject();
+                                        data.put("data", (JSONArray) jsonArray);
+                                        HashMap<String, String> map = new HashMap<>();
+                                        map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                        map.put(db.KEY_ORDER_ID, invoiceNo);
+                                        map.put(db.KEY_DOC_TYPE, ConfigStore.DriverCollectionRequest_TR);
+                                        map.put(db.KEY_DATA, data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT, map);
+                                        PrinterHelper object = new PrinterHelper(DriverPaymentDetails.this, DriverPaymentDetails.this);
+                                        object.execute("", jsonArray);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    //finish();
+                                }
+                            });
+                            btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                    try {
+                                        JSONArray jsonArray = createPrintData("COLLECTION", "", invoiceNo);
+                                        JSONObject data = new JSONObject();
+                                        data.put("data", (JSONArray) jsonArray);
+                                        HashMap<String, String> map = new HashMap<>();
+                                        map.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                                        map.put(db.KEY_ORDER_ID, invoiceNo);
+                                        map.put(db.KEY_DOC_TYPE, ConfigStore.DriverCollectionRequest_TR);
+                                        map.put(db.KEY_DATA, data.toString());
+                                        //map.put(db.KEY_DATA,jsonArray.toString());
+                                        db.addDataPrint(db.DELAY_PRINT, map);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    Intent intent = new Intent(DriverPaymentDetails.this, DriverCollectionsActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
                         }
                         else {
                             final Dialog dialog = new Dialog(DriverPaymentDetails.this);
@@ -507,5 +559,148 @@ public class DriverPaymentDetails extends AppCompatActivity {
         } else {
             tv_total_amount.setText(String.valueOf(total_amt));
         }
+    }
+    public JSONArray createPrintData(String orderDate,String orderNo,String invoiceAmount){
+        JSONArray jArr = new JSONArray();
+        try{
+            double totalPcs = 0;
+            double totalAmount = 0;
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST,App.DRIVER_COLLECTION);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE",Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", tv_date.getText().toString());
+            mainArr.put("TIME","00:00:00");
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO","1234");
+            mainArr.put("DOCUMENT NO",orderNo);  //Load Summary No
+            // mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("supervisorname","-");
+            mainArr.put("LANG",Settings.getString(App.LANGUAGE));
+            mainArr.put("INVOICETYPE","ORDER REQUEST");
+            mainArr.put("ORDERNO",orderNo);
+            mainArr.put("invoicepaymentterms","3");
+            String testAr = "هذا هو اختبار النص العربي";
+            if(object != null) {
+                mainArr.put("CUSTOMER", UrlBuilder.decodeString(object.getCustomerName()) + "-" + testAr);
+                mainArr.put("ADDRESS",object.getCustomerAddress().equals("")?"-":object.getCustomerAddress());
+                mainArr.put("ARBADDRESS",object.getCustomerAddress());
+            }
+            else{
+                mainArr.put("CUSTOMER","");
+                mainArr.put("ADDRESS","-");
+                mainArr.put("ARBADDRESS","-");
+            }
+            mainArr.put("TripID",Settings.getString(App.TRIP_ID));
+            mainArr.put("LANG","en");
+            mainArr.put("invoicepaymentterms","2");
+            mainArr.put("RECEIPT","INVOICE RECEIPT");
+            mainArr.put("SUB TOTAL","1000");
+            mainArr.put("INVOICE DISCOUNT","20");
+            mainArr.put("NET SALES","980");
+            String paymentType = "";
+            if(getcheckamt()>0&&getcashamt()>0){
+                paymentType = "2";
+            }
+            else if(getcheckamt()>0){
+                paymentType = "1";
+            }
+            else if(getcashamt()>0){
+                paymentType = "0";
+            }
+            else if(getcashamt()<0&&getcheckamt()<0){
+                paymentType = "2";
+            }
+            else if(getcheckamt()<0){
+                paymentType = "1";
+            }
+            else if(getcashamt()<0){
+                paymentType = "0";
+            }
+            Log.e("Payment Type","" + paymentType);
+            mainArr.put("PaymentType",paymentType);
+            //mainArr.put("Load Number","1");
+
+
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+
+            HEADERS.put("Invoice#");
+            HEADERS.put("Due Date");
+            HEADERS.put("Due Amount");
+            HEADERS.put("Invoice Balance");
+            HEADERS.put("Amount Paid");
+            //HEADERS.put("Description");
+
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS",HEADERS);
+            JSONObject jCash = new JSONObject();
+            jCash.put("Amount",String.valueOf(getcashamt()));
+            mainArr.put("Cash",jCash);
+
+            JSONArray jCheque = new JSONArray();
+            JSONObject jChequeData = new JSONObject();
+            jChequeData.put("Cheque Date",tv_date.getText().toString());
+            jChequeData.put("Cheque No",edt_check_no.getText().toString());
+            jChequeData.put("Bank",UrlBuilder.decodeString(bankname)    );
+            jChequeData.put("Amount",String.valueOf(getcheckamt()));
+            jCheque.put(jChequeData);
+            mainArr.put("Cheque",jCheque);
+            mainArr.put("expayment","");
+
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("Invoice Balance","+" + amountdue);
+            totalObj.put("Amount Paid", String.valueOf(getcashamt()+getcheckamt()));
+            //totalObj.put("AMOUNT","+2230");
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL",totalObj);
+
+            JSONArray jData = new JSONArray();
+            JSONArray jData3 = new JSONArray();
+            jData3.put(invoiceNo==null?"-----------":invoiceNo);
+            jData3.put(Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            jData3.put(amountdue);
+            jData3.put("0");
+            jData3.put(String.valueOf(getcashamt()+getcheckamt()));
+
+            jData.put(jData3);
+            /*for(OrderRequest obj:arraylist){
+                if(Double.parseDouble(obj.getCases())> 0 || Double.parseDouble(obj.getUnits())>0){
+                    JSONArray data = new JSONArray();
+                    data.put(StringUtils.stripStart(obj.getMaterialNo(),"0"));
+                    data.put(obj.getItemName());
+                    data.put("شد 48*200مل بيرين PH8");
+                    data.put("1");
+                    data.put(obj.getCases());
+                    totalPcs += Double.parseDouble(obj.getCases());
+                    data.put(obj.getPrice());
+                    data.put(String.valueOf(Double.parseDouble(obj.getCases()) * Double.parseDouble(obj.getPrice())));
+                    totalAmount += Double.parseDouble(obj.getCases())*Double.parseDouble(obj.getPrice());
+                    jData.put(data);
+                }
+
+            }*/
+            mainArr.put("data",jData);
+            mainArr.put(JsonRpcUtil.PARAM_DATA,jData);
+
+            jDict.put("mainArr",mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+
+            jArr.put(HEADERS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+        return jArr;
+    }
+    public void callback(){
+        Intent intent = new Intent(DriverPaymentDetails.this, DriverCollectionsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
