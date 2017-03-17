@@ -91,9 +91,9 @@ public class DataPostingAuditActivity extends AppCompatActivity {
         });
         try{
             listView = (ListView) findViewById(R.id.print_document_list);
-            adapter = new DataPostingAuditAdapter(this,arrayList,isSelectAll);
-            listView.setAdapter(adapter);
-            swipeDetector = new SwipeDetector();
+           // adapter = new DataPostingAuditAdapter(this,arrayList,isSelectAll);
+           // listView.setAdapter(adapter);
+          //  swipeDetector = new SwipeDetector();
 
 
             new loadTransactions().execute();
@@ -313,6 +313,7 @@ public class DataPostingAuditActivity extends AppCompatActivity {
                 if(loadingSpinner.isShowing()){
                     loadingSpinner.hide();
                 }
+                adapter = new DataPostingAuditAdapter(DataPostingAuditActivity.this,arrayList,isSelectAll);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }

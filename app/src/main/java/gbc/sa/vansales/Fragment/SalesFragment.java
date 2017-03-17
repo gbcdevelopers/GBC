@@ -471,7 +471,10 @@ public class SalesFragment extends Fragment {
                                     db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
                                 }
                                 else{
-                                    db.addData(db.CAPTURE_SALES_INVOICE,map);
+                                    //db.addData(db.CAPTURE_SALES_INVOICE,map);
+                                    if(Float.parseFloat(sale.getCases())>0||Float.parseFloat(sale.getPic())>0){
+                                        db.addData(db.CAPTURE_SALES_INVOICE, map);
+                                    }
                                 }
                             }
                             if(focArrayList.size()>0){
@@ -782,6 +785,7 @@ public class SalesFragment extends Fragment {
                             HashMap<String,String>filter = new HashMap<>();
                             //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                             filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
+                            //filter.put(db.KEY_DIST_CHANNEL,Settings.getString(App.DIST_CHANNEL));
                             Cursor c = db.getData(db.FOC_RULES,map,filter);
                             if(c.getCount()>0){
                                 do{

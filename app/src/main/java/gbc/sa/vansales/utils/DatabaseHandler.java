@@ -1048,6 +1048,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_FOC_RULES = "CREATE TABLE " + FOC_RULES + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
+                + KEY_DIST_CHANNEL + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
                 + KEY_FOC_QUALIFYING_ITEM + " TEXT,"
                 + KEY_FOC_ASSIGNING_ITEM + " TEXT,"

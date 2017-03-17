@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.iid.InstanceID;
 
 import org.apache.commons.codec.binary.Base64;
@@ -355,6 +356,7 @@ public class IntegrationService extends IntentService {
                 //orderId = map.get("PurchaseNum").toString();
             } else {
                 HttpResponse response = client.execute(post);
+                Helpers.logData(context,"End Trip" + response.getStatusLine().getStatusCode());
                 if (response.getStatusLine().getStatusCode() == 201) {
                     Header[] headers = response.getAllHeaders();
                     HttpEntity r_entity = response.getEntity();
@@ -372,11 +374,13 @@ public class IntegrationService extends IntentService {
                     JSONObject jsonObj = new JSONObject(jsonString);
                     jsonObj = jsonObj.getJSONObject("error").getJSONObject("message");
                     Log.e("Entity", "" + jsonObj);
+                    Helpers.logData(context,"Error PostDataBackup" + jsonObj);
                     orderId = "Error" + jsonObj.getString("value");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         return orderId;
     }

@@ -75,8 +75,8 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
-                       /* PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforCollection());*/ //For Sales Invoice
+                        /*PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.execute("",createDataforVanStock()); //For Sales Invoice*/
                         //object.execute("",createDataForPrint()); //For Load Summary
                         //  object.execute("",createDataForLoadRequest());
                         Intent itemlist = new Intent(InformationsActivity.this, ItemListActivity.class);
@@ -372,6 +372,159 @@ public class InformationsActivity extends AppCompatActivity {
             jData3.put("+150");
             jData3.put("+1500");
             JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            /*jData.put(jData4);
+            jData.put(jData5);
+            jData.put(jData6);*/
+            mainArr.put("data", jData);
+            jDict.put("mainArr", mainArr);
+            jInter.put(jDict);
+            jArr.put(jInter);
+            jArr.put(HEADERS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+        return jArr;
+    }
+    public JSONArray createDataforVanStock() {
+        JSONArray jArr = new JSONArray();
+        try {
+            JSONArray jInter = new JSONArray();
+            JSONObject jDict = new JSONObject();
+            jDict.put(App.REQUEST, App.VAN_STOCK);
+            JSONObject mainArr = new JSONObject();
+            mainArr.put("ROUTE", Settings.getString(App.ROUTE));
+            mainArr.put("DOC DATE", Helpers.formatDate(new Date(), App.PRINT_DATE_FORMAT));
+            mainArr.put("TIME", Helpers.formatTime(new Date(), "hh:mm"));
+            mainArr.put("SALESMAN", Settings.getString(App.DRIVER_NAME_EN));
+            mainArr.put("SALESMANNO",Settings.getString(App.DRIVER));
+            mainArr.put("CONTACTNO", "1234");
+            mainArr.put("DOCUMENT NO", "80001234");  //Load Summary No
+            mainArr.put("TRIP START DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
+            mainArr.put("supervisorname", "-");
+            mainArr.put("TourID", Settings.getString(App.TRIP_ID));
+            //mainArr.put("Load Number","1");
+            JSONArray HEADERS = new JSONArray();
+            JSONArray TOTAL = new JSONArray();
+            /*obj.put("Item#","14000000");
+            obj.put("Description","Carton 48*48 200ML");
+            obj.put("UPO","1");
+            obj.put("Open Qty","0");
+            obj.put("Load Qty","100");
+            obj.put("Adjust Qty","0");
+            obj.put("Net Qty","100");
+            obj.put("VALUE","1200");
+            obj.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj1 = new JSONObject();
+            obj1.put("Sl#","0010");
+            obj1.put("Item#","14000000");
+            obj1.put("Description","Carton 48*48 200ML");
+            obj1.put("UPO","1");
+            obj1.put("Open Qty","0");
+            obj1.put("Load Qty","100");
+            obj1.put("Adjust Qty","0");
+            obj1.put("Net Qty","100");
+            obj1.put("VALUE","1200");
+            obj1.put("Description","Carton 48*48 100ML");*/
+
+            /*JSONObject obj2 = new JSONObject();
+            obj2.put("Sl#","0010");
+            obj2.put("Item#","14000000");
+            obj2.put("Description","Carton 48*48 200ML");
+            obj2.put("UPO","1");
+            obj2.put("Open Qty","0");
+            obj2.put("Load Qty","100");
+            obj2.put("Adjust Qty","0");
+            obj2.put("Net Qty","100");
+            obj2.put("VALUE","1200");
+            obj2.put("Description","Carton 48*48 100ML");*/
+            HEADERS.put("ITEM#");
+            HEADERS.put("DESCRIPTION");
+            HEADERS.put("LOADED QTY");
+            HEADERS.put("SALE QTY");
+            HEADERS.put("TRUCK STOCK");
+            HEADERS.put("TOTAL");
+            //HEADERS.put("Description");
+            //HEADERS.put(obj1);
+            // HEADERS.put(obj2);
+            mainArr.put("HEADERS", HEADERS);
+            JSONObject totalObj = new JSONObject();
+            totalObj.put("LOADED QTY", "+500");
+            totalObj.put("SALE QTY", "-300");
+            totalObj.put("TRUCK STOCK", "+200");
+            TOTAL.put(totalObj);
+            mainArr.put("TOTAL", TOTAL);
+            JSONArray jData1 = new JSONArray();
+            jData1.put("14020106");
+            jData1.put("Carton 48*200ml Berain Krones");
+            //jData1.put("شد 48*200مل بيرين PH8");
+            //jData1.put("1");
+            jData1.put("+15");
+            jData1.put("+10");
+            jData1.put("+150");
+            JSONArray jData2 = new JSONArray();
+            jData2.put("14020107");
+            jData2.put("Carton 30*330ml Berain Krones");
+            /*jData2.put("شد 30*330مل بيرين PH8");
+            jData2.put("1");*/
+            jData2.put("+15");
+            jData2.put("+12");
+            jData2.put("+1200");
+            JSONArray jData3 = new JSONArray();
+            jData3.put("14020123");
+            jData3.put("Carton 24*600 Berain PH8 Krones");
+            /*jData3.put("شد 24*600مل بيرين PH8");
+            jData3.put("1");*/
+            jData3.put("+10");
+            jData3.put("+150");
+            jData3.put("+1500");
+            JSONArray jData = new JSONArray();
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
+            jData.put(jData1);
+            jData.put(jData2);
+            jData.put(jData3);
             jData.put(jData1);
             jData.put(jData2);
             jData.put(jData3);

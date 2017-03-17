@@ -176,6 +176,7 @@ public class App extends Application {
     public static final String ROUTE_SALES = "routeSales";
     public static final String SALES_SUMMARY = "salessummary";
     public static final String BAD_RETURN_REPORT = "badreturnreport";
+    public static final String VAN_STOCK = "vanstock";
 
     //Odometer types
     public static final String ODOMETER_BEGIN_DAY = "odometerBeginDay";

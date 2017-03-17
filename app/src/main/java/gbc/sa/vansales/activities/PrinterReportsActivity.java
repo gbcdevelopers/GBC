@@ -225,87 +225,176 @@ public class PrinterReportsActivity extends AppCompatActivity {
         try{
             switch (type){
                 case App.DEPOSIT_REPORT:{
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put(db.KEY_COLLECTION_TYPE,"");
-                    map.put(db.KEY_CUSTOMER_TYPE,"");
-                    map.put(db.KEY_CUSTOMER_NO,"");
-                    map.put(db.KEY_INVOICE_NO,"");
-                    map.put(db.KEY_INVOICE_AMOUNT,"");
-                    map.put(db.KEY_DUE_DATE,"");
-                    map.put(db.KEY_INVOICE_DATE,"");
-                    map.put(db.KEY_AMOUNT_CLEARED,"");
-                    map.put(db.KEY_CASH_AMOUNT,"");
-                    map.put(db.KEY_CHEQUE_AMOUNT,"");
-                    map.put(db.KEY_CHEQUE_NUMBER,"");
-                    map.put(db.KEY_CHEQUE_DATE,"");
-                    map.put(db.KEY_CHEQUE_BANK_CODE,"");
-                    map.put(db.KEY_CHEQUE_BANK_NAME,"");
-                    map.put(db.KEY_SAP_INVOICE_NO,"");
-                    map.put(db.KEY_INVOICE_DAYS,"");
-                    map.put(db.KEY_INDICATOR,"");
-                    map.put(db.KEY_IS_POSTED,"");
-                    map.put(db.KEY_IS_PRINTED,"");
-                    map.put(db.KEY_IS_INVOICE_COMPLETE,"");
-                    HashMap<String,String>filter = new HashMap<>();
-                    filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
-                    Cursor c = db.getData(db.COLLECTION,map,filter);
-                    if(c.getCount()>0){
-                        c.moveToFirst();
-                        do{
-                            DepositReport depositReport = new DepositReport();
-                            depositReport.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
-                            depositReport.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                            CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                            if(customerHeader!=null){
-                                depositReport.setCustomerName(customerHeader.getName1());
-                            }
-                            else{
-                                depositReport.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
-                            }
-                            String[]cheques = new String[10];
-                            String[]chequeDate = new String[10];
-                            String[]chequeAmount = new String[10];
-                            String[]bankCode = new String[10];
-                            String[]bankNames = new String[10];
-                            Log.e("Cheq","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))));
-                            cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
-                            Log.e("cheqest","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))));
-                            chequeDate = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))).split(",");
-                            chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT))).split(",");
-                            bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_CODE))).split(",");
-                            bankNames = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_NAME))).split(",");
-                            if(cheques.length>2){
-                                for(int j=1;j<cheques.length;j++){
-                                    depositReport.setChequeNo(cheques[j]);
-                                    depositReport.setBankName(bankNames[j]);
-                                    depositReport.setBankCode(bankCode[j]);
-                                    depositReport.setChequeDate(chequeDate[j]);
-                                    depositReport.setChequeAmount(chequeAmount[j]);
-                                    depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                                    depositReports.add(depositReport);
+                    try{
+                        HashMap<String,String> map = new HashMap<>();
+                        map.put(db.KEY_COLLECTION_TYPE,"");
+                        map.put(db.KEY_CUSTOMER_TYPE,"");
+                        map.put(db.KEY_CUSTOMER_NO,"");
+                        map.put(db.KEY_INVOICE_NO,"");
+                        map.put(db.KEY_INVOICE_AMOUNT,"");
+                        map.put(db.KEY_DUE_DATE,"");
+                        map.put(db.KEY_INVOICE_DATE,"");
+                        map.put(db.KEY_AMOUNT_CLEARED,"");
+                        map.put(db.KEY_CASH_AMOUNT,"");
+                        map.put(db.KEY_CHEQUE_AMOUNT,"");
+                        map.put(db.KEY_CHEQUE_NUMBER,"");
+                        map.put(db.KEY_CHEQUE_DATE,"");
+                        map.put(db.KEY_CHEQUE_BANK_CODE,"");
+                        map.put(db.KEY_CHEQUE_BANK_NAME,"");
+                        map.put(db.KEY_SAP_INVOICE_NO,"");
+                        map.put(db.KEY_INVOICE_DAYS,"");
+                        map.put(db.KEY_INDICATOR,"");
+                        map.put(db.KEY_IS_POSTED,"");
+                        map.put(db.KEY_IS_PRINTED,"");
+                        map.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                        HashMap<String,String>filter = new HashMap<>();
+                        filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                        Cursor c = db.getData(db.COLLECTION,map,filter);
+                        if(c.getCount()>0){
+                            c.moveToFirst();
+                            do{
+                                DepositReport depositReport = new DepositReport();
+                                depositReport.setInvoiceNo(c.getString(c.getColumnIndex(db.KEY_INVOICE_NO)));
+                                depositReport.setCustomerNo(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                if(customerHeader!=null){
+                                    depositReport.setCustomerName(customerHeader.getName1());
                                 }
-                            }
-                            else if(cheques.length==1){
-                                depositReport.setChequeNo(cheques[0].equals("0000") ? "-" : cheques[0]);
-                                depositReport.setBankName(bankNames[0].equals("0000") ? "-" : bankNames[0]);
-                                depositReport.setBankCode(bankCode[0].equals("0000") ? "-" : bankCode[0]);
-                                depositReport.setChequeDate(chequeDate[0].equals("0000") ? "-" : chequeDate[0]);
-                                depositReport.setChequeAmount(chequeAmount[0].equals("0000") ? "-" : chequeAmount[0]);
-                                depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                else{
+                                    depositReport.setCustomerName(c.getString(c.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                }
+                                String[]cheques = new String[10];
+                                String[]chequeDate = new String[10];
+                                String[]chequeAmount = new String[10];
+                                String[]bankCode = new String[10];
+                                String[]bankNames = new String[10];
+                                Log.e("Cheq","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))));
+                                cheques = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+                                Log.e("cheqest","" + UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))));
+                                chequeDate = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE))).split(",");
+                                chequeAmount = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT))).split(",");
+                                bankCode = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_CODE))).split(",");
+                                bankNames = UrlBuilder.decodeString(c.getString(c.getColumnIndex(db.KEY_BANK_NAME))).split(",");
+                                if(cheques.length>2){
+                                    for(int j=1;j<cheques.length;j++){
+                                        depositReport.setChequeNo(cheques[j]);
+                                        depositReport.setBankName(bankNames[j]);
+                                        depositReport.setBankCode(bankCode[j]);
+                                        depositReport.setChequeDate(chequeDate[j]);
+                                        depositReport.setChequeAmount(chequeAmount[j]);
+                                        depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                        depositReports.add(depositReport);
+                                    }
+                                }
+                                else if(cheques.length==1){
+                                    depositReport.setChequeNo(cheques[0].equals("0000") ? "-" : cheques[0]);
+                                    depositReport.setBankName(bankNames[0].equals("0000") ? "-" : bankNames[0]);
+                                    depositReport.setBankCode(bankCode[0].equals("0000") ? "-" : bankCode[0]);
+                                    depositReport.setChequeDate(chequeDate[0].equals("0000") ? "-" : chequeDate[0]);
+                                    depositReport.setChequeAmount(chequeAmount[0].equals("0000") ? "-" : chequeAmount[0]);
+                                    depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
 
+                                }
+                                else if(cheques.length==2){
+                                    depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
+                                    depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
+                                    depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
+                                    depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
+                                    depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
+                                    depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                }
+                                depositReports.add(depositReport);
                             }
-                            else if(cheques.length==2){
-                                depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
-                                depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
-                                depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
-                                depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
-                                depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
-                                depositReport.setCashAmount(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                            }
-                            depositReports.add(depositReport);
+                            while (c.moveToNext());
                         }
-                        while (c.moveToNext());
+
+                        HashMap<String,String> map1 = new HashMap<>();
+                        map1.put(db.KEY_COLLECTION_TYPE,"");
+                        map1.put(db.KEY_CUSTOMER_TYPE,"");
+                        map1.put(db.KEY_CUSTOMER_NO,"");
+                        map1.put(db.KEY_INVOICE_NO,"");
+                        map1.put(db.KEY_INVOICE_AMOUNT,"");
+                        map1.put(db.KEY_DUE_DATE,"");
+                        map1.put(db.KEY_INVOICE_DATE,"");
+                        map1.put(db.KEY_AMOUNT_CLEARED,"");
+                        map1.put(db.KEY_CASH_AMOUNT,"");
+                        map1.put(db.KEY_CHEQUE_AMOUNT,"");
+                        map1.put(db.KEY_CHEQUE_NUMBER,"");
+                        map1.put(db.KEY_CHEQUE_DATE,"");
+                        map1.put(db.KEY_CHEQUE_BANK_CODE,"");
+                        map1.put(db.KEY_CHEQUE_BANK_NAME,"");
+                        map1.put(db.KEY_SAP_INVOICE_NO,"");
+                        map1.put(db.KEY_INVOICE_DAYS,"");
+                        map1.put(db.KEY_INDICATOR,"");
+                        map1.put(db.KEY_IS_POSTED,"");
+                        map1.put(db.KEY_IS_PRINTED,"");
+                        map1.put(db.KEY_IS_INVOICE_COMPLETE,"");
+                        HashMap<String,String>filter1 = new HashMap<>();
+                        filter1.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                        Cursor c1 = db.getData(db.COLLECTION,map1,filter1);
+                        if(c1.getCount()>0){
+                            c1.moveToFirst();
+                            do{
+                                DepositReport depositReport = new DepositReport();
+                                depositReport.setInvoiceNo(c1.getString(c1.getColumnIndex(db.KEY_INVOICE_NO)));
+                                depositReport.setCustomerNo(c1.getString(c1.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                CustomerHeader customerHeader = CustomerHeader.getCustomer(customers,c1.getString(c1.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                if(customerHeader!=null){
+                                    depositReport.setCustomerName(customerHeader.getName1());
+                                }
+                                else{
+                                    depositReport.setCustomerName(c1.getString(c1.getColumnIndex(db.KEY_CUSTOMER_NO)));
+                                }
+                                String[]cheques = new String[10];
+                                String[]chequeDate = new String[10];
+                                String[]chequeAmount = new String[10];
+                                String[]bankCode = new String[10];
+                                String[]bankNames = new String[10];
+                                Log.e("Cheq","" + UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_CHEQUE_NUMBER))));
+                                cheques = UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_CHEQUE_NUMBER))).split(",");
+                                Log.e("cheqest","" + UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_CHEQUE_DATE))));
+                                chequeDate = UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_CHEQUE_DATE))).split(",");
+                                chequeAmount = UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_CHEQUE_AMOUNT))).split(",");
+                                bankCode = UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_BANK_CODE))).split(",");
+                                bankNames = UrlBuilder.decodeString(c1.getString(c1.getColumnIndex(db.KEY_BANK_NAME))).split(",");
+                                if(cheques.length>2){
+                                    for(int j=1;j<cheques.length;j++){
+                                        depositReport.setChequeNo(cheques[j]);
+                                        depositReport.setBankName(bankNames[j]);
+                                        depositReport.setBankCode(bankCode[j]);
+                                        depositReport.setChequeDate(chequeDate[j]);
+                                        depositReport.setChequeAmount(chequeAmount[j]);
+                                        depositReport.setCashAmount(c1.getString(c1.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                        depositReports.add(depositReport);
+                                    }
+                                }
+                                else if(cheques.length==1){
+                                    depositReport.setChequeNo(cheques[0].equals("0000") ? "-" : cheques[0]);
+                                    depositReport.setBankName(bankNames[0].equals("0000") ? "-" : bankNames[0]);
+                                    depositReport.setBankCode(bankCode[0].equals("0000") ? "-" : bankCode[0]);
+                                    depositReport.setChequeDate(chequeDate[0].equals("0000") ? "-" : chequeDate[0]);
+                                    depositReport.setChequeAmount(chequeAmount[0].equals("0000") ? "-" : chequeAmount[0]);
+                                    depositReport.setCashAmount(c1.getString(c1.getColumnIndex(db.KEY_CASH_AMOUNT)));
+
+                                }
+                                else if(cheques.length==2){
+                                    depositReport.setChequeNo(cheques[1].equals("0000")?"-":cheques[1]);
+                                    depositReport.setBankName(bankNames[1].equals("0000")?"-":bankNames[1]);
+                                    depositReport.setBankCode(bankCode[1].equals("0000")?"-":bankCode[1]);
+                                    depositReport.setChequeDate(chequeDate[0].equals("0000")?chequeDate.length>1?chequeDate[1]:"-":Helpers.formatDate(new Date(),App.DATE_PICKER_FORMAT));
+                                    depositReport.setChequeAmount(chequeAmount[0].equals("0000")?"-":chequeAmount[0]);
+                                    depositReport.setCashAmount(c1.getString(c1.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                }
+                                depositReports.add(depositReport);
+                            }
+                            while (c1.moveToNext());
+                        }
                     }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
+                    }
+
                     break;
                 }
                 case App.SALES_SUMMARY:{

@@ -1592,7 +1592,7 @@ public class SyncData extends IntentService {
                             offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.CollectionFunction, tempCustomers.get(i).toString(), String.valueOf(amountcleared)));
                             offlinePost.setDeepEntity(deep);
                             Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
-                            Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
+                            Helpers.logData(getApplication(), "Collection Batch Body" + deep.toString());
 
                             arrayList.add(offlinePost);
                         }
@@ -1653,7 +1653,7 @@ public class SyncData extends IntentService {
                             offlinePost.setMap(Helpers.buildCollectionHeader(ConfigStore.PartialCollectionFunction, tempCustomers.get(i).toString(), String.valueOf(amountcleared)));
                             offlinePost.setDeepEntity(deep);
                             Helpers.logData(getApplication(), "Partial Collection Batch Header" + offlinePost.getMap().toString());
-                            Helpers.logData(getApplication(), "Partial Collection Batch Body" + deepEntity.toString());
+                            Helpers.logData(getApplication(), "Partial Collection Batch Body" + deep.toString());
 
                             arrayList.add(offlinePost);
                         }
@@ -1748,6 +1748,7 @@ public class SyncData extends IntentService {
                                     units += Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_UNIT)));
                                 }
                                 while (c.moveToNext());
+                                tempPurchaseNumber = c.getString(c.getColumnIndex(db.KEY_ORDER_ID));
                                 unload.setCases(String.valueOf(cases));
                                 unload.setPic(String.valueOf(units));
                                 if(varianceType.equals(App.TRUCK_DAMAGE)||varianceType.equals(App.THEFT)){
@@ -1800,10 +1801,10 @@ public class SyncData extends IntentService {
                             }
                             OfflinePost offlinePost = new OfflinePost();
                             offlinePost.setCollectionName(App.POST_COLLECTION);
-                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", "", ""));
+                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceDebit, Settings.getString(App.DRIVER), "", tempPurchaseNumber, ""));
                             offlinePost.setDeepEntity(deepEntity);
-                            Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
-                            Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
+                            Helpers.logData(getApplication(), "Unload Debit Header" + offlinePost.getMap().toString());
+                            Helpers.logData(getApplication(), "Unload Debit Batch Body" + deepEntity.toString());
                             arrayList.add(offlinePost);
                         }
                         if(arrayListEndingInventory.size()>0){
@@ -1843,10 +1844,10 @@ public class SyncData extends IntentService {
                             }
                             OfflinePost offlinePost = new OfflinePost();
                             offlinePost.setCollectionName(App.POST_COLLECTION);
-                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.EndingInventory, Settings.getString(App.DRIVER), "", "", ""));
+                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.EndingInventory, Settings.getString(App.DRIVER), "", tempPurchaseNumber, ""));
                             offlinePost.setDeepEntity(deepEntity);
-                            Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
-                            Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
+                            Helpers.logData(getApplication(), "Ending Inventory Batch Header" + offlinePost.getMap().toString());
+                            Helpers.logData(getApplication(), "Ending Inventory Batch Body" + deepEntity.toString());
                             arrayList.add(offlinePost);
                         }
                         if(arrayListCredit.size()>0){
@@ -1886,10 +1887,10 @@ public class SyncData extends IntentService {
                             }
                             OfflinePost offlinePost = new OfflinePost();
                             offlinePost.setCollectionName(App.POST_COLLECTION);
-                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceCredit, Settings.getString(App.DRIVER), "", "", ""));
+                            offlinePost.setMap(Helpers.buildHeaderMap(ConfigStore.UnloadFunction, "", ConfigStore.LoadVarianceCredit, Settings.getString(App.DRIVER), "", tempPurchaseNumber, ""));
                             offlinePost.setDeepEntity(deepEntity);
-                            Helpers.logData(getApplication(), "Collection Batch Header" + offlinePost.getMap().toString());
-                            Helpers.logData(getApplication(), "Collection Batch Body" + deepEntity.toString());
+                            Helpers.logData(getApplication(), "ArrayList Credit Batch Header" + offlinePost.getMap().toString());
+                            Helpers.logData(getApplication(), "ArrayList Credit Batch Body" + deepEntity.toString());
                             arrayList.add(offlinePost);
                         }
                     }

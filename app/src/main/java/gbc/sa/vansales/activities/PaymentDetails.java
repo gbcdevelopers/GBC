@@ -107,6 +107,7 @@ public class PaymentDetails extends AppCompatActivity {
     String customerNo;
     String customerName;
     String customerAddress;
+    boolean isPaymentMade = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -419,6 +420,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         object.execute("", jsonArray);
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
                             });
@@ -439,6 +441,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         db.addDataPrint(db.DELAY_PRINT, map);
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                     Intent intent = new Intent(PaymentDetails.this, DeliveryActivity.class);
                                     intent.putExtra("headerObj", object);
@@ -542,6 +545,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     }
                                     catch (Exception e){
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
 
                                 }
@@ -565,6 +569,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     }
                                     catch (Exception e){
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
 
                                 /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
@@ -671,6 +676,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     }
                                     catch (Exception e){
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
                                 }
                             });
@@ -694,6 +700,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     }
                                     catch (Exception e){
                                         e.printStackTrace();
+                                        Crashlytics.logException(e);
                                     }
 
                                     if (Helpers.isNetworkAvailable(getApplicationContext())) {
@@ -892,6 +899,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             object.execute("", jsonArray);
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 });
@@ -912,6 +920,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                         Intent intent = new Intent(PaymentDetails.this, DeliveryActivity.class);
                                         intent.putExtra("headerObj", object);
@@ -978,7 +987,9 @@ public class PaymentDetails extends AppCompatActivity {
                                     updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
                                 }
                                 updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                                db.updateData(db.COLLECTION, updateMap, filter);
+                                if(!isPaymentMade){
+                                    db.updateData(db.COLLECTION, updateMap, filter);
+                                }
 
                                 final Dialog dialog = new Dialog(PaymentDetails.this);
                                 dialog.setContentView(R.layout.dialog_doprint);
@@ -994,6 +1005,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }*/
+                                        isPaymentMade = true;
                                         try {
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                             JSONObject data = new JSONObject();
@@ -1009,6 +1021,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             object.execute("", jsonArray);
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 });
@@ -1016,6 +1029,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         dialog.dismiss();
+                                        isPaymentMade = true;
                                         try {
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                             JSONObject data = new JSONObject();
@@ -1029,6 +1043,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                         } catch (Exception e) {
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                         Intent intent = new Intent(PaymentDetails.this, CollectionsActivity.class);
                                         intent.putExtra("headerObj", object);
@@ -1131,6 +1146,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         }
                                         catch (Exception e){
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                     }
                                 });
@@ -1153,6 +1169,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         }
                                         catch (Exception e){
                                             e.printStackTrace();
+                                            Crashlytics.logException(e);
                                         }
                                         if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                             Helpers.createBackgroundJob(getApplicationContext());
@@ -1200,7 +1217,6 @@ public class PaymentDetails extends AppCompatActivity {
                             }
                         }
                     }
-
                 }
             });
         }

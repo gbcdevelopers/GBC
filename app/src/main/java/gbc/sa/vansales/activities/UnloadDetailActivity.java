@@ -28,6 +28,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,6 +43,7 @@ import gbc.sa.vansales.models.DeliveryItem;
 import gbc.sa.vansales.models.Sales;
 import gbc.sa.vansales.models.Unload;
 import gbc.sa.vansales.utils.DatabaseHandler;
+import gbc.sa.vansales.utils.Helpers;
 import gbc.sa.vansales.utils.LoadingSpinner;
 import gbc.sa.vansales.utils.Settings;
 import gbc.sa.vansales.utils.UrlBuilder;
@@ -82,6 +85,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -231,6 +235,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         });
@@ -449,6 +454,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
             return null;
         }
@@ -469,6 +475,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }
@@ -507,6 +514,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this,"Unmodified data" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         dataStoreList.add(unload);
                     }
                 }
@@ -541,6 +549,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Bad Return Variance" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         dataStoreList.add(unload);
                     }
                 }
@@ -581,8 +590,9 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         String uomCase = c.getString(c.getColumnIndex(db.KEY_UOM_CASE));
                         String uomUnit = c.getString(c.getColumnIndex(db.KEY_UOM_UNIT));
                         unload.setUom((uomCase == null || uomCase.equals("")) ? uomUnit : uomCase);
-                        unload.setCases(String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE)))+Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))));
+                        unload.setCases(String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_CASE))) + Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_CASE)))));
                         unload.setPic(String.valueOf(Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_REMAINING_QTY_UNIT))) + Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)))));
+                        Helpers.logData(UnloadDetailActivity.this, "Fresh Unload data" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         dataStoreList.add(unload);
                     }
                     while (c.moveToNext());
@@ -592,6 +602,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -644,6 +655,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Setting Bad Return" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         arrayList.add(unload);
                     } else if (context.equals("badreturnvariance")) {
                         c.moveToFirst();
@@ -688,6 +700,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Setting Bad Return Variance" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         arrayList.add(unload);
                     } else if (context.equals("freshunload")) {
                         do {
@@ -734,6 +747,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                             unload.setCases(String.valueOf(cases));
                             unload.setPic(String.valueOf(units));
                             unload.setReasonCode("0");
+                            Helpers.logData(UnloadDetailActivity.this, "Setting Fresh Unload" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                             arrayList.add(unload);
                         }
                         while (c.moveToNext());
@@ -780,6 +794,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Setting Ending Inventory Data" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         arrayList.add(unload);
                     } else if (context.equals("inventoryvariance")) {
                         c.moveToFirst();
@@ -825,6 +840,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Setting Inventory Variance" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         arrayList.add(unload);
                     } else if (context.equals("truckdamage")) {
                         c.moveToFirst();
@@ -869,11 +885,13 @@ public class UnloadDetailActivity extends AppCompatActivity {
                         while (c.moveToNext());
                         unload.setCases(String.valueOf(casesTotal));
                         unload.setPic(String.valueOf(unitsTotal));
+                        Helpers.logData(UnloadDetailActivity.this, "Setting Truck Damage" + unload.getName() + "-" + unload.getCases() + "-" + unload.getPic());
                         arrayList.add(unload);
                     }
                 }
                 catch (Exception e){
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
 
             }
@@ -960,6 +978,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -1043,6 +1062,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
 
@@ -1089,6 +1109,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
         // adapter.notifyDataSetChanged();
@@ -1193,6 +1214,7 @@ public class UnloadDetailActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         finally {
             finish();

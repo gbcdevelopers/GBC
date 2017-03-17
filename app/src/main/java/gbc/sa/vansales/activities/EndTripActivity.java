@@ -457,8 +457,14 @@ public class EndTripActivity extends AppCompatActivity {
                     if(cashTotal>0){
                         new postEndTrip("CASH");
                     }
+                    if(drivercashTotal>0){
+                        new postEndTrip("DCASH");
+                    }
                     else if(chequeTotal>0){
                         new postEndTrip("CHEQUE");
+                    }
+                    else if(driverchequeTotal>0){
+                        new postEndTrip("DCHEQUE");
                     }
                     else{
                         Intent intent = new Intent(EndTripActivity.this, PrinterReportsActivity.class);
@@ -515,6 +521,14 @@ public class EndTripActivity extends AppCompatActivity {
                     map.put("Function",ConfigStore.ClearingFunction);
                     map.put("CustomerId",Settings.getString(App.DRIVER));
 
+                    JSONArray deepEntity = new JSONArray();
+                    JSONObject obj = new JSONObject();
+                    deepEntity.put(obj);
+                    this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                    Log.e("Order ID","" + orderId);
+                }
+                else if(source.equals("DCASH")){
+
                     HashMap<String,String>driverMap = new HashMap<>();
                     driverMap.put("OrderValue",String.valueOf(drivercashTotal));
                     driverMap.put("VisitID",source);
@@ -524,9 +538,9 @@ public class EndTripActivity extends AppCompatActivity {
                     JSONArray deepEntity = new JSONArray();
                     JSONObject obj = new JSONObject();
                     deepEntity.put(obj);
-                    this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
+                    //this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
                     this.orderIdDriver = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,driverMap,deepEntity);
-                    Log.e("Order ID","" + orderId);
+                    Log.e("Order ID Driver","" + orderId);
                 }
                 else if(source.equals("CHEQ")){
                     try{
@@ -551,6 +565,16 @@ public class EndTripActivity extends AppCompatActivity {
                         this.orderId = IntegrationService.postDataBackup(EndTripActivity.this,App.POST_COLLECTION,map,deepEntity);
                         Log.e("Order ID","" + orderId);
 
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                        Crashlytics.logException(e);
+                    }
+
+                }
+                else if(source.equals("DCHEQ")){
+                    try{
+
                         HashMap<String,String>driverMap = new HashMap<>();
                         driverMap.put("OrderValue",String.valueOf(driverchequeTotal));
                         driverMap.put("VisitID",source);
@@ -573,6 +597,7 @@ public class EndTripActivity extends AppCompatActivity {
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                        Crashlytics.logException(e);
                     }
 
                 }

@@ -285,6 +285,7 @@ public class PrinterHelper {
                     PrinterHelper.this.doConnectionTest(PrinterHelper.this.sMacAddr);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
                 Toast.makeText(context, " you have selected " + ((DevicesData) this.val$arrData.get(which)).getName(), 1).show();
             }
@@ -373,6 +374,7 @@ public class PrinterHelper {
                     PrinterHelper.this.printReports(PrinterHelper.this.sMacAddr);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
                 return;
             }
@@ -380,6 +382,7 @@ public class PrinterHelper {
                 PrinterHelper.this.doConnectionTest(PrinterHelper.this.sMacAddr);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
 
@@ -434,7 +437,10 @@ public class PrinterHelper {
                     printSalesSummaryReport(jsnData, address);
                 }
                 if(request.equals(App.BAD_RETURN_REPORT)){
-                    printBadReturnsReport(jsnData,address);
+                    printBadReturnsReport(jsnData, address);
+                }
+                if(request.equals(App.VAN_STOCK)){
+                    printVanStockReport(jsnData,address);
                 }
             }
         }
@@ -750,24 +756,26 @@ public class PrinterHelper {
     private void headervanstockprint(JSONObject object, int type) throws JSONException {
         try {
             this.outStream.write(this.BoldOn);
-           /* printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), false, 1);
+            printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), false, 1);
             this.outStream.write(this.NewLine);
-            this.outStream.write(this.NewLine);*/
-            printheaders(getAccurateText("SALESMAN: *" + object.getString("SALESMAN")+"!", 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("CONTACTNO"), 40, 2), true, 1);
+            //printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE"), 40, 2), true, 1);
+            //printheaders(getAccurateText(object.getString("ROUTE") + "@" + ArabicLabels.Route, 40, 0)+"!" + " ",true,1);
+            this.outStream.write(this.NewLine);
+            printheaders(getAccurateText("SALESMAN: " + object.getString("SALESMAN")+"", 40, 0) + getAccurateText("SALESMAN NO: " + object.getString("SALESMANNO"), 40, 2), true, 1);
             this.outStream.write(this.NewLine);
            /* printheaders(getAccurateText("SUPERVISOR NAME:" + object.getString("supervisorname"), 40, 0) + getAccurateText("SUPERVISOR PHONE: " + object.getString("supervisorno"), 40, 2), false, 1);
-            this.outStream.write(this.NewLine);
-            printheaders(getAccurateText("TOUR ID:" + object.getString("TourID"), 80, 0), false, 2);*/
+            this.outStream.write(this.NewLine);*/
+            printheaders(getAccurateText("TRIP ID:" + object.getString("TourID"), 80, 0), false, 2);
             this.outStream.write(this.BoldOff);
             this.outStream.write(this.NewLine);
             this.outStream.write(this.NewLine);
             this.count++;
             if (type == 4) {
-                /*this.outStream.write(this.BoldOn);
+                this.outStream.write(this.BoldOn);
                 this.outStream.write(this.DoubleWideOn);
                 printheaders(getAccurateText("VAN STOCK SUMMARY ", 40, 1), false, 1);
                 this.outStream.write(this.DoubleWideOff);
-                this.outStream.write(this.BoldOff);*/
+                this.outStream.write(this.BoldOff);
             } else if (type == 10) {
                 this.outStream.write(this.BoldOn);
                 this.outStream.write(this.DoubleWideOn);
@@ -3173,6 +3181,119 @@ public class PrinterHelper {
             //printlines2(getAccurateText("SALESMAN______________", 80, 1), 1, object, 2, args, 7, 7);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //Van Stock Report
+    void printVanStockReport(JSONObject object, String args) {
+        try {
+            int i;
+            StringBuilder stringBuilder;
+            this.hashValues = new HashMap();
+            this.hashValues.put("ITEM#", Integer.valueOf(7));
+            this.hashValues.put("DESCRIPTION", Integer.valueOf(37));
+            this.hashValues.put("LOADED QTY", Integer.valueOf(8));
+            this.hashValues.put("SALE QTY", Integer.valueOf(6));
+            this.hashValues.put("TRUCK STOCK", Integer.valueOf(7));
+            this.hashValues.put("TOTAL", Integer.valueOf(9));
+            this.hashPositions = new HashMap();
+            this.hashPositions.put("ITEM#", Integer.valueOf(0));
+            this.hashPositions.put("DESCRIPTION", Integer.valueOf(0));
+            this.hashPositions.put("LOADED QTY", Integer.valueOf(2));
+            this.hashPositions.put("SALE QTY", Integer.valueOf(2));
+            this.hashPositions.put("TRUCK STOCK", Integer.valueOf(2));
+            this.hashPositions.put("TOTAL", Integer.valueOf(1));
+            line(this.startln);
+            headervanstockprint(object, 4);
+            JSONArray headers = object.getJSONArray("HEADERS");
+            String strheader = "";
+            String strHeaderBottom = "";
+            String strTotal = "";
+            JSONArray jTotal = object.getJSONArray("TOTAL");
+            int MAXLEngth = 140;
+            for (i = 0; i < headers.length(); i++) {
+                MAXLEngth -= ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue();
+            }
+            if (MAXLEngth > 0) {
+                MAXLEngth /= headers.length();
+            }
+            JSONObject jTOBject = jTotal.getJSONObject(0);
+            for (i = 0; i < headers.length(); i++) {
+                try {
+                    String string;
+                    stringBuilder = new StringBuilder(String.valueOf(strheader));
+                    string = headers.getString(i);
+                   /* if (headers.getString(i).indexOf(" ") == -1) {
+                        string = headers.getString(i);
+                    } else {
+                        string = headers.getString(i).substring(0, headers.getString(i).indexOf(" "));
+                    }*/
+                    strheader = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    stringBuilder = new StringBuilder(String.valueOf(strHeaderBottom));
+                    if (headers.getString(i).indexOf(" ") == -1) {
+                        string = "";
+                    } else {
+                        string = headers.getString(i).substring(headers.getString(i).indexOf(" "), headers.getString(i).length());
+                    }
+                    //strHeaderBottom = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    if (jTOBject.has(headers.getString(i))) {
+                        strTotal = new StringBuilder(String.valueOf(strTotal)).append(getAccurateText(jTOBject.getString(headers.getString(i).toString()), ((Integer) this.hashValues.get(headers.getString(i).toString())).intValue() + MAXLEngth, ((Integer) this.hashPositions.get(headers.getString(i).toString())).intValue())).toString();
+                    } else {
+                        stringBuilder = new StringBuilder(String.valueOf(strTotal));
+                        if (headers.getString(i).equals("DESCRIPTION")) {
+                            string = "TOTAL";
+                        } else {
+                            string = "";
+                        }
+                        strTotal = stringBuilder.append(getAccurateText(string, ((Integer) this.hashValues.get(headers.getString(i))).intValue() + MAXLEngth, 1)).toString();
+                    }
+                } catch (Exception e) {
+                }
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(strheader, 1, object, 1, args, 4);
+            //printlines1(strHeaderBottom, 1, object, 1, args, 4);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 4);
+            this.outStream.write(this.CompressOff);
+            JSONArray jData = object.getJSONArray(JsonRpcUtil.PARAM_DATA);
+            for (i = 0; i < jData.length(); i++) {
+                JSONArray jArr = jData.getJSONArray(i);
+                String strData = "";
+                for (int j = 0; j < jArr.length(); j++) {
+                    if (j != 3) {
+                        int i2;
+                        Object obj;
+                        String itemDescrion = jArr.getString(j);
+                        if (j == 8) {
+                            itemDescrion = "        @" + jArr.getString(j) + "!";
+                        }
+                        stringBuilder = new StringBuilder(String.valueOf(strData));
+                        if (j == 8) {
+                            i2 = 60;
+                        } else {
+                            i2 = ((Integer) this.hashValues.get(headers.getString(j).toString())).intValue() + MAXLEngth;
+                        }
+                        HashMap hashMap = this.hashPositions;
+                        if (j == 8) {
+                            obj = "Description";
+                        } else {
+                            obj = headers.getString(j).toString();
+                        }
+                        strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
+                    }
+                }
+                this.outStream.write(this.CompressOn);
+                this.count++;
+                printlines1(strData, 1, object, 1, args, 4);
+                this.outStream.write(this.CompressOff);
+            }
+            this.outStream.write(this.CompressOn);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 4);
+            printlines1(strTotal, 1, object, 1, args, 4);
+            printlines1(printSepratorcomp(), 1, object, 2, args, 4);
+            this.outStream.write(this.CompressOff);
+        } catch (Exception e2) {
+            e2.printStackTrace();
         }
     }
 

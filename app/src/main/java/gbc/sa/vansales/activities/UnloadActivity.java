@@ -24,6 +24,8 @@ import android.widget.Toast;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,6 +89,7 @@ public class UnloadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                // Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
+                Helpers.logData(UnloadActivity.this,"Going for Bad Return Details");
                 Intent intent = new Intent(UnloadActivity.this,UnloadActivityBadReturnList.class);
                 intent.putExtra("context","badreturn");
                 startActivity(intent);
@@ -96,6 +99,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_bad_return_variance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(UnloadActivity.this,"Going for Unload Detail(Bad Return Variance)");
                 Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
                 intent.putExtra("context","badreturnvariance");
                 startActivity(intent);
@@ -105,6 +109,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_fresh_unload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(UnloadActivity.this,"Going for Unload Detail(Fresh Unload)");
                 Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
                 intent.putExtra("context","freshunload");
                 startActivity(intent);
@@ -114,6 +119,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_ending_inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(UnloadActivity.this,"Going for Unload Detail(Ending Inventory)");
                 Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
                 intent.putExtra("context","endinginventory");
                 startActivity(intent);
@@ -123,6 +129,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_inventory_variance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(UnloadActivity.this,"Going for Unload Detail(Inventory Variance)");
                 Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
                 intent.putExtra("context","inventoryvariance");
                 startActivity(intent);
@@ -132,6 +139,7 @@ public class UnloadActivity extends AppCompatActivity {
         btn_truck_damage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(UnloadActivity.this,"Going for Unload Detail(Truck Damage)");
                 Intent intent = new Intent(UnloadActivity.this,UnloadDetailActivity.class);
                 intent.putExtra("context","truckdamage");
                 startActivity(intent);
@@ -151,7 +159,7 @@ public class UnloadActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-
+                                Helpers.logData(UnloadActivity.this, "Posting unload");
                                 final Dialog pd = new Dialog(UnloadActivity.this);
                                 pd.setContentView(R.layout.dialog_doprint);
                                 pd.setCancelable(false);
@@ -163,10 +171,13 @@ public class UnloadActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         //new loadDataforPrint().execute();
+                                        Helpers.logData(UnloadActivity.this,"Clicked on print");
                                         if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
+                                            Helpers.logData(UnloadActivity.this,"Ending Inventory Exist");
                                             isPrint = true;
                                             new postDataNew().execute();
                                         } else {
+                                            Helpers.logData(UnloadActivity.this,"No ending inventory or theft or any variance.Directly clearing vanstock");
                                             clearVanStock();   //For development purpose.
                                             HashMap<String, String> altMap = new HashMap<>();
                                             altMap.put(db.KEY_IS_UNLOAD, "true");
@@ -182,7 +193,10 @@ public class UnloadActivity extends AppCompatActivity {
                                 btn_notprint.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        Helpers.logData(UnloadActivity.this,"Clicked on do not print");
                                         if (unloadVarianceExist(App.ENDING_INVENTORY)||unloadVarianceExist(App.THEFT) || unloadVarianceExist(App.TRUCK_DAMAGE)||unloadVarianceExist(App.EXCESS)) {
+                                            isPrint=false;
+                                            Helpers.logData(UnloadActivity.this,"Variance Exist");
                                             new postDataNew().execute();
                                         } else {
                                             clearVanStock(); //for testing purpose
@@ -358,6 +372,7 @@ public class UnloadActivity extends AppCompatActivity {
             //clearVanStock();
             try{
                 Log.e("I am here", "Here");
+                Helpers.logData(UnloadActivity.this,"On Unload complete");
                 if(Helpers.isNetworkAvailable(getApplicationContext())){
                     Helpers.createBackgroundJob(getApplicationContext());
                 }
@@ -375,7 +390,6 @@ public class UnloadActivity extends AppCompatActivity {
                 logMap.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                 logMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
                 db.addData(db.UNLOAD_TRANSACTION,logMap);
-
                 if(isPrint){
                     try{
                         JSONArray jsonArray = createPrintData();
@@ -419,12 +433,14 @@ public class UnloadActivity extends AppCompatActivity {
                     }
                     catch (Exception e){
                         e.printStackTrace();
+                        Crashlytics.logException(e);
                     }
 
                 }
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
         }
     }
@@ -445,6 +461,7 @@ public class UnloadActivity extends AppCompatActivity {
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -1029,7 +1046,7 @@ public class UnloadActivity extends AppCompatActivity {
         for(int i=0;i<articles.size();i++){
             HashMap<String,String>map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
-            //db.deleteData(db.VAN_STOCK_ITEMS, map);
+          //  db.deleteData(db.VAN_STOCK_ITEMS, map);
         }
     }
     public JSONArray createPrintData(){
@@ -1078,7 +1095,7 @@ public class UnloadActivity extends AppCompatActivity {
             HEADERS.put("INVENTORY CALCULATED");  //Fresh unload
             HEADERS.put("RETURN TO STOCK");  //Summation of all
             HEADERS.put("TRUCK SPOILS");  //Truck Damage
-            HEADERS.put("ACTUAL ON TRUCK");  //Truck Damage
+            HEADERS.put("ACTUAL ON TRUCK");  //Ending Inventory
             HEADERS.put("BAD RTRNS");  //Bad Returns
             HEADERS.put("----VARIANCE---- QTY        AMNT");
             HEADERS.put("ENDING INV.VALUE");
@@ -1206,6 +1223,7 @@ public class UnloadActivity extends AppCompatActivity {
     public class loadDataforPrint extends AsyncTask<String,String,String>{
         @Override
         protected void onPreExecute() {
+            Log.e("Load Data Print","Print");
             loadingSpinner.show();
         }
         @Override
@@ -1388,6 +1406,7 @@ public class UnloadActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Do not allow hardware back navigation
+        finish();
     }
 
 }
