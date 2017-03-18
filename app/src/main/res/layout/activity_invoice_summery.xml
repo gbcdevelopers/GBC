@@ -150,14 +150,15 @@
 																												android:layout_width="match_parent"
 																												android:layout_height="wrap_content"
 																												android:background="@drawable/light_border"
-																												android:enabled="false"
+																												android:enabled="true"
+																												android:focusable="false"
 																												android:gravity="center|left"
 																												android:padding="@dimen/size_five"
 																												android:text="@string/freegoods"
 																												android:textColor="@drawable/edit_text_color"
 																												android:textSize="@dimen/label_min"
 																												android:textStyle="bold"
-																												/>
+																												android:id="@+id/tv_foc_expand"/>
 
 																								<EditText
 																												android:layout_width="match_parent"

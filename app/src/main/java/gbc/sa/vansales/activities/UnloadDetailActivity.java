@@ -1217,7 +1217,9 @@ public class UnloadDetailActivity extends AppCompatActivity {
             Crashlytics.logException(e);
         }
         finally {
-            finish();
+            //finish();
+            Intent i = new Intent(UnloadDetailActivity.this, UnloadActivity.class);
+            startActivity(i);
         }
 
 
@@ -1309,7 +1311,9 @@ public class UnloadDetailActivity extends AppCompatActivity {
                     arrayList.remove(pos);
                     adapter.notifyDataSetChanged();
                     if (arrayList.size() == 0) {
-                        finish();
+                        //finish();
+                        Intent i = new Intent(UnloadDetailActivity.this, UnloadActivity.class);
+                        startActivity(i);
                     }
                     dialog.dismiss();
                 } catch (Exception e) {
@@ -1336,6 +1340,8 @@ public class UnloadDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Do not allow hardware back navigation
-        finish();
+        Intent i = new Intent(UnloadDetailActivity.this, UnloadActivity.class);
+        startActivity(i);
+        //finish();
     }
 }

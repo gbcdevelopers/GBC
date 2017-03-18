@@ -63,6 +63,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
     ArrayList<ArticleHeader> articles;
     ArrayList<Sales> arraylist = new ArrayList<>();
     ArrayList<Sales> salesList = new ArrayList<>();
+    ArrayList<Sales> focList = new ArrayList<>();
     ArrayList<Sales> grList = new ArrayList<>();
     ArrayList<Sales> brList = new ArrayList<>();
     EditText et_sales_cases;
@@ -81,9 +82,11 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
     EditText tv_sales_expand;
     EditText tv_gr_expand;
     EditText tv_br_expand;
+    EditText tv_foc_expand;
     float totalamnt = 0;
     ArrayAdapter<Sales> adapter;
     boolean salesInvoiceExist = false;
+    boolean focExist = false;
     boolean grExist = false;
     boolean brExist = false;
     float salesAmount = 0;
@@ -115,6 +118,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
         tv_sales_expand = (EditText) findViewById(R.id.tv_sales_expand);
         tv_gr_expand = (EditText) findViewById(R.id.tv_gr_expand);
         tv_br_expand = (EditText) findViewById(R.id.tv_br_expand);
+        tv_foc_expand = (EditText)findViewById(R.id.tv_foc_expand);
         et_sales_cases = (EditText) findViewById(R.id.et_sales_cases);
         et_sales_units = (EditText) findViewById(R.id.et_sales_units);
         et_sales_amount = (EditText) findViewById(R.id.et_sales_amount);
@@ -147,6 +151,12 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showDialog(App.BAD_RETURN);
+            }
+        });
+        tv_foc_expand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog(App.FOC);
             }
         });
 
@@ -315,6 +325,7 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                     brExist = true;
                 }
                 if (db.checkData(db.FOC_INVOICE, focMap)) {
+                    focExist = true;
                     new loadFOC().execute();
                 }
                 if (gRexists && bRexists) {
@@ -345,6 +356,10 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             try{
                 HashMap<String, String> map = new HashMap<>();
                 map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                map.put(db.KEY_ITEM_NO, object.getCustomerID());
+                map.put(db.KEY_ITEM_CATEGORY, object.getCustomerID());
+                map.put(db.KEY_MATERIAL_NO, object.getCustomerID());
+                map.put(db.KEY_MATERIAL_DESC1, object.getCustomerID());
                 map.put(db.KEY_ORG_CASE, "");
                 map.put(db.KEY_ORG_UNITS, "");
                 map.put(db.KEY_AMOUNT, "");
@@ -358,6 +373,23 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                     do {
                         case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
                         unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+
+                        Sales sales = new Sales();
+                        sales.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        sales.setItem_code(cursor.getString(cursor.getColumnIndex(db.KEY_ITEM_NO)));
+                        ArticleHeader articleHeader = ArticleHeader.getArticle(articles, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        if (articleHeader != null) {
+                            sales.setMaterial_description(articleHeader.getMaterialDesc1());
+                            sales.setName(UrlBuilder.decodeString(articleHeader.getMaterialDesc1()));
+                        } else {
+                            sales.setMaterial_description(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1)));
+                            sales.setName(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                        }
+                        sales.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                        sales.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        sales.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        sales.setPrice(String.valueOf(Float.parseFloat("0")));
+                        focList.add(sales);
                     }
                     while (cursor.moveToNext());
                 }
@@ -705,7 +737,16 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                     lv.setAdapter(adapter);
                     dialog.show();
                 }
-            } else if (type.equals(App.GOOD_RETURN)) {
+            }
+            else if (type.equals(App.FOC)) {
+                if (focExist) {
+                    tv.setText("Total Amount - n/A");
+                    adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, focList);
+                    lv.setAdapter(adapter);
+                    dialog.show();
+                }
+            }
+            else if (type.equals(App.GOOD_RETURN)) {
                 if (grExist) {
                     tv.setText("Total Amount - " + et_good_amount.getText().toString());
                     adapter = new SalesInvoiceAdapter(InvoiceSummeryActivity.this, grList);

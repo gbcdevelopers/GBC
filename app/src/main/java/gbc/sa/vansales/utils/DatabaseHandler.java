@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -1048,8 +1050,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String TABLE_FOC_RULES = "CREATE TABLE " + FOC_RULES + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
-                + KEY_DIST_CHANNEL + " TEXT,"
                 + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_DIST_CHANNEL + " TEXT,"
                 + KEY_FOC_QUALIFYING_ITEM + " TEXT,"
                 + KEY_FOC_ASSIGNING_ITEM + " TEXT,"
                 + KEY_FOC_QUALIFYING_QUANTITY + " TEXT,"
@@ -1289,70 +1291,91 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     //Storing Data inside Database Table
     public void addData(String tablename, HashMap<String, String> keyMap) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        ContentValues values = new ContentValues();
-        for (Map.Entry entry : keyMap.entrySet()) {
-            String value = entry.getValue() == null ? null : entry.getValue().toString();
-            if(!entry.getKey().toString().contains("Ar")){
-                value = clean(value);
-            }
-
-            try {
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            ContentValues values = new ContentValues();
+            for (Map.Entry entry : keyMap.entrySet()) {
+                String value = entry.getValue() == null ? null : entry.getValue().toString();
                 if(!entry.getKey().toString().contains("Ar")){
-                    value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                    value = clean(value);
                 }
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+
+                try {
+                    if(!entry.getKey().toString().contains("Ar")){
+                        value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                values.put(entry.getKey().toString(), value);
             }
-            values.put(entry.getKey().toString(), value);
+            db.insert(tablename, null, values);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
         }
-        db.insert(tablename, null, values);
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     public void addDataPrint(String tablename, HashMap<String, String> keyMap) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        ContentValues values = new ContentValues();
-        for (Map.Entry entry : keyMap.entrySet()) {
-            String value = entry.getValue() == null ? null : entry.getValue().toString();
-            values.put(entry.getKey().toString(), value);
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            ContentValues values = new ContentValues();
+            for (Map.Entry entry : keyMap.entrySet()) {
+                String value = entry.getValue() == null ? null : entry.getValue().toString();
+                values.put(entry.getKey().toString(), value);
+            }
+            db.insert(tablename, null, values);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
         }
-        db.insert(tablename, null, values);
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     public void updateData(String tablename, HashMap<String, String> hashMap, HashMap<String, String> filters) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.beginTransaction();
-        String[] filterArray = null;
-        String filterKeys = null;
-        String filterValues = null;
-        ContentValues values = new ContentValues();
-        for (Map.Entry entry : hashMap.entrySet()) {
-            String value = entry.getValue() == null ? null : entry.getValue().toString();
-            value = clean(value);
-            try {
-                value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+        try{
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.beginTransaction();
+            String[] filterArray = null;
+            String filterKeys = null;
+            String filterValues = null;
+            ContentValues values = new ContentValues();
+            for (Map.Entry entry : hashMap.entrySet()) {
+                String value = entry.getValue() == null ? null : entry.getValue().toString();
+                value = clean(value);
+                try {
+                    value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                values.put(entry.getKey().toString(), value);
             }
-            values.put(entry.getKey().toString(), value);
+            if (!filters.isEmpty()) {
+                filterKeys = filterBuilder(filters, false);
+                filterValues = paramsBuilder(filters, true);
+                filterArray = paramsBuilder(filters, true).split(",");
+            }
+            int records = db.update(tablename, values, filterKeys, filterArray);
+            Log.e("Records updated", "" + records);
+            Helpers.logData(mContext,String.valueOf(records) + "updated for table" + tablename);
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
         }
-        if (!filters.isEmpty()) {
-            filterKeys = filterBuilder(filters, false);
-            filterValues = paramsBuilder(filters, true);
-            filterArray = paramsBuilder(filters, true).split(",");
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
         }
-        int records = db.update(tablename, values, filterKeys, filterArray);
-        Log.e("Records updated", "" + records);
-        Helpers.logData(mContext,String.valueOf(records) + "updated for table" + tablename);
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
+
     }
     public Cursor getData(String tablename, HashMap<String, String> params, HashMap<String, String> filters) {
         SQLiteDatabase db = this.getReadableDatabase();

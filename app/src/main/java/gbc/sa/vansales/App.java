@@ -22,7 +22,7 @@ public class App extends Application {
     public static final String SAP_CLIENT_ID = "800";
 
     //Open these properties for development
-    /*public static final String ENVIRONMENT = "Development";
+   /* public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
     public static final int PORT = 8047;
     public static final String SAP_CLIENT = "SAP-CLIENT";
@@ -114,6 +114,8 @@ public class App extends Application {
     //Returns
     public static final String GOOD_RETURN = "GOOD";
     public static final String BAD_RETURN = "BAD";
+    //FOC
+    public static final String FOC = "FOC";
 
     //Reasons
     public static final String REASON_REJECT = "REJECT";

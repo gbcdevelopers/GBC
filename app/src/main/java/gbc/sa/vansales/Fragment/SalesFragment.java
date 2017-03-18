@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import gbc.sa.vansales.App;
 import gbc.sa.vansales.R;
@@ -773,6 +774,7 @@ public class SalesFragment extends Fragment {
         if(value){
             try{
                 if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
+                //if(Settings.getString(App.DIST_CHANNEL).equals("10")||Settings.getString(App.DIST_CHANNEL).equals("20"))
                 {
                     for(Sales sale:arrayList){
                         if(Double.parseDouble(sale.getCases())>0||Double.parseDouble(sale.getPic())>0){
@@ -787,7 +789,15 @@ public class SalesFragment extends Fragment {
                             filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
                             //filter.put(db.KEY_DIST_CHANNEL,Settings.getString(App.DIST_CHANNEL));
                             Cursor c = db.getData(db.FOC_RULES,map,filter);
+                            List<String> qualifyingQuantities = new ArrayList<String>();
                             if(c.getCount()>0){
+                                if(c.getCount()>1){
+                                    do{
+                                        qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                    }
+                                    while (c.moveToNext());
+                                }
+                                c.moveToFirst();
                                 do{
                                     HashMap<String,String>vanStockCheckFilter = new HashMap<>();
                                     vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
@@ -804,17 +814,21 @@ public class SalesFragment extends Fragment {
                                                 double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
                                                         ?sale.getCases():sale.getPic());
                                                 double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                                 String freeCases = "0";
                                                 if(inputQuantity<focQuantity){
 
                                                 }
                                                 else {
-                                                    if(inputQuantity%focQuantity==0){
+                                                    if(inputQuantity>=focQuantity){
+                                                        freeCases = String.valueOf((int)(assigningQuantity));
+                                                    }
+                                                    /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
                                                     }
                                                     else if(inputQuantity%focQuantity>0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
-                                                    }
+                                                    }*/
                                                 }
 
                                                 ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
