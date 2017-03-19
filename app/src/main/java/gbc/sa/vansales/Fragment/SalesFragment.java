@@ -470,6 +470,14 @@ public class SalesFragment extends Fragment {
                                 filter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
                                 if(db.checkData(db.CAPTURE_SALES_INVOICE,filter)){
                                     db.updateData(db.CAPTURE_SALES_INVOICE, map,filter);
+                                    if((Float.parseFloat(sale.getCases()) == 0 || Float.parseFloat(sale.getPic())==0)){
+                                        HashMap<String, String> focFilter = new HashMap<>();
+                                        focFilter.put(db.KEY_PURCHASE_NUMBER,orderID);
+                                        focFilter.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
+                                        focFilter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                        focFilter.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                                        db.deleteData(db.FOC_INVOICE,focFilter);
+                                    }
                                 }
                                 else{
                                     //db.addData(db.CAPTURE_SALES_INVOICE,map);
@@ -765,6 +773,7 @@ public class SalesFragment extends Fragment {
     }
     private void setFOC(ArrayList<Sales> arrayList){
         focArrayList.clear();
+        Const.focList.clear();
         boolean value = false;
         for(Sales sales:arrayList){
             if(Double.parseDouble(sales.getCases())>0||Double.parseDouble(sales.getPic())>0){
@@ -774,7 +783,7 @@ public class SalesFragment extends Fragment {
         if(value){
             try{
                 if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
-                //if(Settings.getString(App.DIST_CHANNEL).equals("10")||Settings.getString(App.DIST_CHANNEL).equals("20"))
+               // if(Settings.getString(App.DIST_CHANNEL).equals("10")||Settings.getString(App.DIST_CHANNEL).equals("20"))
                 {
                     for(Sales sale:arrayList){
                         if(Double.parseDouble(sale.getCases())>0||Double.parseDouble(sale.getPic())>0){
@@ -816,12 +825,18 @@ public class SalesFragment extends Fragment {
                                                 double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
                                                 double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                                 String freeCases = "0";
+                                                String factor ="1";
                                                 if(inputQuantity<focQuantity){
 
                                                 }
                                                 else {
-                                                    if(inputQuantity>=focQuantity){
-                                                        freeCases = String.valueOf((int)(assigningQuantity));
+                                                    if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                                                        factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                        freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                    }
+                                                    else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                                                        factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                        freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
                                                     }
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
@@ -865,7 +880,18 @@ public class SalesFragment extends Fragment {
                                                         newSale.setPrice("0");
                                                     }
                                                     if(freeCases!="0"&&Double.parseDouble(freeCases)<=quantityVan){
+                                                        if(Const.focList.size()>0){
+                                                            for(int i=0;i<Const.focList.size();i++){
+                                                                Sales salesObj = Const.focList.get(i);
+                                                                if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                   Const.focList.remove(i);
+                                                                }
+                                                            }
+                                                        }
                                                         focArrayList.add(newSale);
+                                                        if(Const.focList.size()==0){
+                                                            Const.focList = focArrayList;
+                                                        }
                                                     }
                                                 }
                                             }

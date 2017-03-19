@@ -1741,6 +1741,7 @@ public class SyncData extends IntentService {
                                 unload.setItem_code(c.getString(c.getColumnIndex(db.KEY_ITEM_NO)));
                                 String varianceType = c.getString(c.getColumnIndex(db.KEY_VARIANCE_TYPE));
                                 unload.setUom(c.getString(c.getColumnIndex(db.KEY_UOM)));
+                                tempPurchaseNumber = c.getString(c.getColumnIndex(db.KEY_ORDER_ID));
                                 double cases = 0;
                                 double units = 0;
                                 do{
@@ -1748,7 +1749,7 @@ public class SyncData extends IntentService {
                                     units += Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_UNIT)));
                                 }
                                 while (c.moveToNext());
-                                tempPurchaseNumber = c.getString(c.getColumnIndex(db.KEY_ORDER_ID));
+
                                 unload.setCases(String.valueOf(cases));
                                 unload.setPic(String.valueOf(units));
                                 if(varianceType.equals(App.TRUCK_DAMAGE)||varianceType.equals(App.THEFT)){

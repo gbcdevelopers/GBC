@@ -991,6 +991,7 @@ public class PrinterHelper {
             // this.hashPositions.put("NET LOAD", Integer.valueOf(2));
             // this.hashPositions.put("VALUE", Integer.valueOf(2));
             // this.hashPositions.put("Description", Integer.valueOf(0));
+            this.outStream.write(this.wakeUp);
             line(this.startln);
             headerinvprint(object, 5);
 
@@ -1309,6 +1310,7 @@ public class PrinterHelper {
                 this.hashPositions.put("AMOUNT", Integer.valueOf(2));
                 this.hashPositions.put("REASON CODE", Integer.valueOf(2));
             }
+            this.outStream.write(this.wakeUp);
             line(this.startln);
             headerprint(object, 9);
             this.outStream.write(this.BoldOn);
@@ -2092,6 +2094,7 @@ public class PrinterHelper {
             this.hashArabVales.put("Due Amount", ArabicTEXT.InvoiceAmount);
             this.hashArabVales.put("Invoice Balance", ArabicTEXT.InvoiceBalance);
             this.hashArabVales.put("Amount Paid", ArabicTEXT.AmountPaid);
+            this.outStream.write(this.wakeUp);
             line(this.startln);
             headerprint(object, 2);
             JSONArray headers = object.getJSONArray("HEADERS");

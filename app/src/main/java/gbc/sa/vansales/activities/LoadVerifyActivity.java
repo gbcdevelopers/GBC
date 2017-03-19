@@ -180,7 +180,14 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     map.put(db.KEY_ORDER_ID, tempOrderID);
                     map.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                     map.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                    db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+                    HashMap<String,String>checkFilter = new HashMap<>();
+                    checkFilter.put(db.KEY_ORDER_ID,tempOrderID);
+                    checkFilter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                    checkFilter.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                    if(!db.checkData(db.LOAD_CONFIRMATION_HEADER,checkFilter)){
+                        Log.e("Adding DATA","LCON");
+                        db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+                    }
                     btn_print.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -233,7 +240,15 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put(db.KEY_ORDER_ID, orderID);
                 map.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                 map.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
-                db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+                HashMap<String,String>checkFilter = new HashMap<>();
+                checkFilter.put(db.KEY_ORDER_ID,orderID);
+                checkFilter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                checkFilter.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                if(!db.checkData(db.LOAD_CONFIRMATION_HEADER,checkFilter)){
+                    Log.e("Adding DATA","LCON");
+                    db.addData(db.LOAD_CONFIRMATION_HEADER, map);
+                }
+                //db.addData(db.LOAD_CONFIRMATION_HEADER, map);
 
                 final Dialog dialog = new Dialog(LoadVerifyActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

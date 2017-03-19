@@ -415,6 +415,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA, data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT, map);
                                         PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                         object.execute("", jsonArray);
@@ -438,6 +439,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA, data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT, map);
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -510,9 +512,9 @@ public class PaymentDetails extends AppCompatActivity {
                                 updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
                                 updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                             }
-
-                            db.updateData(db.COLLECTION, updateMap, filter);
-
+                            if(!isPaymentMade){
+                                db.updateData(db.COLLECTION, updateMap, filter);
+                            }
                             final Dialog dialog = new Dialog(PaymentDetails.this);
                             dialog.setContentView(R.layout.dialog_doprint);
                             dialog.setCancelable(false);
@@ -527,6 +529,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }*/
+                                    isPaymentMade = true;
                                     try{
                                         JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                         JSONObject data = new JSONObject();
@@ -538,6 +541,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT,map);
 
                                         PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
@@ -554,6 +558,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     dialog.dismiss();
+                                    isPaymentMade = true;
                                     try{
                                         JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                         JSONObject data = new JSONObject();
@@ -565,6 +570,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT,map);
                                     }
                                     catch (Exception e){
@@ -654,6 +660,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     dialog.dismiss();
+                                    isPaymentMade = true;
                                     if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                         Helpers.createBackgroundJob(getApplicationContext());
                                     }
@@ -669,6 +676,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT,map);
 
                                         PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
@@ -684,7 +692,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 @Override
                                 public void onClick(View v) {
                                     dialog.dismiss();
-
+                                    isPaymentMade = true;
                                     try{
                                         JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                         JSONObject data = new JSONObject();
@@ -696,6 +704,7 @@ public class PaymentDetails extends AppCompatActivity {
                                         map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                         map.put(db.KEY_DATA,data.toString());
                                         //map.put(db.KEY_DATA,jsonArray.toString());
+                                        Log.e("Print Data","Receipt" + map);
                                         db.addDataPrint(db.DELAY_PRINT,map);
                                     }
                                     catch (Exception e){
@@ -894,6 +903,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
@@ -917,6 +927,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -1016,6 +1027,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
@@ -1040,6 +1052,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -1127,6 +1140,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         dialog.dismiss();
+                                        isPaymentMade = true;
                                         if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                             Helpers.createBackgroundJob(getApplicationContext());
                                         }
@@ -1140,6 +1154,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT,map);
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
@@ -1154,6 +1169,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     @Override
                                     public void onClick(View v) {
                                         dialog.dismiss();
+                                        isPaymentMade = true;
                                         try{
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                             JSONObject data = new JSONObject();
@@ -1165,6 +1181,7 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
+                                            Log.e("Print Data","Receipt" + map);
                                             db.addDataPrint(db.DELAY_PRINT,map);
                                         }
                                         catch (Exception e){
@@ -1241,16 +1258,32 @@ public class PaymentDetails extends AppCompatActivity {
         tv_date.setText(sdf.format(myCalendar.getTime()));
     }
     public double getcashamt() {
-        if (edt_cash_amt.getText().toString().equals("")) {
+        try{
+            if (edt_cash_amt.getText().toString().equals("")) {
+                return 0;
+            }
+            return Double.parseDouble(edt_cash_amt.getText().toString());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
             return 0;
         }
-        return Double.parseDouble(edt_cash_amt.getText().toString());
+
     }
     public double getcheckamt() {
-        if (edt_check_amt.getText().toString().equals("")) {
+        try{
+            if (edt_check_amt.getText().toString().equals("")) {
+                return 0;
+            }
+            return Double.parseDouble(edt_check_amt.getText().toString());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
             return 0;
         }
-        return Double.parseDouble(edt_check_amt.getText().toString());
+
     }
     private void loadBanks() {
         Banks.loadData(PaymentDetails.this);

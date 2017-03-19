@@ -373,8 +373,8 @@ public class UnloadActivity extends AppCompatActivity {
             try{
                 Log.e("I am here", "Here");
                 Helpers.logData(UnloadActivity.this,"On Unload complete");
-                if(Helpers.isNetworkAvailable(getApplicationContext())){
-                    Helpers.createBackgroundJob(getApplicationContext());
+                if(Helpers.isNetworkAvailable(UnloadActivity.this)){
+                    Helpers.createBackgroundJob(UnloadActivity.this);
                 }
                 HashMap<String, String> altMap = new HashMap<>();
                 altMap.put(db.KEY_IS_UNLOAD, "true");
@@ -1046,7 +1046,7 @@ public class UnloadActivity extends AppCompatActivity {
         for(int i=0;i<articles.size();i++){
             HashMap<String,String>map = new HashMap<>();
             map.put(db.KEY_MATERIAL_NO, articles.get(i).getMaterialNo());
-          //  db.deleteData(db.VAN_STOCK_ITEMS, map);
+            db.deleteData(db.VAN_STOCK_ITEMS, map);
         }
     }
     public JSONArray createPrintData(){

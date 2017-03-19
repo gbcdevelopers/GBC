@@ -1122,7 +1122,7 @@ public class LoadRequestActivity extends AppCompatActivity {
             mainArr.put("SALESMAN", Settings.getString(App.DRIVER));
             mainArr.put("CONTACTNO","-");
             mainArr.put("DOCUMENT NO",orderNo);  //Load Summary No
-            // mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
+            mainArr.put("TRIP START DATE",Helpers.formatDate(new Date(),"dd-MM-yyyy"));
             mainArr.put("supervisorname","-");
             mainArr.put("LANG",Settings.getString(App.LANGUAGE));
             mainArr.put("INVOICETYPE","ORDER REQUEST");

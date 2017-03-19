@@ -727,20 +727,27 @@ public class DashboardActivity extends AppCompatActivity
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            postCount++;
-            if (var.equals(App.SALES)) {
-                new loadBarChartData(App.GOOD_RETURN);
-            } else if (var.equals(App.GOOD_RETURN)) {
-                new loadBarChartData(App.BAD_RETURN);
-            } else {
-                if (postCount == 3) {
-                    if (loadingSpinner.isShowing()) {
-                        loadingSpinner.hide();
+            try{
+                postCount++;
+                if (var.equals(App.SALES)) {
+                    new loadBarChartData(App.GOOD_RETURN);
+                } else if (var.equals(App.GOOD_RETURN)) {
+                    new loadBarChartData(App.BAD_RETURN);
+                } else {
+                    if (postCount == 3) {
+                        if (loadingSpinner.isShowing()) {
+                            loadingSpinner.hide();
+                        }
+                        createBarChartFromLiveData(salesCount, goodReturnsCount, badReturnsCount);
+                        new loadPieChartData().execute();
                     }
-                    createBarChartFromLiveData(salesCount, goodReturnsCount, badReturnsCount);
-                    new loadPieChartData().execute();
                 }
             }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+
         }
     }
     public class loadPieChartData extends AsyncTask<Void, Void, Void> {
@@ -766,12 +773,18 @@ public class DashboardActivity extends AppCompatActivity
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (loadingSpinner.isShowing()) {
-                loadingSpinner.hide();
+            try{
+                if (loadingSpinner.isShowing()) {
+                    loadingSpinner.hide();
+                }
+                loadTotalSales();
+                createPieChartFromLiveData(cashCustomerCount, creditCustomerCount, tcCustomerCount);
+                loadTotalReceipt();
             }
-            loadTotalSales();
-            createPieChartFromLiveData(cashCustomerCount, creditCustomerCount, tcCustomerCount);
-            loadTotalReceipt();
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
         }
     }
     private void createPieChart(final Cursor c) {

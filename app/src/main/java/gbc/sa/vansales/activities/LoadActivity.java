@@ -374,7 +374,9 @@ public class LoadActivity extends AppCompatActivity {
                     lockTransactions();
                 }
                 if(fetchloadComplete){
-                    new fetchLoads(Settings.getString(App.TRIP_ID));
+                    //new fetchLoads(Settings.getString(App.TRIP_ID));
+                    Intent i = new Intent(LoadActivity.this, LoadActivity.class);
+                    startActivity(i);
                 }
             }
             catch (Exception e){
@@ -444,6 +446,7 @@ public class LoadActivity extends AppCompatActivity {
 
                             HashMap<String,String>filterItem = new HashMap<>();
                             filterItem.put(db.KEY_DELIVERY_NO, object.get("DeliveryNo").toString());
+                            filterItem.put(db.KEY_MATERIAL_NO,object.get("MaterialNo").toString());
                             if(!db.checkData(db.LOAD_DELIVERY_ITEMS,filterItem)){
                                 db.addData(db.LOAD_DELIVERY_ITEMS,params);
                             }
