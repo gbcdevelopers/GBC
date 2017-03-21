@@ -3,6 +3,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +48,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         else{
             String url = UrlBuilder.buildExpansion(this.collectionName, this.params, this.expansions);
             JSONArray jsonArray = IntegrationService.getService(this.context,url);
-            Log.e("Exp Response", ""+ jsonArray);
+            Log.e("Exp Response", "" + jsonArray);
 
             try {
                 Log.e("Metadata", "" + jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
@@ -61,7 +63,10 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
 
         return null;
     }
+    @Override
+    protected void onPostExecute(Void aVoid) {
 
+    }
     void parseJSON(String metadata,JSONArray jsonArray) throws JSONException {
         switch (metadata){
             case ConfigStore.TripHeaderEntity:
@@ -110,8 +115,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
 
                         db.addData(db.TRIP_SALES_AREA,params);
                     }
-
                 }
+
                 break;
             case ConfigStore.LoadDeliveryEntity:
                 for(int i=0;i<jsonArray.length();i++){
@@ -221,7 +226,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.ArticleHeaderEntity:
 
@@ -324,7 +328,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.CustomerHeaderEntity:
 
@@ -544,7 +547,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             }
 
@@ -565,7 +567,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.OrderRejReasonEntity:
                 for(int i=0;i<jsonArray.length();i++){
@@ -584,7 +585,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.VisitReasonEntity:
                 for(int i=0;i<jsonArray.length();i++){
@@ -603,7 +603,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.PricingEntity:
                 for(int i=0;i<jsonArray.length();i++){
@@ -624,7 +623,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
 
             case ConfigStore.Promotion02Entity:
@@ -648,7 +646,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
 
             case ConfigStore.Promotion05Entity:
@@ -672,7 +669,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     }
 
                 }
-
                 break;
             case ConfigStore.Promotion07Entity:
                 for(int i=0;i<jsonArray.length();i++){
@@ -693,9 +689,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     catch (Exception e){
                         e.printStackTrace();
                     }
-
                 }
-
                 break;
 
             case ConfigStore.BankEntity:
@@ -740,7 +734,6 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                     params.put(db.KEY_IS_INVOICE_COMPLETE,App.INVOICE_INCOMPLETE);
                     db.addData(db.DRIVER_COLLECTION,params);
                 }
-
                 break;
 
             case ConfigStore.FOCEntity:
@@ -799,8 +792,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000000");
         map.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map.put(db.KEY_FOC_ASSIGNING_QUANTITY, "2");
-        map.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map);
 
         HashMap<String,String>map1 = new HashMap<>();
@@ -810,8 +803,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map1.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000000");
         map1.put(db.KEY_FOC_QUALIFYING_QUANTITY,"50");
         map1.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
-        map1.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map1.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map1.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map1.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map1);
 
         HashMap<String,String>map2 = new HashMap<>();
@@ -821,8 +814,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map2.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000002");
         map2.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map2.put(db.KEY_FOC_ASSIGNING_QUANTITY, "2");
-        map2.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map2.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map2.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map2.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map2);
 
         HashMap<String,String>map3 = new HashMap<>();
@@ -832,8 +825,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map3.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000002");
         map3.put(db.KEY_FOC_QUALIFYING_QUANTITY,"50");
         map3.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
-        map3.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map3.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map3.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map3.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map3);
 
         HashMap<String,String>map4 = new HashMap<>();
@@ -843,8 +836,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map4.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000003");
         map4.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map4.put(db.KEY_FOC_ASSIGNING_QUANTITY, "2");
-        map4.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map4.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map4.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map4.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map4);
 
         HashMap<String,String>map5 = new HashMap<>();
@@ -854,8 +847,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map5.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000003");
         map5.put(db.KEY_FOC_QUALIFYING_QUANTITY,"50");
         map5.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
-        map5.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map5.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map5.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map5.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map5);
 
         HashMap<String,String>map6 = new HashMap<>();
@@ -865,8 +858,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map6.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000004");
         map6.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map6.put(db.KEY_FOC_ASSIGNING_QUANTITY, "2");
-        map6.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map6.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map6.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map6.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map6);
 
         HashMap<String,String>map7 = new HashMap<>();
@@ -876,8 +869,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map7.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000004");
         map7.put(db.KEY_FOC_QUALIFYING_QUANTITY,"50");
         map7.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
-        map7.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map7.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map7.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map7.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map7);
 
         HashMap<String,String>map8 = new HashMap<>();
@@ -887,8 +880,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map8.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000006");
         map8.put(db.KEY_FOC_QUALIFYING_QUANTITY,"10");
         map8.put(db.KEY_FOC_ASSIGNING_QUANTITY, "1");
-        map8.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map8.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map8.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map8.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map8);
 
         HashMap<String,String>map9 = new HashMap<>();
@@ -898,8 +891,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map9.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000006");
         map9.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map9.put(db.KEY_FOC_ASSIGNING_QUANTITY, "3");
-        map9.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map9.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map9.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map9.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map9);
 
         HashMap<String,String>map10 = new HashMap<>();
@@ -909,8 +902,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map10.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000008");
         map10.put(db.KEY_FOC_QUALIFYING_QUANTITY,"10");
         map10.put(db.KEY_FOC_ASSIGNING_QUANTITY, "1");
-        map10.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map10.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map10.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map10.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map10);
 
         HashMap<String,String>map11 = new HashMap<>();
@@ -920,8 +913,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map11.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000008");
         map11.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map11.put(db.KEY_FOC_ASSIGNING_QUANTITY, "3");
-        map11.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map11.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map11.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map11.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map11);
 
         HashMap<String,String>map12 = new HashMap<>();
@@ -931,8 +924,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map12.put(db.KEY_FOC_ASSIGNING_ITEM,"000000000014000009");
         map12.put(db.KEY_FOC_QUALIFYING_QUANTITY,"20");
         map12.put(db.KEY_FOC_ASSIGNING_QUANTITY, "2");
-        map12.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map12.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map12.put(db.KEY_FOC_DATE_FROM, "2017.03.01");
+        map12.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map12);
 
         HashMap<String,String>map13 = new HashMap<>();
@@ -943,8 +936,9 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map13.put(db.KEY_FOC_QUALIFYING_QUANTITY,"50");
         map13.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
         map13.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
-        map13.put(db.KEY_FOC_DATE_TO,"2017.03.31");
+        map13.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map13);
+
 
         /*HashMap<String,String>map14 = new HashMap<>();
         map14.put(db.KEY_CUSTOMER_NO,"");

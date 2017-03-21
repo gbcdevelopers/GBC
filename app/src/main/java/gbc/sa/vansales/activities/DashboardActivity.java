@@ -735,11 +735,16 @@ public class DashboardActivity extends AppCompatActivity
                     new loadBarChartData(App.BAD_RETURN);
                 } else {
                     if (postCount == 3) {
-                        if (loadingSpinner.isShowing()) {
-                            loadingSpinner.hide();
+                        try{
+                            if (loadingSpinner.isShowing()) {
+                                loadingSpinner.hide();
+                            }
+                            createBarChartFromLiveData(salesCount, goodReturnsCount, badReturnsCount);
+                            new loadPieChartData().execute();
                         }
-                        createBarChartFromLiveData(salesCount, goodReturnsCount, badReturnsCount);
-                        new loadPieChartData().execute();
+                        catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

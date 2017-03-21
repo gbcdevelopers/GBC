@@ -73,6 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String TODAYS_SUMMARY_SALES = "TODAYS_SUMMARY_SALES";
     public static final String DELAY_PRINT = "DELAY_PRINT";
     public static final String UNLOAD_TRANSACTION = "UNLOAD_TRANSACTION";
+    public static final String DOWNLOAD_STATUS = "DOWNLOAD_STATUS";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -407,6 +408,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_GOOD_RETURN_TOTAL = "totalGoodReturnValue";
     public static final String KEY_ORDER_DISCOUNT = "totalOrderDiscount";
 
+    public static final String KEY_APP_DOWNLOAD_KEY = "downloadKey";
+    public static final String KEY_APP_DOWNLOAD_VALUE = "downloadValue";
     //Delay Print
     public static final String KEY_DATA = "data";
     private Context mContext;
@@ -1168,6 +1171,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_POSTED + " TEXT,"
                 + KEY_IS_PRINTED + " TEXT " + ")";
 
+        String TABLE_DOWNLOAD_STATUS = "CREATE TABLE " + DOWNLOAD_STATUS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_APP_DOWNLOAD_KEY + " TEXT,"
+                + KEY_APP_DOWNLOAD_VALUE + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -1218,6 +1228,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_DRIVER_COLLECTION);
         db.execSQL(TABLE_DELAY_PRINT);
         db.execSQL(TABLE_UNLOAD_TRANSACTION);
+        db.execSQL(TABLE_DOWNLOAD_STATUS);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1269,6 +1280,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DRIVER_COLLECTION);
         db.execSQL("DROP TABLE IF EXISTS " + DELAY_PRINT);
         db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_TRANSACTION);
+        db.execSQL("DROP TABLE IF EXISTS " + DOWNLOAD_STATUS);
         onCreate(db);
     }
     //Storing Secured Credentials

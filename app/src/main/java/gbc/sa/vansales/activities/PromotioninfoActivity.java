@@ -1176,277 +1176,317 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         protected void onPostExecute(Void aVoid) {
             try{
                 Log.e("Order ID Post Data", "" + this.orderID);
-                orderID_Global = tokens[0].toString();
-                arraylist.clear();
-                HashMap<String, String> map = new HashMap<>();
-                map.put(db.KEY_CUSTOMER_NO, "");
-                map.put(db.KEY_ITEM_NO, "");
-                map.put(db.KEY_ITEM_CATEGORY, "");
-                map.put(db.KEY_MATERIAL_NO, "");
-                map.put(db.KEY_MATERIAL_GROUP, "");
-                map.put(db.KEY_MATERIAL_DESC1, "");
-                map.put(db.KEY_ORG_CASE, "");
-                map.put(db.KEY_UOM, "");
-                map.put(db.KEY_ORG_UNITS, "");
-                map.put(db.KEY_AMOUNT, "");
-                map.put(db.KEY_ORDER_ID, "");
-                map.put(db.KEY_PURCHASE_NUMBER, "");
-                HashMap<String, String> filter = new HashMap<>();
-                filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
-                Cursor foccursor = db.getData(db.FOC_INVOICE,map,filter);
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    do {
-                        Sales sale = new Sales();
-                        sale.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        sale.setMaterial_description(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                        sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                        sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
-                        sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-                        float tempPrice = 0;
-                        HashMap<String, String> filterComp = new HashMap<>();
-                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filterComp.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        HashMap<String, String> priceMap = new HashMap<>();
-                        priceMap.put(db.KEY_MATERIAL_NO, "");
-                        priceMap.put(db.KEY_AMOUNT, "");
-                        if (db.checkData(db.PRICING, filterComp)) {
-                            Cursor customerPriceCursor = db.getData(db.PRICING, priceMap, filterComp);
-                            if (customerPriceCursor.getCount() > 0) {
-                                customerPriceCursor.moveToFirst();
-                                tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
-                            }
-                        } else {
-                            if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
-                                tempPrice = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
-                            } else {
-                                tempPrice = 0;
-                            }
-                        }
-                        sale.setPrice(String.valueOf(tempPrice));
-                        arraylist.add(sale);
-                    }
-                    while (cursor.moveToNext());
-                }
-                if(foccursor.getCount()>0){
-                    foccursor.moveToFirst();
-                    do {
-                        Sales sale = new Sales();
-                        sale.setMaterial_no(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        sale.setMaterial_description(UrlBuilder.decodeString(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
-                        sale.setPic(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_UNITS)));
-                        sale.setCases(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_CASE)));
-                        sale.setUom(foccursor.getString(foccursor.getColumnIndex(db.KEY_UOM)));
-                        float tempPrice = 0;
-                        HashMap<String, String> filterComp = new HashMap<>();
-                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filterComp.put(db.KEY_MATERIAL_NO, foccursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
-                        sale.setPrice(String.valueOf(tempPrice));
-                        focList.add(sale);
-                    }
-                    while (foccursor.moveToNext());
-                }
-                if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
-                    for (Sales sale : arraylist) {
-                        HashMap<String, String> postmap = new HashMap<String, String>();
-                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                        HashMap<String, String> filtermap = new HashMap<>();
-                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                        // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                        db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
-
-                    }
-                    for (Sales sale : focList) {
-                        HashMap<String, String> postmap = new HashMap<String, String>();
-                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                        HashMap<String, String> filtermap = new HashMap<>();
-                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                        // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                        //Update foc table on Generation of Invoice
-                        db.updateData(db.FOC_INVOICE,postmap,filtermap);
-                    }
-                    //Creating an invoice for customer
-                    if (object.getPaymentMethod().equals(App.CREDIT_CUSTOMER) || object.getPaymentMethod().equals(App.TC_CUSTOMER)) {
-                        HashMap<String, String> invoiceMap = new HashMap<>();
-                        invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE);
-                        invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
-                        invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
-                        invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
-                        invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                        invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                        invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
-                        invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
-                        invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
-                        invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
-                        invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                        invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                        db.addData(db.COLLECTION, invoiceMap);
-                        Log.e("Going on", "Foo");
-                        HashMap<String, String> logMap = new HashMap<>();
-                        logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
-                        logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        logMap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                        logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
-                        db.addData(db.DAYACTIVITY, logMap);
-                    } else {
-                        HashMap<String, String> invoiceMap = new HashMap<>();
-                        invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE_CASH);
-                        invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
-                        invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
-                        invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                        invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
-                        invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
-                        invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                        invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
-                        invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
-                        invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
-                        invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
-                        invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
-                        invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                        invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
-                        db.addData(db.COLLECTION, invoiceMap);
-                        HashMap<String, String> logMap = new HashMap<>();
-                        logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
-                        logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        logMap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                        logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
-                        db.addData(db.DAYACTIVITY, logMap);
-                    }
-                    //Logging sales for todays Summary
-                    HashMap<String, String> todaysSummary = new HashMap<>();
-                    todaysSummary.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                    todaysSummary.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                    todaysSummary.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
-                    todaysSummary.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
-                    todaysSummary.put(db.KEY_ORDER_TOTAL, tv_net_invoice.getText().toString());
-                    todaysSummary.put(db.KEY_ORDER_DISCOUNT, tv_discount.getText().toString());
-                    todaysSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
-                    db.addData(db.TODAYS_SUMMARY, todaysSummary);
-
-                    HashMap<String, String> todaysSalesSummary = new HashMap<>();
-                    todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
-                    todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                    todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
-                    todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
-                    todaysSalesSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
-                    todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,tv_current_invoice.getText().toString());
-                    todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(goodreturntotal + badreturntotal));
-                    todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf(goodreturntotal));
-                    todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
-                    todaysSalesSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
-                    db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
-
+                if(this.orderID.trim().equals(",")){
+                    Log.e("OMG","OMG");
                     if (loadingSpinner.isShowing()) {
                         loadingSpinner.hide();
                     }
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
-                    alertDialogBuilder/*.setTitle("Message")*/
-                            .setMessage(getString(R.string.request_created))
-                                    //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    updateStockinVan(false);
-                                    if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                        Helpers.createBackgroundJob(getApplicationContext());
-                                    }
-                                    dialog.dismiss();
-                                    orderID = tokens[0].toString();
-                                    if(isPrint){
-                                        try{
-                                            JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
-                                            JSONObject data = new JSONObject();
-                                            data.put("data",(JSONArray)jsonArray);
+                    Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent1.putExtra("headerObj", object);
+                    intent1.putExtra("msg", "all");
+                    startActivity(intent1);
+                    finish();
+                    /*if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
+                        Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent1.putExtra("headerObj", object);
+                        intent1.putExtra("msg", "all");
+                        startActivity(intent1);
+                        finish();
+                    }
+                    else if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                        //Go to payment details screen
+                        Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                        intent.putExtra("msg", str_promotion_message);
+                        intent.putExtra("from",from);
+                        intent.putExtra("invoiceno",tokens[0].toString());
+                        intent.putExtra("headerObj", object);
+                        intent.putExtra("amountdue", tv_net_invoice.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    }
+                    else if(object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)){
+                        Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent1.putExtra("headerObj", object);
+                        intent1.putExtra("msg", "all");
+                        startActivity(intent1);
+                        finish();
+                    }*/
+                }
+                else{
+                    orderID_Global = tokens[0].toString();
+                    arraylist.clear();
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put(db.KEY_CUSTOMER_NO, "");
+                    map.put(db.KEY_ITEM_NO, "");
+                    map.put(db.KEY_ITEM_CATEGORY, "");
+                    map.put(db.KEY_MATERIAL_NO, "");
+                    map.put(db.KEY_MATERIAL_GROUP, "");
+                    map.put(db.KEY_MATERIAL_DESC1, "");
+                    map.put(db.KEY_ORG_CASE, "");
+                    map.put(db.KEY_UOM, "");
+                    map.put(db.KEY_ORG_UNITS, "");
+                    map.put(db.KEY_AMOUNT, "");
+                    map.put(db.KEY_ORDER_ID, "");
+                    map.put(db.KEY_PURCHASE_NUMBER, "");
+                    HashMap<String, String> filter = new HashMap<>();
+                    filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                    Cursor cursor = db.getData(db.CAPTURE_SALES_INVOICE, map, filter);
+                    Cursor foccursor = db.getData(db.FOC_INVOICE,map,filter);
+                    if (cursor.getCount() > 0) {
+                        cursor.moveToFirst();
+                        do {
+                            Sales sale = new Sales();
+                            sale.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            sale.setMaterial_description(UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                            sale.setPic(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                            sale.setCases(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                            sale.setUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
+                            float tempPrice = 0;
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            HashMap<String, String> priceMap = new HashMap<>();
+                            priceMap.put(db.KEY_MATERIAL_NO, "");
+                            priceMap.put(db.KEY_AMOUNT, "");
+                            if (db.checkData(db.PRICING, filterComp)) {
+                                Cursor customerPriceCursor = db.getData(db.PRICING, priceMap, filterComp);
+                                if (customerPriceCursor.getCount() > 0) {
+                                    customerPriceCursor.moveToFirst();
+                                    tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                                }
+                            } else {
+                                if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                    tempPrice = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                    //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                } else {
+                                    tempPrice = 0;
+                                }
+                            }
+                            sale.setPrice(String.valueOf(tempPrice));
+                            arraylist.add(sale);
+                        }
+                        while (cursor.moveToNext());
+                    }
+                    if(foccursor.getCount()>0){
+                        foccursor.moveToFirst();
+                        do {
+                            Sales sale = new Sales();
+                            sale.setMaterial_no(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            sale.setMaterial_description(UrlBuilder.decodeString(foccursor.getString(foccursor.getColumnIndex(db.KEY_MATERIAL_DESC1))));
+                            sale.setPic(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                            sale.setCases(foccursor.getString(foccursor.getColumnIndex(db.KEY_ORG_CASE)));
+                            sale.setUom(foccursor.getString(foccursor.getColumnIndex(db.KEY_UOM)));
+                            float tempPrice = 0;
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_MATERIAL_NO, foccursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                            sale.setPrice(String.valueOf(tempPrice));
+                            focList.add(sale);
+                        }
+                        while (foccursor.moveToNext());
+                    }
+                    if (this.tokens[0].toString().equals(this.tokens[1].toString())) {
+                        for (Sales sale : arraylist) {
+                            HashMap<String, String> postmap = new HashMap<String, String>();
+                            postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                            postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                            HashMap<String, String> filtermap = new HashMap<>();
+                            filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                            filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                            db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
 
-                                            HashMap<String,String>map = new HashMap<>();
-                                            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                            map.put(db.KEY_ORDER_ID,tokens[0].toString());
-                                            map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
-                                            map.put(db.KEY_DATA,data.toString());
-                                            //map.put(db.KEY_DATA,jsonArray.toString());
-                                            db.addDataPrint(db.DELAY_PRINT,map);
+                        }
+                        for (Sales sale : focList) {
+                            HashMap<String, String> postmap = new HashMap<String, String>();
+                            postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            postmap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                            postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                            HashMap<String, String> filtermap = new HashMap<>();
+                            filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            // filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                            filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                            //Update foc table on Generation of Invoice
+                            db.updateData(db.FOC_INVOICE,postmap,filtermap);
+                        }
+                        //Creating an invoice for customer
+                        if (object.getPaymentMethod().equals(App.CREDIT_CUSTOMER) || object.getPaymentMethod().equals(App.TC_CUSTOMER)) {
+                            HashMap<String, String> invoiceMap = new HashMap<>();
+                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE);
+                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
+                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
+                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                            invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
+                            invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
+                            invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
+                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
+                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                            db.addData(db.COLLECTION, invoiceMap);
+                            Log.e("Going on", "Foo");
+                            HashMap<String, String> logMap = new HashMap<>();
+                            logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                            logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            logMap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                            logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
+                            db.addData(db.DAYACTIVITY, logMap);
+                        } else {
+                            HashMap<String, String> invoiceMap = new HashMap<>();
+                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_INVOICE_CASH);
+                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            invoiceMap.put(db.KEY_INVOICE_NO, tokens[0].toString());
+                            invoiceMap.put(db.KEY_DUE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_net_invoice.getText().toString());
+                            invoiceMap.put(db.KEY_INDICATOR, Double.parseDouble(tv_net_invoice.getText().toString()) > 0 ? App.ADD_INDICATOR : App.SUB_INDICATOR);
+                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL, "0");
+                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_DATE, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, "0000");
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, "0000");
+                            invoiceMap.put(db.KEY_CASH_AMOUNT, "0");
+                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_INCOMPLETE);
+                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_NOT_POSTED);
+                            db.addData(db.COLLECTION, invoiceMap);
+                            HashMap<String, String> logMap = new HashMap<>();
+                            logMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            logMap.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                            logMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            logMap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                            logMap.put(db.KEY_PRICE, tv_net_invoice.getText().toString());
+                            db.addData(db.DAYACTIVITY, logMap);
+                        }
+                        //Logging sales for todays Summary
+                        HashMap<String, String> todaysSummary = new HashMap<>();
+                        todaysSummary.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                        todaysSummary.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        todaysSummary.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                        todaysSummary.put(db.KEY_ACTIVITY_TYPE, App.ACTIVITY_INVOICE);
+                        todaysSummary.put(db.KEY_ORDER_TOTAL, tv_net_invoice.getText().toString());
+                        todaysSummary.put(db.KEY_ORDER_DISCOUNT, tv_discount.getText().toString());
+                        todaysSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        db.addData(db.TODAYS_SUMMARY, todaysSummary);
 
-                                            PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
-                                            object.execute("", jsonArray);
-                                        }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else{
-                                        try{
-                                            JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
-                                            JSONObject data = new JSONObject();
-                                            data.put("data",(JSONArray)jsonArray);
+                        HashMap<String, String> todaysSalesSummary = new HashMap<>();
+                        todaysSalesSummary.put(db.KEY_TIME_STAMP,Helpers.getCurrentTimeStamp());
+                        todaysSalesSummary.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                        todaysSalesSummary.put(db.KEY_CUSTOMER_TYPE,object.getPaymentMethod());
+                        todaysSalesSummary.put(db.KEY_ACTIVITY_TYPE,App.ACTIVITY_INVOICE);
+                        todaysSalesSummary.put(db.KEY_ORDER_TOTAL,tv_net_invoice.getText().toString());
+                        todaysSalesSummary.put(db.KEY_ORDER_NET_TOTAL,tv_current_invoice.getText().toString());
+                        todaysSalesSummary.put(db.KEY_RETURN_TOTAL, String.valueOf(goodreturntotal + badreturntotal));
+                        todaysSalesSummary.put(db.KEY_GOOD_RETURN_TOTAL,String.valueOf(goodreturntotal));
+                        todaysSalesSummary.put(db.KEY_ORDER_DISCOUNT,tv_discount.getText().toString());
+                        todaysSalesSummary.put(db.KEY_ORDER_ID, tokens[0].toString());
+                        db.addData(db.TODAYS_SUMMARY_SALES, todaysSalesSummary);
 
-                                            HashMap<String,String>map = new HashMap<>();
-                                            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                            map.put(db.KEY_ORDER_ID,tokens[0].toString());
-                                            map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
-                                            map.put(db.KEY_DATA,data.toString());
-                                            //map.put(db.KEY_DATA,jsonArray.toString());
-                                            db.addDataPrint(db.DELAY_PRINT,map);
+                        if (loadingSpinner.isShowing()) {
+                            loadingSpinner.hide();
+                        }
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
+                        alertDialogBuilder/*.setTitle("Message")*/
+                                .setMessage(getString(R.string.request_created))
+                                        //.setMessage("Request with reference " + tokens[0].toString() + " has been saved")
+                                .setCancelable(false)
+                                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        updateStockinVan(false);
+                                        if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                            Helpers.createBackgroundJob(getApplicationContext());
                                         }
-                                        catch (Exception e){
-                                            e.printStackTrace();
-                                        }
+                                        dialog.dismiss();
+                                        orderID = tokens[0].toString();
+                                        if(isPrint){
+                                            try{
+                                                JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
 
-                                        if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
-                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
-                                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            intent1.putExtra("headerObj", object);
-                                            intent1.putExtra("msg", "all");
-                                            startActivity(intent1);
-                                            finish();
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,tokens[0].toString());
+                                                map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
+                                                map.put(db.KEY_DATA,data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+
+                                                PrinterHelper object = new PrinterHelper(PromotioninfoActivity.this, PromotioninfoActivity.this);
+                                                object.execute("", jsonArray);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
                                         }
-                                        else if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
-                                            //Go to payment details screen
-                                            Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
-                                            intent.putExtra("msg", str_promotion_message);
-                                            intent.putExtra("from",from);
-                                            intent.putExtra("invoiceno",tokens[0].toString());
-                                            intent.putExtra("headerObj", object);
-                                            intent.putExtra("amountdue", tv_net_invoice.getText().toString());
-                                            startActivity(intent);
-                                            finish();
+                                        else{
+                                            try{
+                                                JSONArray jsonArray = createPrintData("SALES INVOICE", "", tokens[0].toString());
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
+
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,tokens[0].toString());
+                                                map.put(db.KEY_DOC_TYPE,ConfigStore.SalesInvoice_TR);
+                                                map.put(db.KEY_DATA,data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+
+                                            if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
+                                                Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                intent1.putExtra("headerObj", object);
+                                                intent1.putExtra("msg", "all");
+                                                startActivity(intent1);
+                                                finish();
+                                            }
+                                            else if(object.getPaymentMethod().equalsIgnoreCase(App.CASH_CUSTOMER)){
+                                                //Go to payment details screen
+                                                Intent intent = new Intent(PromotioninfoActivity.this, PaymentDetails.class);
+                                                intent.putExtra("msg", str_promotion_message);
+                                                intent.putExtra("from",from);
+                                                intent.putExtra("invoiceno",tokens[0].toString());
+                                                intent.putExtra("headerObj", object);
+                                                intent.putExtra("amountdue", tv_net_invoice.getText().toString());
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                            else if(object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)){
+                                                Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
+                                                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                intent1.putExtra("headerObj", object);
+                                                intent1.putExtra("msg", "all");
+                                                startActivity(intent1);
+                                                finish();
+                                            }
                                         }
-                                        else if(object.getPaymentMethod().equalsIgnoreCase(App.TC_CUSTOMER)){
-                                            Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
-                                            intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK  | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                            intent1.putExtra("headerObj", object);
-                                            intent1.putExtra("msg", "all");
-                                            startActivity(intent1);
-                                            finish();
-                                        }
-                                    }
 
                                 /*if(object.getPaymentMethod().equalsIgnoreCase(App.CREDIT_CUSTOMER)){
                                     Intent intent1 = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
@@ -1475,45 +1515,6 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                                     startActivity(intent1);
                                     finish();
                                 }*/
-                                }
-                            });
-                    // create alert dialog
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    // show it
-                    alertDialog.show();
-                } else {
-                    for (Sales sale : arraylist) {
-                        HashMap<String, String> postmap = new HashMap<String, String>();
-                        postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
-                        postmap.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
-                        postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
-                        HashMap<String, String> filtermap = new HashMap<>();
-                        filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                        filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
-                        filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                        filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
-                        filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
-                        db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
-                    }
-                    if (loadingSpinner.isShowing()) {
-                        loadingSpinner.hide();
-                    }
-                    if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
-                    } else if (this.orderID.contains("Error")) {
-                        Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
-                        alertDialogBuilder.setTitle("Message")
-                                .setMessage("Request " + tokens[1].toString() + " has been created")
-                                        // .setMessage("Request " + tokens[0].toString() + " has been created")
-                                .setCancelable(false)
-                                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        updateStockinVan(false);
-                                        dialog.dismiss();
-                                        finish();
                                     }
                                 });
                         // create alert dialog
@@ -1521,10 +1522,53 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         // show it
                         alertDialog.show();
                     }
+                    else {
+                        for (Sales sale : arraylist) {
+                            HashMap<String, String> postmap = new HashMap<String, String>();
+                            postmap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                            postmap.put(db.KEY_IS_POSTED, App.DATA_IS_POSTED);
+                            postmap.put(db.KEY_ORDER_ID, tokens[0].toString());
+                            HashMap<String, String> filtermap = new HashMap<>();
+                            filtermap.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            filtermap.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                            filtermap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filtermap.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                            filtermap.put(db.KEY_PURCHASE_NUMBER, tokens[1].toString());
+                            db.updateData(db.CAPTURE_SALES_INVOICE, postmap, filtermap);
+                        }
+                        if (loadingSpinner.isShowing()) {
+                            loadingSpinner.hide();
+                        }
+                        if (this.orderID.isEmpty() || this.orderID.equals("") || this.orderID == null) {
+                            Toast.makeText(getApplicationContext(), getString(R.string.request_timeout), Toast.LENGTH_SHORT).show();
+                        } else if (this.orderID.contains("Error")) {
+                            Toast.makeText(getApplicationContext(), this.orderID.replaceAll("Error", "").trim(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PromotioninfoActivity.this);
+                            alertDialogBuilder.setTitle("Message")
+                                    .setMessage("Request " + tokens[1].toString() + " has been created")
+                                            // .setMessage("Request " + tokens[0].toString() + " has been created")
+                                    .setCancelable(false)
+                                    .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            updateStockinVan(false);
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
+                            // create alert dialog
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            // show it
+                            alertDialog.show();
+                        }
+                    }
                 }
+
             }
             catch (Exception e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             }
 
         }

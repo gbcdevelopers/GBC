@@ -217,7 +217,10 @@ public class PaymentDetails extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (from.equals("collection")) {
-                        finish();
+                        //finish();
+                        Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
+                        intent1.putExtra("headerObj", object);
+                        startActivity(intent1);
                     } else if (from.equals("Final Invoice")) {
                         Toast.makeText(PaymentDetails.this, getString(R.string.complete_transaction), Toast.LENGTH_SHORT).show();
                     } else if (from.equals("delivery")) {
@@ -315,472 +318,12 @@ public class PaymentDetails extends AppCompatActivity {
                     double cash_amt = getcashamt();
                     double check_amt = getcheckamt();
                     total_amt = cash_amt + check_amt;
-                    if(allowPartial){
-                        if (from.equals("delivery")) {
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_AMOUNT_CLEARED, "");
-                            map.put(db.KEY_CASH_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
-                            map.put(db.KEY_CHEQUE_NUMBER, "");
-                            map.put(db.KEY_CHEQUE_DATE, "");
-                            map.put(db.KEY_CHEQUE_BANK_CODE, "");
-                            map.put(db.KEY_CHEQUE_BANK_NAME, "");
-                            HashMap<String, String> filter1 = new HashMap<String, String>();
-                            filter1.put(db.KEY_INVOICE_NO, invoiceNo);
-                            filter1.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            Cursor c = db.getData(db.COLLECTION, map, filter1);
-                            float prevAmount = 0;
-                            float prevCashAmount = 0;
-                            float prevCheqAmount = 0;
-                            String chequeNumber = "";
-                            String chequeDate = "";
-                            String bankName = "";
-                            String bankCode = "";
-                            String chequeAmount = "";
-                            if (c.getCount() > 0) {
-                                c.moveToFirst();
-                                prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-                                prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                                prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                                chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
-                                chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
-                                chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
-                                bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
-                                bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
-                            }
-                            prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
-                            prevCashAmount += getcashamt();
-                            prevCheqAmount += getcheckamt();
-                            if (getcheckamt() > 0) {
-                                chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
-                                chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
-                                chequeDate = chequeDate + "," + tv_date.getText().toString();
-                                bankCode = bankCode + "," + bankcode;
-                                bankName = bankName + "," + bankname;
-                            }
-
-                            HashMap<String, String> updateMap = new HashMap<String, String>();
-                            updateMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_DELIVERY);
-                            updateMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
-                            updateMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            updateMap.put(db.KEY_INVOICE_NO, invoiceNo);
-                            updateMap.put(db.KEY_INVOICE_AMOUNT, tv_total_amount.getText().toString());
-                            updateMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                            updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
-                            updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
-                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
-                            updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
-                            updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
-                            updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
-                            if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            } else {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            }
-
-                            HashMap<String, String> filter = new HashMap<String, String>();
-                            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            filter.put(db.KEY_INVOICE_NO, invoiceNo);
-                            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                            db.updateData(db.COLLECTION, updateMap, filter);
-                            if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                Helpers.createBackgroundJob(getApplicationContext());
-                            }
-                            final Dialog dialog = new Dialog(PaymentDetails.this);
-                            dialog.setContentView(R.layout.dialog_doprint);
-                            dialog.setCancelable(false);
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                            LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                            LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                            dialog.show();
-                            btn_print.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                    Helpers.createBackgroundJob(getApplicationContext());
-                                }*/
-                                    try {
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-                                        JSONObject data = new JSONObject();
-                                        data.put("data", (JSONArray) jsonArray);
-                                        HashMap<String, String> map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID, invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA, data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT, map);
-                                        PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
-                                        object.execute("", jsonArray);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-                                }
-                            });
-                            btn_notprint.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    try {
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-                                        JSONObject data = new JSONObject();
-                                        data.put("data", (JSONArray) jsonArray);
-                                        HashMap<String, String> map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID, invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA, data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT, map);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-                                    Intent intent = new Intent(PaymentDetails.this, DeliveryActivity.class);
-                                    intent.putExtra("headerObj", object);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                        }
-                        else if (from.equals("collection")) {
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_AMOUNT_CLEARED, "");
-                            map.put(db.KEY_CASH_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
-                            map.put(db.KEY_CHEQUE_NUMBER, "");
-                            map.put(db.KEY_CHEQUE_DATE, "");
-                            map.put(db.KEY_CHEQUE_BANK_CODE, "");
-                            map.put(db.KEY_CHEQUE_BANK_NAME, "");
-                            HashMap<String, String> filter = new HashMap<String, String>();
-                            filter.put(db.KEY_INVOICE_NO, collection.getInvoiceNo());
-                            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            Cursor c = db.getData(db.COLLECTION, map, filter);
-                            float prevAmount = 0;
-                            float prevCashAmount = 0;
-                            float prevCheqAmount = 0;
-                            String chequeNumber = "";
-                            String chequeDate = "";
-                            String bankName = "";
-                            String bankCode = "";
-                            String chequeAmount = "";
-                            if (c.getCount() > 0) {
-                                c.moveToFirst();
-                                prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-                                prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                                prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                                chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
-                                chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
-                                chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
-                                bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
-                                bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
-                            }
-                            prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
-                            prevCashAmount += getcashamt();
-                            prevCheqAmount += getcheckamt();
-                            if (getcheckamt() > 0) {
-                                chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
-                                chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
-                                chequeDate = chequeDate + "," + tv_date.getText().toString();
-                                bankCode = bankCode + "," + bankcode;
-                                bankName = bankName + "," + bankname;
-                            }
-                            HashMap<String, String> updateMap = new HashMap<String, String>();
-                            updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
-                            updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
-                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
-                            updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
-                            updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
-                            updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
-                            if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            } else {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            }
-                            if(!isPaymentMade){
-                                db.updateData(db.COLLECTION, updateMap, filter);
-                            }
-                            final Dialog dialog = new Dialog(PaymentDetails.this);
-                            dialog.setContentView(R.layout.dialog_doprint);
-                            dialog.setCancelable(false);
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                            LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                            LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                            dialog.show();
-                            btn_print.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                    Helpers.createBackgroundJob(getApplicationContext());
-                                }*/
-                                    isPaymentMade = true;
-                                    try{
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-                                        JSONObject data = new JSONObject();
-                                        data.put("data",(JSONArray)jsonArray);
-
-                                        HashMap<String,String>map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID,invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA,data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT,map);
-
-                                        PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
-                                        object.execute("", jsonArray);
-                                    }
-                                    catch (Exception e){
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-
-                                }
-                            });
-                            btn_notprint.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    isPaymentMade = true;
-                                    try{
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-                                        JSONObject data = new JSONObject();
-                                        data.put("data",(JSONArray)jsonArray);
-
-                                        HashMap<String,String>map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID,invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA,data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT,map);
-                                    }
-                                    catch (Exception e){
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-
-                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                    Helpers.createBackgroundJob(getApplicationContext());
-                                }*/
-
-                                    Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
-                                    intent1.putExtra("headerObj", object);
-                                    startActivity(intent1);
-                                }
-                            });
-                        } else if (from.equals("Final Invoice")) {
-                            HashMap<String, String> map = new HashMap<String, String>();
-                            map.put(db.KEY_AMOUNT_CLEARED, "");
-                            map.put(db.KEY_CASH_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT, "");
-                            map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
-                            map.put(db.KEY_CHEQUE_NUMBER, "");
-                            map.put(db.KEY_CHEQUE_DATE, "");
-                            map.put(db.KEY_CHEQUE_BANK_CODE, "");
-                            map.put(db.KEY_CHEQUE_BANK_NAME, "");
-                            HashMap<String, String> filter = new HashMap<String, String>();
-                            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            filter.put(db.KEY_INVOICE_NO, invoiceNo);
-                            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                            Cursor c = db.getData(db.COLLECTION, map, filter);
-                            float prevAmount = 0;
-                            float prevCashAmount = 0;
-                            float prevCheqAmount = 0;
-                            String chequeNumber = "";
-                            String chequeDate = "";
-                            String bankName = "";
-                            String bankCode = "";
-                            String chequeAmount = "";
-                            if (c.getCount() > 0) {
-                                c.moveToFirst();
-                                prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
-                                prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
-                                prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                                chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
-                                chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
-                                chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
-                                bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
-                                bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
-                            }
-                            prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
-                            prevCashAmount += getcashamt();
-                            prevCheqAmount += getcheckamt();
-                            if (getcheckamt() > 0) {
-                                chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
-                                chequeDate = chequeDate + "," + tv_date.getText().toString();
-                                chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
-                                bankCode = bankCode + "," + bankcode;
-                                bankName = bankName + "," + bankname;
-                            }
-                            HashMap<String, String> updateMap = new HashMap<String, String>();
-                            updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
-                            updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
-                            updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
-                            updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
-                            updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
-                            updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
-                            updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
-                            if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            } else {
-                                updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            }
-
-                            db.updateData(db.COLLECTION, updateMap, filter);
-                            final Dialog dialog = new Dialog(PaymentDetails.this);
-                            dialog.setContentView(R.layout.dialog_doprint);
-                            dialog.setCancelable(false);
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                            LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                            LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                            dialog.show();
-                            btn_print.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    isPaymentMade = true;
-                                    if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                        Helpers.createBackgroundJob(getApplicationContext());
-                                    }
-                                    try{
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-
-                                        JSONObject data = new JSONObject();
-                                        data.put("data",(JSONArray)jsonArray);
-
-                                        HashMap<String,String>map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID,invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA,data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT,map);
-
-                                        PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
-                                        object.execute("", jsonArray);
-                                    }
-                                    catch (Exception e){
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-                                }
-                            });
-                            btn_notprint.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    isPaymentMade = true;
-                                    try{
-                                        JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
-                                        JSONObject data = new JSONObject();
-                                        data.put("data",(JSONArray)jsonArray);
-
-                                        HashMap<String,String>map = new HashMap<>();
-                                        map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
-                                        map.put(db.KEY_ORDER_ID,invoiceNo);
-                                        map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
-                                        map.put(db.KEY_DATA,data.toString());
-                                        //map.put(db.KEY_DATA,jsonArray.toString());
-                                        Log.e("Print Data","Receipt" + map);
-                                        db.addDataPrint(db.DELAY_PRINT,map);
-                                    }
-                                    catch (Exception e){
-                                        e.printStackTrace();
-                                        Crashlytics.logException(e);
-                                    }
-
-                                    if (Helpers.isNetworkAvailable(getApplicationContext())) {
-                                        Helpers.createBackgroundJob(getApplicationContext());
-                                    }
-                                    Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
-                                    intent.putExtra("headerObj", object);
-                                    intent.putExtra("msg", "visit");
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                        } else {
-                            final Dialog dialog = new Dialog(PaymentDetails.this);
-                            dialog.setContentView(R.layout.dialog_doprint);
-                            dialog.setCancelable(false);
-                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                            LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
-                            LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
-                            dialog.show();
-                            btn_print.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
-                                    intent.putExtra("headerObj", object);
-                                    intent.putExtra("msg", "visit");
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                            btn_notprint.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
-                                    intent.putExtra("headerObj", object);
-                                    intent.putExtra("msg", "visit");
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-//                               dialog.dismiss();
-//                                Intent intent = new Intent();
-//                                intent.putExtra("pos", pos);
-//                                intent.putExtra("amt", String.valueOf(total_amt));
-//                                setResult(RESULT_OK, intent);
-//                                finish();
-                                }
-                            });
-                        }
+                    if(total_amt==0){
+                        finish();
                     }
                     else{
-                        if (total_amt > Double.parseDouble(amountdue) || total_amt < Double.parseDouble(amountdue)) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(PaymentDetails.this);
-                            builder.setTitle("Payment Detail");
-                            builder.setCancelable(true);
-                            builder.setIcon(R.mipmap.ic_launcher);
-                            builder.setMessage(getString(R.string.amount_larger));
-                            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.show();
-                        }
-                        else {
+                        if(allowPartial){
                             if (from.equals("delivery")) {
-
                                 HashMap<String, String> map = new HashMap<String, String>();
                                 map.put(db.KEY_AMOUNT_CLEARED, "");
                                 map.put(db.KEY_CASH_AMOUNT, "");
@@ -851,34 +394,18 @@ public class PaymentDetails extends AppCompatActivity {
                                 filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                                 filter.put(db.KEY_INVOICE_NO, invoiceNo);
                                 filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                                db.updateData(db.COLLECTION, updateMap, filter);
-
-                            /*HashMap<String, String> invoiceMap = new HashMap<>();
-                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_DELIVERY);
-                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
-                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            invoiceMap.put(db.KEY_INVOICE_NO, invoiceNo);
-                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_total_amount.getText().toString());
-                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
-                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, tv_total_amount.getText().toString());
-                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(getcheckamt()));
-                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, edt_check_no.getText().toString());
-                            invoiceMap.put(db.KEY_CHEQUE_DATE, tv_date.getText().toString());
-                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, bankcode);
-                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, bankname);
-                            invoiceMap.put(db.KEY_CASH_AMOUNT, String.valueOf(getcashamt()));
-                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
-                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
-                            HashMap<String, String> filter = new HashMap<String, String>();
-                            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                            filter.put(db.KEY_INVOICE_NO, invoiceNo);
-                            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
-                            db.updateData(db.COLLECTION, invoiceMap, filter);*/
+                                if(getcashamt()>0 || getcheckamt()>0){
+                                    HashMap<String,String>checkMap = new HashMap<String, String>();
+                                    checkMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    if(!db.checkData(db.COLLECTION,checkMap)){
+                                        db.updateData(db.COLLECTION, updateMap, filter);
+                                    }
+                                    //db.updateData(db.COLLECTION, updateMap, filter);
+                                }
                                 if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }
-
                                 final Dialog dialog = new Dialog(PaymentDetails.this);
                                 dialog.setContentView(R.layout.dialog_doprint);
                                 dialog.setCancelable(false);
@@ -904,6 +431,8 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
                                             Log.e("Print Data","Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                            Helpers.logData(PaymentDetails.this,"Print Data" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
@@ -927,7 +456,9 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA, data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
-                                            Log.e("Print Data","Receipt" + map);
+                                            Log.e("Print Data", "Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                            Helpers.logData(PaymentDetails.this, "Print Data" + map);
                                             db.addDataPrint(db.DELAY_PRINT, map);
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -940,13 +471,14 @@ public class PaymentDetails extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-                            } else if (from.equals("collection")) {
+                            }
+                            else if (from.equals("collection")) {
                                 HashMap<String, String> map = new HashMap<String, String>();
                                 map.put(db.KEY_AMOUNT_CLEARED, "");
                                 map.put(db.KEY_CASH_AMOUNT, "");
                                 map.put(db.KEY_CHEQUE_AMOUNT, "");
-                                map.put(db.KEY_CHEQUE_NUMBER, "");
                                 map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                                map.put(db.KEY_CHEQUE_NUMBER, "");
                                 map.put(db.KEY_CHEQUE_DATE, "");
                                 map.put(db.KEY_CHEQUE_BANK_CODE, "");
                                 map.put(db.KEY_CHEQUE_BANK_NAME, "");
@@ -967,19 +499,19 @@ public class PaymentDetails extends AppCompatActivity {
                                     prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
                                     prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
                                     prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                                    chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
                                     chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
                                     chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
                                     bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
                                     bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
-                                    chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
                                 }
                                 prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
                                 prevCashAmount += getcashamt();
                                 prevCheqAmount += getcheckamt();
                                 if (getcheckamt() > 0) {
+                                    chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
                                     chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
                                     chequeDate = chequeDate + "," + tv_date.getText().toString();
-                                    chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
                                     bankCode = bankCode + "," + bankcode;
                                     bankName = bankName + "," + bankname;
                                 }
@@ -994,14 +526,22 @@ public class PaymentDetails extends AppCompatActivity {
                                 updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
                                 if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
                                     updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                                 } else {
                                     updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                                 }
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                                 if(!isPaymentMade){
-                                    db.updateData(db.COLLECTION, updateMap, filter);
+                                    if(getcashamt()>0 || getcheckamt()>0){
+                                        HashMap<String,String>checkMap = new HashMap<String, String>();
+                                        checkMap.put(db.KEY_INVOICE_NO, collection.getInvoiceNo());
+                                        checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                        if(!db.checkData(db.COLLECTION,checkMap)){
+                                            db.updateData(db.COLLECTION, updateMap, filter);
+                                        }
+                                    }
+                                    //db.updateData(db.COLLECTION, updateMap, filter);
                                 }
-
                                 final Dialog dialog = new Dialog(PaymentDetails.this);
                                 dialog.setContentView(R.layout.dialog_doprint);
                                 dialog.setCancelable(false);
@@ -1017,24 +557,30 @@ public class PaymentDetails extends AppCompatActivity {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }*/
                                         isPaymentMade = true;
-                                        try {
+                                        try{
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                             JSONObject data = new JSONObject();
-                                            data.put("data", (JSONArray) jsonArray);
-                                            HashMap<String, String> map = new HashMap<>();
-                                            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                                            map.put(db.KEY_ORDER_ID, invoiceNo);
-                                            map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
-                                            map.put(db.KEY_DATA, data.toString());
+                                            data.put("data",(JSONArray)jsonArray);
+
+                                            HashMap<String,String>map = new HashMap<>();
+                                            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                            map.put(db.KEY_ORDER_ID,invoiceNo);
+                                            map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                            map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
-                                            Log.e("Print Data","Receipt" + map);
-                                            db.addDataPrint(db.DELAY_PRINT, map);
+                                            Log.e("Print Data", "Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                            Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                            db.addDataPrint(db.DELAY_PRINT,map);
+
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
-                                        } catch (Exception e) {
+                                        }
+                                        catch (Exception e){
                                             e.printStackTrace();
                                             Crashlytics.logException(e);
                                         }
+
                                     }
                                 });
                                 btn_notprint.setOnClickListener(new View.OnClickListener() {
@@ -1042,46 +588,49 @@ public class PaymentDetails extends AppCompatActivity {
                                     public void onClick(View v) {
                                         dialog.dismiss();
                                         isPaymentMade = true;
-                                        try {
+                                        try{
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
                                             JSONObject data = new JSONObject();
-                                            data.put("data", (JSONArray) jsonArray);
-                                            HashMap<String, String> map = new HashMap<>();
-                                            map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
-                                            map.put(db.KEY_ORDER_ID, invoiceNo);
-                                            map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
-                                            map.put(db.KEY_DATA, data.toString());
+                                            data.put("data",(JSONArray)jsonArray);
+
+                                            HashMap<String,String>map = new HashMap<>();
+                                            map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                            map.put(db.KEY_ORDER_ID,invoiceNo);
+                                            map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                            map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
-                                            Log.e("Print Data","Receipt" + map);
-                                            db.addDataPrint(db.DELAY_PRINT, map);
-                                        } catch (Exception e) {
+                                            Log.e("Print Data", "Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                            Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                            db.addDataPrint(db.DELAY_PRINT,map);
+                                        }
+                                        catch (Exception e){
                                             e.printStackTrace();
                                             Crashlytics.logException(e);
                                         }
-                                        Intent intent = new Intent(PaymentDetails.this, CollectionsActivity.class);
-                                        intent.putExtra("headerObj", object);
-                                        //intent.putExtra("msg", "visit");
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
+
+                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                    Helpers.createBackgroundJob(getApplicationContext());
+                                }*/
+
+                                        Intent intent1 = new Intent(PaymentDetails.this, CollectionsActivity.class);
+                                        intent1.putExtra("headerObj", object);
+                                        startActivity(intent1);
                                     }
                                 });
-
                             } else if (from.equals("Final Invoice")) {
                                 HashMap<String, String> map = new HashMap<String, String>();
                                 map.put(db.KEY_AMOUNT_CLEARED, "");
                                 map.put(db.KEY_CASH_AMOUNT, "");
                                 map.put(db.KEY_CHEQUE_AMOUNT, "");
-                                map.put(db.KEY_CHEQUE_NUMBER, "");
                                 map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                                map.put(db.KEY_CHEQUE_NUMBER, "");
                                 map.put(db.KEY_CHEQUE_DATE, "");
                                 map.put(db.KEY_CHEQUE_BANK_CODE, "");
                                 map.put(db.KEY_CHEQUE_BANK_NAME, "");
-                                map.put(db.KEY_IS_POSTED,"");
                                 HashMap<String, String> filter = new HashMap<String, String>();
                                 filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                                 filter.put(db.KEY_INVOICE_NO, invoiceNo);
-                                Log.e("For Update","" + invoiceNo);
                                 filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
                                 Cursor c = db.getData(db.COLLECTION, map, filter);
                                 float prevAmount = 0;
@@ -1097,8 +646,8 @@ public class PaymentDetails extends AppCompatActivity {
                                     prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
                                     prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
                                     prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
-                                    chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
                                     chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
+                                    chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
                                     chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
                                     bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
                                     bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
@@ -1106,7 +655,7 @@ public class PaymentDetails extends AppCompatActivity {
                                 prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
                                 prevCashAmount += getcashamt();
                                 prevCheqAmount += getcheckamt();
-                                if (getcheckamt() > 0 || getcheckamt()<0) {
+                                if (getcheckamt() > 0) {
                                     chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
                                     chequeDate = chequeDate + "," + tv_date.getText().toString();
                                     chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
@@ -1116,19 +665,29 @@ public class PaymentDetails extends AppCompatActivity {
                                 HashMap<String, String> updateMap = new HashMap<String, String>();
                                 updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
                                 updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
-                                updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
                                 updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
                                 updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                                updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
+                                updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
                                 updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
                                 updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
                                 if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
                                     updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                                 } else {
                                     updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
                                 }
-                                updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
-                                db.updateData(db.COLLECTION, updateMap, filter);
-
+                                if(getcashamt()>0 || getcheckamt()>0){
+                                    HashMap<String,String>checkMap = new HashMap<String, String>();
+                                    checkMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    if(!db.checkData(db.COLLECTION,checkMap)){
+                                        db.updateData(db.COLLECTION, updateMap, filter);
+                                    }
+                                    //db.updateData(db.COLLECTION, updateMap, filter);
+                                }
+                                //db.updateData(db.COLLECTION, updateMap, filter);
                                 final Dialog dialog = new Dialog(PaymentDetails.this);
                                 dialog.setContentView(R.layout.dialog_doprint);
                                 dialog.setCancelable(false);
@@ -1146,16 +705,21 @@ public class PaymentDetails extends AppCompatActivity {
                                         }
                                         try{
                                             JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+
                                             JSONObject data = new JSONObject();
                                             data.put("data",(JSONArray)jsonArray);
+
                                             HashMap<String,String>map = new HashMap<>();
                                             map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                                             map.put(db.KEY_ORDER_ID,invoiceNo);
                                             map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
-                                            Log.e("Print Data","Receipt" + map);
+                                            Log.e("Print Data", "Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                            Helpers.logData(PaymentDetails.this, "Print Data" + map);
                                             db.addDataPrint(db.DELAY_PRINT,map);
+
                                             PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
                                             object.execute("", jsonArray);
                                         }
@@ -1181,13 +745,16 @@ public class PaymentDetails extends AppCompatActivity {
                                             map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
                                             map.put(db.KEY_DATA,data.toString());
                                             //map.put(db.KEY_DATA,jsonArray.toString());
-                                            Log.e("Print Data","Receipt" + map);
+                                            Log.e("Print Data", "Receipt" + map);
+                                            Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                            Helpers.logData(PaymentDetails.this, "Print Data" + map);
                                             db.addDataPrint(db.DELAY_PRINT,map);
                                         }
                                         catch (Exception e){
                                             e.printStackTrace();
                                             Crashlytics.logException(e);
                                         }
+
                                         if (Helpers.isNetworkAvailable(getApplicationContext())) {
                                             Helpers.createBackgroundJob(getApplicationContext());
                                         }
@@ -1229,11 +796,528 @@ public class PaymentDetails extends AppCompatActivity {
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                         finish();
+//                               dialog.dismiss();
+//                                Intent intent = new Intent();
+//                                intent.putExtra("pos", pos);
+//                                intent.putExtra("amt", String.valueOf(total_amt));
+//                                setResult(RESULT_OK, intent);
+//                                finish();
                                     }
                                 });
                             }
                         }
+                        else{
+                            if (total_amt > Double.parseDouble(amountdue) || total_amt < Double.parseDouble(amountdue)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(PaymentDetails.this);
+                                builder.setTitle("Payment Detail");
+                                builder.setCancelable(true);
+                                builder.setIcon(R.mipmap.ic_launcher);
+                                builder.setMessage(getString(R.string.amount_larger));
+                                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
+                            else {
+                                if (from.equals("delivery")) {
+
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_AMOUNT_CLEARED, "");
+                                    map.put(db.KEY_CASH_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                                    map.put(db.KEY_CHEQUE_NUMBER, "");
+                                    map.put(db.KEY_CHEQUE_DATE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_CODE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_NAME, "");
+                                    HashMap<String, String> filter1 = new HashMap<String, String>();
+                                    filter1.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    filter1.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    Cursor c = db.getData(db.COLLECTION, map, filter1);
+                                    float prevAmount = 0;
+                                    float prevCashAmount = 0;
+                                    float prevCheqAmount = 0;
+                                    String chequeNumber = "";
+                                    String chequeDate = "";
+                                    String bankName = "";
+                                    String bankCode = "";
+                                    String chequeAmount = "";
+                                    if (c.getCount() > 0) {
+                                        c.moveToFirst();
+                                        prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                        prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                        prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                                        chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
+                                        chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
+                                        chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
+                                        bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
+                                        bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
+                                    }
+                                    prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
+                                    prevCashAmount += getcashamt();
+                                    prevCheqAmount += getcheckamt();
+                                    if (getcheckamt() > 0) {
+                                        chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
+                                        chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                                        chequeDate = chequeDate + "," + tv_date.getText().toString();
+                                        bankCode = bankCode + "," + bankcode;
+                                        bankName = bankName + "," + bankname;
+                                    }
+
+                                    HashMap<String, String> updateMap = new HashMap<String, String>();
+                                    updateMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_DELIVERY);
+                                    updateMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                                    updateMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    updateMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    updateMap.put(db.KEY_INVOICE_AMOUNT, tv_total_amount.getText().toString());
+                                    updateMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                                    updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
+                                    updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                                    updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
+                                    updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
+                                    updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                                    updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
+                                    updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
+                                    updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
+                                    if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                        updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                                    } else {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
+                                        updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                                    }
+
+                                    HashMap<String, String> filter = new HashMap<String, String>();
+                                    filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    filter.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                    //db.updateData(db.COLLECTION, updateMap, filter);
+
+                                    if(getcashamt()>0 || getcheckamt()>0){
+                                        HashMap<String,String>checkMap = new HashMap<String, String>();
+                                        checkMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                                        checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                        if(!db.checkData(db.COLLECTION,checkMap)){
+                                            db.updateData(db.COLLECTION, updateMap, filter);
+                                        }
+                                        //db.updateData(db.COLLECTION, updateMap, filter);
+                                    }
+                            /*HashMap<String, String> invoiceMap = new HashMap<>();
+                            invoiceMap.put(db.KEY_COLLECTION_TYPE, App.COLLECTION_DELIVERY);
+                            invoiceMap.put(db.KEY_CUSTOMER_TYPE, object.getPaymentMethod());
+                            invoiceMap.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            invoiceMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                            invoiceMap.put(db.KEY_INVOICE_AMOUNT, tv_total_amount.getText().toString());
+                            invoiceMap.put(db.KEY_INVOICE_DATE, Helpers.formatDate(new Date(), App.DATE_FORMAT));
+                            invoiceMap.put(db.KEY_AMOUNT_CLEARED, tv_total_amount.getText().toString());
+                            invoiceMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(getcheckamt()));
+                            invoiceMap.put(db.KEY_CHEQUE_NUMBER, edt_check_no.getText().toString());
+                            invoiceMap.put(db.KEY_CHEQUE_DATE, tv_date.getText().toString());
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_CODE, bankcode);
+                            invoiceMap.put(db.KEY_CHEQUE_BANK_NAME, bankname);
+                            invoiceMap.put(db.KEY_CASH_AMOUNT, String.valueOf(getcashamt()));
+                            invoiceMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                            invoiceMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                            invoiceMap.put(db.KEY_IS_PRINTED, App.DATA_MARKED_FOR_POST);
+                            HashMap<String, String> filter = new HashMap<String, String>();
+                            filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filter.put(db.KEY_INVOICE_NO, invoiceNo);
+                            filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                            db.updateData(db.COLLECTION, invoiceMap, filter);*/
+                                    if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                        Helpers.createBackgroundJob(getApplicationContext());
+                                    }
+
+                                    final Dialog dialog = new Dialog(PaymentDetails.this);
+                                    dialog.setContentView(R.layout.dialog_doprint);
+                                    dialog.setCancelable(false);
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                                    dialog.show();
+                                    btn_print.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                    Helpers.createBackgroundJob(getApplicationContext());
+                                }*/
+                                            try {
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data", (JSONArray) jsonArray);
+                                                HashMap<String, String> map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID, invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA, data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT, map);
+                                                PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
+                                                object.execute("", jsonArray);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                        }
+                                    });
+                                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            try {
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data", (JSONArray) jsonArray);
+                                                HashMap<String, String> map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID, invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA, data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT, map);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                            Intent intent = new Intent(PaymentDetails.this, DeliveryActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                } else if (from.equals("collection")) {
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_AMOUNT_CLEARED, "");
+                                    map.put(db.KEY_CASH_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_NUMBER, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                                    map.put(db.KEY_CHEQUE_DATE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_CODE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_NAME, "");
+                                    HashMap<String, String> filter = new HashMap<String, String>();
+                                    filter.put(db.KEY_INVOICE_NO, collection.getInvoiceNo());
+                                    filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    Cursor c = db.getData(db.COLLECTION, map, filter);
+                                    float prevAmount = 0;
+                                    float prevCashAmount = 0;
+                                    float prevCheqAmount = 0;
+                                    String chequeNumber = "";
+                                    String chequeDate = "";
+                                    String bankName = "";
+                                    String bankCode = "";
+                                    String chequeAmount = "";
+                                    if (c.getCount() > 0) {
+                                        c.moveToFirst();
+                                        prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                        prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                        prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                                        chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
+                                        chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
+                                        bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
+                                        bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
+                                        chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
+                                    }
+                                    prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
+                                    prevCashAmount += getcashamt();
+                                    prevCheqAmount += getcheckamt();
+                                    if (getcheckamt() > 0) {
+                                        chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                                        chequeDate = chequeDate + "," + tv_date.getText().toString();
+                                        chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
+                                        bankCode = bankCode + "," + bankcode;
+                                        bankName = bankName + "," + bankname;
+                                    }
+                                    HashMap<String, String> updateMap = new HashMap<String, String>();
+                                    updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
+                                    updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                                    updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
+                                    updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
+                                    updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                                    updateMap.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,chequeAmount);
+                                    updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
+                                    updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
+                                    if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    } else {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
+                                    }
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                                    if(!isPaymentMade){
+                                        if(getcashamt()>0 || getcheckamt()>0){
+                                            HashMap<String,String>checkMap = new HashMap<String, String>();
+                                            checkMap.put(db.KEY_INVOICE_NO, collection.getInvoiceNo());
+                                            checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                            if(!db.checkData(db.COLLECTION,checkMap)){
+                                                db.updateData(db.COLLECTION, updateMap, filter);
+                                            }
+                                            //db.updateData(db.COLLECTION, updateMap, filter);
+                                        }
+                                        //db.updateData(db.COLLECTION, updateMap, filter);
+                                    }
+
+                                    final Dialog dialog = new Dialog(PaymentDetails.this);
+                                    dialog.setContentView(R.layout.dialog_doprint);
+                                    dialog.setCancelable(false);
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                                    dialog.show();
+                                    btn_print.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                /*if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                    Helpers.createBackgroundJob(getApplicationContext());
+                                }*/
+                                            isPaymentMade = true;
+                                            try {
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data", (JSONArray) jsonArray);
+                                                HashMap<String, String> map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID, invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA, data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT, map);
+                                                PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
+                                                object.execute("", jsonArray);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                        }
+                                    });
+                                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            isPaymentMade = true;
+                                            try {
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data", (JSONArray) jsonArray);
+                                                HashMap<String, String> map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID, invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE, ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA, data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT, map);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                            Intent intent = new Intent(PaymentDetails.this, CollectionsActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            //intent.putExtra("msg", "visit");
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+
+                                } else if (from.equals("Final Invoice")) {
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put(db.KEY_AMOUNT_CLEARED, "");
+                                    map.put(db.KEY_CASH_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT, "");
+                                    map.put(db.KEY_CHEQUE_NUMBER, "");
+                                    map.put(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL,"");
+                                    map.put(db.KEY_CHEQUE_DATE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_CODE, "");
+                                    map.put(db.KEY_CHEQUE_BANK_NAME, "");
+                                    map.put(db.KEY_IS_POSTED,"");
+                                    HashMap<String, String> filter = new HashMap<String, String>();
+                                    filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                                    filter.put(db.KEY_INVOICE_NO, invoiceNo);
+                                    Log.e("For Update","" + invoiceNo);
+                                    filter.put(db.KEY_IS_POSTED, App.DATA_NOT_POSTED);
+                                    Cursor c = db.getData(db.COLLECTION, map, filter);
+                                    float prevAmount = 0;
+                                    float prevCashAmount = 0;
+                                    float prevCheqAmount = 0;
+                                    String chequeNumber = "";
+                                    String chequeDate = "";
+                                    String bankName = "";
+                                    String bankCode = "";
+                                    String chequeAmount = "";
+                                    if (c.getCount() > 0) {
+                                        c.moveToFirst();
+                                        prevAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                        prevCashAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CASH_AMOUNT)));
+                                        prevCheqAmount = Float.parseFloat(c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT)));
+                                        chequeNumber = c.getString(c.getColumnIndex(db.KEY_CHEQUE_NUMBER));
+                                        chequeAmount = c.getString(c.getColumnIndex(db.KEY_CHEQUE_AMOUNT_INDIVIDUAL));
+                                        chequeDate = c.getString(c.getColumnIndex(db.KEY_CHEQUE_DATE));
+                                        bankName = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_NAME));
+                                        bankCode = c.getString(c.getColumnIndex(db.KEY_CHEQUE_BANK_CODE));
+                                    }
+                                    prevAmount += Float.parseFloat(tv_total_amount.getText().toString());
+                                    prevCashAmount += getcashamt();
+                                    prevCheqAmount += getcheckamt();
+                                    if (getcheckamt() > 0 || getcheckamt()<0) {
+                                        chequeNumber = chequeNumber + "," + edt_check_no.getText().toString();
+                                        chequeDate = chequeDate + "," + tv_date.getText().toString();
+                                        chequeAmount = chequeAmount + "," + String.valueOf(getcheckamt());
+                                        bankCode = bankCode + "," + bankcode;
+                                        bankName = bankName + "," + bankname;
+                                    }
+                                    HashMap<String, String> updateMap = new HashMap<String, String>();
+                                    updateMap.put(db.KEY_AMOUNT_CLEARED, String.valueOf(prevAmount));
+                                    updateMap.put(db.KEY_CHEQUE_NUMBER, chequeNumber);
+                                    updateMap.put(db.KEY_CHEQUE_DATE,chequeDate);
+                                    updateMap.put(db.KEY_CASH_AMOUNT, String.valueOf(prevCashAmount));
+                                    updateMap.put(db.KEY_CHEQUE_AMOUNT, String.valueOf(prevCheqAmount));
+                                    updateMap.put(db.KEY_CHEQUE_BANK_CODE, bankCode);
+                                    updateMap.put(db.KEY_CHEQUE_BANK_NAME, bankName);
+                                    if (Float.parseFloat(tv_total_amount.getText().toString()) == Float.parseFloat(amountdue)) {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                    } else {
+                                        updateMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_PARTIAL);
+                                    }
+                                    updateMap.put(db.KEY_IS_POSTED, App.DATA_MARKED_FOR_POST);
+                                    if(getcashamt()>0 || getcheckamt()>0){
+                                        HashMap<String,String>checkMap = new HashMap<String, String>();
+                                        checkMap.put(db.KEY_INVOICE_NO, invoiceNo);
+                                        checkMap.put(db.KEY_IS_INVOICE_COMPLETE, App.INVOICE_COMPLETE);
+                                        if(!db.checkData(db.COLLECTION,checkMap)){
+                                            db.updateData(db.COLLECTION, updateMap, filter);
+                                        }
+                                        //db.updateData(db.COLLECTION, updateMap, filter);
+                                    }
+                                    //db.updateData(db.COLLECTION, updateMap, filter);
+
+                                    final Dialog dialog = new Dialog(PaymentDetails.this);
+                                    dialog.setContentView(R.layout.dialog_doprint);
+                                    dialog.setCancelable(false);
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                                    dialog.show();
+                                    btn_print.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            isPaymentMade = true;
+                                            if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                                Helpers.createBackgroundJob(getApplicationContext());
+                                            }
+                                            try{
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA,data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+                                                PrinterHelper object = new PrinterHelper(PaymentDetails.this, PaymentDetails.this);
+                                                object.execute("", jsonArray);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                        }
+                                    });
+                                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            isPaymentMade = true;
+                                            try{
+                                                JSONArray jsonArray = createPrintData("COLLECTION",invoiceNo,"");
+                                                JSONObject data = new JSONObject();
+                                                data.put("data",(JSONArray)jsonArray);
+
+                                                HashMap<String,String>map = new HashMap<>();
+                                                map.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                                                map.put(db.KEY_ORDER_ID,invoiceNo);
+                                                map.put(db.KEY_DOC_TYPE,ConfigStore.CollectionRequest_TR);
+                                                map.put(db.KEY_DATA,data.toString());
+                                                //map.put(db.KEY_DATA,jsonArray.toString());
+                                                Log.e("Print Data", "Receipt" + map);
+                                                Helpers.logData(PaymentDetails.this, "User clicked on do not print");
+                                                Helpers.logData(PaymentDetails.this, "Print Data" + map);
+                                                db.addDataPrint(db.DELAY_PRINT,map);
+                                            }
+                                            catch (Exception e){
+                                                e.printStackTrace();
+                                                Crashlytics.logException(e);
+                                            }
+                                            if (Helpers.isNetworkAvailable(getApplicationContext())) {
+                                                Helpers.createBackgroundJob(getApplicationContext());
+                                            }
+                                            Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            intent.putExtra("msg", "visit");
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                } else {
+                                    final Dialog dialog = new Dialog(PaymentDetails.this);
+                                    dialog.setContentView(R.layout.dialog_doprint);
+                                    dialog.setCancelable(false);
+                                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                                    LinearLayout btn_print = (LinearLayout) dialog.findViewById(R.id.ll_print);
+                                    LinearLayout btn_notprint = (LinearLayout) dialog.findViewById(R.id.ll_notprint);
+                                    dialog.show();
+                                    btn_print.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            intent.putExtra("msg", "visit");
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    btn_notprint.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialog.dismiss();
+                                            Intent intent = new Intent(PaymentDetails.this, CustomerDetailActivity.class);
+                                            intent.putExtra("headerObj", object);
+                                            intent.putExtra("msg", "visit");
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                }
+                            }
+                        }
                     }
+
                 }
             });
         }

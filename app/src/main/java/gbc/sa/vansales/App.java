@@ -15,18 +15,18 @@ public class App extends Application {
 
     //Open these when building for release
     /*@ Production Connection details*/
-    public static final String ENVIRONMENT = "Production";
+   /* public static final String ENVIRONMENT = "Production";
     public static final String HOST = "78.93.41.222";
     public static final int PORT = 8054;
     public static final String SAP_CLIENT = "SAP-CLIENT";
-    public static final String SAP_CLIENT_ID = "800";
+    public static final String SAP_CLIENT_ID = "800";*/
 
     //Open these properties for development
-    /*public static final String ENVIRONMENT = "Development";
+    public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
     public static final int PORT = 8047;
     public static final String SAP_CLIENT = "SAP-CLIENT";
-    public static final String SAP_CLIENT_ID = "350";*/
+    public static final String SAP_CLIENT_ID = "350";
 
     public static final boolean IS_HTTPS = false;
     public static final String SERVER_DOMAIN = "default";
@@ -192,6 +192,26 @@ public class App extends Application {
     public static final String ANSWER_TYPE_SELECT = "select";
     public static final String ANSWER_TYPE_RADIO = "radio";
     public static final String ANSWER_TYPE_CHECKBOX = "checkbox";
+
+    //Download Flags
+    public static final String APP_DOWNLOAD_TRIP_HEADER = "tripHeader";
+    public static final String APP_DOWNLOAD_LOAD_DELIVERY = "loadDelivery";
+    public static final String APP_DOWNLOAD_ARTICLE_HEADER = "articleHeader";
+    public static final String APP_DOWNLOAD_CUSTOMER_HEADER = "customerHeader";
+    public static final String APP_DOWNLOAD_VISIT_LIST = "visitList";
+    public static final String APP_DOWNLOAD_MESSAGES = "messages";
+    public static final String APP_DOWNLOAD_CUSTOMER_DELIVERY = "customerDelivery";
+    public static final String APP_DOWNLOAD_DRIVER_ROUTE_FLAGS = "driverRouteFlags";
+    public static final String APP_DOWNLOAD_ORDER_REASONS= "orderReasons";
+    public static final String APP_DOWNLOAD_ORDER_REJ_REASONS = "orderRejReasons";
+    public static final String APP_DOWNLOAD_VISIT_REASONS = "visitReasons";
+    public static final String APP_DOWNLOAD_PROMOTION2 = "promotion2";
+    public static final String APP_DOWNLOAD_PROMOTION5 = "promotion5";
+    public static final String APP_DOWNLOAD_PROMOTION7 = "promotion7";
+    public static final String APP_DOWNLOAD_PRICING = "pricing";
+    public static final String APP_DOWNLOAD_BANKS = "banks";
+    public static final String APP_DOWNLOAD_FOC = "foc";
+    public static final String APP_DOWNLOAD_DRIVER_OPEN_ITEMS = "driverOpenItems";
 
 
     @Override
