@@ -102,6 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    Helpers.logData(SettingsActivity.this,"User changed language to Arabic");
                     Settings.setString(App.IS_LOGGED_ID, "true");
                     Settings.setString(App.LANGUAGE, "ar");
                     AppController.changeLanguage(getBaseContext(), "ar");
@@ -117,6 +118,7 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     }, 2000);
                 } else {
+                    Helpers.logData(SettingsActivity.this,"User changed language to English");
                     Settings.setString(App.IS_LOGGED_ID, "true");
                     Settings.setString(App.LANGUAGE, "en");
                     AppController.changeLanguage(getBaseContext(), "en");
@@ -171,6 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
         new syncData().execute();
     }
     public void clearData(View view) {
+        Helpers.logData(SettingsActivity.this,"User chose to clear data");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
         alertDialogBuilder.setTitle(getString(R.string.alert))
                 .setMessage(getString(R.string.data_loss_msg))
@@ -178,6 +181,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Helpers.logData(SettingsActivity.this,"User chose to proceed to clear data");
                         Settings.clearPreferenceStore();
                         SettingsActivity.this.deleteDatabase("gbc.db");
                         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
@@ -196,6 +200,7 @@ public class SettingsActivity extends AppCompatActivity {
         alertDialog.show();
     }
     public void reloadData(View view) {
+        Helpers.logData(SettingsActivity.this,"User chose to reload data");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this);
         alertDialogBuilder.setTitle(getString(R.string.alert))
                 .setMessage(getString(R.string.data_loss_msg))
@@ -203,6 +208,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton(getString(R.string.proceed), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Helpers.logData(SettingsActivity.this,"User chose to proceed to reload data");
                         String tripID = Settings.getString(App.TRIP_ID);
                         String username = Settings.getString(App.DRIVER);
                         Settings.clearPreferenceStore();

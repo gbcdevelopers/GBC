@@ -561,6 +561,7 @@ public class DeliveryActivity extends AppCompatActivity {
                         Helpers.logData(DeliveryActivity.this, "Remaining Case" + String.valueOf(remainingCase));
                         Helpers.logData(DeliveryActivity.this, "Reserved Case" + String.valueOf(reservedCase));
                         updateDataMap.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingCase));
+                        updateDataMap.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedCase));
                         HashMap<String, String> filterInter = new HashMap<>();
                         filterInter.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
                         db.updateData(db.VAN_STOCK_ITEMS, updateDataMap, filterInter);

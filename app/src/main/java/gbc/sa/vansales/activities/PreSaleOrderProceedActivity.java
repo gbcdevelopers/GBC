@@ -97,6 +97,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
     float totalamnt = 0;
     float discount = 0;
     int count=0;
+    String customerPO;
     TextView tv_header;
     public ArrayList<ArticleHeader> articles;
     boolean isPrint = false;
@@ -136,6 +137,8 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
         Intent i = this.getIntent();
         object = (Customer) i.getParcelableExtra("headerObj");
         orderList = (OrderList) i.getParcelableExtra("orderList");
+        customerPO = i.getStringExtra("customerpo");
+        Log.e("I have PO","" + customerPO);
         if (getIntent().getExtras() != null) {
             from = getIntent().getStringExtra("from");
         }
@@ -322,6 +325,7 @@ public class PreSaleOrderProceedActivity extends AppCompatActivity implements Da
                             map.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
                             map.put(db.KEY_ORDER_ID, purchaseNum);
                             map.put(db.KEY_PURCHASE_NUMBER, purchaseNum);
+                            map.put(db.KEY_CUSTOMER_PO,customerPO);
                             Helpers.logData(PreSaleOrderProceedActivity.this,"Order Request Data" + loadRequest.getMaterialNo() + "-" + loadRequest.getItemName() + "-"
                                     + loadRequest.getCases() + "-" + loadRequest.getUnits() + "-" + loadRequest.getUom() + "-" + loadRequest.getPrice());
                             orderTotalValue = orderTotalValue + Float.parseFloat(loadRequest.getPrice());

@@ -444,6 +444,11 @@ public class PrinterHelper {
                 }
             }
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (this.outStream != null) {
             try {
                 this.outStream.flush();
@@ -3651,12 +3656,35 @@ public class PrinterHelper {
                     printheaders(getAccurateText("DELIVERY NO - " + object.getString("ORDERNO"), 40, 1), false, 2);
                     printheaders(getAccurateText("DELIVERY DATE - " + object.getString("DELIVERYDATE"),40,1),false,2);
                 }
+                if (object.getString("LANG").equals("en")) {
+                    String customerType = "";
+                    if(object.getString("customertype").equals("1")){
+                        customerType = "CASH";
+                    }
+                    else if(object.getString("customertype").equals("2")){
+                        customerType = "CREDIT";
+                    }
+                    else if(object.getString("customertype").equals("3")){
+                        customerType = "TC";
+                    }
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                    this.outStream.write(this.NewLine);
+                    printheaders(getAccurateText(customerType + " " + "INVOICE NO - " + object.getString("ORDERNO"),40,1),false,2);
+                } else if (object.getString("invoicepaymentterms").contains("2")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Creditinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
+                } else if (object.getString("invoicepaymentterms").contains("0") || object.getString("invoicepaymentterms").contains("1")) {
+                    printheaders(getAccurateText("@" + ArabicTEXT.Cashinvoice + "!:" + object.getString("invoicenumber"), 40, 1), true, 2);
+                } else {
+                    //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
+                }
                 this.outStream.write(this.DoubleWideOff);
                 this.outStream.write(this.BoldOff);
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.NewLine);
                 this.outStream.write(this.BoldOn);
                 try {
+                    printheaders("CUSTOMER ID: " + object.getString("CUSTOMERID"), false, 2);
+                    this.outStream.write(this.NewLine);
                     String[] parts = object.getString("CUSTOMER").split("\\-");
                     printheaders("CUSTOMER: " + parts[0], false, 2);
                     this.outStream.write(this.NewLine);
@@ -3667,6 +3695,8 @@ public class PrinterHelper {
                     printheaders("ADDRESS: " + object.getString("ADDRESS"), false, 1);
                     this.outStream.write(this.NewLine);
                     printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
+                    this.outStream.write(this.NewLine);
+                    printheaders("PAYEE: " + object.getString("payee"), false, 1);
                     this.outStream.write(this.NewLine);
                     //this.outStream.write(this.NewLine);
                     //this.outStream.write(this.NewLine);
@@ -3748,6 +3778,11 @@ public class PrinterHelper {
         }
     }
     private void closeConnection(){
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (this.outStream != null) {
             try {
                 this.outStream.flush();

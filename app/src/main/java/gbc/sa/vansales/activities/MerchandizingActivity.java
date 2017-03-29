@@ -49,7 +49,7 @@ public class MerchandizingActivity extends AppCompatActivity {
                         startActivity(intent0);
                         break;
                     case 1:
-                        //Distribution/Shelf Stock
+                        //Distribution/Shelf Stock(Complete - Integrate)
                         Intent intent1 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
                         startActivity(intent1);
                         break;
@@ -59,12 +59,12 @@ public class MerchandizingActivity extends AppCompatActivity {
                         startActivity(intent2);
                         break;
                     case 3:
-                        //Survey
+                        //Survey(Complete)
                         Intent intent3 = new Intent(MerchandizingActivity.this, SurveyActivity.class);
                         startActivity(intent3);
                         break;
                     case 4:
-                        //Planogram
+                        //Planogram(Complete)
                         Intent intent4 = new Intent(MerchandizingActivity.this, PlanogramActivity.class);
                         startActivity(intent4);
                         break;
@@ -79,8 +79,8 @@ public class MerchandizingActivity extends AppCompatActivity {
                         startActivity(intent6);
                         break;
                     case 7:
-                        //Item Complaint
-                        Intent intent7 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
+                        //Item Complaint(Complete)
+                        Intent intent7 = new Intent(MerchandizingActivity.this, ItemComplaints.class);
                         startActivity(intent7);
                         break;
                     default:

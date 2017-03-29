@@ -215,10 +215,14 @@
 				<string name="invoice_total">إجمالي الفاتورة</string>
 				<string name="itemNameLabel">"اسم الصنف"</string>
 				<string name="item_code">كود الصنف</string>
+				<string name="item_complaint">إيتم شكوى</string>
 				<string name="item_description">وصف</string>
 				<string name="item_discounts">خصومات الاصناف</string>
 				<string name="item_list">قائمة الصنف</string>
 				<string name="item_list_lbl">قائمة الصنف</string>
+				<string name="item_packing">Item Packing Rating</string>
+				<string name="item_customer_satisfaction">Item Customer Satisfaction Rating</string>
+				<string name="item_sale">Item Sale Rating</string>
 				<string name="item_no">كود الصنف</string>
 				<string name="item_number">كود الصنف</string>
 				<string name="item_sales_details">تفاصيل الصنف </string>

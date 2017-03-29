@@ -187,6 +187,7 @@ public class SyncData extends IntentService {
             String tempCustomerNumber = "";
             String deliveryNumber = "";
             String tempDeliveryNumber = "";
+            String customerPO = "";
 
             switch (request){
 
@@ -665,7 +666,8 @@ public class SyncData extends IntentService {
                         itemMap.put(db.KEY_UOM,"");
                         itemMap.put(db.KEY_PRICE,"");
                         itemMap.put(db.KEY_ORDER_ID,"");
-                        itemMap.put(db.KEY_CUSTOMER_NO,"");
+                        itemMap.put(db.KEY_CUSTOMER_NO, "");
+                        itemMap.put(db.KEY_CUSTOMER_PO,"");
                         HashMap<String, String> filter = new HashMap<>();
                         filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
 
@@ -678,6 +680,7 @@ public class SyncData extends IntentService {
                                 tempPurchaseNumber = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_ORDER_ID));
                                 tempCustomerNumber = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_CUSTOMER_NO));
                                 documentDate = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_DATE));
+                                customerPO = pendingOrderRequestCursor.getString(pendingOrderRequestCursor.getColumnIndex(db.KEY_CUSTOMER_PO));
                                 if(customerNumber.equals("")){
                                     customerNumber = tempCustomerNumber;
                                 }
@@ -691,7 +694,7 @@ public class SyncData extends IntentService {
                                     if(customerNumber.equals(tempCustomerNumber)){
                                         OfflinePost object = new OfflinePost();
                                         object.setCollectionName(App.POST_COLLECTION);
-                                        object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber,documentDate));
+                                        object.setMap(Helpers.buildHeaderMapOrder(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate,customerPO));
                                         object.setDeepEntity(deepEntity);
                                         Helpers.logData(getApplication(), "Order Batch Header" + object.getMap().toString());
                                         Helpers.logData(getApplication(), "Order Batch Body" + deepEntity.toString());
@@ -702,7 +705,8 @@ public class SyncData extends IntentService {
                                     else{
                                         OfflinePost object = new OfflinePost();
                                         object.setCollectionName(App.POST_COLLECTION);
-                                        object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        //object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        object.setMap(Helpers.buildHeaderMapOrder(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate, customerPO));
                                         object.setDeepEntity(deepEntity);
                                         Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
                                         Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
@@ -750,7 +754,8 @@ public class SyncData extends IntentService {
                                     if(customerNumber.equals(tempCustomerNumber)){
                                         OfflinePost object = new OfflinePost();
                                         object.setCollectionName(App.POST_COLLECTION);
-                                        object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        //object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        object.setMap(Helpers.buildHeaderMapOrder(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate, customerPO));
                                         object.setDeepEntity(deepEntity);
                                         Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
                                         Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
@@ -762,7 +767,8 @@ public class SyncData extends IntentService {
                                     else{
                                         OfflinePost object = new OfflinePost();
                                         object.setCollectionName(App.POST_COLLECTION);
-                                        object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        //object.setMap(Helpers.buildHeaderMap(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate));
+                                        object.setMap(Helpers.buildHeaderMapOrder(ConfigStore.LoadRequestFunction, "", ConfigStore.CustomerOrderRequestDocumentType, customerNumber, "", purchaseNumber, documentDate, customerPO));
                                         object.setDeepEntity(deepEntity);
                                         Helpers.logData(getApplication(), "Customer Order Batch Header" + object.getMap().toString());
                                         Helpers.logData(getApplication(), "Customer Order Batch Body" + deepEntity.toString());
@@ -2488,6 +2494,72 @@ public class SyncData extends IntentService {
                                     map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
                                 }
                                 db.updateData(db.DRIVER_COLLECTION,map,filter);
+                            }
+                            break;
+                        }
+                        case ConfigStore.PartialCollectionFunction: {
+                            if(response.getResponse_code().equals("201")){
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                if(!response.getOrderID().equals("")){
+                                    filter.put(db.KEY_INVOICE_NO,response.getOrderID());
+                                }
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                                Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                Helpers.logData(getApplication(), "Going for Update" + ConfigStore.PartialCollectionFunction);
+                                db.updateData(db.COLLECTION,map,filter);
+                            }
+                            else{
+                                HashMap<String,String>ivMap = new HashMap<>();
+                                ivMap.put(db.KEY_AMOUNT_CLEARED,"");
+                                ivMap.put(db.KEY_INVOICE_AMOUNT,"");
+
+                                HashMap<String, String> map = new HashMap<String, String>();
+                                map.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+                                map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
+                                // map.put(db.KEY_ORDER_ID,response.getOrderID());
+
+                                HashMap<String, String> filter = new HashMap<>();
+                                filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
+                                //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+                                //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
+                                filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+
+                                Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
+                                double newinvAmount = 0;
+                                if(prevAmnt.getCount()>0){
+                                    prevAmnt.moveToFirst();
+                                    newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
+                                            Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                }
+                                if(!(newinvAmount==0)){
+                                    map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
+                                    map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
+                                }
+                                Log.e("Going Partial","" + map);
+                                Log.e("Going Filter","" + filter);
+                                db.updateData(db.COLLECTION,map,filter);
                             }
                             break;
                         }

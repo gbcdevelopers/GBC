@@ -1,4 +1,6 @@
 package gbc.sa.vansales.activities;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -8,8 +10,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,6 +64,7 @@ public class PreSaleOrderActivity extends AppCompatActivity {
     DatabaseHandler db = new DatabaseHandler(this);
     LoadingSpinner loadingSpinner;
     SwipeRefreshLayout refreshLayout;
+    String customerPO="000000";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,15 +114,23 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             iv_refresh.setVisibility(View.INVISIBLE);
             proceedArrayList = new ArrayList<>();
             presaleAdapterdapter = new PresaleAdapter(PreSaleOrderActivity.this, R.layout.custom_delivery, proceedArrayList.size());
-            list_delivery.setAdapter(adapter);
+            //list_delivery.setAdapter(adapter);
             flt_presale.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Helpers.logData(PreSaleOrderActivity.this, "Creating an order Request button clicked");
-                    Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
-                    intent.putExtra("from", "button");
-                    intent.putExtra("headerObj", object);
-                    startActivity(intent);
+                    Log.e("Driver Dist Chan","" + Settings.getString(App.DIST_CHANNEL));
+                    if(Settings.getString(App.DIST_CHANNEL).equals("10")){
+                        showDialog();
+                    }
+                    else{
+                        Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
+                        intent.putExtra("from", "button");
+                        intent.putExtra("headerObj", object);
+                        intent.putExtra("customerpo",customerPO);
+                        startActivity(intent);
+                    }
+
                 }
             });
             /********************************************************
@@ -164,6 +177,56 @@ public class PreSaleOrderActivity extends AppCompatActivity {
         }
 
     }
+
+    public void showDialog() {
+        LayoutInflater li = LayoutInflater.from(PreSaleOrderActivity.this);
+        View promptsView = li.inflate(R.layout.activity_odometer_popup, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                PreSaleOrderActivity.this);
+        alertDialogBuilder.setView(promptsView);
+        final TextView tv_title = (TextView) promptsView
+                .findViewById(R.id.textView1);
+        tv_title.setText("Please enter Customer Purchase Number");
+        //Reading last save odometer
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+        // set dialog message
+        Helpers.logData(PreSaleOrderActivity.this, "Capturing customer purchase number value");
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String input = userInput.getText().toString();
+                                if (input.equals("")) {
+                                    Helpers.logData(PreSaleOrderActivity.this, "User entered blank  value");
+                                    dialog.cancel();
+                                    Toast.makeText(PreSaleOrderActivity.this, getString(R.string.valid_value), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Helpers.logData(PreSaleOrderActivity.this, "User value" + input + "for posting");
+                                    customerPO = input.trim().toString();
+                                    Intent intent = new Intent(PreSaleOrderActivity.this, PreSaleOrderProceedActivity.class);
+                                    intent.putExtra("from", "button");
+                                    intent.putExtra("headerObj", object);
+                                    intent.putExtra("customerpo", customerPO);
+                                    startActivity(intent);
+
+                                }
+                            }
+                        })
+                .setNegativeButton(getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+//                                Intent i=new Intent(getActivity(),DashboardActivity.class);
+//                                startActivity(i);
+                            }
+                        });
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -196,7 +259,10 @@ public class PreSaleOrderActivity extends AppCompatActivity {
             if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
+            adapter = new OrderListBadgeAdapter(PreSaleOrderActivity.this, arrayList);
+            list_delivery.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+            //adapter.notifyDataSetChanged();
         }
     }
     public class loadOrdersLocal extends AsyncTask<Void, Void, Void> {
@@ -228,6 +294,8 @@ public class PreSaleOrderActivity extends AppCompatActivity {
                 loadingSpinner.hide();
             }
             //Log.e("ArrayList","" + arrayList.size());
+            adapter = new OrderListBadgeAdapter(PreSaleOrderActivity.this, arrayList);
+            list_delivery.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
     }

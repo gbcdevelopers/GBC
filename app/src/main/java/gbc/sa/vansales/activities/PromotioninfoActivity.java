@@ -133,6 +133,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         ll_bottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(PromotioninfoActivity.this,"User clicked on Complete Invoice button");
                 try{
                     if (from.equals("Final Invoice")) {
                         final Dialog dialog = new Dialog(PromotioninfoActivity.this);
@@ -151,6 +152,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                             @Override
                             public void onClick(View v) {
                                 isPrint = true;
+                                Helpers.logData(PromotioninfoActivity.this,"User clicked on Print button");
                                 if (returnExist("")) {
                                     if (returnExist(App.GOOD_RETURN) && returnExist(App.BAD_RETURN)) {
                                         referenceCount = 2;
@@ -175,6 +177,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                            /* Intent intent = new Intent(PromotioninfoActivity.this, DashboardActivity.class);
                             startActivity(intent);
                             finish();*/
+                                Helpers.logData(PromotioninfoActivity.this,"User clicked on Do Not Print button");
                                 if (returnExist("")) {
                                     if (returnExist(App.GOOD_RETURN) && returnExist(App.BAD_RETURN)) {
                                         referenceCount = 2;
@@ -230,6 +233,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+                                Helpers.logData(PromotioninfoActivity.this, "User clicked on Print button");
                                 isPrint = true;
                                 new postDeliveryData().execute();
                                 /*Intent intent = new Intent(PaymentDetails.this, DashboardActivity.class);
@@ -241,6 +245,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+                                Helpers.logData(PromotioninfoActivity.this, "User clicked on Do Not Print button");
                                 new postDeliveryData().execute();
                             /*dialog.dismiss();
                             Intent intent = new Intent(PromotioninfoActivity.this, CustomerDetailActivity.class);
@@ -309,6 +314,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         }
     }
     private boolean returnExist(String returnType) {
+        Helpers.logData(PromotioninfoActivity.this,"Checking if return exist for order");
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_TIME_STAMP, "");
@@ -333,6 +339,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
 
     }
     private boolean invoiceExist() {
+        Helpers.logData(PromotioninfoActivity.this,"Checking if invoice exist for order");
         try{
             HashMap<String, String> map = new HashMap<>();
             map.put(db.KEY_TIME_STAMP, "");
@@ -542,6 +549,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         }
         catch (Exception e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
 
     }
@@ -1176,8 +1184,10 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         protected void onPostExecute(Void aVoid) {
             try{
                 Log.e("Order ID Post Data", "" + this.orderID);
+                Helpers.logData(PromotioninfoActivity.this,"Order ID Post Data" + this.orderID);
                 if(this.orderID.trim().equals(",")){
                     Log.e("OMG","OMG");
+                    Helpers.logData(PromotioninfoActivity.this,"OMG");
                     if (loadingSpinner.isShowing()) {
                         loadingSpinner.hide();
                     }
@@ -1654,7 +1664,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             if (add) {
                 loadingSpinner.show();
                 //Log.e("ArrayList Size", "" + arraylist.size());
-                for (Sales sale : arraylist) {
+                //for (Sales sale : arraylist) {  //Changes for good stock not getting added to van stock. Comment line
+                for (Sales sale : arraylistGR) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(db.KEY_MATERIAL_NO, "");
                     map.put(db.KEY_REMAINING_QTY_CASE, "");
@@ -2135,7 +2146,37 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
                         deliveryItem.setItemCase(cursor.getString(cursor.getColumnIndex(db.KEY_CASE)));
                         deliveryItem.setItemUnits(cursor.getString(cursor.getColumnIndex(db.KEY_UNIT)));
                         deliveryItem.setItemUom(cursor.getString(cursor.getColumnIndex(db.KEY_UOM)));
-                        deliveryItem.setAmount(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        //deliveryItem.setAmount(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+
+                        /*Changes to get customer price in printout
+                        * Changes by Rakshit on 27/02/2017
+                        * */
+                        float tempPrice = 0;
+                        HashMap<String, String> filterComp = new HashMap<>();
+                        filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                        filterComp.put(db.KEY_MATERIAL_NO, cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
+                        HashMap<String, String> priceMap = new HashMap<>();
+                        priceMap.put(db.KEY_MATERIAL_NO, "");
+                        priceMap.put(db.KEY_AMOUNT, "");
+                        if (db.checkData(db.PRICING, filterComp)) {
+                            Cursor customerPriceCursor = db.getData(db.PRICING, priceMap, filterComp);
+                            if (customerPriceCursor.getCount() > 0) {
+                                customerPriceCursor.moveToFirst();
+                                tempPrice = Float.parseFloat(customerPriceCursor.getString(customerPriceCursor.getColumnIndex(db.KEY_AMOUNT)));
+                            }
+                        } else {
+                            if (cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.CASE_UOM) || cursor.getString(cursor.getColumnIndex(db.KEY_UOM)).equals(App.BOTTLES_UOM)) {
+                                tempPrice = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                                //amount += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                            } else {
+                                tempPrice = 0;
+                            }
+                        }
+                        //sale.setPrice(String.valueOf(tempPrice));
+                       // deliveryItem.setAmount(cursor.getString(cursor.getColumnIndex(db.KEY_AMOUNT)));
+                        deliveryItem.setAmount(String.valueOf(tempPrice));
+                        /*End of changes*/
+                        Log.e("New Del Price","" + deliveryItem.getMaterialNo() + "-" + deliveryItem.getAmount());
                         deliveryArrayList.add(deliveryItem);
                     }
                     while (cursor.moveToNext());
@@ -2618,6 +2659,7 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
     public JSONArray createPrintDeliveryData(String type, String orderDate, String orderNo) {
         JSONArray jArr = new JSONArray();
         String invoiceFooter = "";
+        String payee = "";
         HashMap<String,String> map = new HashMap<>();
         map.put(db.KEY_USERNAME,"");
         map.put(db.KEY_STRUCTURE,"");
@@ -2632,6 +2674,17 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
         if(cursor.getCount()>0){
             cursor.moveToFirst();
             invoiceFooter = UrlBuilder.decodeString(cursor.getString(cursor.getColumnIndex(db.KEY_MESSAGE)));
+        }
+        HashMap<String,String> payMap = new HashMap<>();
+        payMap.put(db.KEY_PAYER_NO,"");
+
+        HashMap<String,String> filterPayMap = new HashMap<>();
+        filterPayMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+
+        Cursor payCursor = db.getData(db.CUSTOMER_SALES_AREAS,payMap,filterPayMap);
+        if(payCursor.getCount()>0){
+            payCursor.moveToFirst();
+            payee = payCursor.getString(payCursor.getColumnIndex(db.KEY_PAYER_NO));
         }
         try {
             double totalPcs = 0;
@@ -2658,9 +2711,18 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             mainArr.put("invoicepaymentterms", "5");
             mainArr.put("invoicenumber", orderNo);
             mainArr.put("INVOICETYPE", type);
+            mainArr.put("payee",payee.equals("")?"-":payee);
             String arabicCustomer = "اللولو هايبر ماركت";
             mainArr.put("CUSTOMER", UrlBuilder.decodeString(object.getCustomerName()) + "-" + arabicCustomer);
-            mainArr.put("customertype", "4");
+            mainArr.put("CUSTOMERID", object.getCustomerID());
+            //mainArr.put("customertype", "4");
+            if (object.getPaymentMethod().equals(App.CASH_CUSTOMER)) {
+                mainArr.put("customertype", "1");
+            } else if (object.getPaymentMethod().equals(App.CREDIT_CUSTOMER)) {
+                mainArr.put("customertype", "2");
+            } else if (object.getPaymentMethod().equals(App.TC_CUSTOMER)) {
+                mainArr.put("customertype", "3");
+            }
             mainArr.put("ADDRESS", object.getCustomerAddress());
             mainArr.put("ARBADDRESS", "");
             mainArr.put("displayupc", "0");

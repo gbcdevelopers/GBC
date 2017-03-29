@@ -64,6 +64,7 @@ public class CollectionsActivity extends AppCompatActivity {
         if (object == null) {
             object = Const.allCustomerdataArrayList.get(Const.customerPosition);
         }
+        Helpers.logData(CollectionsActivity.this,"Came on collection screen" + object.getCustomerID());
         loadingSpinner = new LoadingSpinner(this);
         customers = CustomerHeaders.get();
         CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
@@ -136,14 +137,14 @@ public class CollectionsActivity extends AppCompatActivity {
                          @ needs to be collected. "H" indicator invoices need not be collected.
                          ************************************************************/
                         if (colletionDatas.get(position).getIndicator().equals(App.ADD_INDICATOR)) {
-                            Helpers.logData(CollectionsActivity.this, "List item clicked. Going for collection of invoice no" + colletionDatas.get(position).getInvoiceNo());
+                            Helpers.logData(CollectionsActivity.this, "List item clicked. Going for collection of invoice no " + colletionDatas.get(position).getInvoiceNo());
                             Intent intent = new Intent(CollectionsActivity.this, PaymentDetails.class);
                             intent.putExtra("msg", "collection");
                             intent.putExtra("from", "collection");
                             intent.putExtra("pos", position);
                             intent.putExtra("headerObj", object);
                             float dueamount = Float.parseFloat(colletionDatas.get(position).getInvoiceAmount()) - Float.parseFloat(colletionDatas.get(position).getAmountCleared());
-                            Helpers.logData(CollectionsActivity.this, "Invoice no" + colletionDatas.get(position).getInvoiceNo() + "has due amount" + dueamount);
+                            Helpers.logData(CollectionsActivity.this, "Invoice no " + colletionDatas.get(position).getInvoiceNo() + " has due amount " + dueamount);
                             intent.putExtra("collection", colletionDatas.get(position));
                             intent.putExtra("amountdue", String.valueOf(dueamount));
                             startActivity(intent);
@@ -162,6 +163,7 @@ public class CollectionsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
        //Do not allow back hardware press
+        Helpers.logData(CollectionsActivity.this,"Driver clicked on hardware back button");
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -232,7 +234,7 @@ public class CollectionsActivity extends AppCompatActivity {
         }
     }
     private void setCollectionData(Cursor cursor) {
-        Helpers.logData(CollectionsActivity.this, "Loading Collections for Customer" + object.getCustomerID() + " has" + cursor.getCount() + "invoices");
+        Helpers.logData(CollectionsActivity.this, "Loading Collections for Customer " + object.getCustomerID() + " has " + cursor.getCount() + " invoices");
         try {
             Cursor c = cursor;
             do {

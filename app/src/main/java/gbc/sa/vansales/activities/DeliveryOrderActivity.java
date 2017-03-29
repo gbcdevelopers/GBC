@@ -209,6 +209,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
                     updateLabel(year, monthOfYear, dayOfMonth);
                 }
             };
+            registerForContextMenu(deliveryItemsList);
             deliveryItemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {

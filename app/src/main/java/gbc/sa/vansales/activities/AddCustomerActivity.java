@@ -151,8 +151,10 @@ public class AddCustomerActivity extends AppCompatActivity {
         addCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.logData(AddCustomerActivity.this,"Driver clicked on add customer button");
                 try{
                     if(!checkNullValues()){
+                        Helpers.logData(AddCustomerActivity.this,"Null values were there when he clicked on add button");
                         Toast.makeText(AddCustomerActivity.this,getString(R.string.requiredFields),Toast.LENGTH_SHORT).show();
                     }
                     else{
@@ -161,6 +163,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                             if(gps.canGetLocation()){
                                 latitude = String.valueOf(gps.getLatitude());
                                 longitude = String.valueOf(gps.getLongitude());
+                                Helpers.logData(AddCustomerActivity.this,"Customer Location Captured" + latitude + "," + longitude);
                             }
 
                             HashMap<String,String> map = new HashMap<String, String>();
@@ -195,6 +198,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                              @ The customer created should become a part of the visit list
                              @ so adding the customer in the visit list table
                              ************************************************************/
+                            Helpers.logData(AddCustomerActivity.this,"Adding customer data to visit list" + params);
                             db.addData(db.VISIT_LIST, params);
 
                             HashMap<String, String> headerParams = new HashMap<>();
@@ -236,6 +240,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                              @ The customer created should become a part of the customer master as well
                              @ so adding the customer in the customer table
                              ************************************************************/
+                            Helpers.logData(AddCustomerActivity.this,"Adding customer data to customer master" + headerParams);
                             db.addData(db.CUSTOMER_HEADER, headerParams);
 
                             HashMap<String, String> newCustomer = new HashMap<>();
@@ -263,6 +268,7 @@ public class AddCustomerActivity extends AppCompatActivity {
                              @ The customer created should also be posted to the backend.
                              @ so adding the customer in the posting table
                              ************************************************************/
+                            Helpers.logData(AddCustomerActivity.this,"Adding customer in customer post table");
                             db.addData(db.NEW_CUSTOMER_POST,newCustomer);
 
                             /************************************************************

@@ -459,10 +459,10 @@ public class LoadVerifyActivity extends AppCompatActivity {
                                 actualQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
                                 reservedQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
                                 remainingQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                                Helpers.logData(LoadVerifyActivity.this,"Quantity already on van" + actualQtyCase + "-" + reservedQtyCase + remainingQtyCase);
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity already on van" + actualQtyCase + "-" + reservedQtyCase + "-" + remainingQtyCase);
                                 actualQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
                                 remainingQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
-                                Helpers.logData(LoadVerifyActivity.this,"Quantity new on van" + actualQtyCase + "-" + reservedQtyCase + remainingQtyCase);
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity new on van" + actualQtyCase + "-" + reservedQtyCase + "-" + remainingQtyCase);
                             }
                             while (cursor.moveToNext());
                             map.put(db.KEY_ACTUAL_QTY_CASE, String.valueOf(actualQtyCase));

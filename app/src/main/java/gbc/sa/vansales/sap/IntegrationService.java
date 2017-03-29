@@ -1087,7 +1087,41 @@ public class IntegrationService extends IntentService {
                                         }
                                     }
                                 }
-
+                                if(jsonObject.getString("Function").equals(ConfigStore.PartialCollectionFunction)){
+                                    if(offlineResponse.getResponse_code().equals("201")){
+                                        JSONArray jsonArray = jsonObject.getJSONObject("SOItems").getJSONArray("results");
+                                        for(int m=0;m<jsonArray.length();m++){
+                                            JSONObject obj = jsonArray.getJSONObject(m);
+                                            offlineResponse.setFunction(jsonObject.getString("Function"));
+                                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                            offlineResponse.setOrderID(obj.getString("OrderId"));
+                                            Log.e("Response Order", "" + obj.getString("OrderId"));
+                                            offlineResponse.setPurchaseNumber(obj.getString("Value"));
+                                            arrayList.add(offlineResponse);
+                                            offlineResponse = new OfflineResponse();
+                                            if(m<jsonArray.length()){
+                                                offlineResponse.setResponse_code("201");
+                                                offlineResponse.setResponse_message("Success");
+                                            }
+                                        }
+                                        /*if(jsonObject.getString("CustomerId").equals(Settings.getString(App.DRIVER))){
+                                            offlineResponse.setFunction(jsonObject.getString("Function")+"D");
+                                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                            arrayList.add(offlineResponse);
+                                        }
+                                        else{
+                                            offlineResponse.setFunction(jsonObject.getString("Function"));
+                                            offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
+                                            offlineResponse.setOrderID(jsonObject.getString("OrderId"));
+                                            Log.e("Response Order","" + jsonObject.getString("OrderId"));
+                                            offlineResponse.setPurchaseNumber(jsonObject.getString("PurchaseNum"));
+                                            arrayList.add(offlineResponse);
+                                        }*/
+                                    }
+                                }
                             /*offlineResponse.setCustomerID(jsonObject.getString("CustomerId"));
                             offlineResponse.setOrderID(jsonObject.getString("OrderId"));
                             Log.e("Response Order","" + jsonObject.getString("OrderId"));

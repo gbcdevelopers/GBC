@@ -11,6 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.ItemComplaints;
 import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.adapters.ProductListAdapter;
 import gbc.sa.vansales.data.ArticleHeaders;
@@ -50,6 +51,8 @@ public class ProductFragment extends Fragment {
                     GListFragment.setProductList();
                 } else if (SalesInvoiceActivity.tab_position == 3) {
                     BListFragment.setProductList();
+                } else if (SalesInvoiceActivity.tab_position == 99) {
+                    ItemComplaints.setProductList();
                 }
                 getActivity().finish();
             }

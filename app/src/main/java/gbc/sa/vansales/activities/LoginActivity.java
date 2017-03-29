@@ -118,8 +118,8 @@ public class LoginActivity extends Activity {
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-        id = "E102964";
-        password = "E102964";
+        id = "E100824";
+        password = "E100824";
         Helpers.logData(LoginActivity.this,"Login Credentials for user:" + id + "/" + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
@@ -238,13 +238,13 @@ public class LoginActivity extends Activity {
                                         loadingSpinner.show();
                                         //For development purpose only
                                         // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
-                                if(!checkTripID("Y000030000000014")){
+                                if(!checkTripID("C111260000000550")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "Y000030000000014");
+                                    Settings.setString(TRIP_ID, "C111260000000550");
                                     //Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials(username, password, Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("Y000030000000014");
+                                    downloadData("C111260000000550");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");

@@ -425,6 +425,34 @@ public class Helpers {
         return map;
     }
 
+    public static HashMap<String, String> buildHeaderMapOrder(String function, String orderId, String documentType, String customerId,
+                                                         String orderValue, String purchaseNumber, String documentDate,String customerPO) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("Function", function);
+        Log.e("CustomerPO","" + customerPO);
+        map.put("TripId",customerPO.equals("000000")?Settings.getString(App.TRIP_ID):customerPO);
+        map.put("OrderId", orderId.equals("") ? "0" : orderId);
+        map.put("DocumentType", function.equals(ConfigStore.LoadRequestFunction)&&customerId.equals(Settings.getString(App.DRIVER))
+                ?getDocumentTypefromDate(stringToDate(documentDate,App.DATE_PICKER_FORMAT))
+                :documentType);
+        if(!documentDate.equals("")){
+            map.put("DocumentDate", Helpers.parseDateforPost(documentDate));
+        }
+
+        // map.put("DocumentDate", Helpers.formatDate(new Date(),App.DATE_FORMAT_WO_SPACE));
+        // map.put("DocumentDate", null);
+           /* map.put("PurchaseNum", Helpers.generateNumber(db,ConfigStore.LoadRequest_PR_Type));
+            purchaseNumber = map.get("PurchaseNum");*/
+        map.put("CustomerId", customerId);
+        map.put("SalesOrg", Settings.getString(App.SALES_ORG));
+        map.put("DistChannel", Settings.getString(App.DIST_CHANNEL));
+        map.put("Division", Settings.getString(App.DIVISION));
+        map.put("OrderValue", orderValue.equals("") ? "2000" : orderValue);
+        map.put("Currency", App.CURRENCY);
+        map.put("PurchaseNum", purchaseNumber);
+        return map;
+    }
+
     public static HashMap<String, String> buildHeaderMapVisitList(String function, String startDateTimeStamp,
                                                                   String endDateTimeStamp, String visitID,
                                                                   String activityID,String visitReason,
@@ -505,7 +533,7 @@ public class Helpers {
     }
     public static HashMap<String, String> buildOdometerHeader(String tripId,String value) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("TripID",tripId);
+        map.put("TripID", tripId);
         map.put("Value", value);
         return map;
     }

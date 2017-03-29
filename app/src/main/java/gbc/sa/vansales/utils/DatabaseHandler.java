@@ -232,6 +232,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_IS_PRINTED = "isPrinted";
     //Order Request
     public static final String KEY_ORDER_ID = "order_id";
+    public static final String KEY_CUSTOMER_PO = "customer_po";
     //Generating Sequential Number for Purchase Number
     public static final String KEY_DOC_TYPE = "documentType";
     public static final String KEY_PURCHASE_NUMBER = "purchaseNumber";
@@ -808,6 +809,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_TRIP_ID + " TEXT,"
                 + KEY_DATE + " TEXT,"
                 + KEY_ORDER_ID + " TEXT,"
+                + KEY_CUSTOMER_PO + " TEXT,"
                 + KEY_PURCHASE_NUMBER + " TEXT,"
                 + KEY_ITEM_NO + " TEXT,"
                 + KEY_MATERIAL_DESC1 + " TEXT,"

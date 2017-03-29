@@ -222,10 +222,14 @@
     <string name="invoice_total">INVOICE TOTAL</string>
     <string name="itemNameLabel">"Item Name : "</string>
     <string name="item_code">Item Code</string>
+    <string name="item_complaint">Item Complaint</string>
     <string name="item_description">Desc</string>
     <string name="item_discounts">ITEM DISCOUNTS</string>
     <string name="item_list">ITEM LIST</string>
     <string name="item_list_lbl">Item List</string>
+    <string name="item_packing">Item Packing Rating</string>
+    <string name="item_customer_satisfaction">Item Customer Satisfaction Rating</string>
+    <string name="item_sale">Item Sale Rating</string>
     <string name="item_no">Item No</string>
     <string name="item_number">Item no</string>
     <string name="item_sales_details">ITEM SALES DETAILS</string>

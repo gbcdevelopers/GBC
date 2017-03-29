@@ -142,6 +142,9 @@ public class VanStockActivity extends AppCompatActivity {
             if(vanStock.getItem_case().equals("0.0")&&vanStock.getItem_units().equals("0.0")){
 
             }
+            else if(Double.parseDouble(vanStock.getItem_case())<0||Double.parseDouble(vanStock.getItem_units())<0){
+
+            }
             else{
                 arraylist.add(vanStock);
             }

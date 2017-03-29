@@ -212,6 +212,7 @@ public class CustomerDetailActivity extends AppCompatActivity implements View.On
                         if (Helpers.isNetworkAvailable(getApplicationContext())) {
                             Helpers.createBackgroundJob(getApplicationContext());
                         }
+                        Helpers.logData(CustomerDetailActivity.this, "Posting Visit List for Customer");
                         Intent intent = new Intent(CustomerDetailActivity.this, SelectCustomerActivity.class);
                         startActivity(intent);
                         finish();
@@ -904,5 +905,6 @@ public class CustomerDetailActivity extends AppCompatActivity implements View.On
     @Override
     public void onBackPressed() {
         // Do not allow hardware back navigation
+        Helpers.logData(CustomerDetailActivity.this, "Hardware back clicked");
     }
 }

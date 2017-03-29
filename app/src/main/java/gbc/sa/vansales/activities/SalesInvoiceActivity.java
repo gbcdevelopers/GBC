@@ -447,15 +447,15 @@ public class SalesInvoiceActivity extends AppCompatActivity {
                             mapFOC.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                             mapFOC.put(db.KEY_ORDER_ID,orderID);
                             mapFOC.put(db.KEY_PURCHASE_NUMBER,orderID);
-                            mapFOC.put(db.KEY_ITEM_NO, sale.getItem_code());
-                            mapFOC.put(db.KEY_ITEM_CATEGORY, sale.getItem_category());
-                            mapFOC.put(db.KEY_MATERIAL_NO, sale.getMaterial_no());
+                            mapFOC.put(db.KEY_ITEM_NO, sales.getItem_code());
+                            mapFOC.put(db.KEY_ITEM_CATEGORY, sales.getItem_category());
+                            mapFOC.put(db.KEY_MATERIAL_NO, sales.getMaterial_no());
                             mapFOC.put(db.KEY_MATERIAL_GROUP, "");
-                            mapFOC.put(db.KEY_MATERIAL_DESC1,sale.getName());
-                            mapFOC.put(db.KEY_ORG_CASE, sale.getCases());
-                            mapFOC.put(db.KEY_UOM,sale.getUom());
-                            mapFOC.put(db.KEY_ORG_UNITS, sale.getPic());
-                            mapFOC.put(db.KEY_AMOUNT, sale.getPrice());
+                            mapFOC.put(db.KEY_MATERIAL_DESC1,sales.getName());
+                            mapFOC.put(db.KEY_ORG_CASE, sales.getCases());
+                            mapFOC.put(db.KEY_UOM,sales.getUom());
+                            mapFOC.put(db.KEY_ORG_UNITS, sales.getPic());
+                            mapFOC.put(db.KEY_AMOUNT, sales.getPrice());
                             mapFOC.put(db.KEY_IS_POSTED,App.DATA_NOT_POSTED);
                             mapFOC.put(db.KEY_IS_PRINTED,App.DATA_NOT_POSTED);
                             if(db.checkData(db.FOC_INVOICE,updateFilter)){

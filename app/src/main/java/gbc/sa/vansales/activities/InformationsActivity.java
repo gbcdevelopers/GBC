@@ -83,6 +83,8 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(itemlist);
                         break;
                     case 2:
+                        Intent intent7 = new Intent(InformationsActivity.this, ItemComplaints.class);
+                        startActivity(intent7);
                         /*new Location(InformationsActivity.this, new Callback() {
                             @Override
                             public void callbackSuccess(android.location.Location location) {

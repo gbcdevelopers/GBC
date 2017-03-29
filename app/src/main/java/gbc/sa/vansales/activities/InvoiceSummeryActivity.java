@@ -348,8 +348,8 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
      @ Loading free of Cost data for the customer
      ************************************************************/
     public class loadFOC extends AsyncTask<Void, Void, Void> {
-        float case_sale = 0;
-        float unit_sale = 0;
+        float case_foc = 0;
+        float unit_foc = 0;
         float amount = 0;
         @Override
         protected Void doInBackground(Void... params) {
@@ -371,8 +371,8 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     do {
-                        case_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
-                        unit_sale += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
+                        case_foc += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_CASE)));
+                        unit_foc += Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ORG_UNITS)));
 
                         Sales sales = new Sales();
                         sales.setMaterial_no(cursor.getString(cursor.getColumnIndex(db.KEY_MATERIAL_NO)));
@@ -406,8 +406,10 @@ public class InvoiceSummeryActivity extends AppCompatActivity {
             if (loadingSpinner.isShowing()) {
                 loadingSpinner.hide();
             }
-            et_foc_cases.setText(String.valueOf(case_sale));
-            et_foc_units.setText(String.valueOf(unit_sale));
+            Log.e("FOC C/S","" + case_foc);
+            Log.e("FOC B/T","" + unit_foc);
+            et_foc_cases.setText(String.valueOf(case_foc));
+            et_foc_units.setText(String.valueOf(unit_foc));
             et_foc_amount.setText("N/A");
         }
     }

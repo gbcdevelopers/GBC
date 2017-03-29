@@ -20,6 +20,7 @@ import gbc.sa.vansales.Fragment.ShelfFragment;
 import gbc.sa.vansales.Fragment.StoreFragment;
 import gbc.sa.vansales.Fragment.VisitAllFragment;
 import gbc.sa.vansales.R;
+import gbc.sa.vansales.activities.ItemComplaints;
 import gbc.sa.vansales.activities.SalesInvoiceActivity;
 import gbc.sa.vansales.activities.ShelfStockActivity;
 import gbc.sa.vansales.data.Const;
@@ -208,6 +209,32 @@ public class ProductListAdapter extends BaseAdapter {
                             builder.show();
                         } else {
                             Log.e("add", dataList.get(position) + " at position " + SalesInvoiceActivity.tab_position);
+                            addlist.add(dataList.get(position));
+                            holder.chk_product.setChecked(true);
+                        }
+                    }
+                    else if (Settings.getString("from").equals("itemcomplaint")) {
+                        boolean isExists = false;
+                        for (int i = 0; i < ItemComplaints.arrProductList.size(); i++) {
+                            Log.e("check", dataList.get(position) + " " + ItemComplaints.arrProductList.get(i).getName() + " " + SalesInvoiceActivity.tab_position);
+                            if (ItemComplaints.arrProductList.get(i).getName().equals(dataList.get(position))) {
+                                isExists = true;
+                            }
+                        }
+                        if (isExists) {
+                            holder.chk_product.setChecked(false);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setMessage("Product already exists");
+                            builder.setCancelable(true);
+                            builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+                            builder.show();
+                        } else {
+                           // Log.e("add", dataList.get(position) + " at position " + SalesInvoiceActivity.tab_position);
                             addlist.add(dataList.get(position));
                             holder.chk_product.setChecked(true);
                         }
