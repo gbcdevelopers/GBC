@@ -407,6 +407,7 @@ public class PaymentDetails extends AppCompatActivity {
                                     Helpers.createBackgroundJob(getApplicationContext());
                                 }
                                 final Dialog dialog = new Dialog(PaymentDetails.this);
+                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                 dialog.setContentView(R.layout.dialog_doprint);
                                 dialog.setCancelable(false);
                                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));

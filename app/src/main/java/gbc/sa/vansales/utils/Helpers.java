@@ -62,6 +62,21 @@ public class Helpers {
     private static int kJobId = 0;
     private static final String arabic = "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9";
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+    private static final String PHOTO_PREFIX = "GBC_IMG_";
+    private static final String PHOTO_SUFFIX = ".gbc";
+    private static final String TAG = "Helpers";
+    private static final String ERROR_PHOTO_DELETE = "Unable to delete image file: ";
+    private static final String ERROR_PHOTO_PERMISSIONS = "Unable to set as writable: ";
+    public static final int TYPE_CAMERA_B1 = 40;
+    public static final int TYPE_CAMERA_B2 = 41;
+    public static final int TYPE_CAMERA_B3 = 42;
+    public static final int TYPE_CAMERA_B4 = 43;
+    private static final String FILE_CAMERA_LOCATION = "/DCIM/Camera";
+
+    public static final int QUALITY_LOW = 20;
+    public static final int QUALITY_MEDIUM = 40;
+    public static final int QUALITY_HIGH = 80;
+
     public static String formatDate(Date date, String format) {
         if (date == null) return null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
@@ -429,7 +444,7 @@ public class Helpers {
                                                          String orderValue, String purchaseNumber, String documentDate,String customerPO) {
         HashMap<String, String> map = new HashMap<>();
         map.put("Function", function);
-        Log.e("CustomerPO","" + customerPO);
+        Log.e("CustomerPO", "" + customerPO);
         map.put("TripId",customerPO.equals("000000")?Settings.getString(App.TRIP_ID):customerPO);
         map.put("OrderId", orderId.equals("") ? "0" : orderId);
         map.put("DocumentType", function.equals(ConfigStore.LoadRequestFunction)&&customerId.equals(Settings.getString(App.DRIVER))
@@ -526,7 +541,7 @@ public class Helpers {
     public static HashMap<String, String> buildCollectionHeader(String function, String customerId, String orderValue){
         HashMap<String, String> map = new HashMap<>();
         map.put("Function", function);
-        map.put("CustomerId",customerId);
+        map.put("CustomerId", customerId);
         map.put("RefCust",Settings.getString(App.DRIVER));
         map.put("OrderValue",orderValue);
         return map;
@@ -627,5 +642,149 @@ public class Helpers {
             logger.appendLog(context,data);
         }
 
+    }
+    public static String takePhoto(Activity activity,String buttonNumber) {
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File file = File.createTempFile(PHOTO_PREFIX, PHOTO_SUFFIX, activity.getCacheDir());
+            if (!file.setWritable(true, false)) {
+                Log.e(TAG, ERROR_PHOTO_PERMISSIONS + file.getAbsolutePath());
+            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+            if(buttonNumber.equals("1")){
+                activity.startActivityForResult(intent, TYPE_CAMERA_B1);
+            }
+            else if(buttonNumber.equals("2")){
+                activity.startActivityForResult(intent, TYPE_CAMERA_B2);
+            }
+            else if(buttonNumber.equals("3")){
+                activity.startActivityForResult(intent, TYPE_CAMERA_B3);
+            }
+            else if(buttonNumber.equals("4")){
+                activity.startActivityForResult(intent, TYPE_CAMERA_B4);
+            }
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String imageToBase64(Context context, String path, int quality, boolean recycle) throws IOException {
+        Bitmap image = getBitmap(context, path, quality);
+
+        return bitmapToBase64(image, false, recycle);
+    }
+    public static String bitmapToBase64(Bitmap image, boolean isPNG, boolean recycle) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        if (isPNG) {
+            image.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+        } else {
+            image.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+        }
+
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+        if (recycle) {
+            image.recycle();
+        }
+
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+    public static Bitmap getBitmap(Context context, String path, int quality) throws IOException {
+        File file = new File(path);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+        float ratio = (float) options.outWidth / (float) options.outHeight;
+
+        boolean isLandscape = options.outWidth > options.outHeight;
+
+        int width;
+        int height;
+
+        if (isLandscape) {
+            width = quality * 15;
+            height = Math.round(width * ratio);
+        } else {
+            height = quality * 15;
+            width = Math.round(height * ratio);
+        }
+
+        int sampleSize = 1;
+
+        if (options.outWidth > options.outHeight) {
+            sampleSize = Math.round((float) options.outHeight / (float) height);
+        } else if (options.outHeight > options.outWidth) {
+            sampleSize = Math.round((float) options.outWidth / (float) width);
+        }
+
+        options.inSampleSize = sampleSize;
+        options.inScaled = false;
+        options.inJustDecodeBounds = false;
+        options.inPurgeable = true;
+
+        Bitmap image = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+        if (!file.delete()) {
+            Log.e(TAG, ERROR_PHOTO_DELETE + file.getAbsolutePath());
+        }
+
+        ////new stamp
+        Bitmap workingBitmap = Bitmap.createBitmap(image);
+        Bitmap stampedBitmap = workingBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(stampedBitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setTextSize(22);
+        paint.setTextAlign(Paint.Align.RIGHT);
+
+        String currentDateandTime = sdf.format(new Date());
+
+        try {
+            canvas.drawText(Settings.getString(App.DRIVER) +" - " + currentDateandTime,
+                    stampedBitmap.getWidth() - 20, stampedBitmap.getHeight() - 28, paint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        removeFromGallery(context);
+        return stampedBitmap;
+    }
+    private static void removeFromGallery(Context context) {
+        String bucketName = Environment.getExternalStorageDirectory().toString() + FILE_CAMERA_LOCATION;
+        String bucketId = String.valueOf(bucketName.toLowerCase().hashCode());
+
+        final String[] projection = {MediaStore.Images.Media.DATA};
+
+        final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
+
+        final String[] selectionArgs = {bucketId};
+
+        final Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, selection, selectionArgs, null);
+
+        if (cursor.moveToFirst()) {
+            try {
+                final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                do {
+                    final String path = cursor.getString(dataColumn);
+
+                    File file = new File(path);
+
+                    if (!file.delete()) {
+                        Log.e(TAG, ERROR_PHOTO_DELETE + file.getAbsolutePath());
+                    }
+                } while (cursor.moveToNext());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        cursor.close();
     }
 }

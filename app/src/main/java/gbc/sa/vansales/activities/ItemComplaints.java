@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -55,6 +56,12 @@ public class ItemComplaints extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
     public static ArrayList<Sales> arrProductList;
     static ArrayList<ArticleHeader> articles = new ArrayList<>();
+    private String imagePath = null;
+    private String image = null;
+    Button btn_imageFW;
+    Button btn_imageRW;
+    Button btn_imageLW;
+    Button btn_imageBW;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +110,34 @@ public class ItemComplaints extends AppCompatActivity {
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 ImageView iv_cancel = (ImageView) dialog.findViewById(R.id.imageView_close);
                 Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+                btn_imageFW = (Button)dialog.findViewById(R.id.capture1);
+                btn_imageFW.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imagePath = Helpers.takePhoto(ItemComplaints.this,"1");
+                    }
+                });
+                btn_imageLW = (Button)dialog.findViewById(R.id.capture2);
+                btn_imageLW.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        imagePath = Helpers.takePhoto(ItemComplaints.this,"2");
+                    }
+                });
+                btn_imageRW = (Button)dialog.findViewById(R.id.capture3);
+                btn_imageRW.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        imagePath = Helpers.takePhoto(ItemComplaints.this,"3");
+                    }
+                });
+                btn_imageBW = (Button)dialog.findViewById(R.id.capture4);
+                btn_imageBW.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        imagePath = Helpers.takePhoto(ItemComplaints.this,"4");
+                    }
+                });
                 iv_cancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -244,5 +279,52 @@ public class ItemComplaints extends AppCompatActivity {
             Crashlytics.logException(e);
         }
         return null;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Helpers.TYPE_CAMERA_B1 && resultCode == RESULT_OK) {
+            try {
+                image = Helpers.imageToBase64(this, imagePath, Helpers.QUALITY_HIGH, true);
+                //btn_imageFW.setIcon(R.drawable.icon_camera_green);
+                btn_imageFW.setBackgroundResource(R.drawable.icon_camera_prim_32);
+                Toast.makeText(this, "Photo added", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == Helpers.TYPE_CAMERA_B2 && resultCode == RESULT_OK) {
+            try {
+                image = Helpers.imageToBase64(this, imagePath, Helpers.QUALITY_HIGH, true);
+                //btn_imageFW.setIcon(R.drawable.icon_camera_green);
+                btn_imageLW.setBackgroundResource(R.drawable.icon_camera_prim_32);
+                Toast.makeText(this, "Photo added", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == Helpers.TYPE_CAMERA_B3 && resultCode == RESULT_OK) {
+            try {
+                image = Helpers.imageToBase64(this, imagePath, Helpers.QUALITY_HIGH, true);
+                //btn_imageFW.setIcon(R.drawable.icon_camera_green);
+                btn_imageRW.setBackgroundResource(R.drawable.icon_camera_prim_32);
+                Toast.makeText(this, "Photo added", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == Helpers.TYPE_CAMERA_B4 && resultCode == RESULT_OK) {
+            try {
+                image = Helpers.imageToBase64(this, imagePath, Helpers.QUALITY_HIGH, true);
+                //btn_imageFW.setIcon(R.drawable.icon_camera_green);
+                btn_imageBW.setBackgroundResource(R.drawable.icon_camera_prim_32);
+                Toast.makeText(this, "Photo added", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

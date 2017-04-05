@@ -785,7 +785,8 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map3.put(db.KEY_FOC_DATE_TO, "2017.03.31");
         db.addData(db.FOC_RULES, map3);*/
 
-        HashMap<String,String>map = new HashMap<>();
+        //Commenting the FOC on 01/04/2017.
+        /*HashMap<String,String>map = new HashMap<>();
         map.put(db.KEY_CUSTOMER_NO,"");
         map.put(db.KEY_DIST_CHANNEL,"20");
         map.put(db.KEY_FOC_QUALIFYING_ITEM,"000000000014000000");
@@ -937,7 +938,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         map13.put(db.KEY_FOC_ASSIGNING_QUANTITY, "6");
         map13.put(db.KEY_FOC_DATE_FROM,"2017.03.01");
         map13.put(db.KEY_FOC_DATE_TO, "2017.03.31");
-        db.addData(db.FOC_RULES, map13);
+        db.addData(db.FOC_RULES, map13);*/
 
 
         /*HashMap<String,String>map14 = new HashMap<>();

@@ -85,7 +85,7 @@ public class InformationsActivity extends AppCompatActivity {
                     case 2:
                         Intent intent7 = new Intent(InformationsActivity.this, ItemComplaints.class);
                         startActivity(intent7);
-                        /*new Location(InformationsActivity.this, new Callback() {
+                        new Location(InformationsActivity.this, new Callback() {
                             @Override
                             public void callbackSuccess(android.location.Location location) {
                                 Log.e("COORDUNATES",String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
@@ -95,12 +95,8 @@ public class InformationsActivity extends AppCompatActivity {
                             public void callbackFailure() {
                                 Toast.makeText(getBaseContext(), "Failure", Toast.LENGTH_SHORT).show();
                             }
-                        });*/
-                        /*try {
-                            generateInvoicePDF();
-                        } catch (DocumentException e) {
-                            e.printStackTrace();
-                        }*/
+                        });
+
                         break;
                     case 3:
                         break;

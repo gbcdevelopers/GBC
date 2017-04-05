@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -143,7 +144,13 @@ public class LoadVerifyActivity extends AppCompatActivity {
             filters.put(db.KEY_DELIVERY_NO, object.getDeliveryNo());
             db.updateData(db.LOAD_DELIVERY_HEADER, parameters, filters);
             if(!isStockAdded){
-                addItemstoVan(dataNew);
+                //Checking if driver did blunder and again coming for load verification
+                HashMap<String,String>map = new HashMap<>();
+                map.put(db.KEY_DELIVERY_NO,object.getDeliveryNo().toString());
+                boolean isAlreadyAdded = db.checkData(db.VAN_STOCK_ITEMS,map);
+                if(!isAlreadyAdded){
+                    addItemstoVan(dataNew);
+                }
             }
             /*********************************************************
              @ If the user has reached to the last of the load,
@@ -1304,11 +1311,14 @@ public class LoadVerifyActivity extends AppCompatActivity {
      @ Callback function once the printing is completed
      ****************************************************************************************/
     public void callbackFunction(){
+        Helpers.logData(LoadVerifyActivity.this,"Callback function for Load Verification Print");
         if (!checkIfLoadExists()){
+            Helpers.logData(LoadVerifyActivity.this,"Callback function - This was last load");
             Intent intent = new Intent(LoadVerifyActivity.this, MyCalendarActivity.class);
             startActivity(intent);
         }
         else{
+            Helpers.logData(LoadVerifyActivity.this,"Callback function - Going back for another load");
             Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
             startActivity(intent);
         }
@@ -1317,5 +1327,23 @@ public class LoadVerifyActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Do not allow hardware back navigation
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // todo: goto back activity from here
+                Log.e("BE","User clicked on back");
+                Helpers.logData(LoadVerifyActivity.this, "Clicked on back on Load Verify Screen");
+                Helpers.logData(LoadVerifyActivity.this,"Going back to Load Summary Screen");
+                Intent intent = new Intent(LoadVerifyActivity.this, LoadSummaryActivity.class);
+                intent.putExtra("headerObj", object);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
