@@ -75,12 +75,12 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
-                        /*PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforVanStock()); //For Sales Invoice*/
+                        PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.execute("",createDataforVanStock()); //For Sales Invoice
                         //object.execute("",createDataForPrint()); //For Load Summary
                         //  object.execute("",createDataForLoadRequest());
-                        Intent itemlist = new Intent(InformationsActivity.this, ItemListActivity.class);
-                        startActivity(itemlist);
+                        /*Intent itemlist = new Intent(InformationsActivity.this, ItemListActivity.class);
+                        startActivity(itemlist);*/
                         break;
                     case 2:
                         Intent intent7 = new Intent(InformationsActivity.this, ItemComplaints.class);
@@ -404,6 +404,7 @@ public class InformationsActivity extends AppCompatActivity {
             mainArr.put("TRIP START DATE", Helpers.formatDate(new Date(), "dd-MM-yyyy"));
             mainArr.put("supervisorname", "-");
             mainArr.put("TourID", Settings.getString(App.TRIP_ID));
+            mainArr.put("closevalue","100");
             //mainArr.put("Load Number","1");
             JSONArray HEADERS = new JSONArray();
             JSONArray TOTAL = new JSONArray();
@@ -481,48 +482,6 @@ public class InformationsActivity extends AppCompatActivity {
             jData3.put("+150");
             jData3.put("+1500");
             JSONArray jData = new JSONArray();
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
-            jData.put(jData1);
-            jData.put(jData2);
-            jData.put(jData3);
             jData.put(jData1);
             jData.put(jData2);
             jData.put(jData3);

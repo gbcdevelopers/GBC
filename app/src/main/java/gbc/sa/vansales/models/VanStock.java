@@ -9,6 +9,8 @@ public class VanStock implements Parcelable{
     private String item_description;
     private String item_case;
     private String item_units;
+    private String actual_case;
+    private String actual_unit;
 
     public String getItem_case() {
         return item_case;
@@ -34,6 +36,18 @@ public class VanStock implements Parcelable{
     public void setItem_units(String item_units) {
         this.item_units = item_units;
     }
+    public String getActual_case() {
+        return actual_case;
+    }
+    public void setActual_case(String actual_case) {
+        this.actual_case = actual_case;
+    }
+    public String getActual_unit() {
+        return actual_unit;
+    }
+    public void setActual_unit(String actual_unit) {
+        this.actual_unit = actual_unit;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -44,6 +58,8 @@ public class VanStock implements Parcelable{
         parcel.writeString(item_description);
         parcel.writeString(item_case);
         parcel.writeString(item_units);
+        parcel.writeString(actual_case);
+        parcel.writeString(actual_unit);
     }
 
     public static final Creator<VanStock> CREATOR = new Creator<VanStock>() {
@@ -53,6 +69,8 @@ public class VanStock implements Parcelable{
             item.item_description = source.readString();
             item.item_case = source.readString();
             item.item_units = source.readString();
+            item.actual_case = source.readString();
+            item.actual_unit = source.readString();
             return item;
         }
 

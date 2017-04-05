@@ -761,7 +761,7 @@ public class PrinterHelper {
     private void headervanstockprint(JSONObject object, int type) throws JSONException {
         try {
             this.outStream.write(this.BoldOn);
-            printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " (" + object.getString("TIME") + ")", 40, 2), false, 1);
+            printheaders(getAccurateText("ROUTE: " + object.getString("ROUTE"), 40, 0) + getAccurateText("DATE:" + object.getString("DOC DATE") + " " + object.getString("TIME") + " ", 40, 2), false, 1);
             this.outStream.write(this.NewLine);
             //printheaders(getAccurateText(object.getString("TIME") + " " + object.getString("DOC DATE"), 40, 2), true, 1);
             //printheaders(getAccurateText(object.getString("ROUTE") + "@" + ArabicLabels.Route, 40, 0)+"!" + " ",true,1);
@@ -3268,7 +3268,7 @@ public class PrinterHelper {
                 JSONArray jArr = jData.getJSONArray(i);
                 String strData = "";
                 for (int j = 0; j < jArr.length(); j++) {
-                    if (j != 3) {
+                    if (j != 6) {
                         int i2;
                         Object obj;
                         String itemDescrion = jArr.getString(j);
@@ -3289,6 +3289,7 @@ public class PrinterHelper {
                         }
                         strData = stringBuilder.append(getAccurateText(itemDescrion, i2, ((Integer) hashMap.get(obj)).intValue())).toString();
                     }
+
                 }
                 this.outStream.write(this.CompressOn);
                 this.count++;
@@ -3298,8 +3299,26 @@ public class PrinterHelper {
             this.outStream.write(this.CompressOn);
             printlines1(printSepratorcomp(), 1, object, 1, args, 4);
             printlines1(strTotal, 1, object, 1, args, 4);
-            printlines1(printSepratorcomp(), 1, object, 2, args, 4);
+            printlines1(printSepratorcomp(), 1, object, 1, args, 4);
             this.outStream.write(this.CompressOff);
+            this.outStream.write(this.NewLine);
+            JSONObject jSONObject = object;
+            printlines1(getAccurateText("TRUCK STOCK VALUE : ", 40, 2) + getAccurateText(object.getString("closevalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            this.outStream.write(this.NewLine);
+            jSONObject = object;
+            //printlines1(getAccurateText("AVAILABLE INVENTORY : ", 40, 2) + getAccurateText(object.getString("availvalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            //jSONObject = object;
+            //printlines1(getAccurateText("UNLOAD INVENTORY : ", 40, 2) + getAccurateText(object.getString("unloadvalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            //printlines1(printSeprator(), 1, object, 1, args, 3);
+            //jSONObject = object;
+            //printlines1(getAccurateText("CALCULATED INVENTORY : ", 40, 2) + getAccurateText(object.getString("closevalue"), 30, 1), 1, jSONObject, 1, args, 2);
+            //printlines1(printSeprator(), 1, object, 1, args, 3);
+            this.outStream.write(this.BoldOff);
+            printlines1(getAccurateText("_____________", 40, 1) + getAccurateText("____________", 40, 1), 2, object, 1, args, 1);
+            this.outStream.write(this.NewLine);
+            // printlines1(" ", 1, object, 1, args, 3);
+            printlines1(getAccurateText("STORE KEEPER", 40, 1) + getAccurateText("SALESMAN", 40, 1), 2, object, 1, args, 3);
+
         } catch (Exception e2) {
             e2.printStackTrace();
         }
