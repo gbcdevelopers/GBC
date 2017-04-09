@@ -238,13 +238,13 @@ public class LoginActivity extends Activity {
                                         loadingSpinner.show();
                                         //For development purpose only
                                         // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
-                                if(!checkTripID("C111260000000550")){
+                                if(!checkTripID("C111260000000552")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "C111260000000550");
+                                    Settings.setString(TRIP_ID, "C111260000000552");
                                     //Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials(username, password, Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("C111260000000550");
+                                    downloadData("C111260000000552");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
@@ -254,7 +254,7 @@ public class LoginActivity extends Activity {
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
                                 }
                                         //Comment removal ends here
-                                       /* dialog.dismiss();
+                                        /*dialog.dismiss();
                                         if(loadingSpinner.isShowing()){
                                             loadingSpinner.hide();
                                         }*/

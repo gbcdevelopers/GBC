@@ -809,7 +809,8 @@ public class SalesFragment extends Fragment {
         }
         if(value){
             try{
-                if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
+                //if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
+                if(Settings.getString(App.DIST_CHANNEL).equals("20"))
                // if(Settings.getString(App.DIST_CHANNEL).equals("10")||Settings.getString(App.DIST_CHANNEL).equals("20"))
                 {
                     for(Sales sale:arrayList){
@@ -1013,7 +1014,9 @@ public class SalesFragment extends Fragment {
             Date dateLow = formatter.parse(dateMin);
             Date dateHigh = formatter.parse(dateMax);
             Date today = formatter.parse(currentDate);
-            isValid = today.after(dateLow) && today.before(dateHigh);
+           // isValid = today.after(dateLow) && today.before(dateHigh);
+            isValid = today.after(dateLow) && today.before(dateHigh)?true:today.equals(dateLow)||today.equals(dateHigh)?true:false;
+            Log.e("Is Valid","" + isValid);
         } catch (ParseException e) {
             e.printStackTrace();
         }

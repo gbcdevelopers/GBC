@@ -74,6 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String DELAY_PRINT = "DELAY_PRINT";
     public static final String UNLOAD_TRANSACTION = "UNLOAD_TRANSACTION";
     public static final String DOWNLOAD_STATUS = "DOWNLOAD_STATUS";
+    public static final String PARTIAL_COLLECTION_TEMP = "PARTIAL_COLLECTION_TEMP";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -989,6 +990,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_IS_PRINTED + " TEXT,"
                 + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
 
+        String TABLE_COLLECTION_PARTIAL = "CREATE TABLE " + PARTIAL_COLLECTION_TEMP + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_COLLECTION_TYPE + " TEXT,"
+                + KEY_CUSTOMER_TYPE + " TEXT,"
+                + KEY_CUSTOMER_NO + " TEXT,"
+                + KEY_INVOICE_NO + " TEXT,"
+                + KEY_INVOICE_AMOUNT + " TEXT,"
+                + KEY_DUE_DATE + " TEXT,"
+                + KEY_INVOICE_DATE + " TEXT,"
+                + KEY_AMOUNT_CLEARED + " TEXT,"
+                + KEY_CASH_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT + " TEXT,"
+                + KEY_CHEQUE_AMOUNT_INDIVIDUAL + " TEXT,"
+                + KEY_CHEQUE_NUMBER + " TEXT,"
+                + KEY_CHEQUE_DATE + " TEXT,"
+                + KEY_CHEQUE_BANK_CODE + " TEXT,"
+                + KEY_CHEQUE_BANK_NAME + " TEXT,"
+                + KEY_SAP_INVOICE_NO + " TEXT,"
+                + KEY_INVOICE_DAYS + " TEXT,"
+                + KEY_INDICATOR + " TEXT,"
+                + KEY_IS_POSTED + " TEXT,"
+                + KEY_IS_PRINTED + " TEXT,"
+                + KEY_IS_INVOICE_COMPLETE + " TEXT " + ")";
 
         String TABLE_DRIVER_COLLECTION = "CREATE TABLE " + DRIVER_COLLECTION + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -1380,6 +1405,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
             int records = db.update(tablename, values, filterKeys, filterArray);
             Log.e("Records updated", "" + records);
+            Helpers.logData(mContext, "Value Map for Update" + hashMap);
+            Helpers.logData(mContext,"Value Filter for Update" + filters);
             Helpers.logData(mContext,String.valueOf(records) + "updated for table" + tablename);
             db.setTransactionSuccessful();
             db.endTransaction();

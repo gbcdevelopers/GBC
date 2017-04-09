@@ -2508,6 +2508,8 @@ public class SyncData extends IntentService {
                                 map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
                                 // map.put(db.KEY_ORDER_ID,response.getOrderID());
 
+                                HashMap<String,String>partMap = new HashMap<>();
+
                                 HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));

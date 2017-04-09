@@ -497,12 +497,63 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put(db.KEY_REMAINING_QTY_UNIT,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString())-0));
                 map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);*/
                 } else {
-                    int reservedQty = 0;
+                    if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), dataNew.get(i).getUom()/*App.CASE_UOM*/)) {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        Helpers.logData(LoadVerifyActivity.this,"Material" + dataNew.get(i).getMaterialNo().toString() + "found on van");
+                        int reserved = 0;
+                        //Getting old data
+                        HashMap<String, String> oldData = new HashMap<>();
+                        oldData.put(db.KEY_MATERIAL_NO, "");
+                        oldData.put(db.KEY_UOM_CASE, "");
+                        oldData.put(db.KEY_ACTUAL_QTY_CASE, "");
+                        oldData.put(db.KEY_RESERVED_QTY_CASE, "");
+                        oldData.put(db.KEY_REMAINING_QTY_CASE, "");
+                        HashMap<String, String> filterOldData = new HashMap<>();
+                        filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                        //filterOldData.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                        filterOldData.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());
+                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
+                        float actualQtyCase = 0;
+                        float reservedQtyCase = 0;
+                        float remainingQtyCase = 0;
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            do {
+                                actualQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_CASE)));
+                                reservedQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_CASE)));
+                                remainingQtyCase = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity already on van" + actualQtyCase + "-" + reservedQtyCase + "-" + remainingQtyCase);
+                                actualQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+                                remainingQtyCase += Float.parseFloat(dataNew.get(i).getQuantityCases().toString());
+                                Helpers.logData(LoadVerifyActivity.this,"Quantity new on van" + actualQtyCase + "-" + reservedQtyCase + "-" + remainingQtyCase);
+                            }
+                            while (cursor.moveToNext());
+                            map.put(db.KEY_ACTUAL_QTY_CASE, String.valueOf(actualQtyCase));
+                            map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQtyCase));
+                            map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(remainingQtyCase));
+                            //map.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                            map.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());
+                            // db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
+                        }
+                    } else {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        Helpers.logData(LoadVerifyActivity.this,"Material" + dataNew.get(i).getMaterialNo().toString() + "not found on van");
+                        int reservedQty = 0;
+                        map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
+                        map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
+                        map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
+                        //map.put(db.KEY_UOM_CASE, App.CASE_UOM);
+                        map.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());
+                        Helpers.logData(LoadVerifyActivity.this, "Material" + dataNew.get(i).getMaterialNo().toString() + "with quantity adding to van"
+                                + dataNew.get(i).getQuantityCases().toString() + "-" + String.valueOf(reservedQty) + String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
+                        // db.addData(db.VAN_STOCK_ITEMS, map);
+                    }
+                    /*int reservedQty = 0;
                     map.put(db.KEY_ACTUAL_QTY_CASE, dataNew.get(i).getQuantityCases().toString());
                     map.put(db.KEY_RESERVED_QTY_CASE, String.valueOf(reservedQty));
                     map.put(db.KEY_REMAINING_QTY_CASE, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString()) - reservedQty));
                    // map.put(db.KEY_UOM_CASE, App.CASE_UOM);
-                    map.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());
+                    map.put(db.KEY_UOM_CASE, dataNew.get(i).getUom());*/
                 }
                 if (!((dataNew.get(i).getQuantityUnits().isEmpty()) || (dataNew.get(i).getQuantityUnits().equals(""))
                         || (dataNew.get(i).getQuantityUnits().equals("0")) || (dataNew.get(i).getQuantityUnits().equals("")))) {
@@ -544,7 +595,7 @@ public class LoadVerifyActivity extends AppCompatActivity {
                             map.put(db.KEY_ACTUAL_QTY_UNIT, String.valueOf(actualQtyUnit));
                             map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQtyUnit));
                             map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingQtyUnit));
-                           // map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                            // map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
                             map.put(db.KEY_UOM_UNIT, dataNew.get(i).getUom());
                             //db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
                         }
@@ -563,12 +614,62 @@ public class LoadVerifyActivity extends AppCompatActivity {
                 map.put(db.KEY_REMAINING_QTY_CASE,String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityCases().toString())-0));
                 map.put(db.KEY_UOM_CASE, App.CASE_UOM);*/
                 } else {
-                    int reservedQty = 0;
+                    if (checkMaterialExists(dataNew.get(i).getMaterialNo().toString(), dataNew.get(i).getUom()/*App.BOTTLES_UOM*/)) {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reserved = 0;
+                        //Log.e("Step 1","Step 1");
+                        //Getting old data
+                        HashMap<String, String> oldData = new HashMap<>();
+                        oldData.put(db.KEY_MATERIAL_NO, "");
+                        oldData.put(db.KEY_UOM_UNIT, "");
+                        oldData.put(db.KEY_ACTUAL_QTY_UNIT, "");
+                        oldData.put(db.KEY_RESERVED_QTY_UNIT, "");
+                        oldData.put(db.KEY_REMAINING_QTY_UNIT, "");
+                        HashMap<String, String> filterOldData = new HashMap<>();
+                        filterOldData.put(db.KEY_MATERIAL_NO, dataNew.get(i).getMaterialNo().toString());
+                        //filterOldData.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                        filterOldData.put(db.KEY_UOM_UNIT,dataNew.get(i).getUom());
+                        Cursor cursor = db.getData(db.VAN_STOCK_ITEMS, oldData, filterOldData);
+                        //Log.e("Step 2","Step 2" + cursor.getCount());
+                        float actualQtyUnit;
+                        float reservedQtyUnit;
+                        float remainingQtyUnit;
+                        if (cursor.getCount() > 0) {
+                            cursor.moveToFirst();
+                            do {
+                                actualQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_ACTUAL_QTY_UNIT)));
+                                reservedQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_RESERVED_QTY_UNIT)));
+                                remainingQtyUnit = Float.parseFloat(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_UNIT)));
+                                //Log.e("Actual Qty Unit1","" + actualQtyUnit);
+                                //Log.e("REmaining Qty Unit1","" + remainingQtyUnit);
+                                actualQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
+                                remainingQtyUnit += Float.parseFloat(dataNew.get(i).getQuantityUnits().toString());
+                                //Log.e("Actual Qty Unit2","" + actualQtyUnit);
+                                //Log.e("REmaining Qty Unit2","" + remainingQtyUnit);
+                            }
+                            while (cursor.moveToNext());
+                            map.put(db.KEY_ACTUAL_QTY_UNIT, String.valueOf(actualQtyUnit));
+                            map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQtyUnit));
+                            map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(remainingQtyUnit));
+                            // map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                            map.put(db.KEY_UOM_UNIT, dataNew.get(i).getUom());
+                            //db.updateData(db.VAN_STOCK_ITEMS, map, filterOldData);
+                        }
+                    } else {
+                        //Logic to read Customer Delivery Item and block material quantity based on UOM
+                        int reservedQty = 0;
+                        map.put(db.KEY_ACTUAL_QTY_UNIT, dataNew.get(i).getQuantityUnits().toString());
+                        map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQty));
+                        map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString()) - reservedQty));
+                        //map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
+                        map.put(db.KEY_UOM_UNIT, dataNew.get(i).getUom());
+                    }
+                    /*int reservedQty = 0;
                     map.put(db.KEY_ACTUAL_QTY_UNIT, dataNew.get(i).getQuantityUnits().toString());
                     map.put(db.KEY_RESERVED_QTY_UNIT, String.valueOf(reservedQty));
                     map.put(db.KEY_REMAINING_QTY_UNIT, String.valueOf(Float.parseFloat(dataNew.get(i).getQuantityUnits().toString()) - reservedQty));
                     //map.put(db.KEY_UOM_UNIT, App.BOTTLES_UOM);
-                    map.put(db.KEY_UOM_UNIT, dataNew.get(i).getUom());
+                    map.put(db.KEY_UOM_UNIT, dataNew.get(i).getUom());*/
                 }
                 //Log.e("ITEM MAP", "" + map);
                 HashMap<String, String> filter = new HashMap<>();

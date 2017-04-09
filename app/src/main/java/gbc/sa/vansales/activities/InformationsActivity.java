@@ -75,29 +75,39 @@ public class InformationsActivity extends AppCompatActivity {
                         startActivity(customerlist);
                         break;
                     case 1:
-                        PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
-                        object.execute("",createDataforVanStock()); //For Sales Invoice
-                        //object.execute("",createDataForPrint()); //For Load Summary
-                        //  object.execute("",createDataForLoadRequest());
-                        /*Intent itemlist = new Intent(InformationsActivity.this, ItemListActivity.class);
-                        startActivity(itemlist);*/
-                        break;
-                    case 2:
-                        Intent intent7 = new Intent(InformationsActivity.this, ItemComplaints.class);
-                        startActivity(intent7);
-                        new Location(InformationsActivity.this, new Callback() {
-                            @Override
-                            public void callbackSuccess(android.location.Location location) {
-                                Log.e("COORDUNATES",String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
-                                Toast.makeText(getBaseContext(),String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()),Toast.LENGTH_SHORT).show();
-                            }
-                            @Override
-                            public void callbackFailure() {
-                                Toast.makeText(getBaseContext(), "Failure", Toast.LENGTH_SHORT).show();
-                            }
-                        });
 
-                        break;
+                        if(App.ENVIRONMENT.equals("Development")){
+                        /*PrinterHelper object = new PrinterHelper(InformationsActivity.this,InformationsActivity.this);
+                        object.execute("",createDataforVanStock()); //For Sales Invoice*/
+                            //object.execute("",createDataForPrint()); //For Load Summary
+                            //  object.execute("",createDataForLoadRequest());
+                        }
+                        else {
+                            Intent itemlist = new Intent(InformationsActivity.this, ItemListActivity.class);
+                            startActivity(itemlist);
+                            break;
+                        }
+
+                    case 2:
+                        if(App.ENVIRONMENT.equals("Development")){
+                          Intent intent7 = new Intent(InformationsActivity.this, ItemComplaints.class);
+                          startActivity(intent7);
+                            break;
+                            /*new Location(InformationsActivity.this, new Callback() {
+                                @Override
+                                public void callbackSuccess(android.location.Location location) {
+                                    Log.e("COORDUNATES",String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()));
+                                    Toast.makeText(getBaseContext(),String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude()),Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void callbackFailure() {
+                                    Toast.makeText(getBaseContext(), "Failure", Toast.LENGTH_SHORT).show();
+                                }
+                            });*/
+                        }
+
+
+                        //break;
                     case 3:
                         break;
                     case 4:
