@@ -2508,15 +2508,20 @@ public class SyncData extends IntentService {
                                 map.put(db.KEY_IS_POSTED,App.DATA_IS_POSTED);
                                 // map.put(db.KEY_ORDER_ID,response.getOrderID());
 
+                                //Added by Rakshit on 09/04/2017 to store the partial collection temporarily
+                                //Change no 20170409
                                 HashMap<String,String>partMap = new HashMap<>();
+                                partMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
 
                                 HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 if(!response.getOrderID().equals("")){
                                     filter.put(db.KEY_INVOICE_NO,response.getOrderID());
+                                    partMap.put(db.KEY_INVOICE_NO,response.getOrderID()); //Change no 20170409
                                 }
                                 filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+                                partMap.put(db.KEY_CUSTOMER_NO,response.getCustomerID()); //Change no 20170409
 
                                 Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
                                 double newinvAmount = 0;
@@ -2524,13 +2529,16 @@ public class SyncData extends IntentService {
                                     prevAmnt.moveToFirst();
                                     newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
                                             Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                                    partMap.put(db.KEY_INVOICE_AMOUNT,prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+                                    partMap.put(db.KEY_AMOUNT_CLEARED,prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
                                 }
                                 if(!(newinvAmount==0)){
                                     map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
                                     map.put(db.KEY_AMOUNT_CLEARED,String.valueOf("0"));
                                 }
                                 Helpers.logData(getApplication(), "Going for Update" + ConfigStore.PartialCollectionFunction);
-                                db.updateData(db.COLLECTION,map,filter);
+                                db.updateData(db.COLLECTION, map, filter);
+                                db.addData(db.PARTIAL_COLLECTION_TEMP,partMap); //Change no 20170409
                             }
                             else{
                                 HashMap<String,String>ivMap = new HashMap<>();
@@ -2542,11 +2550,17 @@ public class SyncData extends IntentService {
                                 map.put(db.KEY_IS_POSTED,App.DATA_ERROR);
                                 // map.put(db.KEY_ORDER_ID,response.getOrderID());
 
+                                //Added by Rakshit on 09/04/2017 to store the partial collection temporarily
+                                //Change no 20170409
+                                HashMap<String,String>partMap = new HashMap<>();
+                                partMap.put(db.KEY_TIME_STAMP, Helpers.getCurrentTimeStamp());
+
                                 HashMap<String, String> filter = new HashMap<>();
                                 filter.put(db.KEY_IS_POSTED,App.DATA_MARKED_FOR_POST);
                                 //filter.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
                                 //filter.put(db.KEY_ORDER_ID,response.getPurchaseNumber());
                                 filter.put(db.KEY_CUSTOMER_NO, response.getCustomerID());
+                                partMap.put(db.KEY_CUSTOMER_NO,response.getCustomerID()); //Change no 20170409
 
                                 Cursor prevAmnt = db.getData(db.COLLECTION,ivMap,filter);
                                 double newinvAmount = 0;
@@ -2554,6 +2568,9 @@ public class SyncData extends IntentService {
                                     prevAmnt.moveToFirst();
                                     newinvAmount  = Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)))-
                                             Double.parseDouble(prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+
+                                    partMap.put(db.KEY_INVOICE_AMOUNT, prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_INVOICE_AMOUNT)));
+                                    partMap.put(db.KEY_AMOUNT_CLEARED, prevAmnt.getString(prevAmnt.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
                                 }
                                 if(!(newinvAmount==0)){
                                     map.put(db.KEY_INVOICE_AMOUNT,String.valueOf(newinvAmount));
@@ -2562,6 +2579,7 @@ public class SyncData extends IntentService {
                                 Log.e("Going Partial","" + map);
                                 Log.e("Going Filter","" + filter);
                                 db.updateData(db.COLLECTION,map,filter);
+                                db.addData(db.PARTIAL_COLLECTION_TEMP,partMap); //Change no 20170409
                             }
                             break;
                         }

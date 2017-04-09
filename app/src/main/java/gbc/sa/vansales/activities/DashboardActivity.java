@@ -304,9 +304,31 @@ public class DashboardActivity extends AppCompatActivity
                 }
                 while (c.moveToNext());
             }
+
+            //Changes to add partially collected collection as well
+            //Changes by Rakshit 09/04/2017
+            HashMap<String, String> partMap = new HashMap<>();
+            partMap.put(db.KEY_CUSTOMER_NO, "");
+            partMap.put(db.KEY_INVOICE_NO, "");
+            partMap.put(db.KEY_INVOICE_AMOUNT, "");
+            partMap.put(db.KEY_DUE_DATE, "");
+            partMap.put(db.KEY_INVOICE_DATE, "");
+            partMap.put(db.KEY_AMOUNT_CLEARED, "");
+            partMap.put(db.KEY_IS_INVOICE_COMPLETE, "");
+            HashMap<String, String> partFilter = new HashMap<>();
+            Cursor c1 = db.getData(db.PARTIAL_COLLECTION_TEMP, partMap, partFilter);
+            Log.e("C1 Count","" + c1.getCount());
+            if (c1.getCount() > 0) {
+                do {
+                    totalReceipt += Double.parseDouble(c1.getString(c1.getColumnIndex(db.KEY_AMOUNT_CLEARED)));
+                }
+                while (c1.moveToNext());
+            }
+            //Changes by Rakshit 09/04/2017 -- End
             lbl_totalreceipt.setText(String.valueOf(totalReceipt) + " " + getString(R.string.currency));
         } catch (Exception e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
     }
     private void setBeginDayVisibility() {

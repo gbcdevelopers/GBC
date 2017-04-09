@@ -1256,6 +1256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_DELAY_PRINT);
         db.execSQL(TABLE_UNLOAD_TRANSACTION);
         db.execSQL(TABLE_DOWNLOAD_STATUS);
+        db.execSQL(TABLE_COLLECTION_PARTIAL);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1308,6 +1309,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DELAY_PRINT);
         db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_TRANSACTION);
         db.execSQL("DROP TABLE IF EXISTS " + DOWNLOAD_STATUS);
+        db.execSQL("DROP TABLE IF EXISTS " + PARTIAL_COLLECTION_TEMP);
+
         onCreate(db);
     }
     //Storing Secured Credentials
