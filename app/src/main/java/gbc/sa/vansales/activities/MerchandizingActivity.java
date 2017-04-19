@@ -46,17 +46,17 @@ public class MerchandizingActivity extends AppCompatActivity {
                     case 0:
                         //Campaign Capture
                         Intent intent0 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
-                        startActivity(intent0);
+                       // startActivity(intent0);
                         break;
                     case 1:
                         //Distribution/Shelf Stock(Complete - Integrate)
                         Intent intent1 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
-                        startActivity(intent1);
+                        //startActivity(intent1);
                         break;
                     case 2:
                         //Pos/Assets
                         Intent intent2 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
-                        startActivity(intent2);
+                        //startActivity(intent2);
                         break;
                     case 3:
                         //Survey(Complete)
@@ -71,12 +71,12 @@ public class MerchandizingActivity extends AppCompatActivity {
                     case 5:
                         //Price Survey
                         Intent intent5 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
-                        startActivity(intent5);
+                        //startActivity(intent5);
                         break;
                     case 6:
                         //Advertising
                         Intent intent6 = new Intent(MerchandizingActivity.this, CaptureImageActivity.class);
-                        startActivity(intent6);
+                        //startActivity(intent6);
                         break;
                     case 7:
                         //Item Complaint(Complete)

@@ -32,6 +32,7 @@ import gbc.sa.vansales.data.Pricing;
 import gbc.sa.vansales.data.Promotions02;
 import gbc.sa.vansales.data.Promotions05;
 import gbc.sa.vansales.data.Promotions07;
+import gbc.sa.vansales.data.SpecialCustomer;
 import gbc.sa.vansales.data.TripHeader;
 import gbc.sa.vansales.data.VisitList;
 import gbc.sa.vansales.data.VisitReasons;
@@ -118,8 +119,8 @@ public class LoginActivity extends Activity {
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-        id = "E100824";
-        password = "E100824";
+        //id = "E100824";
+        //password = "E100824";
         Helpers.logData(LoginActivity.this,"Login Credentials for user:" + id + "/" + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
@@ -238,13 +239,13 @@ public class LoginActivity extends Activity {
                                         loadingSpinner.show();
                                         //For development purpose only
                                         // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
-                                if(!checkTripID("C111260000000552")){
+                                /*if(!checkTripID("C111260000000550")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "C111260000000552");
+                                    Settings.setString(TRIP_ID, "C111260000000550");
                                     //Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials(username, password, Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("C111260000000552");
+                                    downloadData("C111260000000550");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
@@ -252,12 +253,12 @@ public class LoginActivity extends Activity {
                                     startActivityForResult(intent, 0);
                                     finish();
                                     overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-                                }
+                                }*/
                                         //Comment removal ends here
-                                        /*dialog.dismiss();
+                                        dialog.dismiss();
                                         if(loadingSpinner.isShowing()){
                                             loadingSpinner.hide();
-                                        }*/
+                                        }
                                     }
                                 })
                                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -391,7 +392,8 @@ public class LoginActivity extends Activity {
                         Promotions07.load(LoginActivity.this, username, db);
                         Pricing.load(LoginActivity.this, username, db);
                         Banks.load(LoginActivity.this,"",db);
-                        FOCData.load(LoginActivity.this,"",db);
+                        FOCData.load(LoginActivity.this,username,db);
+                        SpecialCustomer.load(LoginActivity.this, username, db);
                         DriverOpenItems.load(LoginActivity.this,username,db);
                     }
                 });

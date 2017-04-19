@@ -46,7 +46,7 @@ public class ConfigStore {
     public static final String Promotion07Entity = "ZSFA_DOWNLOAD_SRV.Promotion07";
     public static final String BankEntity = "ZSFA_DOWNLOAD_SRV.Bank";
     public static final String DriverOpenItemsEntity = "ZSFA_DOWNLOAD_SRV.DriverOpenItems";
-    public static final String FOCEntity = "ZSFA_DOWNLOAD_SRV.FOC";
+    public static final String FOCEntity = "ZSFA_DOWNLOAD_SRV.FreeGoods";
 
     //Functions for Posting
     public static final String LoadRequestFunction = "ORDERREQ";

@@ -810,11 +810,23 @@ public class SalesFragment extends Fragment {
         if(value){
             try{
                 //if(Settings.getString(App.DIST_CHANNEL).equals("30")||Settings.getString(App.DIST_CHANNEL).equals("20"))
-                if(Settings.getString(App.DIST_CHANNEL).equals("20"))
-               // if(Settings.getString(App.DIST_CHANNEL).equals("10")||Settings.getString(App.DIST_CHANNEL).equals("20"))
-                {
+                // Changes by Rakshit on 09/04/2017
+                // Changes suggested by CK that for Wholesale if there is special price
+                // for customer, do not go for FOC
+                // Change no 20170409
+                if(Settings.getString(App.DIST_CHANNEL).equals("50")){
+                    //Logic to check if Customer has special Price
                     for(Sales sale:arrayList){
                         if(Double.parseDouble(sale.getCases())>0||Double.parseDouble(sale.getPic())>0){
+                            //Changes to check if customer has special price, if yes dont calculate FOC
+
+                            HashMap<String,String>priceCheckMap = new HashMap<>();
+                            priceCheckMap.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                           /* priceCheckMap.put(db.KEY_MATERIAL_NO,sale.getMaterial_no());
+                            priceCheckMap.put(db.KEY_PRIORITY,"1");*/
+
+                            if(!db.checkData(db.SPECIAL_CUSTOMER,priceCheckMap)){
+
                             HashMap<String,String>map = new HashMap<>();
                             map.put(db.KEY_FOC_ASSIGNING_ITEM,"");
                             map.put(db.KEY_FOC_QUALIFYING_QUANTITY,"");
@@ -824,139 +836,146 @@ public class SalesFragment extends Fragment {
                             HashMap<String,String>filter = new HashMap<>();
                             //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
                             filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
+                            filter.put(db.KEY_PRIORITY,"2");
+
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_FOC_QUALIFYING_ITEM, sale.getMaterial_no());
+
                             //filter.put(db.KEY_DIST_CHANNEL,Settings.getString(App.DIST_CHANNEL));
-                            Cursor c = db.getData(db.FOC_RULES,map,filter);
-                            List<String> qualifyingQuantities = new ArrayList<String>();
-                            if(c.getCount()>0){
-                                if(c.getCount()>1){
-                                    do{
-                                        qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                            if (db.checkData(db.FOC_RULES, filterComp)) {
+                                Cursor c = db.getData(db.FOC_RULES,map,filterComp);
+                                List<String> qualifyingQuantities = new ArrayList<String>();
+                                if(c.getCount()>0){
+                                    if(c.getCount()>1){
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
                                     }
-                                    while (c.moveToNext());
-                                }
-                                c.moveToFirst();
+                                    c.moveToFirst();
 
-                                do{
-                                    boolean isInRange = checkDateRange(c.getString(c.getColumnIndex(db.KEY_FOC_DATE_FROM)),c.getString(c.getColumnIndex(db.KEY_FOC_DATE_TO)));
-                                    if(isInRange){
-                                        HashMap<String,String>vanStockCheckFilter = new HashMap<>();
-                                        vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
-                                        double quantityVan = 0;
-                                        if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
-                                            HashMap<String,String>vanStockCheckMap = new HashMap<>();
-                                            vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
-                                            vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
-                                            Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
-                                            if(cursor.getCount()>0){
-                                                cursor.moveToFirst();
-                                                quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
-                                                if(quantityVan>0){
-                                                    double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
-                                                            ?sale.getCases():sale.getPic());
-                                                    double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
-                                                    double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
-                                                    String freeCases = "0";
-                                                    String factor ="1";
-                                                    if(inputQuantity<focQuantity){
+                                    do{
+                                        boolean isInRange = checkDateRange(c.getString(c.getColumnIndex(db.KEY_FOC_DATE_FROM)),c.getString(c.getColumnIndex(db.KEY_FOC_DATE_TO)));
+                                        if(isInRange){
+                                            HashMap<String,String>vanStockCheckFilter = new HashMap<>();
+                                            vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                            double quantityVan = 0;
+                                            if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
+                                                HashMap<String,String>vanStockCheckMap = new HashMap<>();
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
+                                                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
+                                                if(cursor.getCount()>0){
+                                                    cursor.moveToFirst();
+                                                    quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                                    if(quantityVan>0){
+                                                        double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
+                                                                ?sale.getCases():sale.getPic());
+                                                        double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                        double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                                        String freeCases = "0";
+                                                        String factor ="1";
+                                                        if(inputQuantity<focQuantity){
 
-                                                    }
-                                                    else {
-                                                        if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
-                                                            factor = String.valueOf((int)(inputQuantity/focQuantity));
-                                                            freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
                                                         }
-                                                        else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
-                                                            factor = String.valueOf((int)(inputQuantity/focQuantity));
-                                                            freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
-                                                        }
+                                                        else {
+                                                            if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                            else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
                                                     }
                                                     else if(inputQuantity%focQuantity>0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
                                                     }*/
-                                                    }
-
-                                                    ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
-                                                    if(article!=null){
-                                                        Sales newSale = new Sales();
-                                                        newSale.setItem_code(article.getArticleNo());
-                                                        newSale.setItem_category(article.getArticleCategory());
-                                                        newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                                                        newSale.setMaterial_no(article.getMaterialNo());
-                                                        newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
-                                                        newSale.setUom(article.getBaseUOM());
-                                                        if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
-                                                            newSale.setCases(freeCases);
-                                                            newSale.setPic("0");
                                                         }
-                                                        newSale.setPrice("0.00");
-                                                        HashMap<String,String> filterPart = new HashMap<>();
-                                                        filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
 
-                                                        HashMap<String,String> priceMap = new HashMap<>();
-                                                        priceMap.put(db.KEY_MATERIAL_NO, "");
-                                                        priceMap.put(db.KEY_AMOUNT,"");
-                                                        if(db.checkData(db.PRICING,filterPart)){
-                                                            //Pricing exists for Product for customer
-                                                            //Pricing exists for Product for customer
-                                                            Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
-                                                            if(priceCursor.getCount()>0){
-                                                                priceCursor.moveToFirst();
-                                                                String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
-                                                                newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                        ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                                        if(article!=null){
+                                                            Sales newSale = new Sales();
+                                                            newSale.setItem_code(article.getArticleNo());
+                                                            newSale.setItem_category(article.getArticleCategory());
+                                                            newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setMaterial_no(article.getMaterialNo());
+                                                            newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setUom(article.getBaseUOM());
+                                                            if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
+                                                                newSale.setCases(freeCases);
+                                                                newSale.setPic("0");
                                                             }
-                                                        }
-                                                        else{
-                                                            newSale.setPrice("0");
-                                                        }
+                                                            newSale.setPrice("0.00");
+                                                            HashMap<String,String> filterPart = new HashMap<>();
+                                                            filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
+
+                                                            HashMap<String,String> priceMap = new HashMap<>();
+                                                            priceMap.put(db.KEY_MATERIAL_NO, "");
+                                                            priceMap.put(db.KEY_AMOUNT,"");
+                                                            if(db.checkData(db.PRICING,filterPart)){
+                                                                //Pricing exists for Product for customer
+                                                                //Pricing exists for Product for customer
+                                                                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                                                                if(priceCursor.getCount()>0){
+                                                                    priceCursor.moveToFirst();
+                                                                    String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                                                                    newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                                }
+                                                            }
+                                                            else{
+                                                                newSale.setPrice("0");
+                                                            }
                                                     /* Changes on 22/03/2017
                                                     * Added to handle the free stock quota based on the current van stock
                                                     * Input quantity + Free goods should always be less than or equal to the
                                                     * van stock available
                                                     * */
 
-                                                        if(freeCases!="0"&&(Double.parseDouble(freeCases)+inputQuantity)<=quantityVan){
-                                                            focValid = true;
-                                                            if(Const.focList.size()>0){
-                                                                for(int i=0;i<Const.focList.size();i++){
-                                                                    Sales salesObj = Const.focList.get(i);
-                                                                    if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
-                                                                        Const.focList.remove(i);
+                                                            if(freeCases!="0"&&(Double.parseDouble(freeCases)+inputQuantity)<=quantityVan){
+                                                                focValid = true;
+                                                                if(Const.focList.size()>0){
+                                                                    for(int i=0;i<Const.focList.size();i++){
+                                                                        Sales salesObj = Const.focList.get(i);
+                                                                        if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                            Const.focList.remove(i);
+                                                                        }
                                                                     }
                                                                 }
+                                                                focArrayList.add(newSale);
+                                                                if(Const.focList.size()==0){
+                                                                    Const.focList = focArrayList;
+                                                                }
                                                             }
-                                                            focArrayList.add(newSale);
-                                                            if(Const.focList.size()==0){
-                                                                Const.focList = focArrayList;
-                                                            }
-                                                        }
-                                                        else{
-                                                            if(!freeCases.equals("0"))
-                                                            {
-                                                                focValid = false;
-                                                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                                                                alertDialogBuilder.setTitle(getString(R.string.message))
-                                                                        .setMessage("Not enough quantity to give as free goods with quantity in van." +
-                                                                                "Please reduce sale quantity to accomodate the free goods.")
-                                                                        .setCancelable(false)
-                                                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                                dialog.dismiss();
-                                                                            }
-                                                                        });
-                                                                // create alert dialog
-                                                                AlertDialog alertDialog = alertDialogBuilder.create();
-                                                                // show it
-                                                                alertDialog.show();
-                                                                //Toast.makeText(getActivity(),"Not enough quantity to give as free goods with quantity in van.",5).show();
-                                                            }
-                                                            else if(freeCases.equals("0")){
-                                                                focValid = true;
-                                                            }
+                                                            else{
+                                                                if(!freeCases.equals("0"))
+                                                                {
+                                                                    focValid = false;
+                                                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                                                    alertDialogBuilder.setTitle(getString(R.string.message))
+                                                                            .setMessage("Not enough quantity to give as free goods with quantity in van." +
+                                                                                    "Please reduce sale quantity to accomodate the free goods.")
+                                                                            .setCancelable(false)
+                                                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    dialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                    // create alert dialog
+                                                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                                                    // show it
+                                                                    alertDialog.show();
+                                                                    //Toast.makeText(getActivity(),"Not enough quantity to give as free goods with quantity in van.",5).show();
+                                                                }
+                                                                else if(freeCases.equals("0")){
+                                                                    focValid = true;
+                                                                }
 
-                                                        }
+                                                            }
                                                     /*End of changes 22/03/2017
                                                     * */
 
@@ -976,20 +995,552 @@ public class SalesFragment extends Fragment {
                                                         }
                                                     }*/
                                                     /*End of changes*/
+                                                        }
+                                                    }
+                                                    else{
+                                                        Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
-                                                else{
-                                                    Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
-                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
                                             }
                                         }
-                                        else{
-                                            Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
+                                    }
+                                    while (c.moveToNext());
+                                }
+                            }
+                            else{
+                                Cursor c = db.getData(db.FOC_RULES,map,filter);
+                                List<String> qualifyingQuantities = new ArrayList<String>();
+                                if(c.getCount()>0){
+                                    if(c.getCount()>1){
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    c.moveToFirst();
+
+                                    do{
+                                        boolean isInRange = checkDateRange(c.getString(c.getColumnIndex(db.KEY_FOC_DATE_FROM)),c.getString(c.getColumnIndex(db.KEY_FOC_DATE_TO)));
+                                        if(isInRange){
+                                            HashMap<String,String>vanStockCheckFilter = new HashMap<>();
+                                            vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                            double quantityVan = 0;
+                                            if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
+                                                HashMap<String,String>vanStockCheckMap = new HashMap<>();
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
+                                                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
+                                                if(cursor.getCount()>0){
+                                                    cursor.moveToFirst();
+                                                    quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                                    if(quantityVan>0){
+                                                        double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
+                                                                ?sale.getCases():sale.getPic());
+                                                        double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                        double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                                        String freeCases = "0";
+                                                        String factor ="1";
+                                                        if(inputQuantity<focQuantity){
+
+                                                        }
+                                                        else {
+                                                            if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                            else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                    /*if(inputQuantity%focQuantity==0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }
+                                                    else if(inputQuantity%focQuantity>0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }*/
+                                                        }
+
+                                                        ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                                        if(article!=null){
+                                                            Sales newSale = new Sales();
+                                                            newSale.setItem_code(article.getArticleNo());
+                                                            newSale.setItem_category(article.getArticleCategory());
+                                                            newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setMaterial_no(article.getMaterialNo());
+                                                            newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setUom(article.getBaseUOM());
+                                                            if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
+                                                                newSale.setCases(freeCases);
+                                                                newSale.setPic("0");
+                                                            }
+                                                            newSale.setPrice("0.00");
+                                                            HashMap<String,String> filterPart = new HashMap<>();
+                                                            filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
+
+                                                            HashMap<String,String> priceMap = new HashMap<>();
+                                                            priceMap.put(db.KEY_MATERIAL_NO, "");
+                                                            priceMap.put(db.KEY_AMOUNT,"");
+                                                            if(db.checkData(db.PRICING,filterPart)){
+                                                                //Pricing exists for Product for customer
+                                                                //Pricing exists for Product for customer
+                                                                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                                                                if(priceCursor.getCount()>0){
+                                                                    priceCursor.moveToFirst();
+                                                                    String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                                                                    newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                                }
+                                                            }
+                                                            else{
+                                                                newSale.setPrice("0");
+                                                            }
+                                                    /* Changes on 22/03/2017
+                                                    * Added to handle the free stock quota based on the current van stock
+                                                    * Input quantity + Free goods should always be less than or equal to the
+                                                    * van stock available
+                                                    * */
+
+                                                            if(freeCases!="0"&&(Double.parseDouble(freeCases)+inputQuantity)<=quantityVan){
+                                                                focValid = true;
+                                                                if(Const.focList.size()>0){
+                                                                    for(int i=0;i<Const.focList.size();i++){
+                                                                        Sales salesObj = Const.focList.get(i);
+                                                                        if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                            Const.focList.remove(i);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                focArrayList.add(newSale);
+                                                                if(Const.focList.size()==0){
+                                                                    Const.focList = focArrayList;
+                                                                }
+                                                            }
+                                                            else{
+                                                                if(!freeCases.equals("0"))
+                                                                {
+                                                                    focValid = false;
+                                                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                                                    alertDialogBuilder.setTitle(getString(R.string.message))
+                                                                            .setMessage("Not enough quantity to give as free goods with quantity in van." +
+                                                                                    "Please reduce sale quantity to accomodate the free goods.")
+                                                                            .setCancelable(false)
+                                                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    dialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                    // create alert dialog
+                                                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                                                    // show it
+                                                                    alertDialog.show();
+                                                                    //Toast.makeText(getActivity(),"Not enough quantity to give as free goods with quantity in van.",5).show();
+                                                                }
+                                                                else if(freeCases.equals("0")){
+                                                                    focValid = true;
+                                                                }
+
+                                                            }
+                                                    /*End of changes 22/03/2017
+                                                    * */
+
+                                                    /*Earlier code prior to changes 22/03/2017*/
+                                                    /*if(freeCases!="0"&&Double.parseDouble(freeCases)<=quantityVan){
+                                                        if(Const.focList.size()>0){
+                                                            for(int i=0;i<Const.focList.size();i++){
+                                                                Sales salesObj = Const.focList.get(i);
+                                                                if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                   Const.focList.remove(i);
+                                                                }
+                                                            }
+                                                        }
+                                                        focArrayList.add(newSale);
+                                                        if(Const.focList.size()==0){
+                                                            Const.focList = focArrayList;
+                                                        }
+                                                    }*/
+                                                    /*End of changes*/
+                                                        }
+                                                    }
+                                                    else{
+                                                        Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
+                                            }
                                         }
                                     }
+                                    while (c.moveToNext());
                                 }
-                                while (c.moveToNext());
                             }
+                            }
+                        }
+                    }
+                    Const.focBundle = new Bundle();
+                    Const.focBundle.putParcelableArrayList("foc",focArrayList);
+                    Log.e("FOC Array","" + focArrayList.size());
+                    Const.focList = focArrayList;
+                }
+                //End of changes  Change no 20170409
+                if(Settings.getString(App.DIST_CHANNEL).equals("20")||Settings.getString(App.DIST_CHANNEL).equals("30"))
+                {
+                    for(Sales sale:arrayList){
+                        if(Double.parseDouble(sale.getCases())>0||Double.parseDouble(sale.getPic())>0){
+                            HashMap<String,String>map = new HashMap<>();
+                            map.put(db.KEY_FOC_ASSIGNING_ITEM,"");
+                            map.put(db.KEY_FOC_QUALIFYING_QUANTITY,"");
+                            map.put(db.KEY_FOC_ASSIGNING_QUANTITY,"");
+                            map.put(db.KEY_FOC_DATE_FROM,"");
+                            map.put(db.KEY_FOC_DATE_TO,"");
+                            HashMap<String,String>filter = new HashMap<>();
+                            //filter.put(db.KEY_CUSTOMER_NO,object.getCustomerID());
+                            filter.put(db.KEY_FOC_QUALIFYING_ITEM,sale.getMaterial_no());
+                            filter.put(db.KEY_PRIORITY,"2");
+
+                            HashMap<String, String> filterComp = new HashMap<>();
+                            filterComp.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
+                            filterComp.put(db.KEY_FOC_QUALIFYING_ITEM, sale.getMaterial_no());
+
+                            //filter.put(db.KEY_DIST_CHANNEL,Settings.getString(App.DIST_CHANNEL));
+                            if (db.checkData(db.FOC_RULES, filterComp)) {
+                                Cursor c = db.getData(db.FOC_RULES,map,filterComp);
+                                List<String> qualifyingQuantities = new ArrayList<String>();
+                                if(c.getCount()>0){
+                                    if(c.getCount()>1){
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    c.moveToFirst();
+
+                                    do{
+                                        boolean isInRange = checkDateRange(c.getString(c.getColumnIndex(db.KEY_FOC_DATE_FROM)),c.getString(c.getColumnIndex(db.KEY_FOC_DATE_TO)));
+                                        if(isInRange){
+                                            HashMap<String,String>vanStockCheckFilter = new HashMap<>();
+                                            vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                            double quantityVan = 0;
+                                            if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
+                                                HashMap<String,String>vanStockCheckMap = new HashMap<>();
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
+                                                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
+                                                if(cursor.getCount()>0){
+                                                    cursor.moveToFirst();
+                                                    quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                                    if(quantityVan>0){
+                                                        double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
+                                                                ?sale.getCases():sale.getPic());
+                                                        double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                        double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                                        String freeCases = "0";
+                                                        String factor ="1";
+                                                        if(inputQuantity<focQuantity){
+
+                                                        }
+                                                        else {
+                                                            if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                            else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                    /*if(inputQuantity%focQuantity==0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }
+                                                    else if(inputQuantity%focQuantity>0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }*/
+                                                        }
+
+                                                        ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                                        if(article!=null){
+                                                            Sales newSale = new Sales();
+                                                            newSale.setItem_code(article.getArticleNo());
+                                                            newSale.setItem_category(article.getArticleCategory());
+                                                            newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setMaterial_no(article.getMaterialNo());
+                                                            newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setUom(article.getBaseUOM());
+                                                            if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
+                                                                newSale.setCases(freeCases);
+                                                                newSale.setPic("0");
+                                                            }
+                                                            newSale.setPrice("0.00");
+                                                            HashMap<String,String> filterPart = new HashMap<>();
+                                                            filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
+
+                                                            HashMap<String,String> priceMap = new HashMap<>();
+                                                            priceMap.put(db.KEY_MATERIAL_NO, "");
+                                                            priceMap.put(db.KEY_AMOUNT,"");
+                                                            if(db.checkData(db.PRICING,filterPart)){
+                                                                //Pricing exists for Product for customer
+                                                                //Pricing exists for Product for customer
+                                                                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                                                                if(priceCursor.getCount()>0){
+                                                                    priceCursor.moveToFirst();
+                                                                    String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                                                                    newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                                }
+                                                            }
+                                                            else{
+                                                                newSale.setPrice("0");
+                                                            }
+                                                    /* Changes on 22/03/2017
+                                                    * Added to handle the free stock quota based on the current van stock
+                                                    * Input quantity + Free goods should always be less than or equal to the
+                                                    * van stock available
+                                                    * */
+
+                                                            if(freeCases!="0"&&(Double.parseDouble(freeCases)+inputQuantity)<=quantityVan){
+                                                                focValid = true;
+                                                                if(Const.focList.size()>0){
+                                                                    for(int i=0;i<Const.focList.size();i++){
+                                                                        Sales salesObj = Const.focList.get(i);
+                                                                        if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                            Const.focList.remove(i);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                focArrayList.add(newSale);
+                                                                if(Const.focList.size()==0){
+                                                                    Const.focList = focArrayList;
+                                                                }
+                                                            }
+                                                            else{
+                                                                if(!freeCases.equals("0"))
+                                                                {
+                                                                    focValid = false;
+                                                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                                                    alertDialogBuilder.setTitle(getString(R.string.message))
+                                                                            .setMessage("Not enough quantity to give as free goods with quantity in van." +
+                                                                                    "Please reduce sale quantity to accomodate the free goods.")
+                                                                            .setCancelable(false)
+                                                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    dialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                    // create alert dialog
+                                                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                                                    // show it
+                                                                    alertDialog.show();
+                                                                    //Toast.makeText(getActivity(),"Not enough quantity to give as free goods with quantity in van.",5).show();
+                                                                }
+                                                                else if(freeCases.equals("0")){
+                                                                    focValid = true;
+                                                                }
+
+                                                            }
+                                                    /*End of changes 22/03/2017
+                                                    * */
+
+                                                    /*Earlier code prior to changes 22/03/2017*/
+                                                    /*if(freeCases!="0"&&Double.parseDouble(freeCases)<=quantityVan){
+                                                        if(Const.focList.size()>0){
+                                                            for(int i=0;i<Const.focList.size();i++){
+                                                                Sales salesObj = Const.focList.get(i);
+                                                                if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                   Const.focList.remove(i);
+                                                                }
+                                                            }
+                                                        }
+                                                        focArrayList.add(newSale);
+                                                        if(Const.focList.size()==0){
+                                                            Const.focList = focArrayList;
+                                                        }
+                                                    }*/
+                                                    /*End of changes*/
+                                                        }
+                                                    }
+                                                    else{
+                                                        Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                    while (c.moveToNext());
+                                }
+                            }
+                            else{
+                                Cursor c = db.getData(db.FOC_RULES,map,filter);
+                                List<String> qualifyingQuantities = new ArrayList<String>();
+                                if(c.getCount()>0){
+                                    if(c.getCount()>1){
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    c.moveToFirst();
+
+                                    do{
+                                        boolean isInRange = checkDateRange(c.getString(c.getColumnIndex(db.KEY_FOC_DATE_FROM)),c.getString(c.getColumnIndex(db.KEY_FOC_DATE_TO)));
+                                        if(isInRange){
+                                            HashMap<String,String>vanStockCheckFilter = new HashMap<>();
+                                            vanStockCheckFilter.put(db.KEY_MATERIAL_NO,c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                            double quantityVan = 0;
+                                            if(db.checkData(db.VAN_STOCK_ITEMS,vanStockCheckFilter)){
+                                                HashMap<String,String>vanStockCheckMap = new HashMap<>();
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_CASE, "");
+                                                vanStockCheckMap.put(db.KEY_REMAINING_QTY_UNIT, "");
+                                                Cursor cursor = db.getData(db.VAN_STOCK_ITEMS,vanStockCheckMap,vanStockCheckFilter);
+                                                if(cursor.getCount()>0){
+                                                    cursor.moveToFirst();
+                                                    quantityVan = Double.parseDouble(cursor.getString(cursor.getColumnIndex(db.KEY_REMAINING_QTY_CASE)));
+                                                    if(quantityVan>0){
+                                                        double inputQuantity = Double.parseDouble(sale.getUom().equals(App.CASE_UOM)||sale.getUom().equals(App.BOTTLES_UOM)
+                                                                ?sale.getCases():sale.getPic());
+                                                        double focQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                                        double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                                        String freeCases = "0";
+                                                        String factor ="1";
+                                                        if(inputQuantity<focQuantity){
+
+                                                        }
+                                                        else {
+                                                            if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                            else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                                                                factor = String.valueOf((int)(inputQuantity/focQuantity));
+                                                                freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                            }
+                                                    /*if(inputQuantity%focQuantity==0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }
+                                                    else if(inputQuantity%focQuantity>0){
+                                                        freeCases = String.valueOf((int)(inputQuantity/focQuantity));
+                                                    }*/
+                                                        }
+
+                                                        ArticleHeader article = ArticleHeader.getArticle(articles, c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_ITEM)));
+                                                        if(article!=null){
+                                                            Sales newSale = new Sales();
+                                                            newSale.setItem_code(article.getArticleNo());
+                                                            newSale.setItem_category(article.getArticleCategory());
+                                                            newSale.setMaterial_description(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setMaterial_no(article.getMaterialNo());
+                                                            newSale.setName(UrlBuilder.decodeString(article.getMaterialDesc1()));
+                                                            newSale.setUom(article.getBaseUOM());
+                                                            if(newSale.getUom().equals(App.CASE_UOM)||newSale.getUom().equals(App.BOTTLES_UOM)){
+                                                                newSale.setCases(freeCases);
+                                                                newSale.setPic("0");
+                                                            }
+                                                            newSale.setPrice("0.00");
+                                                            HashMap<String,String> filterPart = new HashMap<>();
+                                                            filterPart.put(db.KEY_MATERIAL_NO, article.getMaterialNo());
+
+                                                            HashMap<String,String> priceMap = new HashMap<>();
+                                                            priceMap.put(db.KEY_MATERIAL_NO, "");
+                                                            priceMap.put(db.KEY_AMOUNT,"");
+                                                            if(db.checkData(db.PRICING,filterPart)){
+                                                                //Pricing exists for Product for customer
+                                                                //Pricing exists for Product for customer
+                                                                Cursor priceCursor = db.getData(db.PRICING,priceMap,filterPart);
+                                                                if(priceCursor.getCount()>0){
+                                                                    priceCursor.moveToFirst();
+                                                                    String price = priceCursor.getString(priceCursor.getColumnIndex(db.KEY_AMOUNT));
+                                                                    newSale.setPrice(newSale.getUom().equals(App.CASE_UOM) || newSale.getUom().equals(App.BOTTLES_UOM) ? price : price);
+                                                                }
+                                                            }
+                                                            else{
+                                                                newSale.setPrice("0");
+                                                            }
+                                                    /* Changes on 22/03/2017
+                                                    * Added to handle the free stock quota based on the current van stock
+                                                    * Input quantity + Free goods should always be less than or equal to the
+                                                    * van stock available
+                                                    * */
+
+                                                            if(freeCases!="0"&&(Double.parseDouble(freeCases)+inputQuantity)<=quantityVan){
+                                                                focValid = true;
+                                                                if(Const.focList.size()>0){
+                                                                    for(int i=0;i<Const.focList.size();i++){
+                                                                        Sales salesObj = Const.focList.get(i);
+                                                                        if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                            Const.focList.remove(i);
+                                                                        }
+                                                                    }
+                                                                }
+                                                                focArrayList.add(newSale);
+                                                                if(Const.focList.size()==0){
+                                                                    Const.focList = focArrayList;
+                                                                }
+                                                            }
+                                                            else{
+                                                                if(!freeCases.equals("0"))
+                                                                {
+                                                                    focValid = false;
+                                                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                                                    alertDialogBuilder.setTitle(getString(R.string.message))
+                                                                            .setMessage("Not enough quantity to give as free goods with quantity in van." +
+                                                                                    "Please reduce sale quantity to accomodate the free goods.")
+                                                                            .setCancelable(false)
+                                                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                                                @Override
+                                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                                    dialog.dismiss();
+                                                                                }
+                                                                            });
+                                                                    // create alert dialog
+                                                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                                                    // show it
+                                                                    alertDialog.show();
+                                                                    //Toast.makeText(getActivity(),"Not enough quantity to give as free goods with quantity in van.",5).show();
+                                                                }
+                                                                else if(freeCases.equals("0")){
+                                                                    focValid = true;
+                                                                }
+
+                                                            }
+                                                    /*End of changes 22/03/2017
+                                                    * */
+
+                                                    /*Earlier code prior to changes 22/03/2017*/
+                                                    /*if(freeCases!="0"&&Double.parseDouble(freeCases)<=quantityVan){
+                                                        if(Const.focList.size()>0){
+                                                            for(int i=0;i<Const.focList.size();i++){
+                                                                Sales salesObj = Const.focList.get(i);
+                                                                if(salesObj.getMaterial_no().equals(newSale.getMaterial_no())){
+                                                                   Const.focList.remove(i);
+                                                                }
+                                                            }
+                                                        }
+                                                        focArrayList.add(newSale);
+                                                        if(Const.focList.size()==0){
+                                                            Const.focList = focArrayList;
+                                                        }
+                                                    }*/
+                                                    /*End of changes*/
+                                                        }
+                                                    }
+                                                    else{
+                                                        Toast.makeText(getActivity(),"Not enough quantity",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Toast.makeText(getActivity(),"FOC Material not available in van",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                    while (c.moveToNext());
+                                }
+                            }
+
                         }
 
                     }

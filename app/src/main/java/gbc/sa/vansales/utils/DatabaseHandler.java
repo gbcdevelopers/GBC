@@ -75,6 +75,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String UNLOAD_TRANSACTION = "UNLOAD_TRANSACTION";
     public static final String DOWNLOAD_STATUS = "DOWNLOAD_STATUS";
     public static final String PARTIAL_COLLECTION_TEMP = "PARTIAL_COLLECTION_TEMP";
+    public static final String SPECIAL_CUSTOMER = "SPECIAL_CUSTOMER";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -1087,7 +1088,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_FOC_QUALIFYING_QUANTITY + " TEXT,"
                 + KEY_FOC_ASSIGNING_QUANTITY + " TEXT,"
                 + KEY_FOC_DATE_FROM + " TEXT,"
-                + KEY_FOC_DATE_TO + " TEXT " + ")";
+                + KEY_FOC_DATE_TO + " TEXT,"
+                + KEY_PRIORITY + " TEXT " + ")";
 
         String TABLE_CAPTURE_FOC_SALES = "CREATE TABLE " + FOC_INVOICE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -1205,6 +1207,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_APP_DOWNLOAD_KEY + " TEXT,"
                 + KEY_APP_DOWNLOAD_VALUE + " TEXT " + ")";
 
+        String TABLE_SPECIAL_CUSTOMER = "CREATE TABLE " + SPECIAL_CUSTOMER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_CUSTOMER_NO + " TEXT " + ")";
+
         //Execute to create tables
         db.execSQL(TABLE_LOGIN_CREDENTIALS);
         db.execSQL(TABLE_VISIT_LIST);
@@ -1257,6 +1263,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_UNLOAD_TRANSACTION);
         db.execSQL(TABLE_DOWNLOAD_STATUS);
         db.execSQL(TABLE_COLLECTION_PARTIAL);
+        db.execSQL(TABLE_SPECIAL_CUSTOMER);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1310,7 +1317,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + UNLOAD_TRANSACTION);
         db.execSQL("DROP TABLE IF EXISTS " + DOWNLOAD_STATUS);
         db.execSQL("DROP TABLE IF EXISTS " + PARTIAL_COLLECTION_TEMP);
-
+        db.execSQL("DROP TABLE IF EXISTS " + SPECIAL_CUSTOMER);
         onCreate(db);
     }
     //Storing Secured Credentials

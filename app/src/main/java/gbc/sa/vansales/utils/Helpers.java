@@ -213,7 +213,7 @@ public class Helpers {
         // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 0;
-        int length = 5;
+        //int length = 5;
         HashMap<String, String> search = new HashMap<>();
         search.put(db.KEY_DOC_TYPE, documentType);
         boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION, search);
@@ -241,7 +241,10 @@ public class Helpers {
             db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
         String tripID = Settings.getString(App.TRIP_ID);
-        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
+        //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
+        //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 4).replaceAll("0"), "0"), 3, "0");
+        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 4).replaceAll("0", ""), "0"), 3, "0");
+        int length = routeCode.length()<=3?5:4;
         Log.e("GEnerated Number","" + routeCode + String.valueOf(docTypeId) + StringUtils.leftPad(String.valueOf(numRange), length, "0"));
         return routeCode + StringUtils.leftPad(String.valueOf(docTypeId),2,"0") + StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }
@@ -251,7 +254,7 @@ public class Helpers {
         // int routeId = Integer.parseInt(route);
         int docTypeId = Integer.parseInt(getDocumentTypeNo(documentType));
         int numRange = 0;
-        int length = 4;
+        //int length = 4;  //Commented to have unique customer number taking last 4 digits of Trip ID
         HashMap<String, String> search = new HashMap<>();
         search.put(db.KEY_DOC_TYPE, documentType);
         boolean checkPRNo = db.checkData(db.PURCHASE_NUMBER_GENERATION, search);
@@ -279,8 +282,9 @@ public class Helpers {
             db.addData(db.PURCHASE_NUMBER_GENERATION, valueMap);
         }
         String tripID = Settings.getString(App.TRIP_ID);
-        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
-
+        //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
+        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length()-4).replaceAll("0",""),"0"),3,"0");
+        int length = routeCode.length()<=3?4:3;  //Based on size of routecode, determine the length of padding.
         return customer + routeCode + StringUtils.leftPad(String.valueOf(numRange), length-(String.valueOf(numRange).length()), "0");
     }
     public static String getDocumentTypeNo(String documentType) {

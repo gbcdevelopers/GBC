@@ -375,7 +375,7 @@ public class CustomerDetailActivity extends AppCompatActivity implements View.On
                             Helpers.logData(CustomerDetailActivity.this, "Clicked on merchandize");
                             Intent intent3 = new Intent(CustomerDetailActivity.this, MerchandizingActivity.class);
                             intent3.putExtra("headerObj", object);
-                            Toast.makeText(CustomerDetailActivity.this, getString(R.string.feature_blocked), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(CustomerDetailActivity.this, getString(R.string.feature_blocked), Toast.LENGTH_SHORT).show();
                             //startActivity(intent3);
                             break;
                         case 4:
