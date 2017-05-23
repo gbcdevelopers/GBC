@@ -16,7 +16,8 @@ public class App extends Application {
     //Open these when building for release
     /*@ Production Connection details*/
     public static final String ENVIRONMENT = "Production";
-    public static final String HOST = "78.93.41.222";
+    //public static final String HOST = "78.93.41.222";
+    public static final String HOST = "88.85.227.102";
     public static final int PORT = 8054;
     public static final String SAP_CLIENT = "SAP-CLIENT";
     public static final String SAP_CLIENT_ID = "800";

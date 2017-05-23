@@ -130,6 +130,14 @@ public class AddCustomerActivity extends AppCompatActivity {
 
         salesArea = "1000";
         btn_sales_area.setText(getString(R.string.berain));
+        if(Settings.getString(App.DIST_CHANNEL).equals("20")){
+            distribution = "20";
+            btn_distribution.setText("Direct Distribution");
+        }
+        if(Settings.getString(App.DIST_CHANNEL).equals("30")){
+            distribution = "30";
+            btn_distribution.setText("Home Delivery");
+        }
         btn_distribution.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -344,12 +352,18 @@ public class AddCustomerActivity extends AppCompatActivity {
                 CustomerStatus directDistObj =  new CustomerStatus();
                 directDistObj.setReasonCode("20");
                 directDistObj.setReasonDescription("Direct Distribution");
-                arrayList.add(directDistObj);
+                if(Settings.getString(App.DIST_CHANNEL).equals("20")){
+                    arrayList.add(directDistObj);
+                }
+                //arrayList.add(directDistObj);
 
                 CustomerStatus homeDelObj = new CustomerStatus();
                 homeDelObj.setReasonCode("30");
                 homeDelObj.setReasonDescription("Home Delivery");
-                arrayList.add(homeDelObj);
+                if(Settings.getString(App.DIST_CHANNEL).equals("30")){
+                    arrayList.add(homeDelObj);
+                }
+                //arrayList.add(homeDelObj);
 
                 adapter = new CustomerStatusAdapter(AddCustomerActivity.this,arrayList);
 
@@ -373,6 +387,11 @@ public class AddCustomerActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+                if(arrayList.size()==1){
+                    distribution = arrayList.get(0).getReasonCode();
+                    btn_distribution.setText(arrayList.get(0).getReasonDescription());
+                    dialog.dismiss();
+                }
                 dialog.setContentView(view);
                 dialog.setCancelable(false);
                 dialog.show();

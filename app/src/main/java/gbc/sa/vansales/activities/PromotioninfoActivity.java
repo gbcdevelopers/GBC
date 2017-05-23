@@ -2506,7 +2506,8 @@ public class PromotioninfoActivity extends AppCompatActivity implements DataList
             mainArr.put("invoicepaymentterms", "2");
             mainArr.put("invoicenumber", orderNo);
             mainArr.put("INVOICETYPE", type);
-            String arabicCustomer = "اللولو هايبر ماركت";
+            //String arabicCustomer = "اللولو هايبر ماركت";
+            String arabicCustomer = "لا يوجد نص عربي";
             mainArr.put("CUSTOMERID", object.getCustomerID());
             mainArr.put("CUSTOMER", UrlBuilder.decodeString(object.getCustomerName()) + "-" + arabicCustomer);
             if (object.getPaymentMethod().equals(App.CASH_CUSTOMER)) {

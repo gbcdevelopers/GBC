@@ -243,8 +243,10 @@ public class Helpers {
         String tripID = Settings.getString(App.TRIP_ID);
         //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 3), "0"), 3, "0");
         //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 4).replaceAll("0"), "0"), 3, "0");
-        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 4).replaceAll("0", ""), "0"), 3, "0");
-        int length = routeCode.length()<=3?5:4;
+        //String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 4).replaceAll("0", ""), "0"), 3, "0");
+        String routeCode = StringUtils.rightPad(StringUtils.stripStart(tripID.substring(tripID.length() - 5), "0"), 3, "0");
+        //int length = routeCode.length()<=3?5:4;
+        int length = routeCode.length()<=3?5:routeCode.length()==5?3:4;
         Log.e("GEnerated Number","" + routeCode + String.valueOf(docTypeId) + StringUtils.leftPad(String.valueOf(numRange), length, "0"));
         return routeCode + StringUtils.leftPad(String.valueOf(docTypeId),2,"0") + StringUtils.leftPad(String.valueOf(numRange), length, "0");
     }

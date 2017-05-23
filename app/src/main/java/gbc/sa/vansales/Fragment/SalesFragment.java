@@ -846,10 +846,19 @@ public class SalesFragment extends Fragment {
                             if (db.checkData(db.FOC_RULES, filterComp)) {
                                 Cursor c = db.getData(db.FOC_RULES,map,filterComp);
                                 List<String> qualifyingQuantities = new ArrayList<String>();
+                                List<String> assigningQuantities = new ArrayList<String>();
                                 if(c.getCount()>0){
                                     if(c.getCount()>1){
                                         do{
                                             qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    else{
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                         }
                                         while (c.moveToNext());
                                     }
@@ -876,6 +885,7 @@ public class SalesFragment extends Fragment {
                                                         double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                                         String freeCases = "0";
                                                         String factor ="1";
+
                                                         if(inputQuantity<focQuantity){
 
                                                         }
@@ -883,11 +893,14 @@ public class SalesFragment extends Fragment {
                                                             if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities,assigningQuantities,sale.getCases());
                                                             }
                                                             else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities,assigningQuantities,sale.getCases());
                                                             }
+
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
                                                     }
@@ -1013,10 +1026,20 @@ public class SalesFragment extends Fragment {
                             else{
                                 Cursor c = db.getData(db.FOC_RULES,map,filter);
                                 List<String> qualifyingQuantities = new ArrayList<String>();
+                                List<String> assigningQuantities = new ArrayList<String>();
+
                                 if(c.getCount()>0){
                                     if(c.getCount()>1){
                                         do{
                                             qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    else{
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                         }
                                         while (c.moveToNext());
                                     }
@@ -1050,10 +1073,12 @@ public class SalesFragment extends Fragment {
                                                             if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities, sale.getCases());
                                                             }
                                                             else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities,sale.getCases());
                                                             }
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
@@ -1209,10 +1234,19 @@ public class SalesFragment extends Fragment {
                             if (db.checkData(db.FOC_RULES, filterComp)) {
                                 Cursor c = db.getData(db.FOC_RULES,map,filterComp);
                                 List<String> qualifyingQuantities = new ArrayList<String>();
+                                List<String> assigningQuantities = new ArrayList<String>();
                                 if(c.getCount()>0){
                                     if(c.getCount()>1){
                                         do{
                                             qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    else{
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                         }
                                         while (c.moveToNext());
                                     }
@@ -1239,6 +1273,7 @@ public class SalesFragment extends Fragment {
                                                         double assigningQuantity = Double.parseDouble(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                                         String freeCases = "0";
                                                         String factor ="1";
+
                                                         if(inputQuantity<focQuantity){
 
                                                         }
@@ -1246,10 +1281,12 @@ public class SalesFragment extends Fragment {
                                                             if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities, sale.getCases());
                                                             }
                                                             else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities, sale.getCases());
                                                             }
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
@@ -1376,10 +1413,19 @@ public class SalesFragment extends Fragment {
                             else{
                                 Cursor c = db.getData(db.FOC_RULES,map,filter);
                                 List<String> qualifyingQuantities = new ArrayList<String>();
+                                List<String> assigningQuantities = new ArrayList<String>();
                                 if(c.getCount()>0){
                                     if(c.getCount()>1){
                                         do{
                                             qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
+                                        }
+                                        while (c.moveToNext());
+                                    }
+                                    else{
+                                        do{
+                                            qualifyingQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_QUALIFYING_QUANTITY)));
+                                            assigningQuantities.add(c.getString(c.getColumnIndex(db.KEY_FOC_ASSIGNING_QUANTITY)));
                                         }
                                         while (c.moveToNext());
                                     }
@@ -1413,10 +1459,12 @@ public class SalesFragment extends Fragment {
                                                             if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities, sale.getCases());
                                                             }
                                                             else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
                                                                 factor = String.valueOf((int)(inputQuantity/focQuantity));
                                                                 freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                                                                freeCases = calculateFOC(qualifyingQuantities, assigningQuantities, sale.getCases());
                                                             }
                                                     /*if(inputQuantity%focQuantity==0){
                                                         freeCases = String.valueOf((int)(inputQuantity/focQuantity));
@@ -1555,6 +1603,44 @@ public class SalesFragment extends Fragment {
                 Crashlytics.logException(e);
             }
         }
+    }
+    private String calculateFOC(List<String> qualifyingQuantities,List<String> assigningQuantities,String inputQty){
+        boolean isEnd = false;
+        String factor = "1";
+        String freeCases = "0";
+        double finalFC = 0;
+        double inputQuantity = Double.parseDouble(inputQty);
+        double calculatedQtyforFOC = 0;
+
+            try{
+                for(int j=qualifyingQuantities.size()-1;j>=0;j--){
+                    double focQuantity = Double.parseDouble(qualifyingQuantities.get(j).toString());
+                    double assigningQuantity = Double.parseDouble(assigningQuantities.get(j).toString());
+                    if(inputQuantity>=focQuantity&&inputQuantity%focQuantity==0){
+                        factor = String.valueOf((int)(inputQuantity/focQuantity));
+                        freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                        finalFC += Double.valueOf(freeCases);
+                        calculatedQtyforFOC = Integer.parseInt(factor)*focQuantity;
+                        inputQuantity = inputQuantity-calculatedQtyforFOC;
+                        //break;
+                    }
+                    else if(inputQuantity>=focQuantity&&inputQuantity%focQuantity>0){
+                        factor = String.valueOf((int)(inputQuantity/focQuantity));
+                        freeCases = String.valueOf((int)(assigningQuantity)*(int)Double.parseDouble(factor));
+                        finalFC += Double.valueOf(freeCases);
+                        calculatedQtyforFOC = Integer.parseInt(factor)*focQuantity;
+                        inputQuantity = inputQuantity-calculatedQtyforFOC;
+                        //break;
+                    }
+                }
+                isEnd = true;
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Crashlytics.logException(e);
+            }
+        Log.e("Free Cases","Calculate FOC" + finalFC);
+        return String.valueOf(finalFC);
     }
     private boolean checkDateRange(String dateMin,String dateMax){
         boolean isValid = false;

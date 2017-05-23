@@ -331,7 +331,7 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                 }
                 break;
             case ConfigStore.CustomerHeaderEntity:
-
+                Log.e("Customer Header",""+ jsonArray);
                 for(int i=0;i<jsonArray.length();i++){
                     JSONObject headerObj = jsonArray.getJSONObject(i);
                     JSONArray customerCreditArray = headerObj.getJSONObject("CustomerCredit").getJSONArray("results");

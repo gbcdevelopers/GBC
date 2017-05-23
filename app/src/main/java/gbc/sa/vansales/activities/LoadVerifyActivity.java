@@ -215,7 +215,34 @@ public class LoadVerifyActivity extends AppCompatActivity {
                         }
                     });
                     dialog.setCancelable(false);
-                    dialog.show();
+                    //dialog.show();
+
+                    // Added to Disable Print option
+                    //Changes on 15/05/17
+                    //dialog.show();
+                    print = false;
+                    try{
+                        JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                        JSONObject data = new JSONObject();
+                        data.put("data",(JSONArray)jsonArray);
+                        HashMap<String,String>printMap = new HashMap<>();
+                        printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                        printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                        printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                        printMap.put(db.KEY_DATA, data.toString());
+                        //map.put(db.KEY_DATA,jsonArray.toString());
+                        db.addDataPrint(db.DELAY_PRINT, printMap);
+                        dialog.dismiss();
+                        Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+                        startActivity(intent);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    Helpers.logData(LoadVerifyActivity.this, "Posting Data with Print");
+                    new postData(tempOrderID);
+                    dialog.dismiss();
+                    //End of Changes on 15/05/17
                 /*Intent intent = new Intent(LoadVerifyActivity.this,MyCalendarActivity.class);
                 startActivity(intent);*/
                 }
@@ -296,28 +323,52 @@ public class LoadVerifyActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         print = false;
-                        try{
-                            JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                        try {
+                            JSONArray jsonArray = createPrintData(object.getLoadingDate(), object.getDeliveryNo());
                             JSONObject data = new JSONObject();
-                            data.put("data",(JSONArray)jsonArray);
-                            HashMap<String,String>printMap = new HashMap<>();
-                            printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
-                            printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
-                            printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                            data.put("data", (JSONArray) jsonArray);
+                            HashMap<String, String> printMap = new HashMap<>();
+                            printMap.put(db.KEY_CUSTOMER_NO, Settings.getString(App.DRIVER));
+                            printMap.put(db.KEY_ORDER_ID, object.getDeliveryNo());
+                            printMap.put(db.KEY_DOC_TYPE, ConfigStore.LoadConfirmation_TR);
                             printMap.put(db.KEY_DATA, data.toString());
                             //map.put(db.KEY_DATA,jsonArray.toString());
                             db.addDataPrint(db.DELAY_PRINT, printMap);
                             dialog.dismiss();
                             Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
                             startActivity(intent);
-                        }
-                        catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 });
                 dialog.setCancelable(false);
-                dialog.show();
+
+                //dialog.show();
+
+                // Added to Disable Print option
+                //Changes on 15/05/17
+                //dialog.show();
+                print = false;
+                try{
+                    JSONArray jsonArray = createPrintData(object.getLoadingDate(),object.getDeliveryNo());
+                    JSONObject data = new JSONObject();
+                    data.put("data",(JSONArray)jsonArray);
+                    HashMap<String,String>printMap = new HashMap<>();
+                    printMap.put(db.KEY_CUSTOMER_NO,Settings.getString(App.DRIVER));
+                    printMap.put(db.KEY_ORDER_ID,object.getDeliveryNo());
+                    printMap.put(db.KEY_DOC_TYPE,ConfigStore.LoadConfirmation_TR);
+                    printMap.put(db.KEY_DATA, data.toString());
+                    //map.put(db.KEY_DATA,jsonArray.toString());
+                    db.addDataPrint(db.DELAY_PRINT, printMap);
+                    dialog.dismiss();
+                    Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
+                    startActivity(intent);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                //End of Changes on 15/05/17
 
                 /*Intent intent = new Intent(LoadVerifyActivity.this, LoadActivity.class);
                 startActivity(intent);*/

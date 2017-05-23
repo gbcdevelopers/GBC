@@ -53,7 +53,6 @@ public class OrderReasons {
                 reasons.setReasonDescription(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION)));
                 reasons.setReasonDescriptionAr(cursor.getString(cursor.getColumnIndex(db.KEY_REASON_DESCRIPTION_AR)));
                 data.add(reasons);
-
             }
             while (cursor.moveToNext());
         }

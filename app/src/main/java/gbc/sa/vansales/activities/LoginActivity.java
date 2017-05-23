@@ -239,13 +239,13 @@ public class LoginActivity extends Activity {
                                         loadingSpinner.show();
                                         //For development purpose only
                                         // Below code for development only..If there is no trip id driver should not proceed. Comment when building the final version.
-                                /*if(!checkTripID("C111260000000550")){
+                                /*if(!checkTripID("C131350000002860")){
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
-                                    Settings.setString(TRIP_ID, "C111260000000550");
+                                    Settings.setString(TRIP_ID, "C131350000002860");
                                     //Settings.setString(App.IS_LOGGED_ID,"true");
                                     Settings.setString(App.LOGIN_DATE,Helpers.formatDate(new Date(),App.DATE_FORMAT));
                                     db.addLoginCredentials(username, password, Helpers.formatDate(new Date(),App.DATE_FORMAT));  //For development purpose
-                                    downloadData("C111260000000550");
+                                    downloadData("C131350000002860");
                                 }
                                 else{
                                     Settings.setString(App.IS_DATA_SYNCING,"false");
