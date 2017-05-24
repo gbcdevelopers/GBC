@@ -218,23 +218,44 @@ public class AllCustomerFragment extends Fragment {
     }
     private void loadCustomerStatus(){
         try{
-            for(Reasons reason:reasonsList){
-                CustomerStatus status = new CustomerStatus();
-                if(reason.getReasonType().equals(App.VisitReasons)){
-                    status.setReasonCode(reason.getReasonID());
-                    if(Settings.getString(App.LANGUAGE).equals("en")){
-                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+            if(reasonsList.size()>0){
+                for(Reasons reason:reasonsList){
+                    CustomerStatus status = new CustomerStatus();
+                    if(reason.getReasonType().equals(App.VisitReasons)){
+                        status.setReasonCode(reason.getReasonID());
+                        if(Settings.getString(App.LANGUAGE).equals("en")){
+                            status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                        }
+                        else{
+                            status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
+                        }
+                        if(status.getReasonCode().contains("V")){
+                            arrayList.add(status);
+                        }
+                        //status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                        //arrayList.add(status);
                     }
-                    else{
-                        status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescriptionAr()));
-                    }
-                    if(status.getReasonCode().contains("V")){
-                        arrayList.add(status);
-                    }
-                    //status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
-                    //arrayList.add(status);
                 }
             }
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            //Logic added coz status is not downloaded for a lot of drivers
+            /*******Changes made on 24/05/2017******************************/
+            /*******Changes by Rakshit Doshi *******************************/
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            else{
+                CustomerStatus status = new CustomerStatus();
+                status.setReasonCode("V1");
+                if(Settings.getString(App.LANGUAGE).equals("en")){
+                    status.setReasonDescription("Shop is Open");
+                }
+                else{
+                    status.setReasonDescription("المحل مفتوح");
+                }
+                arrayList.add(status);
+            }
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            /*****************End of Changes *******************************/
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
             adapter.notifyDataSetChanged();
         }
         catch (Exception e){

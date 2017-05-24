@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
@@ -48,7 +49,7 @@ public class Logger {
                         documentsFolder.mkdirs();
                     }
                     //File logFile = new File(documentsFolder + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
-
+                    deletePreviousLogFiles(this.context);
                     File logFile = new File(documentsFolder.getPath() + File.separator + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
                     if (!logFile.exists()) {
                         try {
@@ -120,7 +121,6 @@ public class Logger {
             return false;
         }
     }
-
     protected void requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this.activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Toast.makeText(context, "Write External Storage permission allows us to do write files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
@@ -130,7 +130,40 @@ public class Logger {
             }
         }
     }
+    protected void deletePreviousLogFiles(Context context){
+        String storagestate = Environment.getExternalStorageState();
+        File documentsFolder = null;
+        if (storagestate.equals(Environment.MEDIA_MOUNTED)){
+            documentsFolder = new File(Environment.getExternalStorageDirectory(),
+                    "Download" + File.separator + "SFA");
+            if (documentsFolder.exists()) {
+                File logFile = new File(documentsFolder.getPath() + File.separator + new SimpleDateFormat("yyyy-MM-dd").format(giveLowerDate(new Date())) + ".txt");
+                if (logFile.exists()) {
+                    try {
+                        if(logFile.delete()){
+                            logFile.getCanonicalFile().delete();
+                            if(logFile.exists()){
+                                context.deleteFile(logFile.getName());
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            //File logFile = new File(documentsFolder + "/sfa/sfa_log_+" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + ".txt");
 
+        }
+    }
+    public Date giveLowerDate(Date date){
+        Date date1 = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date); // convert your date to Calendar object
+        int daysToDecrement = -5;
+        cal.add(Calendar.DATE, daysToDecrement);
+        date1 = cal.getTime(); // again get back your date object
+        return date1;
+    }
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 100:

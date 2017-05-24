@@ -35,6 +35,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -347,24 +349,53 @@ public class VisitAllFragment extends Fragment implements View.OnFocusChangeList
         dialog.show();
     }
     private void loadCustomerStatus(){
-        for(Reasons reason:reasonsList){
-            CustomerStatus status = new CustomerStatus();
-            if(reason.getReasonType().equals(App.VisitReasons)){
-                status.setReasonCode(reason.getReasonID());
-                //Log.e("STATUS","" + status.getReasonDescription());
+        try{
+            if(reasonsList.size()>0){
+                for(Reasons reason:reasonsList){
+                    CustomerStatus status = new CustomerStatus();
+                    if(reason.getReasonType().equals(App.VisitReasons)){
+                        status.setReasonCode(reason.getReasonID());
+                        //Log.e("STATUS","" + status.getReasonDescription());
+                        if(Settings.getString(App.LANGUAGE).equals("en")){
+                            status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                        }
+                        else{
+                            status.setReasonDescription(reason.getReasonDescriptionAr());
+                        }
+                        if(status.getReasonCode().contains("V")){
+                            arrayList.add(status);
+                        }
+
+                    }
+                }
+            }
+        /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            //Logic added coz status is not downloaded for a lot of drivers
+            /*******Changes made on 24/05/2017******************************/
+            /*******Changes by Rakshit Doshi *******************************/
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            else{
+                CustomerStatus status = new CustomerStatus();
+                status.setReasonCode("V1");
                 if(Settings.getString(App.LANGUAGE).equals("en")){
-                    status.setReasonDescription(UrlBuilder.decodeString(reason.getReasonDescription()));
+                    status.setReasonDescription("Shop is Open");
                 }
                 else{
-                    status.setReasonDescription(reason.getReasonDescriptionAr());
+                    status.setReasonDescription("المحل مفتوح");
                 }
-                if(status.getReasonCode().contains("V")){
-                    arrayList.add(status);
-                }
-
+                arrayList.add(status);
             }
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+            /*****************End of Changes *******************************/
+            /*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
+
+            adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
+        catch (Exception e){
+            e.printStackTrace();
+            Crashlytics.logException(e);
+        }
+
     }
     private boolean checkIfinSequence(Customer customer){
         String itemNo = customer.getCustomerItemNo();
