@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,15 +25,14 @@ import java.util.Date;
 import java.util.Locale;
 
 import gbc.sa.vansales.R;
-import gbc.sa.vansales.adapters.PagerAdapter;
-
 /**
  * Created by eheuristic on 12/6/2016.
  */
 
-public class CaptureImageActivity extends AppCompatActivity {
+public class PosAssetActivity extends AppCompatActivity {
 
     FloatingActionButton floatingActionButton;
+    FloatingActionButton addCustomerButton;
     ImageView iv_back;
     TextView tv_top_header;
     ImageView iv_capture;
@@ -49,28 +47,22 @@ public class CaptureImageActivity extends AppCompatActivity {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private static final String IMAGE_DIRECTORY_NAME = "SFA";
-    Button save;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_capture_image);
+        setContentView(R.layout.activity_planogram);
+
         iv_back=(ImageView)findViewById(R.id.toolbar_iv_back);
         iv_capture = (ImageView)findViewById(R.id.iv_capture);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
         img_actual = (ImageView)findViewById(R.id.img_actual);
         img_target = (ImageView)findViewById(R.id.img_target);
-        save = (Button)findViewById(R.id.btn_confirm_delivery_presale_proceed);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        img_target.setImageResource(R.drawable.pos);
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
-        tv_top_header.setText("Campaign Capture");
+        tv_top_header.setText("POS/Assets");
 
         iv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,14 +73,17 @@ public class CaptureImageActivity extends AppCompatActivity {
         iv_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDeviceSupportCamera()) {
+                if(isDeviceSupportCamera()){
                     captureImage();
-                } else {
-                    Log.e("FO", "Get a life");
+                }
+                else{
+                    Log.e("FO","Get a life");
                 }
             }
         });
+
     }
+
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
@@ -168,6 +163,7 @@ public class CaptureImageActivity extends AppCompatActivity {
             }
         }
     }
+
     private void previewCapturedImage() {
         try {
             img_actual.setVisibility(View.VISIBLE);
@@ -183,4 +179,5 @@ public class CaptureImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 }

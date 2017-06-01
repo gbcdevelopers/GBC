@@ -37,12 +37,15 @@ public class ShelfStockActivity extends AppCompatActivity {
     EditText et_search;
    public static int tab_position=0;
     FloatingActionButton button;
+    FloatingActionButton fab;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin_trip);
         button = (FloatingActionButton) findViewById(R.id.float_map);
+        fab = (FloatingActionButton)findViewById(R.id.addCustomer);
         button.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
         et_search = (EditText) findViewById(R.id.et_search_customer);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);

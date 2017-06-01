@@ -40,6 +40,7 @@ public class PlanogramActivity extends AppCompatActivity {
     TabLayout tabLayout;
     private Uri fileUri; // file url to store image/video
     ImageView img_actual;
+    ImageView img_target;
     // Activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
@@ -56,6 +57,8 @@ public class PlanogramActivity extends AppCompatActivity {
         iv_capture = (ImageView)findViewById(R.id.iv_capture);
         tv_top_header=(TextView)findViewById(R.id.tv_top_header);
         img_actual = (ImageView)findViewById(R.id.img_actual);
+        img_target = (ImageView)findViewById(R.id.img_target);
+        img_target.setImageResource(R.drawable.planogram);
 
         iv_back.setVisibility(View.VISIBLE);
         tv_top_header.setVisibility(View.VISIBLE);
