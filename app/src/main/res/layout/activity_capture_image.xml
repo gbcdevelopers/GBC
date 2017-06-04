@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <include layout="@layout/common_header"
+             android:id="@+id/inc_common_header"
+        />
+    <LinearLayout
+        android:layout_marginLeft="@dimen/space"
+        android:layout_marginRight="@dimen/space"
+        android:layout_width="match_parent"
+        android:paddingLeft="@dimen/all_padding"
+        android:paddingRight="@dimen/all_padding"
+        android:paddingTop="@dimen/all_padding"
+        android:paddingBottom="@dimen/all_padding"
+        android:weightSum="2"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_weight="2"
+            android:layout_marginTop="@dimen/space"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center|center_vertical"
+                android:src="@drawable/ic_noimage"
+                android:id="@+id/iv_capture"
+                />
+
+            <ImageView
+                android:id="@+id/img_actual"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="50dp"
+                android:layout_height="match_parent"/>
+
+            <EditText
+                android:id="@+id/txt_actual"
+                android:visibility="gone"
+                android:layout_below="@+id/img_actual"
+                android:textAllCaps="true"
+                android:hint="Enter Comments"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="-30dp"
+                android:textSize="@dimen/activity_horizontal_margin"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_confirm_delivery_presale_proceed"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="-50dp"
+        android:paddingLeft="@dimen/all_padding"
+        android:paddingRight="@dimen/all_padding"
+        android:layout_marginLeft="@dimen/all_padding"
+        android:layout_marginRight="@dimen/all_padding"
+        android:background="@color/buttoncolor"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        />
+</LinearLayout>
