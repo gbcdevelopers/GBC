@@ -51,8 +51,8 @@ public class PriceListActivity extends AppCompatActivity {
         });
 
         listView = (ListView)findViewById(R.id.list_price_list);
-        adapter = new PriceListAdapter(PriceListActivity.this,arrayList);
-        listView.setAdapter(adapter);
+        //adapter = new PriceListAdapter(PriceListActivity.this,arrayList);
+        //listView.setAdapter(adapter);
         new loadPricing().execute();
         //getData();
     }
@@ -83,6 +83,9 @@ public class PriceListActivity extends AppCompatActivity {
             if(loadingSpinner.isShowing()){
                 loadingSpinner.hide();
             }
+
+            adapter = new PriceListAdapter(PriceListActivity.this,arrayList);
+            listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
     }
