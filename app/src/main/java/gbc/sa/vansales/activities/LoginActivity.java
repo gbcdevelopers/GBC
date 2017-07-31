@@ -27,6 +27,7 @@ import gbc.sa.vansales.data.DriverRouteFlags;
 import gbc.sa.vansales.data.FOCData;
 import gbc.sa.vansales.data.LoadDelivery;
 import gbc.sa.vansales.data.Messages;
+import gbc.sa.vansales.data.Odometer;
 import gbc.sa.vansales.data.OrderReasons;
 import gbc.sa.vansales.data.Pricing;
 import gbc.sa.vansales.data.Promotions02;
@@ -119,8 +120,8 @@ public class LoginActivity extends Activity {
 
         String id = ((EditText) findViewById(R.id.username)).getText().toString();
         String password = ((EditText) findViewById(R.id.password)).getText().toString();
-        //id = "E100824";
-        //password = "E100824";
+        //id = "E102964";
+        //password = "E102964";
         Helpers.logData(LoginActivity.this,"Login Credentials for user:" + id + "/" + password);
         if (id.isEmpty()) {
             Toast.makeText(this, R.string.enter_employee_id, Toast.LENGTH_SHORT).show();
@@ -377,6 +378,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void run() {
                         TripHeader.load(LoginActivity.this,tripId, db);
+                        Odometer.load(LoginActivity.this,tripId,db);
                         LoadDelivery.load(LoginActivity.this,tripId, db);
                         ArticleHeaders.load(LoginActivity.this, tripId, db);
                         CustomerHeaders.load(LoginActivity.this, tripId, db);

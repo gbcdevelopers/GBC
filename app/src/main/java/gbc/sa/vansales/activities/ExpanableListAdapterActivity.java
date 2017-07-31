@@ -95,15 +95,22 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
 //                convertView.setVisibility(View.GONE);
 //            }
         }
-        TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.submenu);
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.submenu);
+        TextView lblCount = (TextView) convertView.findViewById(R.id.notificationcount);
+        if(headerTitle.getNotificationCount().equals("0")){
+            lblCount.setVisibility(View.INVISIBLE);
+        }
+        else{
+            lblCount.setVisibility(View.VISIBLE);
+        }
+        lblCount.setText(headerTitle.getNotificationCount().equals("0")?"":headerTitle.getNotificationCount());
+        lblCount.setTypeface(null, Typeface.BOLD);
         ImageView headerIcon = (ImageView) convertView.findViewById(R.id.iconimage);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         if(!headerTitle.isEnabled()){
             lblListHeader.setAlpha(.5f);
         }
         lblListHeader.setText(headerTitle.getIconName());
-
         headerIcon.setImageResource(headerTitle.getIconImg());
         LinearLayout ll_main = (LinearLayout) convertView.findViewById(R.id.ll_main);
         //Log.e("Header Title","" + headerTitle.isEnabled() + headerTitle.getIconName());
@@ -269,6 +276,14 @@ public class ExpanableListAdapterActivity extends BaseExpandableListAdapter {
                         if(headerTitle.isEnabled()){
                             Helpers.logData(mContext, "User clicked on Information from Adapter");
                             Intent i = new Intent(mContext, InformationsActivity.class);
+                            mContext.startActivity(i);
+                        }
+
+                    }
+                    else if (groupPosition == 6) {
+                        if(headerTitle.isEnabled()){
+                            Helpers.logData(mContext, "User clicked on Information from Adapter");
+                            Intent i = new Intent(mContext, DataPostingAuditActivity.class);
                             mContext.startActivity(i);
                         }
 

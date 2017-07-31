@@ -7,6 +7,7 @@ public class ExpandedMenuModel {
 
     String iconName = "";
     int iconImg = -1; // menu icon resource id
+    String iconCount = "";
     boolean isEnabled = false;
     public boolean isEnabled() {
         return isEnabled;
@@ -25,5 +26,11 @@ public class ExpandedMenuModel {
     }
     public void setIconImg(int iconImg) {
         this.iconImg = iconImg;
+    }
+    public String getNotificationCount(){
+        return iconCount;
+    }
+    public void setNotificationCount(String iconCount){
+        this.iconCount = iconCount;
     }
 }

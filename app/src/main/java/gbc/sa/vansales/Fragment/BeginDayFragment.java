@@ -66,6 +66,7 @@ public class BeginDayFragment extends Fragment {
     DatabaseHandler db;
     LoadingSpinner loadingSpinner;
     float lastValue = 0;
+    String lastValueSAP = null;
     Button btn_continue;
     App.DriverRouteControl flag = new App.DriverRouteControl();
     @Override
@@ -309,6 +310,21 @@ public class BeginDayFragment extends Fragment {
         }
     }
     public void showDialog() {
+        HashMap<String, String> map1 = new HashMap<>();
+        map1.put(db.KEY_ODOMETER_VALUE, "");
+        HashMap<String, String> filter1 = new HashMap<>();
+        filter1.put(db.KEY_TRIP_ID, Settings.getString(App.TRIP_ID));
+        if (db.checkData(db.LAST_ODOMETER, filter1)) {
+            Cursor cursor = db.getData(db.LAST_ODOMETER, map1, filter1);
+            if (cursor.getCount() > 0) {
+                Helpers.logData(getActivity(), "Last odometer value read - SAP");
+                cursor.moveToFirst();
+                lastValueSAP = cursor.getString(cursor.getColumnIndex(db.KEY_ODOMETER_VALUE));
+                Log.e("SAP Value","" + lastValueSAP);
+                Helpers.logData(getActivity(), "Last odometer value is" + lastValueSAP);
+            }
+        } else {
+        }
         LayoutInflater li = LayoutInflater.from(getActivity());
         View promptsView = li.inflate(R.layout.activity_odometer_popup, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -329,6 +345,10 @@ public class BeginDayFragment extends Fragment {
             }
         } else {
         }
+        final TextView lastOdometer = (TextView) promptsView
+                .findViewById(R.id.textViewOdometer);
+
+        lastOdometer.setText(getString(R.string.previousodomter) + lastValueSAP);
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
         // set dialog message

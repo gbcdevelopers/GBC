@@ -46,6 +46,21 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
         if(this.collectionName.equals("SpecialCustomer")){
             generateData(db);
         }
+        else if(this.collectionName.equals("TRIP_IDSet")){
+            String url = UrlBuilder.buildExpansionRead(this.collectionName, this.params, this.expansions);
+            JSONArray jsonArray = IntegrationService.getServiceRead(this.context, url);
+            //Log.e("Exp Response", "" + jsonArray);
+
+            try {
+                //  Log.e("Metadata", "" + jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
+                Helpers.logData(this.context, jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type"));
+                String metadata = jsonArray.getJSONObject(0).getJSONObject("__metadata").getString("type");
+                parseJSON(metadata,jsonArray);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         else{
             String url = UrlBuilder.buildExpansion(this.collectionName, this.params, this.expansions);
             JSONArray jsonArray = IntegrationService.getService(this.context,url);
@@ -911,6 +926,32 @@ public class DownloadData extends AsyncTask<Void, Void, Void>{
                 }
 
                 break;
+
+            case ConfigStore.OdometerEntity:{
+                try{
+                    try{
+                        JSONObject object = jsonArray.getJSONObject(0);
+
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put(db.KEY_TRIP_ID,object.get("IvTripId").toString());
+                        params.put(db.KEY_TIME_STAMP, object.get("EvIdate").toString());
+                        float value = Float.parseFloat(object.get("EvRecdv").toString().trim());
+                        params.put(db.KEY_ODOMETER_VALUE,StringUtils.stripEnd(object.get("EvRecdv").toString().trim(), ".000"));
+                        //Log.e("Float Value","" + value + String.format("%.0f", value) + "/" + StringUtils.stripEnd(object.get("EvRecdv").toString().trim(),".000"));
+                        //Log.e("Value of OM","" + object.get("EvRecdv").toString().trim());
+                        db.addData(db.LAST_ODOMETER, params);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                //Load Master data into model on all load data complete
+                Helpers.loadData(this.context);
+                break;
+            }
         }
     }
     public static void generateData(DatabaseHandler db){

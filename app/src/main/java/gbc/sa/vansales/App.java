@@ -15,24 +15,25 @@ public class App extends Application {
 
     //Open these when building for release
     /*@ Production Connection details*/
-    /*public static final String ENVIRONMENT = "Production";
+    public static final String ENVIRONMENT = "Production";
     //public static final String HOST = "78.93.41.222";
     //public static final String HOST = "88.85.227.102";
     public static final String HOST = "46.235.93.243";
     public static final int PORT = 8054;
     public static final String SAP_CLIENT = "SAP-CLIENT";
-    public static final String SAP_CLIENT_ID = "800";*/
+    public static final String SAP_CLIENT_ID = "800";
 
     //Open these properties for development
-    public static final String ENVIRONMENT = "Development";
+   /* public static final String ENVIRONMENT = "Development";
     public static final String HOST = "78.93.41.222";
     public static final int PORT = 8047;
     public static final String SAP_CLIENT = "SAP-CLIENT";
-    public static final String SAP_CLIENT_ID = "350";
+    public static final String SAP_CLIENT_ID = "350";*/
 
     public static final boolean IS_HTTPS = false;
     public static final String SERVER_DOMAIN = "default";
     public static final String URL = "/sap/opu/odata/sap/ZSFA_DOWNLOAD_SRV/";
+    public static final String ODOMETER_URL = "/sap/opu/odata/sap/ZMOB_APPLICATION_SRV/";
     public static final String POST_URL = "/sap/opu/odata/sap/ZSFA_CUSTOMER_ORDER_SRV/";
     public static final String POST_ODOMETER_URL = "/sap/opu/odata/sap/ZSFA_UPLOAD_SRV/";
 

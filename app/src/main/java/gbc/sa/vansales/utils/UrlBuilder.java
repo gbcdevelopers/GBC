@@ -43,11 +43,26 @@ public class UrlBuilder {
 
     public static String buildExpansion(String collection, HashMap<String, String> parameters, HashMap<String, String> expansion) {
         String url = collection;
-
         if (parameters != null && parameters.size() > 0) {
             url += "?" + expansionBuilder(parameters, expansion);
         }
-
+        return url;
+    }
+    public static String buildExpansionRead(String collection, HashMap<String, String> parameters, HashMap<String, String> expansion) {
+        String url = collection;
+        if (parameters != null && parameters.size() > 0) {
+            String value = null;
+            for (Map.Entry entry : parameters.entrySet()) {
+                value = entry.getValue() == null ? null : entry.getValue().toString();
+                value = UrlBuilder.clean(value);
+                try {
+                    value = URLEncoder.encode(value, ConfigStore.CHARSET).replace("+", "%20").replace("%3A", ":");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            url += "('" + value + "')";
+        }
         return url;
     }
 

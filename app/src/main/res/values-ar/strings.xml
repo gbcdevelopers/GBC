@@ -127,6 +127,7 @@
 				<string name="dashboard">لوحة المعلومات</string>
 				<string name="data_loss_msg">سيتم حذف جميع البيانات الخاصة بك. هل تريد الاستمرار؟</string>
 				<string name="data_posting_audit_lbl">البيانات المرحلة / تراجع</string>
+				<string name="data_posting_audit_slide">البيانات المرحلة / تراجع</string>
 				<string name="data_posting_audit">البيانات المرحلة / تراجع</string>
 				<string name="date">تاريخ التحميل</string>
 				<string name="date_invalid">تاريخ اختيار غير صالح. يرجى تحديد التاريخ الحالي</string>
@@ -296,6 +297,7 @@
 				<string name="preferred_lang">الرجاء اختيار لغتك المفضلة</string>
 				<string name="presales">عمليات ماقبل البيع</string>
 				<string name="presalesorder">أوامر ما قبل البيع</string>
+				<string name="previousodomter">آخر عداد المسافات</string>
 				<string name="price">سعر تداول</string>
 				<string name="price_lbl">سعر تداول</string>
 				<string name="price_54_00_2_25">Price :54.00/2.25</string>

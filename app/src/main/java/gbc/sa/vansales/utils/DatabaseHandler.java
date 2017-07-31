@@ -76,6 +76,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String DOWNLOAD_STATUS = "DOWNLOAD_STATUS";
     public static final String PARTIAL_COLLECTION_TEMP = "PARTIAL_COLLECTION_TEMP";
     public static final String SPECIAL_CUSTOMER = "SPECIAL_CUSTOMER";
+    public static final String LAST_ODOMETER = "LAST_ODOMETER";
     //Properties for Table(Based on Entity Sets)
     //UserAuthenticationSet
     public static final String KEY_ID = "_id";
@@ -851,6 +852,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ODOMETER_TYPE + " TEXT,"
                 + KEY_ODOMETER_VALUE + " TEXT " + ")";
 
+        String TABLE_LAST_ODOMETER_VALUE = "CREATE TABLE " + LAST_ODOMETER + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + KEY_TRIP_ID + " TEXT,"
+                + KEY_TIME_STAMP + " TEXT,"
+                + KEY_ODOMETER_VALUE + " TEXT " + ")";
+
         String TABLE_CUSTOMER_FLAGS = "CREATE TABLE " + CUSTOMER_FLAGS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + KEY_TRIP_ID + " TEXT,"
@@ -1264,6 +1271,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(TABLE_DOWNLOAD_STATUS);
         db.execSQL(TABLE_COLLECTION_PARTIAL);
         db.execSQL(TABLE_SPECIAL_CUSTOMER);
+        db.execSQL(TABLE_LAST_ODOMETER_VALUE);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1318,6 +1326,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + DOWNLOAD_STATUS);
         db.execSQL("DROP TABLE IF EXISTS " + PARTIAL_COLLECTION_TEMP);
         db.execSQL("DROP TABLE IF EXISTS " + SPECIAL_CUSTOMER);
+        db.execSQL("DROP TABLE IF EXISTS " + LAST_ODOMETER);
         onCreate(db);
     }
     //Storing Secured Credentials

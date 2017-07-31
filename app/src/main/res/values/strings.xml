@@ -134,6 +134,7 @@
     <string name="dashboard">Dashboard</string>
     <string name="data_loss_msg">All your data will be deleted. Do you want to continue?</string>
     <string name="data_posting_audit">DATA POSTING \n AUDIT</string>
+    <string name="data_posting_audit_slide">Data Posting Audit</string>
     <string name="data_posting_audit_lbl">DATA POSTING AUDIT</string>
     <string name="date">16/01/2017</string>
     <string name="date_invalid">Date selection is invalid. Please select current date</string>
@@ -304,6 +305,7 @@
     <string name="preferred_lang">Preferred Language</string>
     <string name="presales">Pre Sales</string>
     <string name="presalesorder">Pre-Sales Order</string>
+    <string name="previousodomter">Last Odometer : </string>
     <string name="price">Price</string>
     <string name="price_lbl">Price:</string>
     <string name="price_54_00_2_25">Price :54.00/2.25</string>

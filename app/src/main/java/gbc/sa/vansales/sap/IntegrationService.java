@@ -101,6 +101,20 @@ public class IntegrationService extends IntentService {
         builder.append(url);
         return builder.toString();
     }
+    private static String getUrlRead(String url) {
+        StringBuilder builder = new StringBuilder();
+        if (App.IS_HTTPS) {
+            builder.append("https://");
+        } else {
+            builder.append("http://");
+        }
+        builder.append(App.HOST);
+        builder.append(":");
+        builder.append(App.PORT);
+        builder.append(App.ODOMETER_URL);
+        builder.append(url);
+        return builder.toString();
+    }
     private static String getUrl() {
         StringBuilder builder = new StringBuilder();
         if (App.IS_HTTPS) {
@@ -174,8 +188,6 @@ public class IntegrationService extends IntentService {
         Log.e("Builder is", "" + builder.toString());
         return builder.toString();
     }
-
-
     private static String postUrlOdometer(String collectionname) {
         StringBuilder builder = new StringBuilder();
         if (App.IS_HTTPS) {
@@ -254,6 +266,39 @@ public class IntegrationService extends IntentService {
                 jsonObj = jsonObj.getJSONObject("d");
                 Log.e("JSON", "" + jsonObj);
                 jsonArray = jsonObj.getJSONArray("results");
+                return jsonArray;
+            } else {
+                Log.e("Fail Again", "Fail Again");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
+    public static JSONArray getServiceRead(Context context, String url) {
+        JSONObject jsonObj = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        try {
+            DefaultHttpClient client = new DefaultHttpClient();
+            client.getCredentialsProvider().setCredentials(getAuthScope(), getCredentials());
+            HttpGet get = new HttpGet(getUrlRead(url));
+            String authString = App.SERVICE_USER + ":" + App.SERVICE_PASSWORD;
+            byte[] authEncBytes = Base64.encodeBase64(authString.getBytes());
+            get.addHeader(App.SAP_CLIENT, App.SAP_CLIENT_ID);
+            get.addHeader(ACCEPT, APPLICATION_JSON);
+            HttpResponse response = client.execute(get);
+            if (response.getStatusLine().getStatusCode() == 201 || response.getStatusLine().getStatusCode() == 200) {
+                Header[] headers = response.getAllHeaders();
+                HttpEntity r_entity = response.getEntity();
+                String jsonString = getJSONString(r_entity);
+                jsonObj = new JSONObject(jsonString);
+                jsonObj = jsonObj.getJSONObject("d");
+                Log.e("JSON", "" + jsonObj);
+               // jsonArray = jsonObj.getJSONArray("__metadata");
+                jsonArray.put(jsonObj);
+                //jsonArray = jsonObj.getJSONArray("results");
                 return jsonArray;
             } else {
                 Log.e("Fail Again", "Fail Again");
@@ -831,7 +876,6 @@ public class IntegrationService extends IntentService {
         }
         return data;
     }
-
     public static ArrayList<OfflineResponse> batchRequestBeginDay(Context context,String collectionName,ArrayList<OfflinePost>arrayList){
         ArrayList<OfflineResponse> data = new ArrayList<>();
         try {
@@ -866,7 +910,6 @@ public class IntegrationService extends IntentService {
         }
         return data;
     }
-
     public static ArrayList<OfflineResponse> unpack(String response,HttpResponse httpResponse){
 
         String lines[] = response.split("\\r?\\n");
