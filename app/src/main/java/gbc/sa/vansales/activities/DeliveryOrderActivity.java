@@ -59,6 +59,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.DeliveryItem;
+import gbc.sa.vansales.models.DeliveryOrderList;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.PreSaleProceed;
@@ -84,7 +85,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
     TextView tv_amt;
     ArrayList<EditText[]> editTextArrayList;
     Customer object;
-    OrderList delivery;
+    DeliveryOrderList delivery;
     ArrayList<CustomerHeader> customers;
     LoadingSpinner loadingSpinner;
     DatabaseHandler db = new DatabaseHandler(this);
@@ -123,7 +124,7 @@ public class DeliveryOrderActivity extends AppCompatActivity {
             edit = (FloatingActionButton) findViewById(R.id.edit);
             Intent i = this.getIntent();
             object = (Customer) i.getParcelableExtra("headerObj");
-            delivery = (OrderList) i.getParcelableExtra("delivery");
+            delivery = (DeliveryOrderList) i.getParcelableExtra("delivery");
             customers = CustomerHeaders.get();
             CustomerHeader customerHeader = CustomerHeader.getCustomer(customers, object.getCustomerID());
             TextView tv_customer_name = (TextView) findViewById(R.id.tv_customer_id);

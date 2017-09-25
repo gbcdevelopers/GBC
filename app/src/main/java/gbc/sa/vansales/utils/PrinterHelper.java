@@ -3696,6 +3696,7 @@ public class PrinterHelper {
                 } else {
                     //printheaders(getAccurateText(object.getString("INVOICETYPE"), 40, 1), false, 2);
                 }
+
                 this.outStream.write(this.DoubleWideOff);
                 this.outStream.write(this.BoldOff);
                 this.outStream.write(this.NewLine);
@@ -3716,6 +3717,8 @@ public class PrinterHelper {
                     printheaders("          @" + object.getString("ARBADDRESS") + "!", true, 1);
                     this.outStream.write(this.NewLine);
                     printheaders("PAYEE: " + object.getString("payee"), false, 1);
+                    this.outStream.write(this.NewLine);
+                    printheaders("PAYMENT REFERENCE: " + object.getString("PAYMENTREF"), false, 1);
                     this.outStream.write(this.NewLine);
                     //this.outStream.write(this.NewLine);
                     //this.outStream.write(this.NewLine);

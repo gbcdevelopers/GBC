@@ -16,16 +16,17 @@ import java.util.ArrayList;
 import gbc.sa.vansales.R;
 import gbc.sa.vansales.activities.DeliveryActivity;
 import gbc.sa.vansales.activities.PreSaleOrderActivity;
+import gbc.sa.vansales.models.DeliveryOrderList;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.LoadSummary;
 import gbc.sa.vansales.models.OrderList;
 /**
  * Created by Rakshit on 03-Jan-17.
  */
-public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
-    private ArrayList<OrderList> orders;
+public class DeliveryListBadgeAdapter extends ArrayAdapter<DeliveryOrderList> {
+    private ArrayList<DeliveryOrderList> orders;
 
-    public DeliveryListBadgeAdapter(Context context, ArrayList<OrderList> orders){
+    public DeliveryListBadgeAdapter(Context context, ArrayList<DeliveryOrderList> orders){
 
         super(context, R.layout.custom_delivery, orders);
         this.orders = orders;
@@ -48,7 +49,7 @@ public class DeliveryListBadgeAdapter extends ArrayAdapter<OrderList> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        OrderList order = getItem(position);
+        DeliveryOrderList order = getItem(position);
 
         holder.order_id.setText("Delivery No : " + StringUtils.stripStart(order.getOrderId(), "0"));
         holder.order_date.setText("Delivery Date : " + order.getOrderDate());

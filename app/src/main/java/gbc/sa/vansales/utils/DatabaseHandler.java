@@ -207,6 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String KEY_DELIVERY_DATE = "deliveryDate";
     public static final String KEY_PICKING_DATE = "pickingDate";
     public static final String KEY_UNLOAD_POINT = "unloadPoint";
+    public static final String KEY_REFERENCE_NO = "referenceNo";
     //Load Items
     public static final String KEY_ITEM_NO = "itemNo";
     public static final String KEY_ITEM_CATEGORY = "itemCategory";
@@ -653,6 +654,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DELIVERY_DATE + " TEXT,"
                 + KEY_PICKING_DATE + " TEXT,"
                 + KEY_UNLOAD_POINT + " TEXT,"
+                + KEY_REFERENCE_NO + " TEXT,"
                 + KEY_IS_DELIVERED + " TEXT " + ")";
         String TABLE_CUSTOMER_DELIVERY_ITEMS = "CREATE TABLE " + CUSTOMER_DELIVERY_ITEMS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"

@@ -56,6 +56,7 @@ import gbc.sa.vansales.models.ColletionData;
 import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.DeliveryItem;
+import gbc.sa.vansales.models.DeliveryOrderList;
 import gbc.sa.vansales.models.LoadRequest;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.OrderRequest;
@@ -87,7 +88,7 @@ public class PaymentDetails extends AppCompatActivity {
     String from = "";
     String amountdue = "0";
     Customer object;
-    OrderList delivery;
+    DeliveryOrderList delivery;
     Collection collection;
     String invoiceAmount;
     ArrayList<CustomerHeader> customers;
@@ -188,7 +189,7 @@ public class PaymentDetails extends AppCompatActivity {
                         tv_cust_detail.setText(StringUtils.stripStart(object.getCustomerID().toString(), "0") + " " + UrlBuilder.decodeString(object.getCustomerName().toString()));
                     }
                 } else {
-                    delivery = (OrderList) i.getParcelableExtra("delivery");
+                    delivery = (DeliveryOrderList) i.getParcelableExtra("delivery");
                 /*if (object == null) {
                     object = Const.allCustomerdataArrayList.get(Const.customerPosition);
                 }*/

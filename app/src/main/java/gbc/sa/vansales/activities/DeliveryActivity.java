@@ -48,6 +48,7 @@ import gbc.sa.vansales.models.Customer;
 import gbc.sa.vansales.models.CustomerHeader;
 import gbc.sa.vansales.models.CustomerStatus;
 import gbc.sa.vansales.models.DeliveryItem;
+import gbc.sa.vansales.models.DeliveryOrderList;
 import gbc.sa.vansales.models.OrderList;
 import gbc.sa.vansales.models.Reasons;
 import gbc.sa.vansales.utils.ConfigStore;
@@ -73,7 +74,7 @@ public class DeliveryActivity extends AppCompatActivity {
     Customer object;
     ArrayList<CustomerHeader> customers;
     DatabaseHandler db = new DatabaseHandler(this);
-    ArrayList<OrderList> arrayList;
+    ArrayList<DeliveryOrderList> arrayList;
     LoadingSpinner loadingSpinner;
     SwipeRefreshLayout refreshLayout;
     private ArrayAdapter<CustomerStatus> statusAdapter;
@@ -144,7 +145,7 @@ public class DeliveryActivity extends AppCompatActivity {
             list_delivery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    OrderList delivery = arrayList.get(position);
+                    DeliveryOrderList delivery = arrayList.get(position);
                     if (delivery.getOrderStatus().equals("false")) {
                         Helpers.logData(DeliveryActivity.this, "Delivery Clicked" + delivery.getOrderId());
                         Intent intent = new Intent(DeliveryActivity.this, DeliveryOrderActivity.class);
@@ -260,6 +261,7 @@ public class DeliveryActivity extends AppCompatActivity {
                 map.put(db.KEY_DELIVERY_NO, "");
                 map.put(db.KEY_DELIVERY_DATE, "");
                 map.put(db.KEY_IS_DELIVERED, "");
+                map.put(db.KEY_REFERENCE_NO, "");
                 HashMap<String, String> filter = new HashMap<>();
                 //filter.put(db.KEY_IS_DELIVERED, "false");
                 filter.put(db.KEY_CUSTOMER_NO, object.getCustomerID());
@@ -289,12 +291,13 @@ public class DeliveryActivity extends AppCompatActivity {
             temp.clear();
             arrayList.clear();
             do {
-                OrderList orderList = new OrderList();
+                DeliveryOrderList orderList = new DeliveryOrderList();
                 orderList.setOrderId(cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_NO)));
                 String date = cursor.getString(cursor.getColumnIndex(db.KEY_DELIVERY_DATE));
                 String[] token = date.split("\\.");
                 orderList.setOrderStatus(cursor.getString(cursor.getColumnIndex(db.KEY_IS_DELIVERED)));
                 orderList.setOrderDate(Helpers.getMaskedValue(token[2], 2) + "-" + Helpers.getMaskedValue(token[1], 2) + "-" + token[0]);
+                orderList.setOrderReferenceNo(cursor.getString(cursor.getColumnIndex(db.KEY_REFERENCE_NO)));
                 if (!temp.contains(orderList.getOrderId())) {
                     temp.add(orderList.getOrderId());
                     arrayList.add(orderList);
@@ -325,7 +328,7 @@ public class DeliveryActivity extends AppCompatActivity {
      @ it will prompt to select the reason for deletion. This function
      @ will load and show the reasons in a dialog form.
      ************************************************************/
-    private void showReasonDialog(ArrayList<OrderList> list, final int position) {
+    private void showReasonDialog(ArrayList<DeliveryOrderList> list, final int position) {
         try {
             final int pos = position;
             final Dialog dialog = new Dialog(DeliveryActivity.this);
